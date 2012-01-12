@@ -9,13 +9,14 @@ digraph g {
   Nminor1_1 [ label="\"1.1\" (Branch)" ];
   Nminor1_2 [ label="\"1.2\" (Branch)" ];
 
-  Nversion1_1_1 [ label="\"1.1.1\" (Version)" , shape="box"];
-  Nversion1_2_1 [ label="\"1.2.1\" (Version)" , shape="box"];
-  Nversion1_2_2 [ label="\"1.2.2\" (Version)" , shape="box"];
+  node [ fillcolor="palegreen", style="filled", shape="box3d"];
+  Nversion1_1_1 [ label="\"1.1.1\" (Version)" ];
+  Nversion1_2_1 [ label="\"1.2.1\" (Version)" ];
+  Nversion1_2_2 [ label="\"1.2.2\" (Version)" ];
+  Nversion2_2 [ label="\"2.2\" (Version)" ];
+  Nversion2_3 [ label="\"2.3\" (Version)" ];
 
-  Nversion2_2 [ label="\"2.2\" (Version)" , shape="box"];
-  Nversion2_3 [ label="\"2.3\" (Version)" , shape="box"];
-
+  node [fillcolor="white",style="", shape="ellipse"];
   Nmajor1x -> Nminor1_1 [ label="hasBranch" ] ;
   Nmajor1x -> Nminor1_2 [ label="hasBranch" ] ;
 
