@@ -21,3 +21,6 @@ ex: http://shed.inria.fr/projects/proval/tools/why/branches/1.x/versions/1.1
 Types de fichiers:
 http://<hostname>/projects/<project>/filetypes/<name>
 
+Identifiant d'une chaîne de traitement:
+http://<hostname>/projects/<project>/chains/<chain1>
+

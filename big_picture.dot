@@ -59,6 +59,7 @@ digraph g {
   Nft4 [ label="\".ml\" (Filetype)" ];
   Nft5 [ label="\".foo\" (Filetype)" ];
   Nft6 [ label="\".bar\" (Filetype)" ];
+  Nfttime [ label="\".time\" (Filetype)" ];
 
   Nft1 -> Nintf1_1 [ label="consumes:1" , dir="back" ];
   Nft2 -> Nintf1_1 [ label="consumes:2" , dir="back" ];
@@ -71,6 +72,13 @@ digraph g {
 
   Nft1 -> Nintf2_1 [ label="consumes:1" , dir="back" ];
   Nintf2_1 -> Nft3 [ label="produces:1" ];
+  Nintf2_1 -> Nfttime [ label="produces:2" ];
+
+  node [ shape="ellipse", color="black", style="", fillcolor="white"];
+  Ndiff4 [ label="\"/usr/bin/diff\"" ];
+  Nft4 -> Ndiff4 [ label="hasDiffCommand" ];
+  Ndifftime [ label="\"/local/bin/timediff\"" ];
+  Nfttime -> Ndifftime [ label="hasDiffCommand" ];
 }
 }}
 intf1 { EMPTY + Nintf1_1 + Nintf1_2 }
@@ -85,6 +93,7 @@ versions1 { %branch1_2 + Nversion1_2_1 + Nversion1_2_2 }
 path1 { %versions1 + Npath1_1 + Npath1_2 }
 branch2 { %path1 + Nmajor2x }
 intf2 { %branch2 + Nintf2_1 + Nintf2_2 + Npath2_1 + Npath2_2 }
-filetypes2 { %intf2 + %filetypes1 }
+filetypes2 { %intf2 + %filetypes1 + Nfttime }
 version2 { %filetypes2 + Nversion2_3 + Nversion2_2 }
+diff { PREV + Ndiff4 + Ndifftime}
 all { GRAPH }

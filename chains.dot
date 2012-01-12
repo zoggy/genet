@@ -2,6 +2,7 @@ graph {{
 
 digraph g {
   rankdir = LR;
+
   node [ shape="note", color="blue", style="filled", fillcolor="lightblue" ];
   Nft1 [ label="\".v\"" ];
   Nft2 [ label="\".vo\"" ];
@@ -11,18 +12,23 @@ digraph g {
   Nft6 [ label="\".bar\"" ];
 
   node [shape="record",color="black", style=""];
-  Nintf1 [label = "{ { <i1> (.v) | <i2> (.vo) } | /tools/why/branches/1.x/interfaces/Fais ceci | { <o1> (.mlw) | <o2> (.foo) } }"];
+  Nintf1 [label = "{ { <i1> (.v) | <i2> (.vo) } | /tools/why/branches/1.x/interfaces/Fais ceci | { <o2> (.foo) | <o1> (.mlw) } }"];
   Nft1 -> Nintf1:i1 ;
   Nft2 -> Nintf1:i2 ;
   Nintf1:o2 -> Nft5 ;
 
-  Nintf2 [label = "{ { <i1> (.mlw) | <i2> (.bar} | /tools/altergo/branches/2.x/interfaces/Zyva | { <o1> (.ml) } }"];
+  Nintf2 [label = "{ { <i1> (.mlw) | <i2> (.bar)} | /tools/altergo/branches/2.x/interfaces/Zyva | { <o1> (.ml) } }"];
   Nintf1:o1 -> Nft3 -> Nintf2:i1 ;
-  Nft6 -> Nintf2:i2 ;
   Nintf2:o1 -> Nft4 ;
+
+  Nchain1 [ label="{ <i1>(.v) | /chains/chain1 | <o1> (.bar) }" , fillcolor="grey"]
+  Nft1 -> Nchain1:i1 ;
+  Nchain1:o1 -> Nft6 -> Nintf2:i2 ;
+
 }
 
 }}
-start { EMPTY + Nft1 + Nft2 + Nft6 + Nft4 }
+start { EMPTY + Nft1 + Nft2 + Nft4 }
 intf1 { %start + Nintf1 + Nft3 + Nft5 }
-intf2 { %intf1 + Nintf2 }
+chain1 { %intf1 + Nchain1 + Nft6 }
+intf2 { %chain1 + Nintf2 }
