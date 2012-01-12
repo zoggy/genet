@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="New document 1">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.88"
+     inkscape:cx="323.93455"
+     inkscape:cy="367.94425"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1620"
+     inkscape:window-height="1054"
+     inkscape:window-x="8"
+     inkscape:window-y="50"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-308.2677)">
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#000000;stroke-opacity:1"
+       id="path2985"
+       sodipodi:cx="221.59091"
+       sodipodi:cy="179.32176"
+       sodipodi:rx="45.454544"
+       sodipodi:ry="22.727272"
+       d="m 267.04546,179.32176 a 45.454544,22.727272 0 1 1 -90.90909,0 45.454544,22.727272 0 1 1 90.90909,0 z"
+       transform="matrix(1.5827786,0,0,1.2905572,-4.7066254,264.11901)" />
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="320.4545"
+       y="502.36218"
+       id="text3755"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         x="320.4545"
+         y="502.36218"
+         id="tspan3761">Tool</tspan></text>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path2985"
+       id="use3765"
+       transform="translate(-102.27273,168.18182)"
+       width="1052.3622"
+       height="744.09448" />
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="184.0909"
+       y="668.2713"
+       id="text3767"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3827"
+         x="184.0909"
+         y="668.2713">Major (1.X)</tspan></text>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use3765"
+       id="use3771"
+       transform="translate(271.59091,-1.1363636)"
+       width="1052.3622"
+       height="744.09448" />
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="461.60501"
+       y="667.17328"
+       id="text3767-2"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3829">Major (2.X)</tspan></text>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use3765"
+       id="use3798"
+       transform="translate(-81.818182,177.27273)"
+       width="1052.3622"
+       height="744.09448" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use3798"
+       id="use3800"
+       transform="translate(171.59091,0)"
+       width="1052.3622"
+       height="744.09448" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#use3800"
+       id="use3802"
+       transform="matrix(1.6994214,0,0,1,37.501121,-1.1363636)"
+       width="1052.3622"
+       height="744.09448" />
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="97.968658"
+       y="848.99152"
+       id="text3767-3"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3825"
+         x="97.968658"
+         y="848.99152">Minor (1.1)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="268.78839"
+       y="846.50623"
+       id="text3767-3-7"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3852">Minor (1.2)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
+       x="492.65204"
+       y="846.50623"
+       id="text3767-3-7-1"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3875">Minor (branch 2.2)</tspan></text>
+  </g>
+</svg>

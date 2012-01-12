@@ -1,0 +1,23 @@
+Identfiant d'un outil:
+http://<hostname>/projects/<project>/tools/<tool>
+
+Identifiant d'une branche
+http://<hostname>/projects/<project>/tools/<tool>/branches/<branch>
+
+Interfaces d'une branche:
+http://<hostname>/projects/<project>/tools/<tool>/branches/<branch>/interfaces/<interface>
+
+Identifiant d'une branche b2 d'une branche b1:
+http://<hostname>/projects/<project>/tools/<tool>/branches/b1/b2
+
+Interfaces de cette branche:
+http://<hostname>/projects/<project>/tools/<tool>/branches/b1/b2/interfaces/<interface>
+
+Versions d'une branche:
+http://<hostname>/projects/<project>/tools/<tool>/branches/b1/versions/<version>
+
+ex: http://shed.inria.fr/projects/proval/tools/why/branches/1.x/versions/1.1
+
+Types de fichiers:
+http://<hostname>/projects/<project>/filetypes/<name>
+

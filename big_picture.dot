@@ -1,0 +1,89 @@
+graph {{
+digraph g {
+  Ntool1 [ label="\"Why\" (Tool)" ];
+  Nmajor1x [ label="\"1.X\" (Branch)" ];
+  Nmajor2x [ label="\"2.X\" (Branch)" ];
+  Ntool1 -> Nmajor1x [ label="hasBranch" ];
+  Ntool1 -> Nmajor2x [ label="hasBranch" ];
+
+  Nminor1_1 [ label="\"1.1\" (Branch)" ];
+  Nminor1_2 [ label="\"1.2\" (Branch)" ];
+
+  Nversion1_1_1 [ label="\"1.1.1\" (Version)" , shape="box"];
+  Nversion1_2_1 [ label="\"1.2.1\" (Version)" , shape="box"];
+  Nversion1_2_2 [ label="\"1.2.2\" (Version)" , shape="box"];
+
+  Nversion2_2 [ label="\"2.2\" (Version)" , shape="box"];
+  Nversion2_3 [ label="\"2.3\" (Version)" , shape="box"];
+
+  Nmajor1x -> Nminor1_1 [ label="hasBranch" ] ;
+  Nmajor1x -> Nminor1_2 [ label="hasBranch" ] ;
+
+  Nminor1_1 -> Nversion1_1_1 [ label="hasVersion" ] ;
+  Nminor1_2 -> Nversion1_2_1 [ label="hasVersion" ] ;
+  Nminor1_2 -> Nversion1_2_2 [ label="hasVersion" ] ;
+
+  node [fillcolor="grey", color="red", style="filled"];
+  Nintf1_1 [ label="\"Fait ceci\" (Interface):\n .v -> .vo -> .mlw * .foo" ];
+  Nintf1_2 [ label="\"Fait cela\" (Interface):\n .mlw -> .ml -> .bar" ];
+  Nintf2_1 [ label="\"Fait ceci\" (Interface):\n .v -> .mlw" ];
+  Nintf2_2 [ label="\"Fait cela\" (Interface)" ];
+
+  node [style="", color="black"];
+  Nminor1_2 -> Nintf1_1 [ label="noInterface" ];
+
+  Nmajor1x -> Nintf1_1 [ label="hasInterface" ];
+  Nmajor1x -> Nintf1_2 [ label="hasInterface" ];
+
+  Npath1_1 [ label="\"/local/why-%v/bin/why-intf1\""];
+  Npath1_2 [ label="\"/local/why-%v/bin/why-intf2\""];
+  Npath2_1 [ label="\"/local/why-%v/bin/why-intf1\""];
+  Npath2_2 [ label="\"/local/why-%v/bin/why-intf2\""];
+
+  Nintf1_1 -> Npath1_1 [ label="hasPath" ];
+  Nintf1_2 -> Npath1_2 [ label="hasPath" ];
+  Nintf2_1 -> Npath2_1 [ label="hasPath" ];
+  Nintf2_2 -> Npath2_2 [ label="hasPath" ];
+
+  Nmajor2x -> Nversion2_2 [ label="hasVersion" ] ;
+  Nmajor2x -> Nversion2_3 [ label="hasVersion" ] ;
+
+  Nmajor2x -> Nintf2_1 [ label="hasInterface" ];
+  Nmajor2x -> Nintf2_2 [ label="hasInterface" ];
+
+  node [ shape="note", color="blue", style="filled", fillcolor="lightblue" ];
+  Nft1 [ label="\".v\" (Filetype)" ];
+  Nft2 [ label="\".vo\" (Filetype)" ];
+  Nft3 [ label="\".mlw\" (Filetype)" ];
+  Nft4 [ label="\".ml\" (Filetype)" ];
+  Nft5 [ label="\".foo\" (Filetype)" ];
+  Nft6 [ label="\".bar\" (Filetype)" ];
+
+  Nft1 -> Nintf1_1 [ label="consumes:1" , dir="back" ];
+  Nft2 -> Nintf1_1 [ label="consumes:2" , dir="back" ];
+  Nintf1_1 -> Nft3 [ label="produces:1" ];
+  Nintf1_1 -> Nft5 [ label="produces:2" ];
+
+  Nft3 -> Nintf1_2 [ label="consumes:1" , dir="back" ];
+  Nft4 -> Nintf1_2 [ label="consumes:2" , dir="back" ];
+  Nintf1_2 -> Nft6 [ label="produces:1" ];
+
+  Nft1 -> Nintf2_1 [ label="consumes:1" , dir="back" ];
+  Nintf2_1 -> Nft3 [ label="produces:1" ];
+}
+}}
+intf1 { EMPTY + Nintf1_1 + Nintf1_2 }
+filetypes1 { %intf1 + Nft1 + Nft2 + Nft3 + Nft4 + Nft5 + Nft6}
+tool { EMPTY + Ntool1 }
+branch1x { %tool + Nmajor1x }
+branch1_1 { %branch1x + Nminor1_1 }
+branch_intf1_1 { %branch1_1 + %intf1 }
+version1_1 { %branch_intf1_1 + Nversion1_1_1 }
+branch1_2 { %version1_1 + Nminor1_2 }
+versions1 { %branch1_2 + Nversion1_2_1 + Nversion1_2_2 }
+path1 { %versions1 + Npath1_1 + Npath1_2 }
+branch2 { %path1 + Nmajor2x }
+intf2 { %branch2 + Nintf2_1 + Nintf2_2 + Npath2_1 + Npath2_2 }
+filetypes2 { %intf2 + %filetypes1 }
+version2 { %filetypes2 + Nversion2_3 + Nversion2_2 }
+all { GRAPH }
