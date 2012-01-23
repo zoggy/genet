@@ -11,7 +11,7 @@ chain foo
 chain test1
 (*  This is the description of the chain *)
 {
-  in: .v i1, i2.vo (* same .vo i2 *), i3.ml;
+  in: i1.v, i2.vo, i3.ml;
   out: o1.bar, o2.data ;
 
   operation op1 : "/tools/why/branches/1.x/Fait ceci" ;

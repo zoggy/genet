@@ -1,0 +1,72 @@
+Organization of the files, for one project.
+/ (root directory of the project)
+/data_out/
+         /<md5>.<ext>
+/data_in
+
+/spec/.git
+     /config.txt
+                uri prefix
+                project name
+                db name
+                db host name
+                db user name
+                db passwd
+    /chains/simple.gnt
+            proving.gnt
+            charge.gnt
+
+#########
+Base de données. Tout ce qu'elle contient, à part le graphe sémantqiue,
+peut être regénéré à partir des données d'entrée (data_in), du
+graphe sémantique et de la définition des chaines.
+La base contient les informations sur ce qui a été généré,
+par quelles instances de chaines, etc.
+
+Table "files":
+- file_id: int auto increment
+[- date: datetime (can be obtained from exec_outputs) ]
+- filetype: uri
+- md5: string option (if NULL: it's a file from data_in)
+- filename : string
+
+Table "execution":
+- exec_id: int auto increment
+- date: datetime
+- host: string
+- path: string (path of program/script executed)
+- result : string option (NULL = OK)
+
+Table "exec_inputs":
+- file_id: int (foreign key)
+- exec_id: int (foreign key)
+- input_order : int (>= 1)
+
+Table "exec_outputs":
+- file_id: int (foreign key)
+- exec_id: int (foreign key)
+- output_order: int (>= 1)
+
+Table "inst_chains" (instanciated chains)
+- chain_id : int auto increment
+- chain_uri : uri
+
+Table "inst_chain_versions"
+- chain_id: int (foreign key)
+- tool : uri
+- version : uri
+
+Table "inst_chain_files": fichiers générés par une instance de chaine
+- chain_id : int (foreign key)
+- file_id : int (foreign key)
+- out_port: string (nom du port produisant le fichier, par exemple op3/op2.o1,
+                    si op3 est une référence à une sous-chaîne)
+
+On doit ainsi pouvoir savoir quels fichiers sont issus deux instances
+d'une même chaine et du même "port" de sortie, donc savoir quels fichiers
+comparer comparer les résultats de deux instances d'une même chaine.
+
+#########
+Scripts à prévoir
+
+- suppression des fichiers générés qui ne sont plus référencés

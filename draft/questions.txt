@@ -1,0 +1,14 @@
+- conservation de tous les résultats intermédiaires des chaines
+  pour ne pas tout rejouer quand on a une nouvelle version d'un
+  composant (interface déclarée dans le graphe du projet)
+  d'une chaine.
+- que se passe-t-il si on modifie une chaine ? virer et rejouer
+  les résultats précédents ?
+  (il est possible de détecter les changements réels dans la
+   description d'une chaine et donc d'invalider les résultats précédents
+   après avoir prévenu l'utilisateur)
+  => plus facile: permettre à l'utilisateur de faire rejouer une chaine
+  quand il sait qu'il le faut
+
+- combien de fichiers ?
+- quelle taille pour les fichiers générés ?
