@@ -47,11 +47,11 @@ LIB_BASE_CMI=$(LIB_BASE:.cmxa=.cmi)
 LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
 
 BASE_CMXFILES=base/version.cmx \
+	base/misc.cmx
 
 #	base/constant.cmx \
 #	base/base_types.cmx \
 #	base/colors.cmx \
-#	base/misc.cmx \
 #	base/additional.cmx \
 #	base/checks.cmx \
 #	base/tmap.cmx \
