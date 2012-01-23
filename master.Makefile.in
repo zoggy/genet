@@ -1,0 +1,128 @@
+
+# Various commands and dir
+##########################
+OCAMLBIN= @OCAMLBIN@
+OCAMLC   = @OCAMLC@
+OCAMLOPT =@OCAMLOPT@ -inline 10000
+OCAMLDEP = @OCAMLDEP@
+OCAMLLEX = @OCAMLLEX@
+OCAMLYACC= @OCAMLYACC@
+OCAMLLIB = @OCAMLLIB@
+OCAMLMKTOP = @OCAMLMKTOP@
+OCAMLMKLIB = @OCAMLMKLIB@
+CAMMKTOP = @CAMMKTOP@
+OCAMLDOCDIR= $(OCAMLLIB)/ocamldoc
+OCAMLDOC_PLUGINSDIR=$(DESTDIR)@OCAMLDOC_PLUGINSDIR@
+OCAMLVERSION = @OCAMLVERSION@
+OCAMLFIND= @OCAMLFIND@
+EXTRAC_CRC = $(OCAMLLIB)/extract_crc
+OCAMLDOC= @OCAMLDOC@
+OCAMLDOCOPT= @OCAMLDOC_OPT@
+OCAMLPP=
+MENHIR= @MENHIR@
+MENHIR_LINK_FLAGS= @MENHIR_LINK_FLAGS@
+MENHIR_LINK_FLAGS_BYTE= @MENHIR_LINK_FLAGS_BYTE@
+LATEX=TEXINPUTS=$(ROOT)/doc: latex
+PDFLATEX=TEXINPUTS=$(ROOT)/doc: pdflatex
+HEVEA= @HEVEA@ -fix -I $(ROOT)/doc -exec xxdate.exe
+HACHA= @HACHA@
+DVIPS=dvips
+DVIPDF=dvipdf
+BIBTEX= @BIBTEX@
+HEVEA_CSS_STYLE=ocamldoc_style.css
+OCAMLCFLAGS= -warn-error FSPUYZ -g -annot -thread # -w Ae
+
+GTK_INCLUDES=@GTK_INCLUDES@
+LABLGLADECC=@LABLGLADECC@
+LABLGTK2_INCLUDES=@LABLGTK2_INCLUDES@
+LABLGTKEXTRAS_INCLUDES=@LABLGTKEXTRAS_INCLUDES@
+BOXES_INCLUDES=@BOXES_INCLUDES@
+MENHIR_INCLUDES=@MENHIR_INCLUDES@
+
+VERSION=@VERSION@
+
+# For installation
+##############
+MKDIR=mkdir -p
+CP=cp -f
+CPDIR=$(CP) -r
+RM=rm -fR
+MV=mv
+
+DESTDIR=   # For debian packagers
+
+LIBDIR=$(DESTDIR)@libdir@
+BINDIR=$(DESTDIR)@bindir@
+MANDIR=$(DESTDIR)@mandir@
+TEMPLATESDIR=$(DESTDIR)@TEMPLATESDIR@
+PLUGINSDIR=$(DESTDIR)@PLUGINSDIR@
+PIXMAPSDIR=$(DESTDIR)@PIXMAPSDIR@
+GLADEDIR=$(DESTDIR)@GLADEDIR@
+DTDDIR=$(DESTDIR)@DTDDIR@
+LANGUAGESSPECSDIR=$(DESTDIR)@LANGUAGESSPECSDIR@
+
+GENET_PREFIX=genet
+GENET=$(GENET_PREFIX)
+GENET_BYTE=$(GENET).byte
+
+#shut up autconf @datarootdir@
+
+# Compilation
+#############
+
+ROOT=@ROOT@
+
+# generic rules :
+#################
+.SUFFIXES: .mli .ml .cmi .cmo .cmx .mll .mly \
+	.html .tex .dvi .ps .pdf .png .dot
+
+%.cmi:%.mli
+	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+
+%.cmo:%.ml
+	if test -f `dirname $<`/`basename $< .ml`.mli && test ! -f `dirname $<`/`basename $< .ml`.cmi ; then \
+	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
+	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+
+%.cmi %.cmo:%.ml
+	if test -f `dirname $<`/`basename $< .ml`.mli && test ! -f `dirname $<`/`basename $< .ml`.cmi ; then \
+	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
+	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+
+%.cmx %.o:%.ml
+	$(OCAMLOPT) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+
+%.o: %.c
+	$(OCAMLOPT) $(OCAMLCFLAGS) $(COMPFLAGS) -c $< && $(MV) `basename $@` `dirname $@`
+
+%.ml:%.mll
+	$(OCAMLLEX) $<
+
+%.mli %.ml:%.mly
+	$(OCAMLYACC) -v $<
+
+%.pdf: %.tex
+	$(PDFLATEX) $<
+	(grep bibliography $< > /dev/null && $(BIBTEX) `basename $< .tex` || true)
+	$(PDFLATEX) $<
+	$(PDFLATEX) $<
+
+%.html: %.tex
+	$(HEVEA) $<
+	$(HACHA) -tocbis -o `basename $@ .html`_index.html $@
+	rpl '<META name="GENERATOR" content="hevea 1.' \
+	'<link href="$(HEVEA_CSS_STYLE)" rel="stylesheet" type="text/css"> <META name="GENERATOR" content="hevea 1.' \
+	*.html
+
+%.png: %.dot
+	dot -Tpng -o $@ $<
+
+%.pdf: %.dot
+	dot -Tpdf -o $@ $<
+
+# some common targets :
+#######################
+first:all
+cleandoc:
+	$(RM) *.ps *.dvi *.html *.pdf *.log *.aux *.toc *.bbl *.blg *.htoc *.haux *~

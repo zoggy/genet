@@ -1,0 +1,8 @@
+*.cm*
+*.o
+*.a
+*.annot
+.chamo*
+autom4te.cache
+config.status
+
