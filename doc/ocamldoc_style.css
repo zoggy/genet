@@ -1,0 +1,135 @@
+html {
+  background-color: #DDDDDD;
+}
+body {
+   background-color : White ;
+   color: #333333;
+   font-family:"Trebuchet MS", Arial, Verdana;
+   font-size: 1.0em;
+   margin-left: 3em;
+   margin-right: 3em;
+   border-style: solid ;
+   border-color: #229900;
+   border-width: 2px;
+   padding: 3px;
+}
+a:visited {color : #416DFF; text-decoration : none; }
+a:link {color : #416DFF; text-decoration : none;}
+a:hover {color : Red; text-decoration : none; background-color: #5FFF88}
+a:active {color : Red; text-decoration : underline; }
+.keyword { font-weight : bold ; color : Red }
+.keywordsign { color : #C04600 }
+.superscript { font-size : 4 }
+.subscript { font-size : 4 }
+.comment { color : Green ;}
+.constructor { color : Blue }
+.type { color : #5C6585 }
+.string { color : Maroon }
+.warning { color : Red ; font-weight : bold }
+.info { margin-left : 3em; margin-right : 3em ; }
+.param_info { margin-top: 4px; margin-left : 3em; margin-right : 3em }
+.code { color : #465F91 ; }
+
+h1 {
+  font-size : 20pt ;
+  /*text-align: center; */
+  }
+
+h2 { font-size : 16pt ;
+  border-width: 0 0 2px 0;
+  border-style: solid ;
+  border-color: #229900;
+  margin-top: 5px;
+  margin-bottom: 2px;
+  text-align: left;
+  padding: 2px;
+  padding-left: 5px;
+  }
+h3 {
+  color: #666666;
+  font-size : 14pt ;
+  border-width: 0 0 1px 0;
+  border-style: solid ;
+  border-color: #44BB22;
+  margin-top: 0px;
+  margin-bottom: 1px;
+  text-align: left;
+  padding: 0px;
+  padding-left: 5px;
+  }
+
+h4 {
+  color: #666666;
+  font-size : 13pt ;
+  border-width: 0 0 0px 0;
+  border-style: solid ;
+  border-color: #44BB22;
+  margin-top: 0px;
+  margin-bottom: 1px;
+  text-align: left;
+  padding: 0px;
+  padding-left: 5px;
+  }
+
+h5 {
+  color: #666666;
+  font-size : 12pt ;
+  text-decoration: underline ;
+  border-width: 0 0 0px 0;
+  border-style: solid ;
+  border-color: #44BB22;
+  margin-top: 0px;
+  margin-bottom: 1px;
+  text-align: left;
+  padding: 0px;
+  padding-left: 5px;
+  }
+
+/*h3 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #90DDFF ;padding: 2px; }*/
+/*h4 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #90EDFF ;padding: 2px; }*/
+
+/*h5 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #90FDFF ;padding: 2px; }*/
+h6 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #C0FFFF ; padding: 2px; }
+div.h7 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #E0FFFF ; padding: 2px; }
+div.h8 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #F0FFFF ; padding: 2px; }
+div.h9 { font-size : 20pt ; border: 1px solid #000000; margin-top: 5px; margin-bottom: 2px;text-align: center; background-color: #FFFFFF ; padding: 2px; }
+.typetable { border-style : hidden }
+.indextable { border-style : hidden }
+.paramstable { border-style : hidden ; padding: 5pt 5pt}
+
+tr { background-color : White }
+td.typefieldcomment { background-color : #FFFFFF ; font-size: smaller ;}
+pre { margin-bottom: 4px }
+div.sig_block {margin-left: 2em}
+*:target { background: yellow; }
+hr { color: #229900 ; background-color: #229900 ; }
+
+div.bibentry { padding-bottom: 1em; display: block;}
+div.bibtitle { color: #229900; font-style: italic; display: inline; }
+div.bibauthor { color: black; font-style: normal; }
+div.bibkind { color: #666666; display: inline }
+div.bibid { color: black; font-weight: bold; display: inline; }
+
+/* for the output of regression tests */
+table.test tr td { vertical-align: text-top; }
+span.test-ok { color: white ; background-color: #44DD44 ; padding: 2px; font-weight: bold;}
+span.test-ko { color: yellow ; background-color: red ; padding: 2px; font-weight: bold;}
+span.test-desc { }
+span.test-error { color: red ; font-family: courier; font-weight: bold; }
+span.test-file { padding-left: 1em; color: #777777 ; font-family: courier; }
+
+/*  for doc */
+div.sh {
+  background-color: black;
+  color: #DDDDDD ;
+  font-family: courier;
+  font-size: 12pt;
+  border-width: 0 0 0 4px;
+  border-style: solid;
+  border-color: #229900;
+  padding-left: 3px;
+  padding-right: 3px;
+  margin: 2px;
+  }
+table.lstframe { margin-bottom: 1em; margin-left: 1em; background-color: #cfedf4; }
+table.lstframe * { background-color: #cfedf4; }

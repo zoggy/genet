@@ -129,8 +129,7 @@ dump.odoc: base/*.ml base/*.mli \
 doc: all dump.odoc
 	$(MKDIR) ocamldoc
 	$(CP) ../doc/ocamldoc_style.css ocamldoc/style.css
-	$(OCAMLDOCOPT) $(COMPFLAGS) -g odoc_bib.cmxs -v -d ocamldoc -load dump.odoc \
-	-bib $(ROOT)/doc/biblio_syndex.bib \
+	$(OCAMLDOCOPT) $(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
 	-t "Genet library reference" \
 	-intro ../doc/ocamldoc_index.text
 
