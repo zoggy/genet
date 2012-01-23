@@ -5,7 +5,8 @@ SYSTEM_INCLUDES= \
 	$(LABLGTK2_INCLUDES) \
 	$(LABLGTKEXTRAS_INCLUDES) \
 	$(MENHIR_INCLUDES) \
-	$(BOXES_INCLUDES)
+	$(BOXES_INCLUDES) \
+	$(OCAMLRDF_INCLUDES)
 
 MY_INCLUDES= \
 	-I base \
@@ -24,7 +25,7 @@ LINKFLAGS_BYTE=$(INCLUDES)
 TOOLS=$(GENET)
 TOOLS_BYTE=$(GENET_BYTE)
 
-SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS)  config_file.cmx
+SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
 
 LIBS=$(LIB_BASE)
@@ -35,6 +36,9 @@ LIBS_BYTE=$(LIB_BASE_GUI_BYTE)
 
 GTK_LIBS=lablgtk.cmxa lablglade.cmxa lablgnomecanvas.cmxa gmylist.cmx boxes.cmxa
 GTK_LIBS_BYTE=lablgtk.cma lablglade.cma lablgnomecanvas.cma gmylist.cmo boxes.cma
+
+RDF_LIBS=ocamlrdf.cmxa
+RDF_LIBS_BYTE=ocamlrdf.cma
 
 # Compilation
 #############
@@ -97,11 +101,11 @@ tools_byte: libs_byte $(TOOLS_BYTE)
 
 $(GENET): $(LIB_BASE)	$(GENET_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$^
+	$(RDF_LIBS)	$^
 
 $(GENET_BYTE): $(LIB_BASE_BYTE)	$(GENET_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$^
+	$(RDF_LIBS_BYTE) $^
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
 	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)

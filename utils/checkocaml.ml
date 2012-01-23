@@ -877,6 +877,7 @@ let detect_lablgtkextras ?(modes=[`Byte;`Opt]) lablgtk_incs conf =
   in
   iter includes
 ;;
+
 let detect_boxes ?(modes=[`Byte;`Opt]) lablgtk2_includes conf =
   let includes =
     ["default install",
@@ -895,6 +896,35 @@ let detect_boxes ?(modes=[`Byte;`Opt]) lablgtk2_includes conf =
     can_link ~mes mode conf
       ~includes: (lablgtk2_includes @ includes)
       ~libs []
+  in
+  let rec iter = function
+      [] -> ([], [])
+    | incs :: q ->
+      let f = f incs in
+      if List.for_all f modes then
+        (snd incs, libs)
+      else
+        iter q
+  in
+  iter includes
+;;
+
+let detect_ocamlrdf ?(modes=[`Byte;`Opt]) conf =
+  let includes =
+    ["default install",
+      [Filename.concat (ocaml_libdir conf) "ocamlrdf"]]
+  in
+  let includes =
+    match ocamlfind_query conf "ocamlrdf" with
+      None -> includes
+    | Some s -> ("with ocamlfind", [s]) :: includes
+  in
+  let libs = ["ocamlrdf.cma" ] in
+  let f (mes, includes) mode =
+    let mes = Printf.sprintf "checking for OCaml-RDF (%s) %s... "
+      (string_of_mode mode) mes
+    in
+    can_link ~mes mode conf ~includes ~libs []
   in
   let rec iter = function
       [] -> ([], [])
@@ -959,6 +989,14 @@ let _ =
   | l, _ ->
       let include_string = string_of_includes l in
       add_subst "BOXES_INCLUDES" include_string
+;;
+
+let _ =
+  match detect_ocamlrdf ~modes conf with
+    [], [] -> prerr_endline "Could not link with ocaml-rdf"
+  | l, _ ->
+      let include_string = string_of_includes l in
+      add_subst "OCAMLRDF_INCLUDES" include_string
 ;;
 
 
