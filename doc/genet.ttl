@@ -1,0 +1,83 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix genet: <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#>.
+
+genet:Contrib
+  rdf:type rdfs:Class ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "Contribution" .
+
+genet:contribDate
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "modified on" ;
+  rdfs:comment "Contribution update date" ;
+  rdfs:domain genet:Contrib ;
+  rdfs:range xsd:date .
+
+genet:Author
+  rdf:type rdfs:Class ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "Contribution author" .
+
+genet:hasAuthor
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "has author" ;
+  rdfs:comment "Link a contribution to an author." ;
+  rdfs:domain genet:Contrib ;
+  rdfs:range genet:Author .
+
+genet:name
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "Name";
+  rdfs:name "has name" ;
+  rdfs:comment "Contribution or author name" ;
+  rdfs:range rdfs:Literal .
+
+genet:firstname
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "has first name" ;
+  rdfs:comment "Author first name" ;
+  rdfs:domain genet:Author ;
+  rdfs:range rdfs:Literal .
+
+genet:inTopic
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "appears in topic" ;
+  rdfs:comment "Contribution appears in the topic specified by the object." ;
+  rdfs:domain genet:Contrib ;
+  rdfs:range rdfs:Literal .
+
+genet:hasLicense
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "released under" ;
+  rdfs:comment "Contribution is released under the license described by the object." ;
+  rdfs:domain genet:Contrib ;
+  rdfs:range rdfs:Literal .
+
+genet:ofKind
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "is a" ;
+  rdfs:comment "Contribution is of the kind given by the object.";
+  rdfs:domain genet:Contrib ;
+  rdfs:range rdfs:Literal .
+
+genet:hasAttribute
+  rdf:type rdfs:Property ;
+  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
+  rdfs:label "has attribute" ;
+  rdfs:comment "Contribution has an additional attribute.";
+  rdfs:domain genet:Contrib ;
+  rdfs:range rdfs:Literal .
+
+

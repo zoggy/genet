@@ -1,3 +1,4 @@
+(** *)
 
 (*c==v=[Misc.safe_main]=1.0====*)
 let safe_main main =

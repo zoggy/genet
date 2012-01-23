@@ -135,7 +135,7 @@ doc: all dump.odoc
 	$(MKDIR) ocamldoc
 	$(CP) ../doc/ocamldoc_style.css ocamldoc/style.css
 	$(OCAMLDOCOPT) $(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
-	-t "Genet library reference" \
+	-t "Genet library reference" -html \
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc
