@@ -7,8 +7,9 @@ let options =
 ;;
 
 let main () =
-  let _opts = Options.parse options in
-  exit 0
+  let opts = Options.parse options in
+  let config = Config.read_config opts.Options.config_file in
+  print_string (Config.string_of_config config)
 ;;
 
 let () = Misc.safe_main main;;

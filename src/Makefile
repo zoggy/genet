@@ -24,8 +24,8 @@ LINKFLAGS_BYTE=$(INCLUDES)
 TOOLS=$(GENET)
 TOOLS_BYTE=$(GENET_BYTE)
 
-SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS)
-SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE)
+SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS)  config_file.cmx
+SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
 
 LIBS=$(LIB_BASE)
 LIBS_BYTE=$(LIB_BASE_BYTE)
@@ -47,7 +47,8 @@ LIB_BASE_CMI=$(LIB_BASE:.cmxa=.cmi)
 LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
 
 BASE_CMXFILES=base/version.cmx \
-	base/misc.cmx
+	base/misc.cmx \
+	base/config.cmx
 
 #	base/constant.cmx \
 #	base/base_types.cmx \
