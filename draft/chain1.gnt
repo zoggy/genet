@@ -1,0 +1,29 @@
+(* Example of genet chain description *)
+
+chain foo
+  (* ... *)
+{
+  in: i1.foo ;
+  out: o1.data ;
+  ...
+}
+
+chain test1
+(*  This is the description of the chain *)
+{
+  in: .v i1, i2.vo (* same .vo i2 *), i3.ml;
+  out: o1.bar, o2.data ;
+
+  operation op1 : "/tools/why/branches/1.x/Fait ceci" ;
+  operation op2 : "/tools/why/branches/1.x/Fait cela" ;
+  operation op3 : "/chains/Chain1.foo" ;
+
+  i1 -> op1.i1 (* automatically generated name for 1st input of op1 *);
+  i2 -> op1.i2 (* automatically generated name for 2nd input of op1 *);
+  op1.o1 -> op2.i1 ;
+  i3 -> op2.i2 ;
+  op2.o1 -> o1 ;
+
+  op1.o2 -> op3.i1 ;
+  op3.o1 -> o2 ;
+}
