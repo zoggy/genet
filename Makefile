@@ -91,8 +91,7 @@ distclean: clean
 	cd src && $(MAKE) distclean
 	cd doc && $(MAKE) distclean
 	cd utils && $(MAKE) distclean
-
-	$(RM) config.cache config.log config.status master.Makefile
+	$(RM) autom4te.cache config.cache config.log config.status master.Makefile
 	$(RM) config_check.log ocaml_config.sh
 
 clean: dummy
