@@ -5,4 +5,8 @@
 .chamo*
 autom4te.cache
 config.status
+config.log
+config_check.log
+ocaml_config.sh
+master.Makefile
 
