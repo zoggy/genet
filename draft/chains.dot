@@ -3,32 +3,32 @@ graph {{
 digraph g {
   rankdir = LR;
 
+  op1 [ shape="Mrecord", fillcolor="grey", style="filled", color="red", \
+        label="{ { <i1> i1.v  | <i2> i2.vo  } | \"/tools/why/branches/1.x/interfaces/Fais ceci\" | { <o1> o1.mlw | <o2> o2.foo } }"];
+
+  op2 [ shape="Mrecord", fillcolor="grey", style="filled", color="red", \
+        label="{ { <i1> i1.mlw  | <i2> i2.ml  } | \"/tools/altergo/branches/2.x/interfaces/Zyva\" | { <o1> o1.bar } }"];
+
+  op3 [ shape="Mrecord", fillcolor="moccasin", style="filled", color="black", \
+        label="{ { <i1> i1.foo } | \"/chains/Chain1.foo\" | { <o1> o1.data } }"];
   node [ shape="note", color="blue", style="filled", fillcolor="lightblue" ];
-  Nft1 [ label="\".v\"" ];
-  Nft2 [ label="\".vo\"" ];
-  Nft3 [ label="\".mlw\"" ];
-  Nft4 [ label="\".ml\"" ];
-  Nft5 [ label="\".foo\"" ];
-  Nft6 [ label="\".bar\"" ];
+  i1 [ label=".v" ];
+  i2 [ label=".vo" ];
+  i3 [ label=".ml" ];
+  o1 [ label=".bar" ];
+  o2 [ label=".data" ];
 
-  node [shape="record",color="black", style=""];
-  Nintf1 [label = "{ { <i1> (.v) | <i2> (.vo) } | /tools/why/branches/1.x/interfaces/Fais ceci | { <o2> (.foo) | <o1> (.mlw) } }"];
-  Nft1 -> Nintf1:i1 ;
-  Nft2 -> Nintf1:i2 ;
-  Nintf1:o2 -> Nft5 ;
-
-  Nintf2 [label = "{ { <i1> (.mlw) | <i2> (.bar)} | /tools/altergo/branches/2.x/interfaces/Zyva | { <o1> (.ml) } }"];
-  Nintf1:o1 -> Nft3 -> Nintf2:i1 ;
-  Nintf2:o1 -> Nft4 ;
-
-  Nchain1 [ label="{ <i1>(.v) | /chains/chain1 | <o1> (.bar) }" , fillcolor="grey"]
-  Nft1 -> Nchain1:i1 ;
-  Nchain1:o1 -> Nft6 -> Nintf2:i2 ;
-
+  i1 -> op1:i1 ;
+  i2 -> op1:i2 ;
+  op1:o1 -> op2:i1 ;
+  i3 -> op2:i2 ;
+  op2:o1 -> o1 ;
+  op1:o2 -> op3:i1 ;
+  op3:o1 -> o2;
 }
 
 }}
-start { EMPTY + Nft1 + Nft2 + Nft4 }
-intf1 { %start + Nintf1 + Nft3 + Nft5 }
-chain1 { %intf1 + Nchain1 + Nft6 }
-intf2 { %chain1 + Nintf2 }
+start { EMPTY + i1 + i2 + i3 + o1 + o2 }
+intf1 { %start + op1 }
+intf2 { %intf1 + op2 }
+chain1 { %intf2 + op3 }

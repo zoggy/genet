@@ -2,7 +2,8 @@ Organization of the files, for one project.
 / (root directory of the project)
 /data_out/
          /<md5>.<ext>
-/data_in
+/data_in/.git
+  examples and tests
 
 /spec/.git
      /config.txt
@@ -15,6 +16,12 @@ Organization of the files, for one project.
     /chains/simple.gnt
             proving.gnt
             charge.gnt
+
+Avoir un dépôt git séparé pour les données et la config permet
+d'avoir deux niveaux d'utilisateurs: les administrateurs (qui peuvent
+changer la config et surtout les chaines) et les autres, qui ne peuvent
+qu'ajouter ou modifier les données en entrée (exemples, jeux de tests, ...).
+
 
 #########
 Base de données. Tout ce qu'elle contient, à part le graphe sémantqiue,
@@ -69,4 +76,11 @@ comparer comparer les résultats de deux instances d'une même chaine.
 #########
 Scripts à prévoir
 
+- création d'un projet:
+   création de la base + tables
+   création arborescence répertoires; le script prend en paramètre
+   les deux dépôts git à utiliser pour data_in et spec;
 - suppression des fichiers générés qui ne sont plus référencés
+- script de mise à jour par rapport aux dépôts
+- suppression d'une chaine ou d'une instance d'une chaine et
+  tous les fichiers associés
