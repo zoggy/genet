@@ -24,7 +24,7 @@ qu'ajouter ou modifier les données en entrée (exemples, jeux de tests, ...).
 
 
 #########
-Base de données. Tout ce qu'elle contient, à part le graphe sémantqiue,
+Base de données. Tout ce qu'elle contient, à part le graphe sémantique,
 peut être regénéré à partir des données d'entrée (data_in), du
 graphe sémantique et de la définition des chaines.
 La base contient les informations sur ce qui a été généré,

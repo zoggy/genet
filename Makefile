@@ -64,7 +64,7 @@ doc: dummy
 master.Makefile: master.Makefile.in config.status
 	./config.status
 
-config.status: configure master.Makefile.in
+config.status: configure master.Makefile.in src/base/version.ml.in
 	./config.status --recheck
 
 configure: configure.ac

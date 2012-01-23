@@ -187,11 +187,11 @@ AC_SUBST(LABLGTK2DIR)
 
 AC_SUBST(DEBUG_LEVEL)
 
-# Finally create the master.Makefile.in
-ACFILES="master.Makefile"
+ACFILES="master.Makefile src/base/version.ml"
 
 AC_OUTPUT($ACFILES)
 chmod a-w master.Makefile
+chmod a-w src/base/version.ml
 
 # List values
 echo "
