@@ -902,9 +902,6 @@ let _ = !print "\n### checking required tools and libraries ###\n"
 let menhir = ocaml_prog "menhir";;
 let _ = add_subst "MENHIR" menhir;;
 
-let oug = ocaml_prog "oug.x";;
-let _ = add_subst "OUG" oug;;
-
 let hevea = ocaml_prog "hevea";;
 let _ = add_subst "HEVEA" hevea;;
 
