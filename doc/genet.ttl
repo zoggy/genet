@@ -1,83 +1,94 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-@prefix dc: <http://purl.org/dc/elements/1.1/>.
-@prefix owl: <http://www.w3.org/2002/07/owl#>.
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-@prefix foaf: <http://xmlns.com/foaf/0.1/>.
-@prefix genet: <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-genet:Contrib
-  rdf:type rdfs:Class ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "Contribution" .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Branch>
+    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Branch" .
 
-genet:contribDate
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "modified on" ;
-  rdfs:comment "Contribution update date" ;
-  rdfs:domain genet:Contrib ;
-  rdfs:range xsd:date .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Filetype>
+    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Filetype" .
 
-genet:Author
-  rdf:type rdfs:Class ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "Contribution author" .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface>
+    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Interface" .
 
-genet:hasAuthor
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "has author" ;
-  rdfs:comment "Link a contribution to an author." ;
-  rdfs:domain genet:Contrib ;
-  rdfs:range genet:Author .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Tool>
+    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Tool" .
 
-genet:name
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "Name";
-  rdfs:name "has name" ;
-  rdfs:comment "Contribution or author name" ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Version>
+    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Version" .
 
-genet:firstname
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "has first name" ;
-  rdfs:comment "Author first name" ;
-  rdfs:domain genet:Author ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#consumes>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Filetypes consumed, ordered" ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "consumes" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> rdf:Seq .
 
-genet:inTopic
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "appears in topic" ;
-  rdfs:comment "Contribution appears in the topic specified by the object." ;
-  rdfs:domain genet:Contrib ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasBranch>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Has a branch" ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has branch" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Branch> .
 
-genet:hasLicense
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "released under" ;
-  rdfs:comment "Contribution is released under the license described by the object." ;
-  rdfs:domain genet:Contrib ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasDiffCommand>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The path of the command to compute diffs" ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Filetype> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has diff command" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
 
-genet:ofKind
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "is a" ;
-  rdfs:comment "Contribution is of the kind given by the object.";
-  rdfs:domain genet:Contrib ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasInterface>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Implement the interface" ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has interface" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> .
 
-genet:hasAttribute
-  rdf:type rdfs:Property ;
-  rdfs:isDefinedBy <http://caml.inria.fr/hump.rdf> ;
-  rdfs:label "has attribute" ;
-  rdfs:comment "Contribution has an additional attribute.";
-  rdfs:domain genet:Contrib ;
-  rdfs:range rdfs:Literal .
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasPath>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The path of the command" ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has path" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
 
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasVersion>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Has version" ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has version" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Version> .
+
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#name>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Name" ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has name" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
+
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#noInterface>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Does not implement the interface" ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "has no interface" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> .
+
+<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#produces>
+    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Filetypes produced, ordered" ;
+    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
+    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
+    <http://www.w3.org/2000/01/rdf-schema#label> "produces" ;
+    <http://www.w3.org/2000/01/rdf-schema#range> rdf:Seq .
 
