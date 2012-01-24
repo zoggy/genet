@@ -10,6 +10,7 @@ SYSTEM_INCLUDES= \
 
 MY_INCLUDES= \
 	-I base \
+	-I grdf \
 	-I driver
 
 INCLUDES= \
@@ -28,11 +29,11 @@ TOOLS_BYTE=$(GENET_BYTE)
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
 
-LIBS=$(LIB_BASE)
-LIBS_BYTE=$(LIB_BASE_BYTE)
+LIBS=$(LIB_BASE) $(LIB_GRDF)
+LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE)
 
-LIBS_GUI=$(LIB_BASE_GUI)
-LIBS_BYTE=$(LIB_BASE_GUI_BYTE)
+LIBS_GUI=$(LIB_BASE_GUI) $(LIB_GRDF_GUI)
+LIBS_BYTE=$(LIB_BASE_GUI_BYTE) $(LIB_GRDF_GUI_BYTE)
 
 GTK_LIBS=lablgtk.cmxa lablglade.cmxa lablgnomecanvas.cmxa gmylist.cmx boxes.cmxa
 GTK_LIBS_BYTE=lablgtk.cma lablglade.cma lablgnomecanvas.cma gmylist.cmo boxes.cma
@@ -84,6 +85,46 @@ LIB_BASE_GUI_A=$(LIB_BASE_GUI:.cmxa=.a)
 
 BASE_GUI_LIBS=$(LIB_BASE_GUI) $(LIB_BASE_GUI_BYTE) $(LIB_BASE_GUI_CMI) $(LIB_BASE_GUI_A)
 
+# Grdf library
+
+LIB_GRDF=grdf/grdf.cmxa
+LIB_GRDF_BYTE=$(LIB_GRDF:.cmxa=.cma)
+LIB_GRDF_CMI=$(LIB_GRDF:.cmxa=.cmi)
+LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
+
+GRDF_CMXFILES=grdf/grdf_constant.cmx \
+	grdf/grdf_init.cmx
+
+#	grdf/constant.cmx \
+#	grdf/grdf_types.cmx \
+#	grdf/colors.cmx \
+#	grdf/additional.cmx \
+#	grdf/checks.cmx \
+#	grdf/tmap.cmx \
+#	grdf/graph.cmx \
+#	grdf/loc.cmx \
+#	grdf/tokens.cmx \
+#	grdf/lexer.cmx \
+#	grdf/history.cmx \
+#	grdf/twdict.cmx \
+#	grdf/zipper.cmx \
+#	grdf/env.cmx
+GRDF_CMOFILES=$(GRDF_CMXFILES:.cmx=.cmo)
+GRDF_CMIFILES=$(GRDF_CMXFILES:.cmx=.cmi)
+
+GRDF_LIBS=$(LIB_GRDF) $(LIB_GRDF_BYTE) $(LIB_GRDF_CMI) $(LIB_GRDF_A)
+
+GRDF_GUI_CMXFILES=
+GRDF_GUI_CMIFILES=$(GRDF_GUI_CMXFILES:.cmx=.cmi)
+GRDF_GUI_CMOFILES=$(GRDF_GUI_CMXFILES:.cmx=.cmo)
+
+LIB_GRDF_GUI=grdf/grdfgui.cmxa
+LIB_GRDF_GUI_BYTE=$(LIB_GRDF_GUI:.cmxa=.cma)
+LIB_GRDF_GUI_CMI=$(LIB_GRDF_GUI:.cmxa=.cmi)
+LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
+
+GRDF_GUI_LIBS=$(LIB_GRDF_GUI) $(LIB_GRDF_GUI_BYTE) $(LIB_GRDF_GUI_CMI) $(LIB_GRDF_GUI_A)
+
 # Genet files
 GENET_CMXFILES=	driver/options.cmx \
 	driver/main.cmx
@@ -99,11 +140,11 @@ libs_byte: $(LIB_BYTE) $(LIBS_GUI_BYTE)
 tools: libs $(TOOLS)
 tools_byte: libs_byte $(TOOLS_BYTE)
 
-$(GENET): $(LIB_BASE)	$(GENET_CMXFILES)
+$(GENET): $(LIB_BASE)	$(LIB_GRDF) $(GENET_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
 	$(RDF_LIBS)	$^
 
-$(GENET_BYTE): $(LIB_BASE_BYTE)	$(GENET_CMOFILES)
+$(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
@@ -117,6 +158,18 @@ $(LIB_BASE_GUI): $(BASE_GUI_CMIFILES) $(BASE_GUI_CMXFILES)
 $(LIB_BASE_GUI_BYTE): $(BASE_GUI_CMIFILES) $(BASE_GUI_CMOFILES)
 	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(BASE_GUI_CMOFILES)
 
+
+$(LIB_GRDF): $(GRDF_CMIFILES) $(GRDF_CMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(GRDF_CMXFILES)
+$(LIB_GRDF_BYTE): $(GRDF_CMIFILES) $(GRDF_CMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_CMOFILES)
+
+$(LIB_GRDF_GUI): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMXFILES)
+$(LIB_GRDF_GUI_BYTE): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
+
+
 KO='\033[1;31m'"*KO\033[1m\033[0m"
 OK='\033[1;32m'"OK\033[1m\033[0m"
 
@@ -124,6 +177,7 @@ OK='\033[1;32m'"OK\033[1m\033[0m"
 # Documentation :
 #################
 dump.odoc: base/*.ml base/*.mli \
+	grdf/*.ml grdf/*.mli
 	driver/*.ml driver/*.mli
 	$(OCAMLDOCOPT) \
 	-v \
@@ -164,6 +218,7 @@ clean: dummy
 	$(RM) $(GENERATED_FILES)
 	(cd base && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd driver && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
+	(cd grdf && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 
 
 .depend depend:
@@ -171,6 +226,7 @@ clean: dummy
 	$(OCAMLDEP) $(MY_INCLUDES) \
 	base/*.ml base/*.mli \
 	driver/*.ml driver/*.mli \
+	grdf/*.ml grdf/*.mli \
 	  > .depend
 
 alldepend: $(GENERATED_FILES)
