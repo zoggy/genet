@@ -4,8 +4,15 @@ Misc
 Version
 }
 
+{2 Semantic web modules (in [grdf/])}
+{!modules:
+Grdfs
+Grdf_init
+}
+
 {2 Application modules (in [driver/])}
 {!modules:
 Main
+Main_genrdfs
 Options
 }

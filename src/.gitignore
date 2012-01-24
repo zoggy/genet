@@ -3,4 +3,5 @@ ocamldoc
 base/version.ml
 genet
 genet.byte
+genet-genrdfs*
 dump.odoc

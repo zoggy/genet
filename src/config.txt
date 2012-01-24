@@ -1,4 +1,5 @@
 project_name = "Genet-test"
+project_id = "genet-test"
 db = {
   name = genet
   user = guesdon

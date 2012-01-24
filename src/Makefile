@@ -23,8 +23,8 @@ LINKFLAGS_BYTE=$(INCLUDES)
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET)
-TOOLS_BYTE=$(GENET_BYTE)
+TOOLS=$(GENET) $(GENRDFS)
+TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE)
 
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
@@ -93,6 +93,7 @@ LIB_GRDF_CMI=$(LIB_GRDF:.cmxa=.cmi)
 LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
 
 GRDF_CMXFILES=grdf/grdf_constant.cmx \
+	grdf/grdfs.cmx \
 	grdf/grdf_init.cmx
 
 #	grdf/constant.cmx \
@@ -131,6 +132,12 @@ GENET_CMXFILES=	driver/options.cmx \
 GENET_CMOFILES=$(GENET_CMXFILES:.cmx=.cmo)
 GENET_CMIFILES=$(GENET_CMXFILES:.cmx=.cmi)
 
+# Genet-genrdfs files
+GENRDFS_CMXFILES= driver/options.cmx \
+	driver/main_genrdfs.cmx
+GENRDFS_CMOFILES=$(GENRDFS_CMXFILES:.cmx=.cmo)
+GENRDFS_CMIFILES=$(GENRDFS_CMXFILES:.cmx=.cmi)
+
 opt: libs tools
 all: opt byte
 byte: libs_byte tools_byte
@@ -145,6 +152,14 @@ $(GENET): $(LIB_BASE)	$(LIB_GRDF) $(GENET_CMXFILES)
 	$(RDF_LIBS)	$^
 
 $(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_CMOFILES)
+	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
+	$(RDF_LIBS_BYTE) $^
+
+$(GENRDFS): $(LIB_BASE)	$(LIB_GRDF) $(GENRDFS_CMXFILES)
+	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
+	$(RDF_LIBS)	$^
+
+$(GENRDFS_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENRDFS_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
@@ -177,7 +192,7 @@ OK='\033[1;32m'"OK\033[1m\033[0m"
 # Documentation :
 #################
 dump.odoc: base/*.ml base/*.mli \
-	grdf/*.ml grdf/*.mli
+	grdf/*.ml grdf/*.mli \
 	driver/*.ml driver/*.mli
 	$(OCAMLDOCOPT) \
 	-v \
