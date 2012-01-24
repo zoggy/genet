@@ -1,10 +1,7 @@
 (** Main module of the program generating the RDFschema of genet. *)
 
 
-let add_stmt world model ~sub ~pred ~obj =
-  Rdf_model.add_statement model
-  (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
-;;
+let add_stmt = Grdfs.add_stmt;;
 
 let add_isdefined_by_genet world model sub =
   let pred = Rdf_node.new_from_uri_string world (Grdfs.rdfs_"isDefinedBy") in
@@ -24,10 +21,7 @@ let add_comment world model sub label =
   add_stmt world model ~sub ~pred ~obj
 ;;
 
-let add_type world model ~sub ~obj =
-  let pred = Rdf_node.new_from_uri_string world (Grdfs.rdf_"type") in
-  add_stmt world model ~sub ~pred ~obj
-;;
+let add_type = Grdfs.add_type;;
 
 let add_istype_class world model sub =
   let obj = Rdf_node.new_from_uri_string world (Grdfs.rdfs_"Class") in

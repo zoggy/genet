@@ -28,7 +28,15 @@ let genet_produces = genet_"produces";;
 let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
 
+let add_stmt world model ~sub ~pred ~obj =
+  Rdf_model.add_statement model
+  (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
+;;
 
+let add_type world model ~sub ~obj =
+  let pred = Rdf_node.new_from_uri_string world (rdf_"type") in
+  add_stmt world model ~sub ~pred ~obj
+;;
 
 (** {2 Uris of manipulated elements} *)
 

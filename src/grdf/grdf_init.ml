@@ -19,5 +19,10 @@ let open_storage config =
         Rdf_storage.new_storage world
         ~options ~factory: "mysql" ~name: "genet"
   in
-  (storage, world)
+  let model = Rdf_model.new_model world storage in
+  (model, world)
+;;
+
+let init world model pref =
+  ignore(Grdf_tools.add_tool world model pref "Tool1")
 ;;

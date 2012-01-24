@@ -94,6 +94,7 @@ LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
 
 GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/grdfs.cmx \
+	grdf/grdf_tools.cmx \
 	grdf/grdf_init.cmx
 
 #	grdf/constant.cmx \
