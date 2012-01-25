@@ -15,5 +15,6 @@ Grdf_tools
 {!modules:
 Main
 Main_genrdfs
+Main_query
 Options
 }

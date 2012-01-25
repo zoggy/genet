@@ -1,4 +1,4 @@
-(** *)
+(** Main module of the genet-query program.*)
 
 open Grdf_tools;;
 
