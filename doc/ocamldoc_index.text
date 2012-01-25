@@ -1,5 +1,6 @@
 {2 Base modules (in [base/])}
 {!modules:
+Config
 Misc
 Version
 }

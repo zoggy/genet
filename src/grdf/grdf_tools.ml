@@ -1,14 +1,30 @@
 (** *)
 
 open Grdf_types;;
-
+open Rdf_sparql;;
 type t = { tool_name : string ; tool_uri : string ; }
 
 let tools wld =
+  let query = Select
+    { select_proj = ["name" ; "uri"] ;
+      select_distinct = None ;
+      select_where = (
+       [ (`V "uri",
+          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_tool ] ;
+            `I Grdfs.genet_name, [ `V "name" ]
+          ]
+         )
+       ], None)
+    }
+  in
+  let query = Rdf_sparql.string_of_query query in
+  prerr_endline query;
+(*
   let query = Printf.sprintf
     "SELECT ?name ?uri WHERE { ?uri <%s> <%s> . ?uri <%s> ?name }"
     Grdfs.rdf_type Grdfs.genet_tool Grdfs.genet_name
   in
+*)
   let q = Rdf_query.new_query ~name: "sparql" wld.wld_world ~query in
   try
     let qr = Rdf_model.query_execute wld.wld_model q in
