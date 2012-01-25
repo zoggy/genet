@@ -8,6 +8,7 @@ Version
 {!modules:
 Grdfs
 Grdf_init
+Grdf_tools
 }
 
 {2 Application modules (in [driver/])}
