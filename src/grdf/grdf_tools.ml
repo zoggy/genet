@@ -6,7 +6,7 @@ open Rdf_sparql;;
 type t = { tool_name : string ; tool_uri : string ; }
 
 let tools wld =
-  let query = Select
+  let query =
     { select_proj = ["name" ; "uri"] ;
       select_distinct = None ;
       select_where = (
@@ -18,37 +18,25 @@ let tools wld =
        ], None)
     }
   in
-  let query = Rdf_sparql.string_of_query query in
+
 (*
   let query = Printf.sprintf
     "SELECT ?name ?uri WHERE { ?uri <%s> <%s> . ?uri <%s> ?name }"
     Grdfs.rdf_type Grdfs.genet_tool Grdfs.genet_name
   in
 *)
-  let q = Rdf_query.new_query ~name: "sparql" wld.wld_world ~query in
-  try
-    let qr = Rdf_model.query_execute wld.wld_model q in
-    let rec iter acc =
-      if Rdf_query_results.finished qr then
-        acc
-      else
-        (
-         let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-         let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
-         match name, uri with
-           None, _ | _, None -> iter acc
-         | Some name, Some uri ->
-             match Rdf_node.get_literal_value name, Rdf_node.get_uri uri with
-               None, _ | _, None -> iter acc
-             | Some name, Some uri ->
-                 ignore(Rdf_query_results.next qr);
-                 iter ({ tool_name = name ; tool_uri = Rdf_uri.as_string uri} :: acc)
-        )
-    in
-    iter []
-  with
-    Rdf_query_results.Query_results_creation_failed _ ->
-      failwith ("Query failed: "^query)
+  let f acc qr =
+    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
+    let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
+    match name, uri with
+      None, _ | _, None -> acc
+    | Some name, Some uri ->
+        match Rdf_node.get_literal_value name, Rdf_node.get_uri uri with
+          None, _ | _, None -> acc
+        | Some name, Some uri ->
+            { tool_name = name ; tool_uri = Rdf_uri.as_string uri} :: acc
+  in
+  Rdf_sparql.select_and_map wld.wld_world wld.wld_model query f
 ;;
 
 let get_tool wld uri =

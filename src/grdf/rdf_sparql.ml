@@ -134,3 +134,24 @@ let string_of_query = function
 | Ask q -> string_of_ask q
 | Describe q -> string_of_describe q
 ;;
+
+let select_and_map world model query f =
+  let query = string_of_select query in
+  let q = Rdf_query.new_query ~name: "sparql" world ~query in
+  try
+    let qr = Rdf_model.query_execute model q in
+    let rec iter acc =
+      if Rdf_query_results.finished qr then
+        List.rev acc
+      else
+        (
+         let acc = f acc qr in
+         ignore(Rdf_query_results.next qr);
+         iter acc
+        )
+    in
+    iter []
+  with
+    Rdf_query_results.Query_results_creation_failed _ ->
+      failwith ("Query failed: "^query)
+;;

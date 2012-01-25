@@ -30,8 +30,9 @@ let open_storage config =
   }
 ;;
 
+let _ = Random.self_init();;
 let init wld pref =
-  ignore(Grdf_tools.add_tool wld pref "Tool1")
+  ignore(Grdf_tools.add_tool wld pref (Printf.sprintf "Tool%d" (Random.int 1000)))
 ;;
 
 let close wld = Rdf_init.free wld.wld_world;;
