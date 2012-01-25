@@ -1,5 +1,6 @@
 (** Creating storage. *)
 
-val open_storage : Config.t -> (Rdf_types.model * Rdf_types.world)
+val open_storage : Config.t -> Grdf_types.world
 
-val init : Rdf_types.world -> Rdf_types.model -> string -> unit
+val init : Grdf_types.world -> string -> unit
+val close : Grdf_types.world -> unit

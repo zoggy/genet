@@ -4,4 +4,5 @@ base/version.ml
 genet
 genet.byte
 genet-genrdfs*
+genet-query*
 dump.odoc

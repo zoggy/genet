@@ -23,8 +23,8 @@ LINKFLAGS_BYTE=$(INCLUDES)
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET) $(GENRDFS)
-TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE)
+TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY)
+TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE)
 
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
@@ -93,6 +93,7 @@ LIB_GRDF_CMI=$(LIB_GRDF:.cmxa=.cmi)
 LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
 
 GRDF_CMXFILES=grdf/grdf_constant.cmx \
+	grdf/grdf_types.cmx \
 	grdf/grdfs.cmx \
 	grdf/grdf_tools.cmx \
 	grdf/grdf_init.cmx
@@ -139,6 +140,12 @@ GENRDFS_CMXFILES= driver/options.cmx \
 GENRDFS_CMOFILES=$(GENRDFS_CMXFILES:.cmx=.cmo)
 GENRDFS_CMIFILES=$(GENRDFS_CMXFILES:.cmx=.cmi)
 
+# Genet-query files
+GENET_QUERY_CMXFILES=	driver/options.cmx \
+	driver/main_query.cmx
+GENET_QUERY_CMOFILES=$(GENET_QUERY_CMXFILES:.cmx=.cmo)
+GENET_QUERY_CMIFILES=$(GENET_QUERY_CMXFILES:.cmx=.cmi)
+
 opt: libs tools
 all: opt byte
 byte: libs_byte tools_byte
@@ -161,6 +168,14 @@ $(GENRDFS): $(LIB_BASE)	$(LIB_GRDF) $(GENRDFS_CMXFILES)
 	$(RDF_LIBS)	$^
 
 $(GENRDFS_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENRDFS_CMOFILES)
+	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
+	$(RDF_LIBS_BYTE) $^
+
+$(GENET_QUERY): $(LIB_BASE)	$(LIB_GRDF) $(GENET_QUERY_CMXFILES)
+	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
+	$(RDF_LIBS)	$^
+
+$(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
@@ -242,7 +257,7 @@ clean: dummy
 	$(OCAMLDEP) $(MY_INCLUDES) \
 	base/*.ml base/*.mli \
 	driver/*.ml driver/*.mli \
-	grdf/*.ml grdf/*.mli \
+	grdf/*.ml grdf/grdf*.mli \
 	  > .depend
 
 alldepend: $(GENERATED_FILES)
@@ -261,7 +276,6 @@ distrib: all
 	$(MKDIR) $(DISTRIB_DIR)/manual
 	$(MKDIR) $(DISTRIB_DIR)/manual/illustrations
 	$(CP) $(TOOLS) */*.glade $(DISTRIB_DIR)/
-	$(RM) $(DISTRIB_DIR)/$(GENET_COMPILE_TEST)
 	$(CP) $(ROOT)/doc/syndex_manual.pdf \
 	$(ROOT)/doc/syndex_manual*.html \
 	$(ROOT)/doc/ocamldoc_style.css \

@@ -1,6 +1,7 @@
 (** *)
 
 open Config;;
+open Grdf_types;;
 
 let open_storage config =
   let world = Rdf_init.new_world () in
@@ -20,9 +21,17 @@ let open_storage config =
         ~options ~factory: "mysql" ~name: "genet"
   in
   let model = Rdf_model.new_model world storage in
-  (model, world)
+  let rasqal_world = Rdf_rasqal.new_world () in
+  Rdf_rasqal.open_world rasqal_world;
+  { wld_world = world ;
+    wld_model = model ;
+    wld_storage = storage ;
+    wld_rasqal = rasqal_world ;
+  }
 ;;
 
-let init world model pref =
-  ignore(Grdf_tools.add_tool world model pref "Tool1")
+let init wld pref =
+  ignore(Grdf_tools.add_tool wld pref "Tool1")
 ;;
+
+let close wld = Rdf_init.free wld.wld_world;;

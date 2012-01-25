@@ -12,6 +12,8 @@ let owl_ s = "http://www.w3.org/2002/07/owl#" ^ s;;
 let xsd_ s = "http://www.w3.org/2001/XMLSchema#" ^ s;;
 let foaf_ s = "http://xmlns.com/foaf/0.1/" ^ s;;
 
+let rdf_type = rdf_"type";;
+
 let genet_tool = genet_ "Tool";;
 let genet_branch = genet_ "Branch";;
 let genet_intf = genet_ "Interface";;
@@ -34,7 +36,7 @@ let add_stmt world model ~sub ~pred ~obj =
 ;;
 
 let add_type world model ~sub ~obj =
-  let pred = Rdf_node.new_from_uri_string world (rdf_"type") in
+  let pred = Rdf_node.new_from_uri_string world rdf_type in
   add_stmt world model ~sub ~pred ~obj
 ;;
 
