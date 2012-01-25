@@ -15,15 +15,6 @@ and triple_pred = pred_node * triple_obj list
 
 type triple = [ node | `T of triple_pred list ] * triple_pred list
 
-(*  ([ node_a | `T of anon_sub_triple ] *
-   [ node | `T of anon_sub_triple ] list) list*)
-;;
-(*
-type triple =
-  | Tsimple of var_iri * var_iri_a * var_iri
-  | Tcomplex of var_iri option * (var_iri_a * (var_iri list)) list
-;;
-*)
 type group_or_union_graph_pattern =
   [ `Group of group_graph_pattern
   | `Union of group_graph_pattern * group_graph_pattern ]

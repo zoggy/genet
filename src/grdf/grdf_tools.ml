@@ -2,6 +2,7 @@
 
 open Grdf_types;;
 open Rdf_sparql;;
+
 type t = { tool_name : string ; tool_uri : string ; }
 
 let tools wld =
@@ -18,7 +19,6 @@ let tools wld =
     }
   in
   let query = Rdf_sparql.string_of_query query in
-  prerr_endline query;
 (*
   let query = Printf.sprintf
     "SELECT ?name ?uri WHERE { ?uri <%s> <%s> . ?uri <%s> ?name }"
