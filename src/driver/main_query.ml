@@ -5,6 +5,8 @@ open Grdf_tool;;
 type mode =
   | Tools
   | Branches
+  | Versions
+  | Interfaces
 
 let mode = ref None;;
 
@@ -14,7 +16,13 @@ let options =
   ("--tools", Arg.Unit (fun () -> mode := Some Tools), " print tools") ::
 
   ("--branches", Arg.Unit (fun () -> mode := Some Branches),
-   " print branches (all or only the ones of the given parent)") ::
+   " print branches (all or only the ones of the given parents)") ::
+
+  ("--versions", Arg.Unit (fun () -> mode := Some Versions),
+   " print versions (all or only the ones of the given tools or branches)") ::
+
+  ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
+   " print interfaces (all or only the ones of the given tools or branches)") ::
 
   []
 ;;
@@ -43,6 +51,23 @@ let list_branches wld options =
   List.iter print_endline branches
 ;;
 
+let list_versions wld options =
+  let versions =
+    match options.Options.args with
+      [] -> Grdf_version.versions wld
+    | l ->
+        let add set elt = Sset.add elt set in
+        let f set uri =
+          List.fold_left add set (Grdf_version.versions_of ~recur: true wld uri)
+        in
+        let set = List.fold_left f Sset.empty l in
+        Sset.elements set
+  in
+  List.iter print_endline versions
+;;
+
+let list_interfaces wld options = assert false;;
+
 let main () =
   let opts = Options.parse options in
   let config = Config.read_config opts.Options.config_file in
@@ -52,6 +77,8 @@ let main () =
       None -> ()
     | Some Tools -> list_tools rdf_wld
     | Some Branches -> list_branches rdf_wld opts
+    | Some Versions -> list_versions rdf_wld opts
+    | Some Interfaces -> list_interfaces rdf_wld opts
   end;
   Grdf_init.close rdf_wld
 ;;

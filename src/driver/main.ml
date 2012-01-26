@@ -22,6 +22,19 @@ let add_branch config wld options =
   | _ -> failwith "Please give parent uri and name of the new branch"
 ;;
 
+let add_version config wld options =
+  match options.args with
+  | [tool ; name] ->
+      let uri = Grdf_version.add wld ~tool name in
+      print_endline uri
+  | [tool ; parent ; name] ->
+      let uri = Grdf_version.add wld ~tool ~parent name in
+      print_endline uri
+  | _ -> failwith "Please give tool uri, optional branch uri and name of the new version"
+;;
+
+let add_interface config wld options = assert false;;
+
 (** {2 Command-line specification} *)
 
 type mode =
@@ -29,6 +42,8 @@ type mode =
   | Serialize_rdf
   | Add_tool
   | Add_branch
+  | Add_version
+  | Add_interface
 
 let mode = ref None;;
 
@@ -46,9 +61,16 @@ let com_add_branch = {
   }
 ;;
 
+let com_add_version = {
+  com_options = [] ; com_usage = "<tool uri> [<branch uri>] <name>" ;
+  com_kind = Final (set_mode Add_version) ;
+  }
+;;
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
+    "version", com_add_version, "add new version" ;
   ]
 ;;
 
@@ -108,6 +130,8 @@ let main () =
           end
       | Some Add_tool -> add_tool config rdf_wld opts
       | Some Add_branch -> add_branch config rdf_wld opts
+      | Some Add_version -> add_version config rdf_wld opts
+      | Some Add_interface -> add_interface config rdf_wld opts
     with
   Grdf_types.Error e ->
         prerr_endline (Grdf_types.string_of_error e);

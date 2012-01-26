@@ -9,8 +9,13 @@ type world =
 
 type error =
   | Tool_exists of string
-  | Parent_is_not_tool_or_branch
   | Branch_exists of string
+  | Version_exists of string
+  | Interface_exists of string
+  | Parent_is_not_tool_or_branch
+  | Not_a_tool of string
+  | Not_a_version of string
+  | Tool_of_branch_differs of string * string * string
 
 exception Error of error
 

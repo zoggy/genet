@@ -4,7 +4,7 @@ open Grdf_types;;
 open Rdf_sparql;;
 
 let dbg = Misc.create_log_fun
-  ~prefix: "Algo_types"
+  ~prefix: "Grdf_branch"
     "GENET_GRDF_BRANCH_DEBUG_LEVEL"
 ;;
 
@@ -41,14 +41,7 @@ let branches wld =
 let name wld uri =
   dbg ~level: 1 (fun () -> "Grdf_branch.name uri="^uri);
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_name in
-  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
-  if Rdf_iterator.is_at_end iterator then
-    ""
-  else
-    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
-      None -> ""
-    | Some node -> Misc.string_of_opt (Rdf_node.get_literal_value node)
+  Grdfs.name wld source
 ;;
 
 let parent wld uri =
@@ -66,8 +59,7 @@ let parent wld uri =
           None -> None
         | Some uri ->
             let s_uri = Rdf_uri.as_string uri in
-            let tool = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_tool in
-            Some (s_uri, Grdfs.is_a wld.wld_world wld.wld_model ~sub: node ~obj: tool)
+            Some (s_uri, Grdfs.is_a_tool wld node)
 ;;
 
 let subs wld uri =
@@ -144,3 +136,13 @@ let add wld parent name =
       ~obj:  (Rdf_node.new_from_uri_string wld.wld_world uri);
       uri
 ;;
+
+let rec tool wld uri =
+  if Grdfs.is_a_tool wld (Rdf_node.new_from_uri_string wld.wld_world uri)
+  then uri
+  else
+    match parent wld uri with
+      None -> uri
+    | Some (parent, _) -> tool wld parent
+;;
+

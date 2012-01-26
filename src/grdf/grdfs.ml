@@ -3,7 +3,7 @@
 open Grdf_types;;
 
 let dbg = Misc.create_log_fun
-  ~prefix: "Algo_types"
+  ~prefix: "Grdfs"
     "GENET_GRDFS_DEBUG_LEVEL"
 ;;
 
@@ -84,6 +84,8 @@ let is_a_ uri =
 
 let is_a_tool = is_a_ genet_tool;;
 let is_a_branch = is_a_ genet_branch;;
+let is_a_version = is_a_ genet_version;;
+let is_a_intf = is_a_ genet_intf;;
 
 let add_name wld sub name =
   let pred = Rdf_node.new_from_uri_string wld.wld_world genet_name in
@@ -92,4 +94,40 @@ let add_name wld sub name =
   add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
 ;;
 
+let name wld source =
+  let arc = Rdf_node.new_from_uri_string wld.wld_world genet_name in
+  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
+  if Rdf_iterator.is_at_end iterator then
+    ""
+  else
+    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
+      None -> ""
+    | Some node -> Misc.string_of_opt (Rdf_node.get_literal_value node)
+;;
 
+let source_uri wld pred target =
+  let arc = Rdf_node.new_from_uri_string wld.wld_world pred in
+  let iterator = Rdf_model.get_sources wld.wld_model ~target ~arc in
+  if Rdf_iterator.is_at_end iterator then
+    None
+  else
+    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
+      None -> None
+    | Some node ->
+        match Rdf_node.get_uri node with
+          None -> None
+        | Some uri -> Some (Rdf_uri.as_string uri)
+;;
+
+let target_uris wld source pred =
+  let arc = Rdf_node.new_from_uri_string wld.wld_world pred in
+  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
+  let f acc node =
+    match Rdf_node.get_uri node with
+      None -> acc
+    | Some uri ->
+        let s_uri = Rdf_uri.as_string uri in
+        s_uri :: acc
+  in
+  Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
+;;

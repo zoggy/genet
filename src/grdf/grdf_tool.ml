@@ -3,6 +3,12 @@
 open Grdf_types;;
 open Rdf_sparql;;
 
+
+let dbg = Misc.create_log_fun
+  ~prefix: "Grdf_tool"
+    "GENET_GRDF_TOOL_DEBUG_LEVEL"
+;;
+
 type t = { tool_name : string ; tool_uri : string ; }
 
 let tools wld =
@@ -37,6 +43,12 @@ let tools wld =
             { tool_name = name ; tool_uri = Rdf_uri.as_string uri} :: acc
   in
   Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f
+;;
+
+let name wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_tool.name uri="^uri);
+  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  Grdfs.name wld source
 ;;
 
 let get_tool wld uri =
