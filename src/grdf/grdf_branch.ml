@@ -138,6 +138,7 @@ let add wld parent name =
 ;;
 
 let rec tool wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_branch.tool uri="^uri);
   if Grdfs.is_a_tool wld (Rdf_node.new_from_uri_string wld.wld_world uri)
   then uri
   else
