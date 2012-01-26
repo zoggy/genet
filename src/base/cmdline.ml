@@ -38,7 +38,7 @@ let make_help_msg path options com_usage = function
     let usage = Printf.sprintf "Usage: %s [options] %s\nwhere options are:"
       (String.concat " " path) com_usage
     in
-    Arg.usage_string options usage
+    Arg.usage_string (Arg.align options) usage
 | Commands coms ->
     let usage = Printf.sprintf
       "Usage: %s [options] <command>\nwhere command can be:\n%s\n\nand options are:"
@@ -50,47 +50,53 @@ let make_help_msg path options com_usage = function
        )
       )
     in
-    Arg.usage_string options usage
+    Arg.usage_string (Arg.align options) usage
 ;;
 
 exception My_help of string;;
+exception Missing_command of string list;;
+exception Stop_parse of (unit -> unit);;
 
 let parse com =
   let remaining = ref [] in
-  let current = ref 0 in
   let rec iter ?(path=[]) ?(options=[]) ?(argv=Sys.argv) com =
+    let current = ref 0 in
     let path = path @ [argv.(0)] in
-(*    prerr_endline
+(*
+    prerr_endline
     (Printf.sprintf "iter argv=%s"
       (String.concat " " (Array.to_list argv)));
     prerr_endline (Printf.sprintf "path=%s" (String.concat "/" path));
+    prerr_endline (Printf.sprintf "current=%d" !current);
 *)
     let options = merge_options ~options ~more: com.com_options in
-    let anon_fun =
+    try
       match com.com_kind with
-        Final _ -> (fun s -> remaining := s :: !remaining)
-      | Commands subs ->
-          let f s =
+        Final f ->
+          let anon_fun s = remaining := s :: !remaining in
+          Arg.parse_argv ~current argv options anon_fun com.com_usage;
+          f ()
+        | Commands subs ->
+          let anon_fun s =
             try
               let (_,com,_) = List.find (fun (name,_,_) -> s = name) subs in
-              iter ~path ~options
-              ~argv: (Array.sub argv !current (Array.length argv - !current))
-              com
+              let argv =
+                Array.sub argv !current (Array.length argv - !current)
+              in
+              let f () = iter ~path ~options ~argv com in
+              raise (Stop_parse f)
             with Not_found ->
-              raise (No_such_command (path @ [s]))
+                raise (No_such_command (path @ [s]))
           in
-          f
-    in
-    current := 0;
-    begin
-      try Arg.parse_argv ~current argv options anon_fun com.com_usage;
-      with Arg.Help _ ->
-          let msg = make_help_msg path options com.com_usage com.com_kind in
-          raise (My_help msg)
-    end;
-    match com.com_kind with
-      Final f -> f ()
-    | _ -> ()
+          try
+            Arg.parse_argv ~current argv options anon_fun com.com_usage;
+            raise (Missing_command path)
+          with
+            Stop_parse f -> f ()
+    with
+      Arg.Help _ ->
+        let msg = make_help_msg path options com.com_usage com.com_kind in
+        raise (My_help msg)
   in
   try iter com
   with
@@ -98,5 +104,7 @@ let parse com =
   | My_help s -> prerr_endline s; exit 0
   | No_such_command path ->
       failwith (Printf.sprintf "No such command: %s" (String.concat " " path))
+  | Missing_command path ->
+      failwith (Printf.sprintf "%s: please give a subcommand" (String.concat " " path))
 ;;
 
