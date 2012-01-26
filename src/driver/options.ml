@@ -49,6 +49,6 @@ let parse options =
 ;;
 
 let parse_command com =
-  Cmdline.parse com ;
+  remaining := Cmdline.parse com ;
   build_option_values ()
 ;;

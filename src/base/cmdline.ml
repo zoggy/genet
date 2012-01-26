@@ -98,7 +98,7 @@ let parse com =
         let msg = make_help_msg path options com.com_usage com.com_kind in
         raise (My_help msg)
   in
-  try iter com
+  try iter com; !remaining
   with
     Arg.Bad s -> failwith s
   | My_help s -> prerr_endline s; exit 0

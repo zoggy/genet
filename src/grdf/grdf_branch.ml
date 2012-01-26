@@ -3,9 +3,15 @@
 open Grdf_types;;
 open Rdf_sparql;;
 
+let dbg = Misc.create_log_fun
+  ~prefix: "Algo_types"
+    "GENET_GRDF_BRANCH_DEBUG_LEVEL"
+;;
+
 type t = { bch_name : string ; bch_uri : string ; }
 
 let branches wld =
+  dbg ~level: 1 (fun () -> "Grdf_branch.branches");
   let query =
     { select_proj = ["name" ; "uri"] ;
       select_distinct = None ;
@@ -33,6 +39,7 @@ let branches wld =
 ;;
 
 let name wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_branch.name uri="^uri);
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
   let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_name in
   let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
@@ -45,6 +52,7 @@ let name wld uri =
 ;;
 
 let parent wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_branch.parent uri="^uri);
   let target = Rdf_node.new_from_uri_string wld.wld_world uri in
   let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch in
   let iterator = Rdf_model.get_sources wld.wld_model ~target ~arc in
@@ -63,6 +71,7 @@ let parent wld uri =
 ;;
 
 let subs wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_branch.subs uri="^uri);
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
   let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch in
   let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
@@ -75,6 +84,7 @@ let subs wld uri =
 ;;
 
 let branch_exists wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_branch.branch_exists uri="^uri);
   let query =
     { select_proj = ["name"] ;
       select_distinct = None ;
@@ -102,6 +112,7 @@ let branch_exists wld uri =
 ;;
 
 let do_add wld uri name =
+  dbg ~level: 1 (fun () -> "Grdf_branch.do_add uri="^uri^" name="^name);
   let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
   let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_branch in
   Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
@@ -109,12 +120,14 @@ let do_add wld uri name =
 ;;
 
 let add wld parent name =
+  dbg ~level: 1 (fun () -> "Grdf_branch.add parent="^parent^" name="^name);
   let node_parent = Rdf_node.new_from_uri_string wld.wld_world parent in
   let parent_is_tool = Grdfs.is_a_tool wld node_parent in
   let parent_is_branch = Grdfs.is_a_branch wld node_parent in
   if not (parent_is_tool || parent_is_branch) then
     Grdf_types.error Grdf_types.Parent_is_not_tool_or_branch;
 
+  dbg ~level:2 (fun () -> "parent is ok");
   let uri =
     (if parent_is_tool
      then Grdfs.uri_branch_from_parent_tool
@@ -123,5 +136,5 @@ let add wld parent name =
   in
   match branch_exists wld uri with
     Some name -> Grdf_types.error (Grdf_types.Branch_exists name)
-  | None -> do_add wld uri name
+  | None -> do_add wld uri name; uri
 ;;

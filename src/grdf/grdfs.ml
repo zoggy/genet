@@ -2,6 +2,11 @@
 
 open Grdf_types;;
 
+let dbg = Misc.create_log_fun
+  ~prefix: "Algo_types"
+    "GENET_GRDFS_DEBUG_LEVEL"
+;;
+
 (** {2 Vocabulary} *)
 
 let genet = "http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf";;
@@ -62,13 +67,17 @@ let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" pa
 (** {2 Utilities} *)
 
 let is_a world model ~sub ~obj =
+  dbg ~level: 1 (fun () -> "Grdfs.is_a");
   let pred = Rdf_node.new_from_uri_string world rdf_type in
-  Rdf_model.contains_statement model
-    (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
+  let stmt = Rdf_statement.new_from_nodes world ~sub ~pred ~obj in
+  dbg ~level: 2 (fun () -> "contains_statement ?");
+  let stream = Rdf_model.find_statements model stmt in
+  not (Rdf_stream.is_at_end stream)
 ;;
 
 let is_a_ uri =
   fun wld sub ->
+    dbg ~level: 1 (fun () -> "Grdfs.is_a_ uri="^uri);
     let obj = Rdf_node.new_from_uri_string wld.wld_world uri in
     is_a wld.wld_world wld.wld_model ~sub ~obj
 ;;
