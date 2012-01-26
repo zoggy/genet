@@ -143,6 +143,6 @@ let rec tool wld uri =
   else
     match parent wld uri with
       None -> uri
-    | Some (parent, _) -> tool wld parent
+    | Some (parent, is_tool) -> if is_tool then parent else tool wld parent
 ;;
 
