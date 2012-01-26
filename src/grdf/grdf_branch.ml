@@ -136,5 +136,11 @@ let add wld parent name =
   in
   match branch_exists wld uri with
     Some name -> Grdf_types.error (Grdf_types.Branch_exists name)
-  | None -> do_add wld uri name; uri
+  | None ->
+      do_add wld uri name;
+      Grdfs.add_stmt wld.wld_world wld.wld_model
+      ~sub: node_parent
+      ~pred: (Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch)
+      ~obj:  (Rdf_node.new_from_uri_string wld.wld_world uri);
+      uri
 ;;

@@ -67,3 +67,5 @@ let add_tool wld pref name =
       Grdfs.add_name wld sub name;
       get_tool wld uri
 ;;
+
+let branches wld uri = Grdf_branch.subs wld uri;;

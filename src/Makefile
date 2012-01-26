@@ -52,6 +52,7 @@ LIB_BASE_CMI=$(LIB_BASE:.cmxa=.cmi)
 LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
 
 BASE_CMXFILES=base/version.cmx \
+	base/sset.cmx \
 	base/misc.cmx \
 	base/config.cmx \
 	base/cmdline.cmx

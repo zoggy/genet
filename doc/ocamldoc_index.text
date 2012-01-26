@@ -1,5 +1,6 @@
 {2 Base modules (in [base/])}
 {!modules:
+Cmdline
 Config
 Misc
 Version
@@ -11,6 +12,7 @@ Grdfs
 Grdf_branch
 Grdf_init
 Grdf_tool
+Grdf_types
 }
 
 {2 Application modules (in [driver/])}
