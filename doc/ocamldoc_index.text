@@ -8,8 +8,9 @@ Version
 {2 Semantic web modules (in [grdf/])}
 {!modules:
 Grdfs
+Grdf_branch
 Grdf_init
-Grdf_tools
+Grdf_tool
 }
 
 {2 Application modules (in [driver/])}

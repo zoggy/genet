@@ -1,6 +1,6 @@
 (** Main module of the genet-query program.*)
 
-open Grdf_tools;;
+open Grdf_tool;;
 
 type mode =
   | Tools
@@ -15,7 +15,7 @@ let options =
 ;;
 
 let list_tools wld =
-  let tools = Grdf_tools.tools wld in
+  let tools = Grdf_tool.tools wld in
   List.iter
   (fun t ->
     print_endline (Printf.sprintf "%s <%s>" t.tool_name t.tool_uri)

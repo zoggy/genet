@@ -1,4 +1,4 @@
-(** Creating storage. *)
+(** Creating model. *)
 
 val open_storage : Config.t -> Grdf_types.world
 
