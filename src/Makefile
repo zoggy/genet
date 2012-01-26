@@ -101,7 +101,8 @@ GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/grdf_branch.cmx \
 	grdf/grdf_version.cmx \
 	grdf/grdf_tool.cmx \
-	grdf/grdf_init.cmx
+	grdf/grdf_init.cmx \
+	grdf/grdf_dot.cmx
 
 #	grdf/constant.cmx \
 #	grdf/grdf_types.cmx \

@@ -7,9 +7,8 @@ let add_tool config wld options =
   match options.args with
   | [name] ->
       begin
-        match Grdf_tool.add_tool wld config.Config.uri_prefix name with
-          None -> exit 1
-        | Some t -> print_endline t.Grdf_tool.tool_uri
+        let uri = Grdf_tool.add_tool wld config.Config.uri_prefix name in
+        print_endline uri
       end
   | _ -> failwith "Please give one tool name"
 ;;

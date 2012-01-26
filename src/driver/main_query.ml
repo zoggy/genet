@@ -7,6 +7,7 @@ type mode =
   | Branches
   | Versions
   | Interfaces
+  | Dot
 
 let mode = ref None;;
 
@@ -24,16 +25,15 @@ let options =
   ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
    " print interfaces (all or only the ones of the given tools or branches)") ::
 
+  ("--dot", Arg.Unit (fun () -> mode := Some Dot),
+   " print graph in graphviz format") ::
+
   []
 ;;
 
 let list_tools wld =
   let tools = Grdf_tool.tools wld in
-  List.iter
-  (fun t ->
-    print_endline (Printf.sprintf "%s <%s>" t.tool_name t.tool_uri)
-  )
-  tools
+  List.iter print_endline tools
 ;;
 
 let list_branches wld options =
@@ -68,6 +68,8 @@ let list_versions wld options =
 
 let list_interfaces wld options = assert false;;
 
+let dot wld = print_endline (Grdf_dot.dot wld);;
+
 let main () =
   let opts = Options.parse options in
   let config = Config.read_config opts.Options.config_file in
@@ -79,6 +81,7 @@ let main () =
     | Some Branches -> list_branches rdf_wld opts
     | Some Versions -> list_versions rdf_wld opts
     | Some Interfaces -> list_interfaces rdf_wld opts
+    | Some Dot -> dot rdf_wld
   end;
   Grdf_init.close rdf_wld
 ;;
