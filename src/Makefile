@@ -53,7 +53,8 @@ LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
 
 BASE_CMXFILES=base/version.cmx \
 	base/misc.cmx \
-	base/config.cmx
+	base/config.cmx \
+	base/cmdline.cmx
 
 #	base/constant.cmx \
 #	base/base_types.cmx \

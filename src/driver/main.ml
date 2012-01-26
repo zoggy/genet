@@ -1,21 +1,47 @@
 (** Main module of genet tool. *)
 
+open Cmdline;;
+
 type mode =
   | Init
   | Serialize_rdf
 
 let mode = ref None;;
 
-let options =
+let com_serialize = {
+  com_options = [ Options.option_ntriples ; Options.option_rdfxml ] ;
+  com_usage = "" ;
+  com_kind = Final (fun () -> mode := Some Serialize_rdf) ;
+  }
+;;
+
+let com_init = {
+  com_options = [] ;
+  com_usage = "" ;
+  com_kind = Final (fun () -> mode := Some Init)
+  }
+;;
+
+
+let common_options =
     Options.option_version "Genet" ::
     Options.option_config ::
-    ("--init", Arg.Unit (fun () -> mode := Some Init), " init directory and database") ::
-    ("--serialize-rdf", Arg.Unit (fun () -> mode := Some Serialize_rdf), " print rdf model") ::
     []
 ;;
 
+let commands = [
+    "init", com_init, "init directory and database" ;
+    "serialize-rdf", com_serialize, "print rdf model" ;
+  ];;
+
+let command = {
+  com_options = common_options ;
+  com_usage = "[arguments]" ;
+  com_kind = Commands commands
+  }
+
 let main () =
-  let opts = Options.parse options in
+  let opts = Options.parse_command command in
   let config = Config.read_config opts.Options.config_file in
   prerr_endline (Config.string_of_config config);
   let rdf_wld = Grdf_init.open_storage config in

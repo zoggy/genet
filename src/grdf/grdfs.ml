@@ -1,5 +1,7 @@
 (** *)
 
+open Grdf_types;;
+
 (** {2 Vocabulary} *)
 
 let genet = "http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf";;
@@ -47,3 +49,38 @@ let uri_tool ~pref ~tool =
 
 let uri_chain ~pref ~chain =
   Printf.sprintf "%s/chains/%s" pref chain;;
+
+let uri_version ~tool ~version =
+  Printf.sprintf "%s/versions/%s" tool version;;
+
+let uri_intf ~tool ~intf =
+  Printf.sprintf "%s/interfaces/%s" tool intf;;
+
+let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
+let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
+
+(** {2 Utilities} *)
+
+let is_a world model ~sub ~obj =
+  let pred = Rdf_node.new_from_uri_string world rdf_type in
+  Rdf_model.contains_statement model
+    (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
+;;
+
+let is_a_ uri =
+  fun wld sub ->
+    let obj = Rdf_node.new_from_uri_string wld.wld_world uri in
+    is_a wld.wld_world wld.wld_model ~sub ~obj
+;;
+
+let is_a_tool = is_a_ genet_tool;;
+let is_a_branch = is_a_ genet_branch;;
+
+let add_name wld sub name =
+  let pred = Rdf_node.new_from_uri_string wld.wld_world genet_name in
+  (* FIXME convert to UTF 8 ?*)
+  let obj = Rdf_node.new_from_literal wld.wld_world name in
+  add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
+;;
+
+

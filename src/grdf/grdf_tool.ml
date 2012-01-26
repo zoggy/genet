@@ -36,7 +36,7 @@ let tools wld =
         | Some name, Some uri ->
             { tool_name = name ; tool_uri = Rdf_uri.as_string uri} :: acc
   in
-  Rdf_sparql.select_and_map wld.wld_world wld.wld_model query f
+  Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f
 ;;
 
 let get_tool wld uri =
@@ -56,19 +56,14 @@ let get_tool wld uri =
   | Some name -> Some { tool_name = name ; tool_uri = uri }
 ;;
 
-exception Tool_exists of string;;
-
 let add_tool wld pref name =
   let uri = Grdfs.uri_tool ~pref ~tool: name in
   match get_tool wld uri with
-    Some t -> raise (Tool_exists t.tool_name)
+    Some t -> Grdf_types.error (Grdf_types.Tool_exists t.tool_name)
   | None ->
       let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
       let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_tool in
       Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
-      let pred = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_name in
-      (* FIXME convert to UTF 8*)
-      let obj = Rdf_node.new_from_literal wld.wld_world name in
-      Grdfs.add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj;
+      Grdfs.add_name wld sub name;
       get_tool wld uri
 ;;

@@ -135,7 +135,7 @@ let string_of_query = function
 | Describe q -> string_of_describe q
 ;;
 
-let select_and_map world model query f =
+let select_and_fold world model query f =
   let query = string_of_select query in
   let q = Rdf_query.new_query ~name: "sparql" world ~query in
   try
