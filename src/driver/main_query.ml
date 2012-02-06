@@ -66,7 +66,20 @@ let list_versions wld options =
   List.iter print_endline versions
 ;;
 
-let list_interfaces wld options = assert false;;
+let list_interfaces wld options =
+  let intfs =
+    match options.Options.args with
+      [] -> Grdf_intf.intfs wld
+    | l ->
+        let add set elt = Sset.add elt set in
+        let f set uri =
+          List.fold_left add set (Grdf_intf.intfs_of ~recur: true wld uri)
+        in
+        let set = List.fold_left f Sset.empty l in
+        Sset.elements set
+  in
+  List.iter print_endline intfs
+;;
 
 let dot wld = print_endline (Grdf_dot.dot wld);;
 

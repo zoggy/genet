@@ -111,13 +111,13 @@ let do_add wld uri name =
   Grdfs.add_name wld sub name
 ;;
 
-let add wld parent name =
+let add wld ~parent name =
   dbg ~level: 1 (fun () -> "Grdf_branch.add parent="^parent^" name="^name);
   let node_parent = Rdf_node.new_from_uri_string wld.wld_world parent in
   let parent_is_tool = Grdfs.is_a_tool wld node_parent in
   let parent_is_branch = Grdfs.is_a_branch wld node_parent in
   if not (parent_is_tool || parent_is_branch) then
-    Grdf_types.error Grdf_types.Parent_is_not_tool_or_branch;
+    Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
   dbg ~level:2 (fun () -> "parent is ok");
   let uri =

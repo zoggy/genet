@@ -94,7 +94,7 @@ let add wld ~tool ?(parent=tool) name =
     Grdf_types.error (Grdf_types.Not_a_tool tool);
 
   if not (parent_is_tool || parent_is_branch) then
-    Grdf_types.error Grdf_types.Parent_is_not_tool_or_branch;
+    Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
   let root_tool = Grdf_branch.tool wld parent in
   if root_tool <> tool then
@@ -114,7 +114,7 @@ let add wld ~tool ?(parent=tool) name =
 ;;
 
 let versions_of wld ?(recur=false) uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.parent uri="^uri);
+  dbg ~level: 1 (fun () -> "Grdf_branch.versions_of uri="^uri);
   if recur then
     begin
       let add set uri = Sset.add uri set in

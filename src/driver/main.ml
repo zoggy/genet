@@ -32,7 +32,13 @@ let add_version config wld options =
   | _ -> failwith "Please give tool uri, optional branch uri and name of the new version"
 ;;
 
-let add_interface config wld options = assert false;;
+let add_intf config wld options =
+  match options.args with
+  | [parent ; name] ->
+      let uri = Grdf_intf.add wld ~parent name in
+      print_endline uri
+  | _ -> failwith "Please give tool or branch uri and name of the new interface"
+;;
 
 (** {2 Command-line specification} *)
 
@@ -42,7 +48,7 @@ type mode =
   | Add_tool
   | Add_branch
   | Add_version
-  | Add_interface
+  | Add_intf
 
 let mode = ref None;;
 
@@ -66,10 +72,17 @@ let com_add_version = {
   }
 ;;
 
+let com_add_intf = {
+  com_options = [] ; com_usage = "<tool|branch uri> <name>" ;
+  com_kind = Final (set_mode Add_intf) ;
+  }
+;;
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
     "version", com_add_version, "add new version" ;
+    "interface", com_add_intf, "add new interface" ;
   ]
 ;;
 
@@ -130,7 +143,7 @@ let main () =
       | Some Add_tool -> add_tool config rdf_wld opts
       | Some Add_branch -> add_branch config rdf_wld opts
       | Some Add_version -> add_version config rdf_wld opts
-      | Some Add_interface -> add_interface config rdf_wld opts
+      | Some Add_intf -> add_intf config rdf_wld opts
     with
   Grdf_types.Error e ->
         prerr_endline (Grdf_types.string_of_error e);

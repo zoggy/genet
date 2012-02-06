@@ -25,6 +25,13 @@ let gen_branch b wld t =
   (dot_id uri) (String.escaped name)
 ;;
 
+let gen_intf b wld uri =
+  let name = Grdf_intf.name wld uri in
+  Printf.bprintf b
+  "%s [ label=\"%s\", fillcolor=\"olivedrab1\", style=\"filled\", shape=\"octagon\"];\n"
+  (dot_id uri) (String.escaped name)
+;;
+
 let gen_hasbranch b wld uri =
   let l = Grdf_branch.subs wld uri in
   List.iter
@@ -41,17 +48,28 @@ let gen_hasversion b wld uri =
      l
 ;;
 
+let gen_hasintf b wld uri =
+  let l = Grdf_intf.intfs_of wld uri in
+  List.iter
+    (fun uri2 -> Printf.bprintf b "%s -> %s [label=\"hasIntf\"];\n"
+     (dot_id uri) (dot_id uri2))
+     l
+;;
+
 let dot wld =
   let tools = Grdf_tool.tools wld in
   let versions = Grdf_version.versions wld in
   let branches = Grdf_branch.branches wld in
+  let intfs = Grdf_intf.intfs wld in
   let b = Buffer.create 256 in
   Buffer.add_string b "digraph g {\nrankdir=TB;\n";
   List.iter (gen_tool b wld) tools;
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
+  List.iter (gen_intf b wld) intfs;
   List.iter (gen_hasbranch b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
   List.iter (gen_hasversion b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
+  List.iter (gen_hasintf b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
 
   Buffer.add_string b "}\n";
   Buffer.contents b

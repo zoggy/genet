@@ -1,5 +1,7 @@
 (** Types *)
 
+type uri = string
+
 type world =
   { wld_world : Rdf_types.world ;
     wld_model : Rdf_types.model ;
@@ -11,11 +13,11 @@ type error =
   | Tool_exists of string
   | Branch_exists of string
   | Version_exists of string
-  | Interface_exists of string
-  | Parent_is_not_tool_or_branch
-  | Not_a_tool of string
-  | Not_a_version of string
-  | Tool_of_branch_differs of string * string * string
+  | Intf_exists of string
+  | Not_tool_or_branch of uri
+  | Not_a_tool of uri
+  | Not_a_version of uri
+  | Tool_of_branch_differs of uri * uri * uri
 
 exception Error of error
 
