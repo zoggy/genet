@@ -14,6 +14,7 @@ type error =
   | Branch_exists of string
   | Version_exists of string
   | Intf_exists of string
+  | Filetype_exists of string
   | Not_tool_or_branch of uri
   | Not_a_tool of uri
   | Not_a_version of uri

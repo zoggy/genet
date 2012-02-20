@@ -14,6 +14,7 @@ type error =
   | Branch_exists of string
   | Version_exists of string
   | Intf_exists of string
+  | Filetype_exists of string
   | Not_tool_or_branch of uri
   | Not_a_tool of uri
   | Not_a_version of uri
@@ -28,6 +29,7 @@ let string_of_error = function
 | Branch_exists name -> Printf.sprintf "Branch %s already exists." name
 | Version_exists name -> Printf.sprintf "Version %s already exists." name
 | Intf_exists name -> Printf.sprintf "Interface %s already exists." name
+| Filetype_exists name -> Printf.sprintf "Filetype %s already exists." name
 | Not_tool_or_branch uri -> Printf.sprintf "%s is neither a tool nor a branch." uri
 | Not_a_tool uri -> Printf.sprintf "%s is not a tool." uri
 | Not_a_version uri -> Printf.sprintf "%s is not a version." uri

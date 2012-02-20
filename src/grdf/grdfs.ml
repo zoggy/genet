@@ -28,6 +28,8 @@ let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
 
 let genet_name = genet_"name";;
+let genet_desc = dc_"description";;
+let genet_file_ext = genet_"file-extension";;
 let genet_hasbranch = genet_"hasBranch";;
 let genet_nointf = genet_"noInterface";;
 let genet_haspath = genet_"hasPath";;
@@ -61,6 +63,9 @@ let uri_version ~tool ~version =
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/interfaces/%s" tool intf;;
 
+let uri_filetype ~pref name =
+  Printf.sprintf "%s/filetypes/%s" pref name;;
+
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
 
@@ -89,13 +94,29 @@ let is_a_intf = is_a_ genet_intf;;
 
 let add_name wld sub name =
   let pred = Rdf_node.new_from_uri_string wld.wld_world genet_name in
-  (* FIXME convert to UTF 8 ?*)
   let obj = Rdf_node.new_from_literal wld.wld_world name in
+  add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
+;;
+
+let add_desc wld sub desc =
+  let pred = Rdf_node.new_from_uri_string wld.wld_world genet_desc in
+  let obj = Rdf_node.new_from_literal wld.wld_world desc in
   add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
 ;;
 
 let name wld source =
   let arc = Rdf_node.new_from_uri_string wld.wld_world genet_name in
+  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
+  if Rdf_iterator.is_at_end iterator then
+    ""
+  else
+    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
+      None -> ""
+    | Some node -> Misc.string_of_opt (Rdf_node.get_literal_value node)
+;;
+
+let desc wld source =
+  let arc = Rdf_node.new_from_uri_string wld.wld_world genet_desc in
   let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
   if Rdf_iterator.is_at_end iterator then
     ""
