@@ -96,8 +96,8 @@ LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
 
 GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/grdf_types.cmx \
-	grdf/grdfs.cmx \
 	grdf/rdf_sparql.cmx \
+	grdf/grdfs.cmx \
 	grdf/grdf_branch.cmx \
 	grdf/grdf_ftype.cmx \
 	grdf/grdf_intf.cmx \

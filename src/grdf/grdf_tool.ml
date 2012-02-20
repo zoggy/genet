@@ -29,7 +29,7 @@ let tools wld =
           None -> acc
         | Some uri -> (Rdf_uri.as_string uri) :: acc
   in
-  Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f
+  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
 ;;
 
 let name wld uri =
@@ -61,7 +61,7 @@ let tool_exists wld uri =
           None -> acc
         | Some name -> name :: acc
   in
-  match Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f with
+  match List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f []) with
     name :: _ -> Some name
   | [] -> None
 ;;

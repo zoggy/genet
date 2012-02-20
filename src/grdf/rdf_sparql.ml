@@ -39,7 +39,11 @@ type select_query =
     select_distinct : [ `Distinct | `Reduced ] option ;
     select_where : group_graph_pattern ;
   }
-type construct_query = string
+type construct_query =
+  { construct_triples : triple list ;
+    construct_where : group_graph_pattern ;
+  }
+
 type ask_query = string
 type describe_query = string
 
@@ -124,7 +128,12 @@ let string_of_select q =
   (string_of_ggp q.select_where)
 ;;
 
-let string_of_construct q = ""
+let string_of_construct q =
+  Printf.sprintf "CONSTRUCT { %s } WHERE { %s }"
+  (string_of_triples q.construct_triples)
+  (string_of_ggp q.construct_where)
+;;
+
 let string_of_ask q = ""
 let string_of_describe q = ""
 
@@ -135,14 +144,14 @@ let string_of_query = function
 | Describe q -> string_of_describe q
 ;;
 
-let select_and_fold world model query f =
+let select_and_fold world model query f acc =
   let query = string_of_select query in
   let q = Rdf_query.new_query ~name: "sparql" world ~query in
   try
     let qr = Rdf_model.query_execute model q in
     let rec iter acc =
       if Rdf_query_results.finished qr then
-        List.rev acc
+        acc
       else
         (
          let acc = f acc qr in
@@ -150,7 +159,21 @@ let select_and_fold world model query f =
          iter acc
         )
     in
-    iter []
+    iter acc
+  with
+    Rdf_query_results.Query_results_creation_failed _ ->
+      failwith ("Query failed: "^query)
+;;
+
+let exec_construct world model query =
+  let query = string_of_construct query in
+  let q = Rdf_query.new_query ~name: "sparql" world ~query in
+  try
+    let qr = Rdf_model.query_execute model q in
+    if Rdf_query_results.is_graph qr then
+      Rdf_query_results.as_stream qr
+    else
+      assert false
   with
     Rdf_query_results.Query_results_creation_failed _ ->
       failwith ("Query failed: "^query)

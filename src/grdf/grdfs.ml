@@ -19,6 +19,9 @@ let owl_ s = "http://www.w3.org/2002/07/owl#" ^ s;;
 let xsd_ s = "http://www.w3.org/2001/XMLSchema#" ^ s;;
 let foaf_ s = "http://xmlns.com/foaf/0.1/" ^ s;;
 
+let li = rdf_ "_";;
+let li_ n = Printf.sprintf "%s%n" li n;;
+
 let rdf_type = rdf_"type";;
 
 let genet_tool = genet_ "Tool";;
@@ -38,6 +41,7 @@ let genet_consumes = genet_"consumes";;
 let genet_produces = genet_"produces";;
 let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
+let genet_listof = genet_"listOf";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model
@@ -156,4 +160,44 @@ let target_uris wld source pred =
   Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
 ;;
 
+let target_uri wld source pred =
+  match target_uris wld source pred with
+    [] -> None
+  | uri :: _ -> Some uri
+;;
+
+let fold_target_sequence f acc wld ~source ~pred =
+  let sparql =
+    { Rdf_sparql.select_proj = [ "seq_index" ; "uri" ];
+      select_distinct = None ;
+      select_where =
+      ([
+         (`I source, [ `I pred, [`V "seq"] ]) ;
+         (`V "seq", [ `V "seq_index", [`V "uri"] ]) ;
+       ], None)
+    }
+  in
+  let qf acc qr =
+    match
+      Rdf_query_results.get_binding_value_by_name qr "seq_index",
+      Rdf_query_results.get_binding_value_by_name qr "uri"
+    with
+      None, _ | _, None -> acc
+    | Some index_node, Some uri_node ->
+        begin
+          match Rdf_node.get_uri index_node with
+            None -> prerr_endline "not uri"
+          | Some uri ->
+              prerr_endline (Printf.sprintf "index_node=%s" (Rdf_uri.as_string uri));
+        end;
+        let n = Rdf_node.get_li_ordinal index_node in
+        f acc n uri_node
+  in
+  Rdf_sparql.select_and_fold wld.wld_world wld.wld_model sparql qf acc
+;;
+
+let delete_from_sparql wld query =
+  let stream = Rdf_sparql.exec_construct wld.wld_world wld.wld_model query in
+  Rdf_stream.iter (fun st -> Rdf_model.remove_statement wld.wld_model st) stream
+;;
 

@@ -9,6 +9,7 @@ type mode =
   | Interfaces
   | Filetypes
   | Dot
+  | Test
 
 let mode = ref None;;
 
@@ -31,6 +32,9 @@ let options =
 
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
+
+  ("--test", Arg.Unit (fun () -> mode := Some Test),
+   " not documented (testing purpose)") ::
 
   []
 ;;
@@ -82,7 +86,7 @@ let list_interfaces wld options =
         let set = List.fold_left f Sset.empty l in
         Sset.elements set
   in
-  List.iter print_endline intfs
+  List.iter (fun uri -> print_endline (Grdf_intf.string_of_intf wld uri)) intfs
 ;;
 
 let list_filetypes wld =
@@ -91,6 +95,27 @@ let list_filetypes wld =
 ;;
 
 let dot wld = print_endline (Grdf_dot.dot wld);;
+
+let test wld =
+  match Grdf_intf.intfs wld with
+    [] -> failwith "no interfaces to use to test"
+  | intf :: _ ->
+      match Grdf_ftype.filetypes wld with
+        [] -> failwith "no filetype to use to test"
+      | filetypes ->
+          let filetypes = Array.of_list filetypes in
+          let n = Array.length filetypes in
+          prerr_endline (Grdf_intf.string_of_intf wld intf);
+          Random.self_init();
+          let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
+          Grdf_intf.set_ports wld dir intf [];
+          let ftype = filetypes.(Random.int n) in
+          let port =
+            if Random.int 3 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
+          in
+          Grdf_intf.add_port wld dir intf port;
+          prerr_endline (Grdf_intf.string_of_intf wld intf);
+;;
 
 let main () =
   let opts = Options.parse options in
@@ -105,6 +130,7 @@ let main () =
     | Some Interfaces -> list_interfaces rdf_wld opts
     | Some Filetypes -> list_filetypes rdf_wld
     | Some Dot -> dot rdf_wld
+    | Some Test -> test rdf_wld
   end;
   Grdf_init.close rdf_wld
 ;;
