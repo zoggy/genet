@@ -40,6 +40,25 @@ let add_intf config wld options =
   | _ -> failwith "Please give tool or branch uri and name of the new interface"
 ;;
 
+let add_filetype config wld options =
+  match options.args with
+  | [name ; extension ; desc] ->
+      if String.length name <= 0 then failwith "Name must not be empty";
+      let len_ext = String.length extension in
+      if len_ext <= 0 then failwith "Extension must not be empty";
+      let extension =
+        match extension.[0] with
+          '.' ->
+            if len_ext <= 1 then
+              failwith "Extension must not be empty (after removing heading '.')";
+            String.sub extension 1 (len_ext - 1)
+        | _ -> extension
+      in
+      let uri = Grdf_ftype.add wld config.Config.uri_prefix ~name ~desc ~extension in
+      print_endline uri
+  | _ -> failwith "Please give the name, file extension and description of the new filetype"
+;;
+
 (** {2 Command-line specification} *)
 
 type mode =
@@ -49,6 +68,7 @@ type mode =
   | Add_branch
   | Add_version
   | Add_intf
+  | Add_filetype
 
 let mode = ref None;;
 
@@ -78,11 +98,18 @@ let com_add_intf = {
   }
 ;;
 
+let com_add_filetype = {
+  com_options = [] ; com_usage = "<name> <extension> <description>" ;
+  com_kind = Final (set_mode Add_filetype) ;
+  }
+;;
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
     "version", com_add_version, "add new version" ;
     "interface", com_add_intf, "add new interface" ;
+    "filetype", com_add_filetype, "add new filetype" ;
   ]
 ;;
 
@@ -144,6 +171,7 @@ let main () =
       | Some Add_branch -> add_branch config rdf_wld opts
       | Some Add_version -> add_version config rdf_wld opts
       | Some Add_intf -> add_intf config rdf_wld opts
+      | Some Add_filetype -> add_filetype config rdf_wld opts
     with
   Grdf_types.Error e ->
         prerr_endline (Grdf_types.string_of_error e);

@@ -7,6 +7,7 @@ type mode =
   | Branches
   | Versions
   | Interfaces
+  | Filetypes
   | Dot
 
 let mode = ref None;;
@@ -24,6 +25,9 @@ let options =
 
   ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
    " print interfaces (all or only the ones of the given tools or branches)") ::
+
+  ("--filetypes", Arg.Unit (fun () -> mode := Some Filetypes),
+   " print filetypes") ::
 
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
@@ -81,6 +85,11 @@ let list_interfaces wld options =
   List.iter print_endline intfs
 ;;
 
+let list_filetypes wld =
+  let l = Grdf_ftype.filetypes wld in
+  List.iter (fun ft -> prerr_endline (Grdf_ftype.string_of_filetype wld ft)) l
+;;
+
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
 let main () =
@@ -94,6 +103,7 @@ let main () =
     | Some Branches -> list_branches rdf_wld opts
     | Some Versions -> list_versions rdf_wld opts
     | Some Interfaces -> list_interfaces rdf_wld opts
+    | Some Filetypes -> list_filetypes rdf_wld
     | Some Dot -> dot rdf_wld
   end;
   Grdf_init.close rdf_wld

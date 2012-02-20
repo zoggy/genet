@@ -104,26 +104,29 @@ let add_desc wld sub desc =
   add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
 ;;
 
-let name wld source =
-  let arc = Rdf_node.new_from_uri_string wld.wld_world genet_name in
+let target_literals wld source pred =
+  let arc = Rdf_node.new_from_uri_string wld.wld_world pred in
   let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
-  if Rdf_iterator.is_at_end iterator then
-    ""
-  else
-    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
-      None -> ""
-    | Some node -> Misc.string_of_opt (Rdf_node.get_literal_value node)
+  let f acc node =
+    match Rdf_node.get_literal_value node with
+      None -> acc
+    | Some s -> s :: acc
+  in
+  Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
+;;
+
+let target_literal wld source pred =
+  match target_literals wld source pred with
+    [] -> None
+  | s :: _ -> Some s
+;;
+
+let name wld source =
+  Misc.string_of_opt (target_literal wld source genet_name)
 ;;
 
 let desc wld source =
-  let arc = Rdf_node.new_from_uri_string wld.wld_world genet_desc in
-  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
-  if Rdf_iterator.is_at_end iterator then
-    ""
-  else
-    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
-      None -> ""
-    | Some node -> Misc.string_of_opt (Rdf_node.get_literal_value node)
+  Misc.string_of_opt (target_literal wld source genet_desc)
 ;;
 
 let source_uri wld pred target =
@@ -152,3 +155,5 @@ let target_uris wld source pred =
   in
   Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
 ;;
+
+

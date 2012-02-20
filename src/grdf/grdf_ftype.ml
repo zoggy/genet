@@ -45,6 +45,12 @@ let desc wld uri =
   Grdfs.desc wld source
 ;;
 
+let extension wld uri =
+  dbg ~level: 1 (fun () -> "Grdf_ftype.extension uri="^uri);
+  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  Misc.string_of_opt (Grdfs.target_literal wld source Grdfs.genet_file_ext)
+;;
+
 let filetype_exists wld uri =
   dbg ~level: 1 (fun () -> "Grdf_ftype.filetype_exists uri="^uri);
   let query =
@@ -90,7 +96,10 @@ let add wld pref ~name ~desc ~extension =
   let uri = Grdfs.uri_filetype pref name in
   match filetype_exists wld uri with
     Some name-> Grdf_types.error (Grdf_types.Filetype_exists name)
-  | None -> do_add wld uri ~name ~desc ~extension
+  | None -> do_add wld uri ~name ~desc ~extension; uri
 ;;
 
-
+let string_of_filetype wld uri =
+  let name = name wld uri in
+  let ext = extension wld uri in
+  Printf.sprintf "%s (.%s)" name ext
