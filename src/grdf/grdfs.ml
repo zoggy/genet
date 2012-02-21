@@ -20,7 +20,12 @@ let xsd_ s = "http://www.w3.org/2001/XMLSchema#" ^ s;;
 let foaf_ s = "http://xmlns.com/foaf/0.1/" ^ s;;
 
 let li = rdf_ "_";;
-let li_ n = Printf.sprintf "%s%n" li n;;
+let li_ n =
+  if n <= 0 then
+    raise (Invalid_argument (Printf.sprintf "li: n=%d <= 0" n))
+  else
+    Printf.sprintf "%s%n" li n
+;;
 
 let rdf_type = rdf_"type";;
 
@@ -45,6 +50,11 @@ let genet_listof = genet_"listOf";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model
+  (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
+;;
+
+let remove_stmt world model ~sub ~pred ~obj =
+  Rdf_model.remove_statement model
   (Rdf_statement.new_from_nodes world ~sub ~pred ~obj)
 ;;
 
@@ -184,12 +194,6 @@ let fold_target_sequence f acc wld ~source ~pred =
     with
       None, _ | _, None -> acc
     | Some index_node, Some uri_node ->
-        begin
-          match Rdf_node.get_uri index_node with
-            None -> prerr_endline "not uri"
-          | Some uri ->
-              prerr_endline (Printf.sprintf "index_node=%s" (Rdf_uri.as_string uri));
-        end;
         let n = Rdf_node.get_li_ordinal index_node in
         f acc n uri_node
   in
@@ -197,7 +201,14 @@ let fold_target_sequence f acc wld ~source ~pred =
 ;;
 
 let delete_from_sparql wld query =
+  prerr_endline
+  (Printf.sprintf "delete from sparql query=%s" (Rdf_sparql.string_of_construct query));
   let stream = Rdf_sparql.exec_construct wld.wld_world wld.wld_model query in
-  Rdf_stream.iter (fun st -> Rdf_model.remove_statement wld.wld_model st) stream
+  Rdf_stream.iter
+  (fun st ->
+     prerr_endline (Rdf_statement.to_string st);
+     Rdf_model.remove_statement wld.wld_model st
+  )
+  stream
 ;;
 

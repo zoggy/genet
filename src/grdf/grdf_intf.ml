@@ -142,7 +142,8 @@ let ports wld dir uri =
         end
     | Some uri -> (n, List uri) :: acc
   in
-  Grdfs.fold_target_sequence f [] wld ~source: uri ~pred
+  let l = Grdfs.fold_target_sequence f [] wld ~source: uri ~pred in
+  List.sort (fun (n1, _) (n2, _) -> Pervasives.compare n1 n2) l
 ;;
 
 let insert_port wld seq_node (n, port) =
@@ -163,7 +164,7 @@ let insert_port wld seq_node (n, port) =
         ~sub: obj ~pred ~obj: ftype
 ;;
 
-let set_ports wld dir uri ports =
+let delete_ports wld dir uri =
   let pred = pred_of_dir dir in
   let query =
     let triples1 = [
@@ -177,11 +178,40 @@ let set_ports wld dir uri ports =
     let where =
       (triples1, Some (`Optional (triples2, None)))
     in
-    { Rdf_sparql.construct_triples = triples1 @ triples2 ;
-      construct_where = where;
+    { Rdf_sparql.select_proj = [ "seq" ; "seq_index" ; "uri" ; "uri2" ] ;
+      select_distinct = None ;
+      select_where = where;
     }
   in
-  Grdfs.delete_from_sparql wld query;
+  let get = Rdf_query_results.get_binding_value in
+  let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let pred = Rdf_node.new_from_uri_string wld.wld_world pred in
+  let pred_listof = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_listof in
+  let f () qr =
+    match get qr 0, get qr 1, get qr 2 with
+      None, _, _ | _, None, _ | _, _, None -> ()
+    | Some seq, Some seq_index, Some uri ->
+        Grdfs.remove_stmt wld.wld_world wld.wld_model
+          ~sub ~pred ~obj: seq;
+        Grdfs.remove_stmt wld.wld_world wld.wld_model
+          ~sub: seq ~pred: seq_index ~obj: uri;
+        match Rdf_node.kind uri with
+        | Rdf_node.Blank _ ->
+            begin
+              match get qr 4 with
+                None -> ()
+              | Some obj ->
+                  Grdfs.remove_stmt wld.wld_world wld.wld_model
+                  ~sub: uri ~pred: pred_listof ~obj
+            end
+        | _ -> ()
+  in
+  Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f ()
+;;
+
+let set_ports wld dir uri ports =
+  let pred = pred_of_dir dir in
+  delete_ports wld dir uri ;
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
   let obj = Rdf_node.new_from_blank_identifier wld.wld_world in
   let pred = Rdf_node.new_from_uri_string wld.wld_world pred in
@@ -207,7 +237,7 @@ let add_port wld dir uri ?(pos=max_int) filetype =
       else
         iter inserted (m+1) (h :: acc) q
   in
-  let new_ports = iter false 0 [] ports in
+  let new_ports = iter false 1 [] ports in
   set_ports wld dir uri new_ports
 ;;
 

@@ -108,7 +108,6 @@ let test wld =
           prerr_endline (Grdf_intf.string_of_intf wld intf);
           Random.self_init();
           let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
-          Grdf_intf.set_ports wld dir intf [];
           let ftype = filetypes.(Random.int n) in
           let port =
             if Random.int 3 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
