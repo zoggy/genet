@@ -1,0 +1,12 @@
+Notes on Ocsigen installation.
+
+
+Get the bundle from
+  http://ocsigen.org/bundle
+
+Install required packages on debian + libgdbm-dev .
+
+
+tar xvfz ocsigen-bundle-...
+cd ocsigen-bundle-...
+./configure --with-ssl --with-pgocaml --with-cryptokit  --with-missing-libs --prefix=/opt/ocaml-3.12.1
