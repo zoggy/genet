@@ -565,6 +565,7 @@ ac_unique_file="master.Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 DEBUG_LEVEL
+XMLM_INCLUDES
 OCAMLRDF_INCLUDES
 LABLGTK2DIR
 BOXES_INCLUDES
@@ -1910,6 +1911,7 @@ fi
 
 #############################
 # substitutions to perform
+
 
 
 

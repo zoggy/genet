@@ -3,7 +3,7 @@
 let options = [];;
 let main () =
   let opts = Options.parse options in
-  let config = Config.read_config opts.Options.config_file in
+  let _config = Config.read_config opts.Options.config_file in
   let env = List.fold_left
     (fun env (name, value) -> Xtmpl.env_add_att name value env)
     Xtmpl.env_empty

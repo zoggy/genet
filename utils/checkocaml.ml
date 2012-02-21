@@ -127,7 +127,7 @@ let list_of_path = Str.split path_sep_regexp;;
 (** [path_of_list paths] builds a string in path format.
    @raise Path if a path contains the separator. *)
 let path_of_list paths =
-  (* Un nom de fichier dans un chemin ne doit pas contenir le séparateur... *)
+  (* Un nom de fichier dans un chemin ne doit pas contenir le sÃ©parateur... *)
   let check s =
     if Str.string_match path_sep_regexp s 0 then
       let pos = Str.match_beginning() in
@@ -938,6 +938,35 @@ let detect_ocamlrdf ?(modes=[`Byte;`Opt]) conf =
   iter includes
 ;;
 
+let detect_xmlm ?(modes=[`Byte;`Opt]) conf =
+  let includes =
+    ["default install",
+      [Filename.concat (ocaml_libdir conf) "xmlm"]]
+  in
+  let includes =
+    match ocamlfind_query conf "xmlm" with
+      None -> includes
+    | Some s -> ("with ocamlfind", [s]) :: includes
+  in
+  let libs = ["xmlm.cmo" ] in
+  let f (mes, includes) mode =
+    let mes = Printf.sprintf "checking for Xmlm (%s) %s... "
+      (string_of_mode mode) mes
+    in
+    can_link ~mes mode conf ~includes ~libs []
+  in
+  let rec iter = function
+      [] -> ([], [])
+    | incs :: q ->
+      let f = f incs in
+      if List.for_all f modes then
+        (snd incs, libs)
+      else
+        iter q
+  in
+  iter includes
+;;
+
 let ocaml_required = [3;9;1]
 let conf = ocaml_conf ();;
 print_conf conf;;
@@ -997,6 +1026,14 @@ let _ =
   | l, _ ->
       let include_string = string_of_includes l in
       add_subst "OCAMLRDF_INCLUDES" include_string
+;;
+
+let _ =
+  match detect_xmlm ~modes conf with
+    [], [] -> prerr_endline "Could not link with xmlm"
+  | l, _ ->
+      let include_string = string_of_includes l in
+      add_subst "XMLM_INCLUDES" include_string
 ;;
 
 
