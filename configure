@@ -1954,7 +1954,7 @@ fi
 
 
 
-ACFILES="master.Makefile src/base/version.ml"
+ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/ocsigen/ocsigen.conf.xtmpl"
 
 ac_config_files="$ac_config_files $ACFILES"
 
@@ -3127,6 +3127,8 @@ fi
 
 chmod a-w master.Makefile
 chmod a-w src/base/version.ml
+chmod a-w src/base/install.ml
+chmod a-w src/ocsigen/ocsigen.conf.xtmpl
 
 # List values
 echo "

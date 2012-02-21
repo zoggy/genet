@@ -1,3 +1,17 @@
+############
+Installed files:
+
+PREFIX/bin/
+
+PREFIX/share/genet/
+  ocsigen.conf.xtmpl
+
+
+
+
+
+
+#############
 Organization of the files, for one project.
 / (root directory of the project)
 /data_out/
@@ -17,17 +31,17 @@ Organization of the files, for one project.
             proving.gnt
             charge.gnt
 
-Avoir un dépôt git séparé pour les données et la config permet
+Avoir un dÃ©pÃ´t git sÃ©parÃ© pour les donnÃ©es et la config permet
 d'avoir deux niveaux d'utilisateurs: les administrateurs (qui peuvent
 changer la config et surtout les chaines) et les autres, qui ne peuvent
-qu'ajouter ou modifier les données en entrée (exemples, jeux de tests, ...).
+qu'ajouter ou modifier les donnÃ©es en entrÃ©e (exemples, jeux de tests, ...).
 
 
 #########
-Base de données. Tout ce qu'elle contient, à part le graphe sémantique,
-peut être regénéré à partir des données d'entrée (data_in), du
-graphe sémantique et de la définition des chaines.
-La base contient les informations sur ce qui a été généré,
+Base de donnÃ©es. Tout ce qu'elle contient, Ã  part le graphe sÃ©mantique,
+peut Ãªtre regÃ©nÃ©rÃ© Ã  partir des donnÃ©es d'entrÃ©e (data_in), du
+graphe sÃ©mantique et de la dÃ©finition des chaines.
+La base contient les informations sur ce qui a Ã©tÃ© gÃ©nÃ©rÃ©,
 par quelles instances de chaines, etc.
 
 Table "files":
@@ -63,24 +77,24 @@ Table "inst_chain_versions"
 - tool : uri
 - version : uri
 
-Table "inst_chain_files": fichiers générés par une instance de chaine
+Table "inst_chain_files": fichiers gÃ©nÃ©rÃ©s par une instance de chaine
 - chain_id : int (foreign key)
 - file_id : int (foreign key)
 - out_port: string (nom du port produisant le fichier, par exemple op3/op2.o1,
-                    si op3 est une référence à une sous-chaîne)
+                    si op3 est une rÃ©fÃ©rence Ã  une sous-chaÃ®ne)
 
 On doit ainsi pouvoir savoir quels fichiers sont issus deux instances
-d'une même chaine et du même "port" de sortie, donc savoir quels fichiers
-comparer comparer les résultats de deux instances d'une même chaine.
+d'une mÃªme chaine et du mÃªme "port" de sortie, donc savoir quels fichiers
+comparer comparer les rÃ©sultats de deux instances d'une mÃªme chaine.
 
 #########
-Scripts à prévoir
+Scripts Ã  prÃ©voir
 
-- création d'un projet:
-   création de la base + tables
-   création arborescence répertoires; le script prend en paramètre
-   les deux dépôts git à utiliser pour data_in et spec;
-- suppression des fichiers générés qui ne sont plus référencés
-- script de mise à jour par rapport aux dépôts
+- crÃ©ation d'un projet:
+   crÃ©ation de la base + tables
+   crÃ©ation arborescence rÃ©pertoires; le script prend en paramÃ¨tre
+   les deux dÃ©pÃ´ts git Ã  utiliser pour data_in et spec;
+- suppression des fichiers gÃ©nÃ©rÃ©s qui ne sont plus rÃ©fÃ©rencÃ©s
+- script de mise Ã  jour par rapport aux dÃ©pÃ´ts
 - suppression d'une chaine ou d'une instance d'une chaine et
-  tous les fichiers associés
+  tous les fichiers associÃ©s

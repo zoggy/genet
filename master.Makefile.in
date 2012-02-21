@@ -54,7 +54,7 @@ DVIPS=dvips
 DVIPDF=dvipdf
 BIBTEX= @BIBTEX@
 HEVEA_CSS_STYLE=ocamldoc_style.css
-OCAMLCFLAGS= -warn-error FSPUYZ -g -annot -thread # -w Ae
+OCAMLCFLAGS= -warn-error FSPUYZ -g -annot -thread -rectypes # -w Ae
 
 GTK_INCLUDES=@GTK_INCLUDES@
 LABLGLADECC=@LABLGLADECC@
@@ -95,6 +95,9 @@ GENRDFS_BYTE=$(GENRDFS).byte
 
 GENET_QUERY=$(GENET_PREFIX)-query
 GENET_QUERY_BYTE=$(GENET_QUERY).byte
+
+GENET_OCSIGEN_CONF=$(GENET_PREFIX)-ocsigen-conf
+GENET_OCSIGEN_CONF_BYTE=$(GENET_OCSIGEN_CONF).byte
 
 #shut up autconf @datarootdir@
 
