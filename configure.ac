@@ -76,7 +76,7 @@ else
 echo "ocaml library path is $OCAMLLIB"
 
 # set the default prefix to the ocaml directory
-AC_PREFIX_PROGRAM(`basename $OCAML`)
+prefix=/opt/genet
 exec_prefix=$prefix
 
 
@@ -103,6 +103,9 @@ if test "$datadir" = "\${prefix}/share" ; then
         datadir=$prefix/share
 fi
 
+INSTALLDIR=$prefix
+BINDIR=$bindir
+SHAREDIR=$datadir
 PIXMAPSDIR=$datadir/pixmaps
 TEMPLATESDIR=$datadir/templates
 PLUGINSDIR=$datadir/plugins
@@ -170,7 +173,9 @@ AC_SUBST(HEVEA)
 AC_SUBST(HACHA)
 AC_SUBST(BIBTEX)
 AC_SUBST(EXEC_PREFIX)
-AC_SUBST(INSTALLBIN)
+AC_SUBST(INSTALLDIR)
+AC_SUBST(BINDIR)
+AC_SUBST(SHAREDIR)
 AC_SUBST(TEMPLATESDIR)
 AC_SUBST(PLUGINSDIR)
 AC_SUBST(PIXMAPSDIR)

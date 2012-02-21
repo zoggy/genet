@@ -317,6 +317,8 @@ distrib: all
 # Installation
 #################
 install:
+	$(MKDIR) $(SHAREDIR)
+	$(CP) ocsigen/ocsigen.conf.xtmpl $(SHAREDIR)/
 
 ###########################
 # additional dependencies

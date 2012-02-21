@@ -1,7 +1,7 @@
 (** *)
 
-let install_dir = "@INSTALL_DIR@";;
-let share_dir = "@SHARE_DIR@";;
-let bin_dir = "@BIN_DIR@";;
+let install_dir = "@INSTALLDIR@";;
+let share_dir = "@SHAREDIR@";;
+let bin_dir = "@BINDIR@";;
 
-let ocsigen_conf_xtmpl = Filename.concat share_dir "ocsigen_conf.xtmpl";;
+let ocsigen_conf_xtmpl = Filename.concat share_dir "ocsigen.conf.xtmpl";;
