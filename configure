@@ -1743,7 +1743,7 @@ LABLGLADECC="lablgladecc2"
 ' > ./ocaml_config.sh
 else
   ocaml unix.cma str.cma utils/checkocaml.ml ocaml_config.sh || exit 1
-  fi;
+fi;
 
 
 . ./ocaml_config.sh
