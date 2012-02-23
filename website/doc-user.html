@@ -8,7 +8,7 @@ and the various <icode>genet*</icode> tools are in your <icode>PATH</icode>.
 </div>
 
 <section name="setup" title="Set up a new project">
-<subsection name="setup:directory" title="Create your project directory">
+<subsection name="setup:init-dir" title="Create your project directory">
 <p>
 All data of your Genet project will reside in a single directory, with
 the following structure:
@@ -29,31 +29,60 @@ addition the contents of the database;
 <p>
 The following command can create this directory struture (if no
 <icode>[directory]</icode> is provided, the structure is created in
-<icode>.</icode>):
+the current directory):
 <command-line>
 genet init-dir [directory]
 </command-line>
 </p>
 <p>
-If the <icode>in</icode> directory should be a git clone, you can specify
+If the <icode>in</icode> directory will be a git clone, you can specify
 the git repository to clone with the <icode>-git</icode> option:
 <command-line>
 genet init-dir -git git@foo.bar:my/git/respository.git [directory]
 </command-line>
 Required directories in the cloned repository are not created by the tool.
 </p>
-
-
 </subsection>
 
-<subsection name="setup:db" title="Create the database">
+<subsection name="setup:config-file" title="Edit the configuration file">
+<p>
+The generated configuration file has the following form:
+<hcode defer_="1"><include file="../../src/config.txt"/>
+</hcode>
+Edit the generated file and adapt it to your project.
+</p>
+</subsection>
+
+<subsection name="setup:create-db" title="Create the database">
 <p>Genet uses a database to store a part of its information.</p>
 <p>
-...
+You must now create the database you will use, that is the one
+you indicated in <a href="#setup:config-file">the configuration file</a>.
+Do not forget to give read and write permissions on the database to
+the user specified in the configuration file.
 </p>
+<p>
+With mysql as database backend:
+<hcode>
+# mysql -u root -p
+mysql> create database &lt;db&gt;;
+mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&lt;@localhost identified by "&lt;dbpasswd&gt;";
+</hcode>
+</p>
+<p>
+With postgresql:
+<hcode lang="sql">
+bla bla bla
+</hcode>
+</p>
+</subsection>
+
+<subsection name="setup:init-db" title="Initialize the database">
+<p>
 <command-line>
 genet init-db
 </command-line>
+</p>
 <p>
 If the configuration file is not <icode>config.txt</icode>, you can specify
 another with the <icode>-c</icode> option:
@@ -62,7 +91,12 @@ genet init-db -c myfile.txt
 </command-line>
 </p>
 </subsection>
+</section>
 
+<section name="chains" title="Define execution chains">
+<p>
+bla bla bla
+</p>
 </section>
 
 </prepare-toc>

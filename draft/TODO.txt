@@ -1,3 +1,6 @@
 - type to represent a rdf-schema
 - function to build a rdf graph from such a schema structure
 - add to schema: genet_file_ext, genet_desc
+
+- read database kind in configuration file (mysql|postgresql)
+  use this information when opening the storage
