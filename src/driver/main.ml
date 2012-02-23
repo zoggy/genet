@@ -180,14 +180,14 @@ let init_dir ?git_repo opts =
         List.iter (fun d -> mkdir (Filename.concat in_dir d))
         [ "chains" ; "data" ; "ocsigen" ]
     | Some repo ->
-        let com = Printf.sprintf "git clone %s"
-          (Filename.quote repo)
+        let com = Printf.sprintf "git clone %s %s"
+          (Filename.quote repo) (Filename.quote in_dir)
         in
-        if verbose then print_endline (Printf.sprintf "Cloning %s" repo);
+        if verbose then
+          print_endline (Printf.sprintf "Cloning %s into %s" repo in_dir);
         match Sys.command com with
           0 ->
-            let gitdir = Filename.basename (Filename.chop_extension repo) in
-            Sys.rename gitdir (Filename.concat dir "in")
+            ()
         | _ ->
             failwith (Printf.sprintf "Command failed: %s" com)
   end;
