@@ -46,3 +46,7 @@ val create_log_fun_with_set :
   (?loc: string -> ?level:int -> (unit -> string) -> unit) *
   (int -> unit)
 
+(** [mkdir dir] runs [mkdir -p dir] in a shell to create the given directory.
+@raise Failure if the command fails.
+@param verbose indicates whether to print a message on stdout. Default is [false].*)
+val mkdir : ?verbose: bool -> string -> unit

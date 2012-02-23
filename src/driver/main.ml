@@ -62,7 +62,8 @@ let add_filetype config wld options =
 (** {2 Command-line specification} *)
 
 type mode =
-  | Init
+  | Init_dir
+  | Init_db
   | Serialize_rdf
   | Add_tool
   | Add_branch
@@ -125,21 +126,33 @@ let com_serialize = {
   }
 ;;
 
-let com_init = {
-  com_options = [] ; com_usage = "" ;
-  com_kind = Final (set_mode Init) ;
+let git_repo = ref None;;
+let com_init_dir = {
+    com_options = [
+      "--git", Arg.String (fun s -> git_repo := Some s),
+      "<repo> will create the 'in' directory by cloning the repository" ;
+    ] ;
+    com_usage = "[<directory>]" ;
+  com_kind = Final (set_mode Init_dir) ;
   }
 ;;
 
+let com_init_db = {
+  com_options = [] ; com_usage = "" ;
+  com_kind = Final (set_mode Init_db) ;
+  }
+;;
 
 let common_options =
-    Options.option_version "Genet" ::
-    Options.option_config ::
-    []
+  Options.option_version "Genet" ::
+  Options.option_config ::
+  Options.option_verbose ::
+  []
 ;;
 
 let commands = [
-    "init", com_init, "init directory and database" ;
+    "init-dir", com_init_dir, "init directory" ;
+    "init-db", com_init_db, "init database" ;
     "serialize-rdf", com_serialize, "print rdf model" ;
     "add", com_add, "add elements to rdf model" ;
   ];;
@@ -150,34 +163,70 @@ let command = {
   com_kind = Commands commands
   }
 
+let init_dir ?git_repo opts =
+  let dir =
+    match opts.Options.args with
+      [] -> Filename.current_dir_name
+    | dir :: _ -> dir
+  in
+  let verbose = opts.Options.verb_level > 0 in
+  let mkdir = Misc.mkdir ~verbose in
+  mkdir dir;
+  mkdir (Filename.concat dir "out");
+  let in_dir = Filename.concat dir "in" in
+  begin
+    match git_repo with
+      None ->
+        List.iter (fun d -> mkdir (Filename.concat in_dir d))
+        [ "chains" ; "data" ; "ocsigen" ]
+    | Some repo ->
+        let com = Printf.sprintf "git clone %s"
+          (Filename.quote repo)
+        in
+        if verbose then print_endline (Printf.sprintf "Cloning %s" repo);
+        match Sys.command com with
+          0 ->
+            let gitdir = Filename.basename (Filename.chop_extension repo) in
+            Sys.rename gitdir (Filename.concat dir "in")
+        | _ ->
+            failwith (Printf.sprintf "Command failed: %s" com)
+  end;
+  let config_file = Filename.concat in_dir Install.default_config_file in
+  ignore(Config.read_config config_file)
+;;
+
 let main () =
   let opts = Options.parse_command command in
-  let config = Config.read_config opts.Options.config_file in
-  prerr_endline (Config.string_of_config config);
-  let rdf_wld = Grdf_init.open_storage config in
-  begin
-    try
-      match !mode with
-        None -> ()
-      | Some Init ->
-          Grdf_init.init rdf_wld config.Config.uri_prefix
-      | Some Serialize_rdf ->
-          begin
-            match Rdf_model.to_string rdf_wld.Grdf_types.wld_model ~name: "turtle" with
-              None -> failwith "Failed to serialize model"
-            | Some string -> print_string string
-          end
-      | Some Add_tool -> add_tool config rdf_wld opts
-      | Some Add_branch -> add_branch config rdf_wld opts
-      | Some Add_version -> add_version config rdf_wld opts
-      | Some Add_intf -> add_intf config rdf_wld opts
-      | Some Add_filetype -> add_filetype config rdf_wld opts
-    with
-  Grdf_types.Error e ->
-        prerr_endline (Grdf_types.string_of_error e);
-        exit 1
-  end;
-  Grdf_init.close rdf_wld
+  match !mode with
+    None -> ()
+  | Some Init_dir -> init_dir ?git_repo: !git_repo opts
+  | Some mode ->
+      let config = Config.read_config opts.Options.config_file in
+      (*prerr_endline (Config.string_of_config config);*)
+      let rdf_wld = Grdf_init.open_storage config in
+      begin
+        try
+          match mode with
+          | Init_db ->
+              Grdf_init.init rdf_wld config.Config.uri_prefix
+          | Serialize_rdf ->
+              begin
+                match Rdf_model.to_string rdf_wld.Grdf_types.wld_model ~name: "turtle" with
+                  None -> failwith "Failed to serialize model"
+                | Some string -> print_string string
+              end
+          | Add_tool -> add_tool config rdf_wld opts
+          | Add_branch -> add_branch config rdf_wld opts
+          | Add_version -> add_version config rdf_wld opts
+          | Add_intf -> add_intf config rdf_wld opts
+          | Add_filetype -> add_filetype config rdf_wld opts
+          | Init_dir -> assert false
+        with
+          Grdf_types.Error e ->
+            prerr_endline (Grdf_types.string_of_error e);
+            exit 1
+      end;
+      Grdf_init.close rdf_wld
 ;;
 
 let () = Misc.safe_main main;;

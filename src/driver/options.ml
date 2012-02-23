@@ -12,10 +12,16 @@ let option_version pref =
   " Print version number and exit"
 ;;
 
-let config_file = ref "config.txt";;
+let config_file = ref Install.default_config_file;;
 let option_config =
   "--config", Arg.Set_string config_file,
   "<file> use <file> as config file instead of "^ !config_file
+;;
+
+let verb_level = ref 0;;
+let option_verbose =
+  "-v", Arg.Unit (fun () -> incr verb_level),
+  " increase verbosity level"
 ;;
 
 let rdf_output_format = ref "turtle";;
@@ -30,6 +36,7 @@ let option_ntriples = mk_rdf_output_format "ntriples";;
 type option_values = {
   config_file : string ;
   args : string list ;
+  verb_level : int ;
   rdf_output_format : string ;
   }
 
@@ -38,6 +45,7 @@ let remaining = ref [] ;;
 let build_option_values () =
  { config_file = !config_file ;
     args = List.rev !remaining ;
+    verb_level = !verb_level ;
     rdf_output_format = !rdf_output_format ;
   }
 ;;

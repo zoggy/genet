@@ -48,3 +48,12 @@ let create_log_fun_with_set ?prefix ?(print=prerr_endline) env_var =
 
 let create_log_fun ?prefix ?print env_var =
   fst (create_log_fun_with_set ?prefix ?print env_var);;
+
+let mkdir ?(verbose=false) dir =
+  if verbose then print_endline (Printf.sprintf "creating %s" dir);
+  let dir = Filename.quote dir in
+  let com = Printf.sprintf "mkdir -p %s" dir in
+  match Sys.command com with
+    0 -> ()
+  | _ -> failwith (Printf.sprintf "Could not create directoy %s" dir)
+;;

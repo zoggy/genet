@@ -1,5 +1,7 @@
 (** *)
 
+let default_config_file = "config.txt";;
+
 let install_dir = "@INSTALLDIR@";;
 let share_dir = "@SHAREDIR@";;
 let bin_dir = "@BINDIR@";;
