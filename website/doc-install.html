@@ -1,0 +1,80 @@
+title:Installation
+<->
+<div class="alert alert-info">This part is in french, by now.</div>
+<prepare-toc depth="2">
+<toc>Table des matières</toc>
+<section name="sources" title="Organisation des sources">
+<p>
+Les sources sont gérées sous git sur Gitorious:
+<ext-a href="https://gitorious.org/genet">https://gitorious.org/genet</ext-a>.
+</p>
+<p>
+Dans le dépôt, l'organisation est la suivante:
+</p>
+<ul>
+<li><icode>/utils</icode>: utilitaires pour la compilation.</li>
+<li><icode>/doc</icode>: fichiers utilisés pour la génération de documentation.
+  notamment pour OCamldoc mais aussi le vocabulaire RDF utilisé,</li>
+<li><icode>/website</icode>: source du site web, contenant aussi la documentation.
+  Le site est généré avec <ext-a href="http://zoggy.github.com/stog/">Stog</ext-a>.</li>
+<li><icode>/src</icode>: les sources des exécutables OCaml et quelques templates
+  (notamment pour Ocsigen).
+  <ul>
+  <li><icode>/grdf</icode>: sources de la partie manipulation du graphe sémantique (stockage,
+    modification, extraction, ...).</li>
+  <li><icode>/driver</icode>: sources des programmes principaux, et quelques modules
+    partagés entre ces programmes (options de ligne de commande, ...).</li>
+  <li><icode>/ocsigen</icode>: sources de l'interface web basée sur
+     <ext-a href="http://ocsigen.org">Osigen</ext-a>.</li>
+  <li><icode>/base</icode>: sources de la bibliothèque de base contenant des modules
+    utilisés par les autres parties du logiciel.</li>
+  <li><icode>/tests</icode>: différents fichiers pour les tests.</li>
+  </ul>
+</li>
+<li><icode>/draft</icode>: fichiers de prises de notes, quelques figures, etc.
+</li>
+</ul>
+</section>
+
+<section name="deps" title="Dépendances">
+</section>
+
+<section name="configuration" title="Configuration">
+<p>Dans le répertoire racine des sources:
+<hcode>./configure [options]</hcode>
+</p>
+</section>
+
+<section name="compilation" title="Compilation">
+<p>Dans le répertoire racine des sources:
+<hcode>make all</hcode>
+</p>
+</section>
+
+<section name="installation" title="Installation">
+<p>
+Dans le répertoire racine des sources
+(en ayant des droits suffisants):
+<hcode>make install</hcode>
+</p>
+<p>
+Les fichiers et répertoires installés sont les suivants, en utilisant
+les variables <icode>BINDIR</icode>, <icode>LIBDIR</icode> et
+<icode>SHAREDIR</icode> fixées lors de l'étape de
+<a href="#configuration">configuration</a>:
+</p>
+<ul>
+<li><icode>BINDIR/genet*</icode>: les exécutables.</li>
+<li><icode>LIBDIR/*genet*</icode>: les bibliothèques, et notamment la bibliothèque
+  chargée par Ocsigen contenant l'application web.</li>
+<li><icode>SHAREDIR/ocsigen.conf.xtmpl</icode>: patron de configuration Ocsigen,
+  utilisé par l'outil <icode>genet-ocsigen-conf</icode> pour générer un fichier
+  de configuration Ocsigen adapté à un projet.</li>
+<!--
+<li><icode> </icode></li>
+<li><icode> </icode></li>
+-->
+</ul>
+</section>
+
+</prepare-toc>

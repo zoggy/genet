@@ -1,0 +1,67 @@
+title:User documentation
+<->
+<prepare-toc depth="2">
+<toc>Table of contents</toc>
+<div class="alert alert-warning">
+We assume Genet was correctly installed (see <page href="doc-install#installation"/>)
+and the various <icode>genet*</icode> tools are in your <icode>PATH</icode>.
+</div>
+
+<section name="setup" title="Set up a new project">
+<subsection name="setup:directory" title="Create your project directory">
+<p>
+All data of your Genet project will reside in a single directory, with
+the following structure:
+</p>
+<ul>
+<li><icode>/out</icode>: will contains the results files.</li>
+<li><icode>/in</icode>: will contain all the system needs to compute results, in
+addition the contents of the database;
+  <ul>
+  <li><icode>/chains</icode>: the description of execution chains.</li>
+  <li><icode>/data</icode>: the exemples and test cases the chains will be applied on.</li>
+  <li><icode>/ocsigen</icode>: data for the Ocsigen interface.</li>
+  </ul>
+</li>
+<li><icode>config.txt</icode>: the configuration file describing the project,
+  including database access information.</li>
+</ul>
+<p>
+The following command can create this directory struture (if no
+<icode>[directory]</icode> is provided, the structure is created in
+<icode>.</icode>):
+<command-line>
+genet init-dir [directory]
+</command-line>
+</p>
+<p>
+If the <icode>in</icode> directory should be a git clone, you can specify
+the git repository to clone with the <icode>-git</icode> option:
+<command-line>
+genet init-dir -git git@foo.bar:my/git/respository.git [directory]
+</command-line>
+</p>
+
+
+</subsection>
+
+<subsection name="setup:db" title="Create the database">
+<p>Genet uses a database to store a part of its information.</p>
+<p>
+...
+</p>
+<command-line>
+genet init-db
+</command-line>
+<p>
+If the configuration file is not <icode>config.txt</icode>, you can specify
+another with the <icode>-c</icode> option:
+<command-line>
+genet init-db -c myfile.txt
+</command-line>
+</p>
+</subsection>
+
+</section>
+
+</prepare-toc>
