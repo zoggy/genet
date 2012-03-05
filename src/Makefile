@@ -15,7 +15,8 @@ SYSTEM_INCLUDES= \
 	`ocamlfind query -i-format netstring` \
 	`ocamlfind query -i-format rpc` \
 	`ocamlfind query -i-format netplex` \
-	`ocamlfind query -i-format nethttpd`
+	`ocamlfind query -i-format nethttpd` \
+	`ocamlfind query -i-format easy-format biniou yojson`
 
 MY_INCLUDES= \
 	-I base \
@@ -66,6 +67,9 @@ OCAMLNET_LIBS_BYTE= \
 	netsys_oothr.cma netsys.cma equeue.cma \
 	netstring.cma netcgi.cma rpc.cma \
 	netplex.cma nethttpd.cma
+
+JSON_LIBS= easy_format.cmx biniou.cmxa yojson.cmx
+JSON_LIBS_BYTE= easy_format.cmo biniou.cma yojson.cmo
 
 # Compilation
 #############
@@ -170,7 +174,9 @@ LIB_REST_BYTE=$(LIB_REST:.cmxa=.cma)
 LIB_REST_CMI=$(LIB_REST:.cmxa=.cmi)
 LIB_REST_A=$(LIB_REST:.cmxa=.a)
 
-REST_CMXFILES=rest/rest_types.cmx
+REST_CMXFILES= \
+	rest/rest_types.cmx \
+	rest/rest_query.cmx
 
 #	grdf/constant.cmx \
 #	grdf/grdf_types.cmx \
@@ -257,11 +263,11 @@ $(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
 
 $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	threads.cmxa $(OCAMLNET_LIBS) $^
+	$(RDF_LIBS)	threads.cmxa $(JSON_LIBS) $(OCAMLNET_LIBS) $^
 
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) threads.cma $(OCAMLNET_LIBS_BYTE) $^
+	$(RDF_LIBS_BYTE) threads.cma $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
 
 $(GENET_OCSIGEN_CONF): $(LIB_BASE)	$(GENET_OCSIGEN_CONF_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
