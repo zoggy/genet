@@ -6,6 +6,7 @@ genet.byte
 genet-genrdfs*
 genet-query*
 genet-ocsigen-conf*
+genet-rest*
 ocsigen/ocsigen.conf.xtmpl
 base/install.ml
 dump.odoc
