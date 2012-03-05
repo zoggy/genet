@@ -7,11 +7,14 @@ SYSTEM_INCLUDES= \
 	$(MENHIR_INCLUDES) \
 	$(BOXES_INCLUDES) \
 	$(OCAMLRDF_INCLUDES) \
-	$(XMLM_INCLUDES)
+	$(XMLM_INCLUDES) \
+	`ocamlfind query -i-format netstring` \
+	`ocamlfind query -i-format nethttpd`
 
 MY_INCLUDES= \
 	-I base \
 	-I grdf \
+	-I rest \
 	-I driver \
 	-I ocsigen
 
@@ -25,15 +28,15 @@ LINKFLAGS_BYTE=$(INCLUDES)
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_OCSIGEN_CONF)
+TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST) $(GENET_OCSIGEN_CONF)
 TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE) \
-	$(GENET_OCSIGEN_CONF_BYTE)
+	$(GENET_REST_BYTE) $(GENET_OCSIGEN_CONF_BYTE)
 
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
 
-LIBS=$(LIB_BASE) $(LIB_GRDF)
-LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE)
+LIBS=$(LIB_BASE) $(LIB_GRDF) $(LIB_REST)
+LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE) $(LIB_REST_BYTE)
 
 LIBS_GUI=$(LIB_BASE_GUI) $(LIB_GRDF_GUI)
 LIBS_BYTE=$(LIB_BASE_GUI_BYTE) $(LIB_GRDF_GUI_BYTE)
@@ -46,6 +49,9 @@ RDF_LIBS_BYTE=ocamlrdf.cma
 
 XTMPL_LIBS=xmlm.cmx xtmpl.cmx
 XTMPL_LIBS_BYTE=xmlm.cmo xtmpl.cmo
+
+OCAMLNET_LIBS=netstring.cmxa nethttpd.cmxa
+OCAMLNET_LIBS_BYTE=netstring.cma nethttpd.cma
 
 # Compilation
 #############
@@ -143,6 +149,34 @@ LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
 
 GRDF_GUI_LIBS=$(LIB_GRDF_GUI) $(LIB_GRDF_GUI_BYTE) $(LIB_GRDF_GUI_CMI) $(LIB_GRDF_GUI_A)
 
+# Rest library
+
+LIB_REST=rest/rest.cmxa
+LIB_REST_BYTE=$(LIB_REST:.cmxa=.cma)
+LIB_REST_CMI=$(LIB_REST:.cmxa=.cmi)
+LIB_REST_A=$(LIB_REST:.cmxa=.a)
+
+REST_CMXFILES=rest/rest_types.cmx
+
+#	grdf/constant.cmx \
+#	grdf/grdf_types.cmx \
+#	grdf/colors.cmx \
+#	grdf/additional.cmx \
+#	grdf/checks.cmx \
+#	grdf/tmap.cmx \
+#	grdf/graph.cmx \
+#	grdf/loc.cmx \
+#	grdf/tokens.cmx \
+#	grdf/lexer.cmx \
+#	grdf/history.cmx \
+#	grdf/twdict.cmx \
+#	grdf/zipper.cmx \
+#	grdf/env.cmx
+REST_CMOFILES=$(REST_CMXFILES:.cmx=.cmo)
+REST_CMIFILES=$(REST_CMXFILES:.cmx=.cmi)
+
+REST_LIBS=$(LIB_REST) $(LIB_REST_BYTE) $(LIB_REST_CMI) $(LIB_REST_A)
+
 # Genet files
 GENET_CMXFILES=	driver/options.cmx \
 	driver/main.cmx
@@ -166,6 +200,13 @@ GENET_OCSIGEN_CONF_CMXFILES=	driver/options.cmx \
 	driver/main_ocsigen_conf.cmx
 GENET_OCSIGEN_CONF_CMOFILES=$(GENET_OCSIGEN_CONF_CMXFILES:.cmx=.cmo)
 GENET_OCSIGEN_CONF_CMIFILES=$(GENET_OCSIGEN_CONF_CMXFILES:.cmx=.cmi)
+
+# Genet-rest files
+GENET_REST_CMXFILES=\
+	driver/options.cmx \
+	driver/main_rest.cmx
+GENET_REST_CMOFILES=$(GENET_REST_CMXFILES:.cmx=.cmo)
+GENET_REST_CMIFILES=$(GENET_REST_CMXFILES:.cmx=.cmi)
 
 opt: libs tools
 all: opt byte
@@ -200,6 +241,14 @@ $(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
+$(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
+	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
+	$(RDF_LIBS)	$(OCAMLNET_LIBS) $^
+
+$(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
+	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
+	$(RDF_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+
 $(GENET_OCSIGEN_CONF): $(LIB_BASE)	$(GENET_OCSIGEN_CONF_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
 	$(XTMPL_LIBS) $^
@@ -230,6 +279,11 @@ $(LIB_GRDF_GUI_BYTE): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMOFILES)
 	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
 
 
+$(LIB_REST): $(REST_CMIFILES) $(REST_CMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(REST_CMXFILES)
+$(LIB_REST_BYTE): $(REST_CMIFILES) $(REST_CMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(REST_CMOFILES)
+
 KO='\033[1;31m'"*KO\033[1m\033[0m"
 OK='\033[1;32m'"OK\033[1m\033[0m"
 
@@ -238,6 +292,7 @@ OK='\033[1;32m'"OK\033[1m\033[0m"
 #################
 dump.odoc: base/*.ml base/*.mli \
 	grdf/*.ml grdf/*.mli \
+	rest/*.ml rest/*.mli \
 	driver/*.ml driver/*.mli
 	$(OCAMLDOCOPT) \
 	-v \
@@ -279,6 +334,7 @@ clean: dummy
 	(cd base && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd driver && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd grdf && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
+	(cd rest && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 
 
 .depend depend:
@@ -286,7 +342,8 @@ clean: dummy
 	$(OCAMLDEP) $(MY_INCLUDES) \
 	base/*.ml base/*.mli \
 	driver/*.ml driver/*.mli \
-	grdf/*.ml grdf/grdf*.mli \
+	grdf/*.ml grdf/*.mli \
+	rest/*.ml rest/*.mli \
 	  > .depend
 
 alldepend: $(GENERATED_FILES)

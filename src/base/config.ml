@@ -10,6 +10,7 @@ type t =
     db_passwd : string ;
     db_host : string ;
     uri_prefix : string ;
+    rest_api : string ;
   }
 
 let read_config file =
@@ -21,6 +22,8 @@ let read_config file =
   let dbhost_cp = new CF.string_cp ~group ["db"; "host"] "localhost" "" in
   let dbpasswd_cp = new CF.string_cp ~group ["db"; "password"] "" "" in
   let uri_prefix_cp = new CF.string_cp ~group ["uri_prefix"] "http://foo.net" "" in
+
+  let rest_api = new CF.string_cp ~group ["rest_api"] "http://localhost:8082/" "" in
   group#read file;
   { project_name = pname_cp#get ;
     project_id = pid_cp#get ;
@@ -29,6 +32,7 @@ let read_config file =
     db_host = dbhost_cp#get ;
     db_passwd = dbpasswd_cp#get ;
     uri_prefix = uri_prefix_cp#get ;
+    rest_api = rest_api#get ;
   }
 ;;
 
@@ -41,5 +45,6 @@ let string_of_config c =
   Printf.bprintf b "db_host=%s\n" c.db_host ;
   Printf.bprintf b "db_passwd=%s\n" c.db_passwd ;
   Printf.bprintf b "uri_prefix=%s\n" c.uri_prefix ;
+  Printf.bprintf b "rest_api=%s\n" c.rest_api;
   Buffer.contents b
 ;;
