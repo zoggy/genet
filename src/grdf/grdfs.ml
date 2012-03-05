@@ -65,11 +65,11 @@ let add_type world model ~sub ~obj =
 
 (** {2 Uris of manipulated elements} *)
 
-let uri_tool ~pref ~tool =
-  Printf.sprintf "%s/tools/%s" pref tool;;
+let uri_tool ~tool =
+  Printf.sprintf "/tools/%s" tool;;
 
-let uri_chain ~pref ~chain =
-  Printf.sprintf "%s/chains/%s" pref chain;;
+let uri_chain ~chain =
+  Printf.sprintf "/chains/%s" chain;;
 
 let uri_version ~tool ~version =
   Printf.sprintf "%s/versions/%s" tool version;;
@@ -77,8 +77,8 @@ let uri_version ~tool ~version =
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/interfaces/%s" tool intf;;
 
-let uri_filetype ~pref name =
-  Printf.sprintf "%s/filetypes/%s" pref name;;
+let uri_filetype name =
+  Printf.sprintf "filetypes/%s" name;;
 
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;

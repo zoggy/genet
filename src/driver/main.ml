@@ -7,7 +7,7 @@ let add_tool config wld options =
   match options.args with
   | [name] ->
       begin
-        let uri = Grdf_tool.add_tool wld config.Config.uri_prefix name in
+        let uri = Grdf_tool.add_tool wld name in
         print_endline uri
       end
   | _ -> failwith "Please give one tool name"
@@ -54,7 +54,7 @@ let add_filetype config wld options =
             String.sub extension 1 (len_ext - 1)
         | _ -> extension
       in
-      let uri = Grdf_ftype.add wld config.Config.uri_prefix ~name ~desc ~extension in
+      let uri = Grdf_ftype.add wld ~name ~desc ~extension in
       print_endline uri
   | _ -> failwith "Please give the name, file extension and description of the new filetype"
 ;;
@@ -207,8 +207,7 @@ let main () =
       begin
         try
           match mode with
-          | Init_db ->
-              Grdf_init.init rdf_wld config.Config.uri_prefix
+          | Init_db -> Grdf_init.init rdf_wld
           | Serialize_rdf ->
               begin
                 match Rdf_model.to_string rdf_wld.Grdf_types.wld_model ~name: "turtle" with
