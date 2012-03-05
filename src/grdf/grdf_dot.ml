@@ -6,30 +6,30 @@ let dot_id uri = Printf.sprintf "N%s" (md5 uri);;
 
 let gen_tool b wld uri =
   let name = Grdf_tool.name wld uri in
-  Printf.bprintf b "%s [ label=\"%s\", shape=\"box\" ];\n"
-    (dot_id uri) (String.escaped name)
+  Printf.bprintf b "%s [ label=\"%s\", shape=\"box\", href=\"%s\"];\n"
+    (dot_id uri) (String.escaped name) uri
 ;;
 
 let gen_version b wld uri =
   let name = Grdf_version.name wld uri in
   Printf.bprintf b
-  "%s [ label=\"%s\", fillcolor=\"palegreen\", style=\"filled\", shape=\"box3d\"];\n"
-  (dot_id uri) (String.escaped name)
+  "%s [ label=\"%s\", fillcolor=\"palegreen\", style=\"filled\", shape=\"box3d\", href=\"%s\"];\n"
+  (dot_id uri) (String.escaped name) uri
 ;;
 
 let gen_branch b wld t =
   let uri = t.Grdf_branch.bch_uri in
   let name = Grdf_version.name wld uri in
   Printf.bprintf b
-  "%s [ label=\"%s\", fillcolor=\"white\", style=\"\", shape=\"ellipse\"];\n"
-  (dot_id uri) (String.escaped name)
+  "%s [ label=\"%s\", fillcolor=\"white\", style=\"\", shape=\"ellipse\", href=\"%s\"];\n"
+  (dot_id uri) (String.escaped name) uri
 ;;
 
 let gen_intf b wld uri =
   let name = Grdf_intf.name wld uri in
   Printf.bprintf b
-  "%s [ label=\"%s\", fillcolor=\"olivedrab1\", style=\"filled\", shape=\"octagon\"];\n"
-  (dot_id uri) (String.escaped name)
+  "%s [ label=\"%s\", fillcolor=\"olivedrab1\", style=\"filled\", shape=\"octagon\", href=\"%s\"];\n"
+  (dot_id uri) (String.escaped name) uri
 ;;
 
 let gen_hasbranch b wld uri =
@@ -74,4 +74,22 @@ let dot wld =
   Buffer.add_string b "}\n";
   Buffer.contents b
 ;;
+
+let dot_to_svg dot =
+  let temp_file = Filename.temp_file "genet" "svg" in
+  let com = Printf.sprintf "echo %s | dot -Tsvg | tail --lines=+7 > %s"
+    (Filename.quote dot) (Filename.quote temp_file)
+  in
+  match Sys.command com with
+    0 ->
+      let svg = Misc.string_of_file temp_file in
+      Sys.remove temp_file;
+      svg
+  | n ->
+      let msg = Printf.sprintf "Execution failed (%d): %s" n com in
+      failwith msg
+;;
+
+
+
   

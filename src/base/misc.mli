@@ -50,3 +50,14 @@ val create_log_fun_with_set :
 @raise Failure if the command fails.
 @param verbose indicates whether to print a message on stdout. Default is [false].*)
 val mkdir : ?verbose: bool -> string -> unit
+
+(*i==v=[File.string_of_file]=1.0====*)
+(** [string_of_file filename] returns the content of [filename]
+   in the form of one string.
+@author Maxence Guesdon
+@version 1.0
+@raise Sys_error if the file could not be opened.
+@cgname File.string_of_file*)
+val string_of_file : string -> string
+(*/i==v=[File.string_of_file]=1.0====*)
+
