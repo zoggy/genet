@@ -8,7 +8,13 @@ SYSTEM_INCLUDES= \
 	$(BOXES_INCLUDES) \
 	$(OCAMLRDF_INCLUDES) \
 	$(XMLM_INCLUDES) \
+	`ocamlfind query -i-format equeue` \
+	`ocamlfind query -i-format pcre` \
+	`ocamlfind query -i-format netcgi2` \
+	`ocamlfind query -i-format netsys` \
 	`ocamlfind query -i-format netstring` \
+	`ocamlfind query -i-format rpc` \
+	`ocamlfind query -i-format netplex` \
 	`ocamlfind query -i-format nethttpd`
 
 MY_INCLUDES= \
@@ -50,8 +56,16 @@ RDF_LIBS_BYTE=ocamlrdf.cma
 XTMPL_LIBS=xmlm.cmx xtmpl.cmx
 XTMPL_LIBS_BYTE=xmlm.cmo xtmpl.cmo
 
-OCAMLNET_LIBS=netstring.cmxa nethttpd.cmxa
-OCAMLNET_LIBS_BYTE=netstring.cma nethttpd.cma
+OCAMLNET_LIBS= \
+	bigarray.cmxa pcre.cmxa \
+	netsys_oothr.cmxa netsys.cmxa equeue.cmxa \
+	netstring.cmxa netcgi.cmxa rpc.cmxa \
+	netplex.cmxa nethttpd.cmxa
+OCAMLNET_LIBS_BYTE= \
+	bigarray.cma pcre.cma \
+	netsys_oothr.cma netsys.cma equeue.cma \
+	netstring.cma netcgi.cma rpc.cma \
+	netplex.cma nethttpd.cma
 
 # Compilation
 #############
@@ -243,11 +257,11 @@ $(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
 
 $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	$(OCAMLNET_LIBS) $^
+	$(RDF_LIBS)	threads.cmxa $(OCAMLNET_LIBS) $^
 
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+	$(RDF_LIBS_BYTE) threads.cma $(OCAMLNET_LIBS_BYTE) $^
 
 $(GENET_OCSIGEN_CONF): $(LIB_BASE)	$(GENET_OCSIGEN_CONF_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \

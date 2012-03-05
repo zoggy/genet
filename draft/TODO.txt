@@ -4,3 +4,5 @@
 
 - read database kind in configuration file (mysql|postgresql)
   use this information when opening the storage
+
+- configure: detect ocamlnet libraries
