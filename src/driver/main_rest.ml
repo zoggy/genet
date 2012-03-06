@@ -9,11 +9,14 @@ let content_type_of_string s =
 ;;
 
 let get_method cgi =
+  let uri = cgi#environment#cgi_path_translated in
   match cgi#request_method with
-    `GET | `HEAD -> Rest_types.Get (cgi#environment#cgi_path_translated, [])
-  | `DELETE -> Rest_types.Delete ""
-  | `POST -> Rest_types.Post ("", `Null)
-  | `PUT arg -> Rest_types.Put ("", `Null)
+    `GET | `HEAD ->
+      let args = List.map (fun a -> (a#name, a#value)) cgi#arguments in
+      Rest_types.Get (uri, args)
+  | `DELETE -> Rest_types.Delete uri
+  | `POST -> Rest_types.Post (uri, `Null)
+  | `PUT arg -> Rest_types.Put (uri, `Null)
 ;;
 
 let rest_api context host port (cgi : Netcgi.cgi_activation) =
@@ -39,7 +42,6 @@ let rest_api context host port (cgi : Netcgi.cgi_activation) =
     ~cache:`No_cache
     ~fields: (List.map (fun (f,v) -> (f, [v])) header_fields)
     ();
-    prerr_endline ("body="^body);
     cgi#out_channel#output_string body
   with
     Rest_query.Not_implemented msg ->

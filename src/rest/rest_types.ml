@@ -18,6 +18,7 @@ type thing =
   | Version of uri
   | Intf of uri
   | Filetype of uri
+  | Static_file of string * string
   | Other of string
 ;;
 

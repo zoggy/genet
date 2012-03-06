@@ -72,3 +72,23 @@ val try_finalize : ('l -> 'm) -> 'l -> ('n -> unit) -> 'n -> 'm
 (*/i==v=[Misc.try_finalize]=1.0====*)
 
 val normalized_path : string -> string
+
+(*i==v=[File.file_of_string]=1.1====*)
+(** [file_of_string ~file str] creates a file named
+   [filename] whose content is [str].
+@author Fabrice Lefessant
+@version 1.1
+@raise Sys_error if the file could not be opened.
+@cgname File.file_of_string*)
+val file_of_string : file:string -> string -> unit
+(*/i==v=[File.file_of_string]=1.1====*)
+
+
+(*i==v=[String.strip_string]=1.0====*)
+(** [strip_string s] removes all leading and trailing spaces from the given string.
+@author Maxence Guesdon
+@version 1.0
+@cgname String.strip_string*)
+val strip_string : string -> string
+(*/i==v=[String.strip_string]=1.0====*)
+

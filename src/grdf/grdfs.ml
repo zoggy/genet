@@ -78,7 +78,7 @@ let uri_intf ~tool ~intf =
   Printf.sprintf "%s/interfaces/%s" tool intf;;
 
 let uri_filetype name =
-  Printf.sprintf "filetypes/%s" name;;
+  Printf.sprintf "/filetypes/%s" name;;
 
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
