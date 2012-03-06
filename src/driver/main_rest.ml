@@ -30,6 +30,8 @@ let rest_api context host port (cgi : Netcgi.cgi_activation) =
  let accept = env#input_header_field ~default: "" "Accept" in
  let content_type = content_type_of_string accept in
  let met = get_method cgi in
+
+
  try
     let (header_fields, body) = Rest_query.query
       content_type context met
@@ -156,17 +158,17 @@ let main () =
     prerr_endline (Printf.sprintf "host=%s, port=%d, path=%s" host port path);
 
   let parallelizer =
-    (*Netplex_mt.mt()*)     (* multi-threading *)
-    Netplex_mp.mp()   (* multi-processing *)
+    Netplex_mt.mt()     (* multi-threading *)
+    (*Netplex_mp.mp()*)   (* multi-processing *)
+  in
+  let rdf_wld = Grdf_init.open_storage config in
+  let context = {
+      Rest_types.ctx_rdf = rdf_wld ;
+      ctx_cfg = config ;
+      ctx_user = None ;
+      }
   in
   let fun_handler _ =
-    let rdf_wld = Grdf_init.open_storage config in
-    let context = {
-        Rest_types.ctx_rdf = rdf_wld ;
-        ctx_cfg = config ;
-        ctx_user = None ;
-      }
-    in
     process (rest_api context host port)
   in
 

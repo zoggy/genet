@@ -37,7 +37,7 @@ let json_handlers =
 
 
 
-let thing_of_uri ctx uri =
+let rec thing_of_uri ctx uri =
   prerr_endline (Printf.sprintf "thing_of_uri %s" uri);
   let wld = ctx.ctx_rdf in
   let static_files = allowed_files ctx.ctx_cfg in
@@ -45,6 +45,8 @@ let thing_of_uri ctx uri =
   List.iter (fun (f,_) -> prerr_endline f) static_files;
   let sub = Rdf_node.new_from_uri_string wld.Grdf_types.wld_world uri in
   match Grdfs.class_of wld sub with
+  | None when uri = Grdfs.uri_tools -> Tools
+  | None when uri = Grdfs.uri_filetypes -> Filetypes
   | None ->
       begin
         try

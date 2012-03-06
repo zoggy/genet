@@ -59,14 +59,14 @@ XTMPL_LIBS_BYTE=xmlm.cmo xtmpl.cmo
 
 OCAMLNET_LIBS= \
 	bigarray.cmxa pcre.cmxa \
-	netsys_oothr.cmxa netsys.cmxa equeue.cmxa \
+	netsys_oothr_mt.cmxa netsys.cmxa equeue.cmxa \
 	netstring.cmxa netcgi.cmxa rpc.cmxa \
-	netplex.cmxa nethttpd.cmxa
+	netplex.cmxa nethttpd.cmxa netsys_oothr_mt_init.cmx
 OCAMLNET_LIBS_BYTE= \
 	bigarray.cma pcre.cma \
-	netsys_oothr.cma netsys.cma equeue.cma \
+	netsys_oothr_mt.cma netsys.cma equeue.cma \
 	netstring.cma netcgi.cma rpc.cma \
-	netplex.cma nethttpd.cma
+	netplex.cma nethttpd.cma netsys_oothr_mt_init.cmo
 
 JSON_LIBS= easy_format.cmx biniou.cmxa yojson.cmx
 JSON_LIBS_BYTE= easy_format.cmo biniou.cma yojson.cmo
@@ -259,11 +259,11 @@ $(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
 
 $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
+	$(RDF_LIBS)	-thread threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
 
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
 	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)

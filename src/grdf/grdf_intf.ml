@@ -122,6 +122,16 @@ let intfs_of wld ?(recur=false) uri =
     get_of uri
 ;;
 
+let intfs_of_tool wld uri =
+  let branches = Grdf_branch.subs wld ~recur: true uri in
+  let add set uri = Sset.add uri set in
+  let set = List.fold_left
+    (fun acc b -> List.fold_left add acc (intfs_of wld b))
+    Sset.empty branches
+  in
+  Sset.elements set
+;;
+
 type port = One of uri | List of uri;;
 type dir = In | Out ;;
 

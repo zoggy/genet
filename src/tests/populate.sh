@@ -11,3 +11,14 @@ WHY=`./genet add tool why`
 ./genet add filetype "coq" v "coq file"
 ./genet add filetype "ocaml-impl" ml "ocaml implementation"
 ./genet add filetype "ocaml-intf" mli "ocaml interface"
+
+ALTERGO=`./genet add tool altergo`
+./genet add branch ${ALTERGO} 1.x
+./genet add branch ${ALTERGO} 2.x
+./genet add branch ${ALTERGO} 3.x
+./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.1
+./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.2
+./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.3
+./genet add version ${ALTERGO} ${ALTERGO}/branches/2.x 2.1
+./genet add interface ${ALTERGO}/branches/1.x ae-prove
+./genet add interface ${ALTERGO}/branches/1.x ae-prove2

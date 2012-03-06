@@ -18,6 +18,11 @@ type thing =
   | Version of uri
   | Intf of uri
   | Filetype of uri
+  | Tools
+  | Branches of uri (* uri of tool *)
+  | Versions of uri (* uri of tool or branch *)
+  | Interfaces of uri (* uri of tool or branch *)
+  | Filetypes
   | Static_file of string * string
   | Other of string
 ;;

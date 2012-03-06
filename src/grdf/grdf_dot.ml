@@ -17,8 +17,7 @@ let gen_version b wld uri =
   (dot_id uri) (String.escaped name) uri
 ;;
 
-let gen_branch b wld t =
-  let uri = t.Grdf_branch.bch_uri in
+let gen_branch b wld uri =
   let name = Grdf_version.name wld uri in
   Printf.bprintf b
   "%s [ label=\"%s\", fillcolor=\"white\", style=\"\", shape=\"ellipse\", href=\"%s\"];\n"
@@ -32,34 +31,43 @@ let gen_intf b wld uri =
   (dot_id uri) (String.escaped name) uri
 ;;
 
-let gen_hasbranch b wld uri =
+let gen_hasbranch b wld ?(label=true) ?pred uri =
   let l = Grdf_branch.subs wld uri in
+  let l = match pred with None -> l | Some f -> List.filter f l in
   List.iter
-    (fun uri2 -> Printf.bprintf b "%s -> %s [label=\"hasBranch\"];\n"
-     (dot_id uri) (dot_id uri2))
+  (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
+     (dot_id uri) (dot_id uri2)
+     (if label then "label=\"hasBranch\"" else "")
+  )
      l
 ;;
 
-let gen_hasversion b wld uri =
+let gen_hasversion b wld ?(label=true) ?pred uri =
   let l = Grdf_version.versions_of wld uri in
+  let l = match pred with None -> l | Some f -> List.filter f l in
   List.iter
-    (fun uri2 -> Printf.bprintf b "%s -> %s [label=\"hasVersion\"];\n"
-     (dot_id uri) (dot_id uri2))
+    (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
+     (dot_id uri) (dot_id uri2)
+     (if label then "label=\"hasVersion\"" else "")
+  )
      l
 ;;
 
-let gen_hasintf b wld uri =
+let gen_hasintf b wld ?(label=true) ?pred uri =
   let l = Grdf_intf.intfs_of wld uri in
+  let l = match pred with None -> l | Some f -> List.filter f l in
   List.iter
-    (fun uri2 -> Printf.bprintf b "%s -> %s [label=\"hasIntf\"];\n"
-     (dot_id uri) (dot_id uri2))
+    (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
+     (dot_id uri) (dot_id uri2)
+     (if label then "label=\"hasIntf\"" else "")
+  )
      l
 ;;
 
-let dot wld =
+let dot ?(edge_labels=true) wld =
   let tools = Grdf_tool.tools wld in
   let versions = Grdf_version.versions wld in
-  let branches = Grdf_branch.branches wld in
+  let branches = List.map (fun t -> t.Grdf_branch.bch_uri) (Grdf_branch.branches wld) in
   let intfs = Grdf_intf.intfs wld in
   let b = Buffer.create 256 in
   Buffer.add_string b "digraph g {\nrankdir=TB;\n";
@@ -67,23 +75,62 @@ let dot wld =
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
   List.iter (gen_intf b wld) intfs;
-  List.iter (gen_hasbranch b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
-  List.iter (gen_hasversion b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
-  List.iter (gen_hasintf b wld) (tools @ (List.map (fun t -> t.Grdf_branch.bch_uri) branches));
+
+  let label = edge_labels in
+  List.iter (gen_hasbranch b ~label wld) (tools @ branches);
+  List.iter (gen_hasversion b ~label wld) (tools @ branches);
+  List.iter (gen_hasintf b ~label wld) (tools @ branches);
 
   Buffer.add_string b "}\n";
   Buffer.contents b
 ;;
 
-let dot_to_svg dot =
+let dot_of_tool wld tool =
+  let b = Buffer.create 256 in
+  Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
+  let versions = Grdf_version.versions_of wld ~recur: true tool in
+  let branches = Grdf_branch.subs wld ~recur:true tool in
+  let intfs = Grdf_intf.intfs_of_tool wld tool in
+  gen_tool b wld tool;
+  List.iter (gen_version b wld) versions;
+  List.iter (gen_branch b wld) branches;
+  List.iter (gen_intf b wld) intfs;
+
+  let all = tool :: branches in
+  let pred = fun uri -> List.mem uri all in
+  List.iter (gen_hasbranch b wld ~label: false ~pred) all;
+
+  let all = all @ versions in
+  let pred = fun uri -> List.mem uri all in
+  List.iter (gen_hasversion b wld ~label: false ~pred) all;
+
+  let all = all @ intfs in
+  let pred = fun uri -> List.mem uri all in
+  List.iter (gen_hasintf b wld ~label: false ~pred) all;
+
+  Buffer.add_string b "}\n";
+  Buffer.contents b
+;;
+
+let dot_to_svg ?(options="") ?size dot =
   let temp_file = Filename.temp_file "genet" "svg" in
-  let com = Printf.sprintf "echo %s | dot -Tsvg | tail --lines=+7 > %s"
-    (Filename.quote dot) (Filename.quote temp_file)
+  let com = Printf.sprintf "echo %s |dot %s -Tsvg | tail --lines=+%d > %s"
+    (Filename.quote dot) options
+    (match size with None -> 7 | Some _ -> 9)
+    (Filename.quote temp_file)
   in
   match Sys.command com with
     0 ->
       let svg = Misc.string_of_file temp_file in
       Sys.remove temp_file;
+      let svg =
+        match size with
+          None -> svg
+        | Some (w,h) ->
+          Printf.sprintf "<svg width=\"%d\" height=\"%d\" viewBox=\"0.0 0.0 %d.00 %d.00\"\n
+          xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n%s"
+            w h w h svg
+      in
       svg
   | n ->
       let msg = Printf.sprintf "Execution failed (%d): %s" n com in

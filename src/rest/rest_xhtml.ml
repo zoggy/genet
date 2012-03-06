@@ -2,6 +2,17 @@
 
 open Rest_types;;
 
+let svg_width = 700;;
+let svg_height = 500;;
+let svg_dpi = 96. ;;
+
+let dot_to_svg dot =
+  let w = (float svg_width) /. svg_dpi in
+  let h = (float svg_height) /. svg_dpi in
+  let options = Printf.sprintf "-Gfontsize=8. -Gdpi=%.2f -Gsize=\"%.0f,%.0f!\"" svg_dpi w h in
+  Grdf_dot.dot_to_svg ~options ~size: (svg_width,svg_height) dot
+;;
+
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
 let page ?env ctx ~title contents =
@@ -16,12 +27,64 @@ let page_active v =
   page ~env
 ;;
 
+let home_page = page_active "home";;
 let tool_page = page_active "tools";;
 let filetype_page = page_active "filetypes";;
 
+let table ?heads rows =
+  let b = Buffer.create 256 in
+  Buffer.add_string b "<table class=\"table table-bordered table-striped\">";
+  begin
+    match heads with
+      None -> ()
+    | Some heads ->
+      Buffer.add_string b "<thead><tr>";
+      List.iter (fun s -> Printf.bprintf b "<th>%s</th>" s) heads;
+      Buffer.add_string b "</tr></thead>";
+  end;
+  let f s = Printf.bprintf b "<td>%s</td>" s in
+  let f_row l =
+    Printf.bprintf b "<tr>"; List.iter f l; Printf.bprintf b "</tr>"
+  in
+  List.iter f_row rows;
+  Buffer.add_string b "</table>";
+  Buffer.contents b
+;;
+
+let a ~href contents =
+  Xtmpl.string_of_xml
+  (Xtmpl.T ("a", ["href", href], [Xtmpl.xml_of_string contents]))
+;;
+
+let get_tools ctx =
+  let wld = ctx.ctx_rdf in
+  let tools = Grdf_tool.tools wld in
+  let f_tool uri =
+    let n_versions = List.length (Grdf_version.versions_of wld ~recur: true uri) in
+    let href_versions = Grdfs.uri_versions uri in
+
+    let n_branches = List.length (Grdf_branch.subs wld ~recur: true uri) in
+
+    let n_intfs = List.length (Grdf_intf.intfs_of_tool wld uri) in
+    let href_intfs = Grdfs.uri_intfs uri in
+
+    [ a ~href: uri (Grdf_tool.name wld uri) ;
+      a ~href: href_versions (string_of_int n_versions) ;
+      string_of_int n_branches;
+      a ~href: href_intfs (string_of_int n_intfs) ;
+    ]
+  in
+  let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
+  let rows = List.map f_tool tools in
+  let contents = table ~heads rows in
+  ([ctype ()], tool_page ctx ~title: "Tools" contents)
+;;
+
 let get_tool ctx uri =
   let name = Grdf_tool.name ctx.ctx_rdf uri in
-  let contents = name in
+  let dot = Grdf_dot.dot_of_tool ctx.ctx_rdf uri in
+  let svg = dot_to_svg dot in
+  let contents = svg in
   ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
@@ -31,10 +94,20 @@ let get_filetype ctx uri =
   ([ctype ()], filetype_page ctx ~title: name contents)
 ;;
 
+let get_root ctx =
+  let dot = Grdf_dot.dot ~edge_labels: false ctx.ctx_rdf in
+  let svg = dot_to_svg dot in
+  let title = ctx.ctx_cfg.Config.project_name in
+  let contents = svg in
+  ([ctype ()], home_page ctx ~title contents)
+
 let get ctx thing args =
   match thing with
+  | Other _ -> get_root ctx
   | Static_file (f, t) -> ([ctype ~t ()], Misc.string_of_file f)
   | Tool uri -> get_tool ctx uri
+  | Tools -> get_tools ctx
   | Filetype uri -> get_filetype ctx uri
+
   | _ -> ([ctype ()], page ctx ~title: "coucou" "Coucou")
 ;;

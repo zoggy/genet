@@ -62,7 +62,7 @@ let parent wld uri =
             Some (s_uri, Grdfs.is_a_tool wld node)
 ;;
 
-let subs wld uri =
+let subs_aux wld uri =
   dbg ~level: 1 (fun () -> "Grdf_branch.subs uri="^uri);
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
   let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch in
@@ -74,6 +74,22 @@ let subs wld uri =
   in
   Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
 ;;
+
+let subs wld ?(recur=false) uri =
+  if recur then
+    begin
+      let add set uri = Sset.add uri set in
+      let rec f acc uri =
+        let l = subs_aux wld uri in
+        let acc = List.fold_left add acc l in
+        List.fold_left f acc l
+      in
+      Sset.elements (f Sset.empty uri)
+    end
+  else
+    subs_aux wld uri
+;;
+
 
 let branch_exists wld uri =
   dbg ~level: 1 (fun () -> "Grdf_branch.branch_exists uri="^uri);
