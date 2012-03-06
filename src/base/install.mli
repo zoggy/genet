@@ -5,5 +5,6 @@ val default_config_file : string
 val install_dir : string
 val share_dir : string
 val bin_dir : string
+val share_ocsigen_dir : string
 
 val ocsigen_conf_xtmpl : string

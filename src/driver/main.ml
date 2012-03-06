@@ -178,7 +178,21 @@ let init_dir ?git_repo opts =
     match git_repo with
       None ->
         List.iter (fun d -> mkdir (Filename.concat in_dir d))
-        [ "chains" ; "data" ; "ocsigen" ]
+        [ "chains" ; "data" ];
+        let ocsigen_dir = Filename.concat in_dir "ocsigen" in
+        begin
+          let com = Printf.sprintf "cp -r %s %s"
+            (Filename.quote Install.share_ocsigen_dir)
+            (Filename.quote ocsigen_dir)
+          in
+          if verbose then
+            print_endline
+            (Printf.sprintf "copying %s to %s"
+             Install.share_ocsigen_dir ocsigen_dir);
+          match Sys.command com with
+            0 -> ()
+          | _ -> failwith (Printf.sprintf "Command failed: %s" com)
+        end
     | Some repo ->
         let com = Printf.sprintf "git clone %s %s"
           (Filename.quote repo) (Filename.quote in_dir)
@@ -186,10 +200,8 @@ let init_dir ?git_repo opts =
         if verbose then
           print_endline (Printf.sprintf "Cloning %s into %s" repo in_dir);
         match Sys.command com with
-          0 ->
-            ()
-        | _ ->
-            failwith (Printf.sprintf "Command failed: %s" com)
+          0 -> ()
+        | _ -> failwith (Printf.sprintf "Command failed: %s" com)
   end;
   let config_file = Filename.concat in_dir Install.default_config_file in
   ignore(Config.read_config config_file)

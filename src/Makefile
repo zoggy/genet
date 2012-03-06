@@ -393,9 +393,14 @@ distrib: all
 #################
 # Installation
 #################
-install:
-	$(MKDIR) $(SHAREDIR)
-	$(CP) ocsigen/ocsigen.conf.xtmpl $(SHAREDIR)/
+install: install-ocsigen-files
+
+install-ocsigen-files:
+	$(MKDIR) $(SHAREDIR)/ocsigen
+	$(CP) ocsigen/ocsigen.conf.xtmpl $(SHAREDIR)/ocsigen/
+	$(CP) -r ocsigen/tmpl $(SHAREDIR)/ocsigen/
+	$(CP) $(ROOT)/website/genet-logo.svg $(SHAREDIR)/ocsigen/
+	$(LESSC) $(ROOT)/website/tmpl/style.less > $(SHAREDIR)/ocsigen/style.css
 
 ###########################
 # additional dependencies

@@ -14,13 +14,20 @@ All data of your Genet project will reside in a single directory, with
 the following structure:
 </p>
 <ul>
-<li><icode>/out</icode>: will contains the results files.</li>
-<li><icode>/in</icode>: will contain all the system needs to compute results, in
+<li><icode>out/</icode>: will contains the results files.</li>
+<li><icode>in/</icode>: will contain all the system needs to compute results, in
 addition the contents of the database;
   <ul>
-  <li><icode>/chains</icode>: the description of execution chains.</li>
-  <li><icode>/data</icode>: the exemples and test cases the chains will be applied on.</li>
-  <li><icode>/ocsigen</icode>: data for the Ocsigen interface.</li>
+  <li><icode>chains/</icode>: the description of execution chains.</li>
+  <li><icode>data/</icode>: the exemples and test cases the chains will be applied on.</li>
+  <li><icode>ocsigen/</icode>: the directory containg Ocsigen files;
+    <ul>
+    <li><icode>tmpl/</icode>: the template directory.</li>
+    <li><icode>style.css</icode>: the CSS stylesheet.</li>
+    <li><icode>ocsigen.conf</icode>: the Ocsigen configuration file.</li>
+    <li>other files needed by Ocsigen, like images, ...</li>
+    </ul>
+  </li>
   </ul>
 </li>
 <li><icode>config.txt</icode>: the configuration file describing the project,
