@@ -11,6 +11,7 @@ type t =
     db_host : string ;
     uri_prefix : string ;
     rest_api : string ;
+    root_dir : string ;
   }
 
 let read_config file =
@@ -33,6 +34,7 @@ let read_config file =
     db_passwd = dbpasswd_cp#get ;
     uri_prefix = uri_prefix_cp#get ;
     rest_api = rest_api#get ;
+    root_dir = Filename.dirname (Misc.normalized_path file) ;
   }
 ;;
 

@@ -1,26 +1,49 @@
 (** Main module of the REST web API. *)
 
+let content_type_of_string s =
+  match s with
+    "application/json" -> Rest_types.Json
+  | _ -> Rest_types.Xhtml
+;;
 
-let rest_api rdf_wld host port (cgi : Netcgi.cgi_activation) =
+let get_method cgi =
+  match cgi#request_method with
+    `GET | `HEAD -> Rest_types.Get ("", [])
+  | `DELETE -> Rest_types.Delete ""
+  | `POST -> Rest_types.Post ("", `Null)
+  | `PUT arg -> Rest_types.Put ("", `Null)
+;;
+
+let rest_api context host port (cgi : Netcgi.cgi_activation) =
  let env = cgi#environment in
  prerr_endline ("#cgi_server_name=" ^ env#cgi_server_name);
  prerr_endline ("#cgi_server_protocol=" ^ env#cgi_server_protocol);
  prerr_endline ("#cgi_path_info=" ^ env#cgi_path_info);
  prerr_endline ("#cgi_path_translated=" ^ env#cgi_path_translated);
  prerr_endline ("#cgi_query_string=" ^ env#cgi_query_string);
- let o = cgi#out_channel in
+
+ let accept = env#input_header_field ~default: "" "Accept" in
+ let content_type = content_type_of_string accept in
+ let met = get_method cgi in
+ try
+    let (header_fields, body) = Rest_query.query
+      content_type met context
+    in
+    let o = cgi#out_channel in
 
   (* Set the header. The header specifies that the page must not be
    * cached. This is important for dynamic pages called by the GET
    * method, otherwise the browser might display an old version of
      * the page.*)
-  cgi#set_header
-  ~cache:`No_cache
-  ~content_type:"application/json; charset=\"utf-8\""
-  ();
-  (* add here: read method and eventually json body. Compute the
-    response (Rest_query.query ...) and output the json response. *)
-  o#output_string "coucou"
+    cgi#set_header
+    ~cache:`No_cache
+    ~fields: (List.map (fun (f,v) -> (f, [v])) header_fields)
+    ();
+(*    ~content_type:"application/json; charset=\"utf-8\""*)
+    o#output body
+  with
+    Rest_query.Not_implemented msg ->
+      failwith (Printf.sprintf "method not implemented: %s" msg)
 ;;
 
 let process handler (cgi : Netcgi.cgi_activation) =
@@ -34,27 +57,32 @@ let process handler (cgi : Netcgi.cgi_activation) =
      *)
     cgi#out_channel#commit_work();
   with
-      error ->
-        (* An error has happened. Generate now an error page instead of
+    error ->
+      (* An error has happened. Generate now an error page instead of
          * the current page. By rolling back the output buffer, any
          * uncomitted material is deleted.
          *)
         cgi#output#rollback_work();
 
-        (* We change the header here only to demonstrate that this is
+      (* We change the header here only to demonstrate that this is
          * possible.
          *)
-        cgi#set_header
-          ~status:`Forbidden                  (* Indicate the error *)
-          ~cache:`No_cache
-          ~content_type:"test/ascii; charset=\"iso-8859-1\""
-          ();
+      cgi#set_header
+      ~status:`Forbidden                  (* Indicate the error *)
+      ~cache:`No_cache
+      ~content_type:"text/plain; charset=\"utf-8\""
+      ();
 
-        cgi#output#output_string "While processing the request an O'Caml exception has been raised:\n";
-        cgi#output#output_string ((Printexc.to_string error) ^ "\n");
+      cgi#output#output_string "While processing the request an O'Caml exception has been raised:\n";
+      let msg =
+        match error with
+          Failure s | Sys_error s -> s
+        | _ -> Printexc.to_string error
+      in
+      cgi#output#output_string (msg ^ "\n");
 
-        (* Now commit the error page: *)
-        cgi#output#commit_work()
+      (* Now commit the error page: *)
+      cgi#output#commit_work()
 ;;
 
 
@@ -126,12 +154,19 @@ let main () =
     prerr_endline (Printf.sprintf "host=%s, port=%d, path=%s" host port path);
   let rdf_wld = Grdf_init.open_storage config in
 
+  let context = {
+      Rest_types.ctx_rdf = rdf_wld ;
+      ctx_cfg = config ;
+      ctx_user = None ;
+    }
+  in
+
   let parallelizer =
     (*Netplex_mt.mt()*)     (* multi-threading *)
     Netplex_mp.mp()   (* multi-processing *)
   in
   let api =
-    { Nethttpd_services.dyn_handler = (fun _ -> process (rest_api rdf_wld host port));
+    { Nethttpd_services.dyn_handler = (fun _ -> process (rest_api context host port));
       dyn_activation = Nethttpd_services.std_activation `Std_activation_buffered;
       dyn_uri = Some "/";                 (* not needed *)
       dyn_translator = (fun s -> s); (* not needed *)

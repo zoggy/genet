@@ -61,3 +61,14 @@ val mkdir : ?verbose: bool -> string -> unit
 val string_of_file : string -> string
 (*/i==v=[File.string_of_file]=1.0====*)
 
+(*i==v=[Misc.try_finalize]=1.0====*)
+(** [try_finalize f x g y] applies [f] to [x] and return
+   the result or raises an exception, but in all cases
+   [g] is applied to [y] before returning or raising the exception.
+@author Didier R�my
+@version 1.0
+@cgname Misc.try_finalize*)
+val try_finalize : ('l -> 'm) -> 'l -> ('n -> unit) -> 'n -> 'm
+(*/i==v=[Misc.try_finalize]=1.0====*)
+
+val normalized_path : string -> string

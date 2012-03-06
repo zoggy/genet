@@ -9,6 +9,7 @@ type t = {
   db_host : string;
   uri_prefix : string;
   rest_api : string;
+  root_dir : string;
 }
 val read_config : string -> t
 val string_of_config : t -> string

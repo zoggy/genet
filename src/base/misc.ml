@@ -82,3 +82,52 @@ let string_of_file name =
   Buffer.contents buf
 (*/c==v=[File.string_of_file]=1.0====*)
 
+(*c==v=[Misc.try_finalize]=1.0====*)
+let try_finalize f x finally y =
+  let res =
+    try f x
+    with exn -> finally y; raise exn
+  in
+  finally y;
+  res
+(*/c==v=[Misc.try_finalize]=1.0====*)
+
+module Norm_path =
+  struct
+    (* mostly from Didier Remy's course. *)
+
+    let equal_node n1 n2 =
+      n1.Unix.st_ino = n2.Unix.st_ino && n1.Unix.st_dev = n2.Unix.st_dev;;
+
+    type info = { path : string; lstat : Unix.stats };;
+    let info path = { path = path; lstat = Unix.lstat path };;
+
+    let dir_find f path =
+      let dir_handle = Unix.opendir path in
+      let rec find () =
+        let name = Unix.readdir dir_handle in
+        if f name then name else find ()
+      in
+      try
+        try_finalize find () Unix.closedir dir_handle
+      with End_of_file -> raise Not_found;;
+
+    let normalized_path file =
+      let rec find_root node =
+        let parent_node = info (Filename.concat node.path Filename.parent_dir_name) in
+        if equal_node node.lstat parent_node.lstat then "/"
+        else
+          let found name =
+            name <> Filename.current_dir_name && name <> Filename.parent_dir_name &&
+            equal_node node.lstat (Unix.lstat (Filename.concat parent_node.path name)) in
+          let name = dir_find found parent_node.path in
+          Filename.concat (find_root parent_node) name
+      in
+      match (Unix.stat file).Unix.st_kind with
+        Unix.S_DIR -> find_root (info file)
+      | _ ->
+          let root = find_root (info (Filename.dirname file)) in
+          Filename.concat root (Filename.basename file)
+  end
+;;
+let normalized_path = Norm_path.normalized_path;;
