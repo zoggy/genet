@@ -194,13 +194,12 @@ AC_SUBST(XMLM_INCLUDES)
 
 AC_SUBST(DEBUG_LEVEL)
 
-ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/ocsigen/ocsigen.conf.xtmpl"
+ACFILES="master.Makefile src/base/version.ml src/base/install.ml"
 
 AC_OUTPUT($ACFILES)
 chmod a-w master.Makefile
 chmod a-w src/base/version.ml
 chmod a-w src/base/install.ml
-chmod a-w src/ocsigen/ocsigen.conf.xtmpl
 
 # List values
 echo "

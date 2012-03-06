@@ -179,16 +179,16 @@ let init_dir ?git_repo opts =
       None ->
         List.iter (fun d -> mkdir (Filename.concat in_dir d))
         [ "chains" ; "data" ];
-        let ocsigen_dir = Filename.concat in_dir "ocsigen" in
+        let web_dir = Filename.concat in_dir "web" in
         begin
           let com = Printf.sprintf "cp -r %s %s"
-            (Filename.quote Install.share_ocsigen_dir)
-            (Filename.quote ocsigen_dir)
+            (Filename.quote Install.share_web_dir)
+            (Filename.quote web_dir)
           in
           if verbose then
             print_endline
             (Printf.sprintf "copying %s to %s"
-             Install.share_ocsigen_dir ocsigen_dir);
+             Install.share_web_dir web_dir);
           match Sys.command com with
             0 -> ()
           | _ -> failwith (Printf.sprintf "Command failed: %s" com)

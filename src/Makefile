@@ -35,9 +35,9 @@ LINKFLAGS_BYTE=$(INCLUDES)
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST) $(GENET_OCSIGEN_CONF)
+TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST)
 TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE) \
-	$(GENET_REST_BYTE) $(GENET_OCSIGEN_CONF_BYTE)
+	$(GENET_REST_BYTE)
 
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
@@ -215,12 +215,6 @@ GENET_QUERY_CMXFILES=	driver/options.cmx \
 GENET_QUERY_CMOFILES=$(GENET_QUERY_CMXFILES:.cmx=.cmo)
 GENET_QUERY_CMIFILES=$(GENET_QUERY_CMXFILES:.cmx=.cmi)
 
-# Genet-ocsigen-conf files
-GENET_OCSIGEN_CONF_CMXFILES=	driver/options.cmx \
-	driver/main_ocsigen_conf.cmx
-GENET_OCSIGEN_CONF_CMOFILES=$(GENET_OCSIGEN_CONF_CMXFILES:.cmx=.cmo)
-GENET_OCSIGEN_CONF_CMIFILES=$(GENET_OCSIGEN_CONF_CMXFILES:.cmx=.cmi)
-
 # Genet-rest files
 GENET_REST_CMXFILES=\
 	driver/options.cmx \
@@ -268,14 +262,6 @@ $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) threads.cma $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
-
-$(GENET_OCSIGEN_CONF): $(LIB_BASE)	$(GENET_OCSIGEN_CONF_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(XTMPL_LIBS) $^
-
-$(GENET_OCSIGEN_CONF_BYTE): $(LIB_BASE_BYTE)	$(GENET_OCSIGEN_CONF_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(XTMPL_LIBS_BYTE) $^
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
 	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)
@@ -393,14 +379,13 @@ distrib: all
 #################
 # Installation
 #################
-install: install-ocsigen-files
+install: install-web-files
 
-install-ocsigen-files:
-	$(MKDIR) $(SHAREDIR)/ocsigen
-	$(CP) ocsigen/ocsigen.conf.xtmpl $(SHAREDIR)/ocsigen/
-	$(CP) -r ocsigen/tmpl $(SHAREDIR)/ocsigen/
-	$(CP) $(ROOT)/website/genet-logo.svg $(SHAREDIR)/ocsigen/
-	$(LESSC) $(ROOT)/website/tmpl/style.less > $(SHAREDIR)/ocsigen/style.css
+install-web-files:
+	$(MKDIR) $(SHAREDIR)/web
+	$(CP) -r tmpl $(SHAREDIR)/web/
+	$(CP) $(ROOT)/website/genet-logo.svg $(SHAREDIR)/web/
+	$(LESSC) $(ROOT)/website/tmpl/style.less > $(SHAREDIR)/web/style.css
 
 ###########################
 # additional dependencies

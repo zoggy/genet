@@ -6,6 +6,4 @@ let install_dir = "@INSTALLDIR@";;
 let share_dir = "@SHAREDIR@";;
 let bin_dir = "@BINDIR@";;
 
-let share_ocsigen_dir = Filename.concat share_dir "ocsigen";;
-let ocsigen_conf_xtmpl =
-  Filename.concat share_ocsigen_dir "ocsigen.conf.xtmpl";;
+let share_web_dir = Filename.concat share_dir "web";;
