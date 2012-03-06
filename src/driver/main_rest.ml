@@ -18,7 +18,8 @@ let rest_api rdf_wld host port (cgi : Netcgi.cgi_activation) =
   ~cache:`No_cache
   ~content_type:"application/json; charset=\"utf-8\""
   ();
-
+  (* add here: read method and eventually json body. Compute the
+    response (Rest_query.query ...) and output the json response. *)
   o#output_string "coucou"
 ;;
 
