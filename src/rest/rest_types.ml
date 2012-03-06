@@ -17,6 +17,7 @@ type thing =
   | Branch of uri
   | Version of uri
   | Intf of uri
+  | Filetype of uri
   | Other of string
 ;;
 
@@ -30,10 +31,10 @@ type context =
     ctx_user : user option ;
   }
 
-type get_handler = thing -> arg list -> context -> response
-type delete_handler = thing -> context -> response
-type post_handler = thing -> Yojson.Basic.json -> context -> response
-type put_handler = thing -> Yojson.Basic.json -> context -> response
+type get_handler = context -> thing -> arg list -> response
+type delete_handler = context -> thing -> response
+type post_handler = context -> thing -> Yojson.Basic.json -> response
+type put_handler = context -> thing -> Yojson.Basic.json -> response
 
 type content_type_handlers = {
   h_get : get_handler ;

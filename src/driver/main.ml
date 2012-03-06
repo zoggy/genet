@@ -222,7 +222,9 @@ let main () =
           | Init_db -> Grdf_init.init rdf_wld
           | Serialize_rdf ->
               begin
-                match Rdf_model.to_string rdf_wld.Grdf_types.wld_model ~name: "turtle" with
+                match Rdf_model.to_string rdf_wld.Grdf_types.wld_model
+                  ~name: opts.Options.rdf_output_format
+                with
                   None -> failwith "Failed to serialize model"
                 | Some string -> print_string string
               end

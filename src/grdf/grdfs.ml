@@ -85,6 +85,8 @@ let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" pa
 
 (** {2 Utilities} *)
 
+
+
 let is_a world model ~sub ~obj =
   dbg ~level: 1 (fun () -> "Grdfs.is_a");
   let pred = Rdf_node.new_from_uri_string world rdf_type in
@@ -211,4 +213,8 @@ let delete_from_sparql wld query =
   )
   stream
 ;;
+
+let class_of wld sub =
+  target_uri wld sub rdf_type;;
+
 

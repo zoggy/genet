@@ -176,6 +176,7 @@ LIB_REST_A=$(LIB_REST:.cmxa=.a)
 
 REST_CMXFILES= \
 	rest/rest_types.cmx \
+	rest/rest_xhtml.cmx \
 	rest/rest_query.cmx
 
 #	grdf/constant.cmx \

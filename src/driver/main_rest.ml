@@ -1,5 +1,7 @@
 (** Main module of the REST web API. *)
 
+open Rest_types;;
+
 let content_type_of_string s =
   match s with
     "application/json" -> Rest_types.Json
@@ -8,7 +10,7 @@ let content_type_of_string s =
 
 let get_method cgi =
   match cgi#request_method with
-    `GET | `HEAD -> Rest_types.Get ("", [])
+    `GET | `HEAD -> Rest_types.Get (cgi#environment#cgi_path_translated, [])
   | `DELETE -> Rest_types.Delete ""
   | `POST -> Rest_types.Post ("", `Null)
   | `PUT arg -> Rest_types.Put ("", `Null)
@@ -27,10 +29,8 @@ let rest_api context host port (cgi : Netcgi.cgi_activation) =
  let met = get_method cgi in
  try
     let (header_fields, body) = Rest_query.query
-      content_type met context
+      content_type context met
     in
-    let o = cgi#out_channel in
-
   (* Set the header. The header specifies that the page must not be
    * cached. This is important for dynamic pages called by the GET
    * method, otherwise the browser might display an old version of
@@ -39,8 +39,8 @@ let rest_api context host port (cgi : Netcgi.cgi_activation) =
     ~cache:`No_cache
     ~fields: (List.map (fun (f,v) -> (f, [v])) header_fields)
     ();
-(*    ~content_type:"application/json; charset=\"utf-8\""*)
-    o#output body
+    prerr_endline ("body="^body);
+    cgi#out_channel#output_string body
   with
     Rest_query.Not_implemented msg ->
       failwith (Printf.sprintf "method not implemented: %s" msg)
@@ -152,21 +152,24 @@ let main () =
 
   if opts.Options.verb_level > 0 then
     prerr_endline (Printf.sprintf "host=%s, port=%d, path=%s" host port path);
-  let rdf_wld = Grdf_init.open_storage config in
-
-  let context = {
-      Rest_types.ctx_rdf = rdf_wld ;
-      ctx_cfg = config ;
-      ctx_user = None ;
-    }
-  in
 
   let parallelizer =
     (*Netplex_mt.mt()*)     (* multi-threading *)
     Netplex_mp.mp()   (* multi-processing *)
   in
+  let fun_handler _ =
+    let rdf_wld = Grdf_init.open_storage config in
+    let context = {
+        Rest_types.ctx_rdf = rdf_wld ;
+        ctx_cfg = config ;
+        ctx_user = None ;
+      }
+    in
+    process (rest_api context host port)
+  in
+
   let api =
-    { Nethttpd_services.dyn_handler = (fun _ -> process (rest_api context host port));
+    { Nethttpd_services.dyn_handler = fun_handler ;
       dyn_activation = Nethttpd_services.std_activation `Std_activation_buffered;
       dyn_uri = Some "/";                 (* not needed *)
       dyn_translator = (fun s -> s); (* not needed *)
