@@ -1,6 +1,7 @@
 project_name = "Genet-test"
 project_id = "genet-test"
 db = {
+  engine = mysql
   name = genet
   user = guesdon
   host = localhost

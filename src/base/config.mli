@@ -3,6 +3,7 @@
 type t = {
   project_name : string;
   project_id : string;
+  db_engine : string;
   db_name : string;
   db_user : string;
   db_passwd : string;

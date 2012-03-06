@@ -12,14 +12,15 @@ let open_storage config =
   in
   let storage =
     try Rdf_storage.new_storage world
-      ~options ~factory: "mysql" ~name: "genet"
+      ~options ~factory: config.db_engine ~name: "genet"
     with
-    Rdf_storage.Storage_creation_failed _ ->
+      Rdf_storage.Storage_creation_failed _ ->
         prerr_endline "Storage may not exist, try to create it";
         let options = "new='yes'"^options in
         Rdf_storage.new_storage world
-        ~options ~factory: "mysql" ~name: "genet"
+        ~options ~factory: config.db_engine ~name: "genet"
   in
+  prerr_endline "coucou le model va etre créé";
   let model = Rdf_model.new_model world storage in
   let rasqal_world = Rdf_rasqal.new_world () in
   Rdf_rasqal.open_world rasqal_world;

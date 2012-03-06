@@ -138,7 +138,7 @@ let config_tree host port =
            `Parameter ("max_jobs_per_thread", `Int 1);  (* Everything else is senseless *)
            `Parameter ("min_free_jobs_capacity", `Int 1);
            `Parameter ("max_free_jobs_capacity", `Int 1);
-           `Parameter ("max_threads", `Int 20);
+           `Parameter ("max_threads", `Int 1);
          ]);
       ]);
    ]

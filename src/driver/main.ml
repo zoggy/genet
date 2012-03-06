@@ -239,6 +239,7 @@ let main () =
             prerr_endline (Grdf_types.string_of_error e);
             exit 1
       end;
+      Unix.sleep 3;
       Grdf_init.close rdf_wld
 ;;
 

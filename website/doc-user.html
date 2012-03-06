@@ -78,8 +78,14 @@ mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&lt;@localhost identifi
 <p>
 With postgresql:
 <hcode lang="sql">
-bla bla bla
+# su
+# su postgres
+# createuser [ --superuser ] &lt;dbuser&gt;
+# ^D
+# ^D
+# createdb -E UTF8 -T template0  &lt;db&gt;
 </hcode>
+Refer to some <ext-a href="https://help.ubuntu.com/community/PostgreSQL">Postgresql documentation</ext-a> for details.
 </p>
 </subsection>
 
