@@ -63,14 +63,17 @@ let rec thing_of_path ctx path =
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None ->
       begin
-        try
-          let (f, t) = List.assoc uri static_files in
-          let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
-            ["in" ; "web" ; f]
+        match Grdfs.is_uri_tool_versions wld uri with
+          Some uri -> Versions uri
+        | None ->
+            try
+              let (f, t) = List.assoc uri static_files in
+              let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
+                ["in" ; "web" ; f]
           in
-          Static_file (f, t)
-        with
-          Not_found -> Other uri
+              Static_file (f, t)
+            with
+              Not_found -> Other uri
       end
   | Some c when c = Grdfs.genet_tool -> Tool uri
   | Some c when c = Grdfs.genet_branch -> Branch uri

@@ -121,7 +121,7 @@ let fun_if env args subs =
   prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));
   let pred (att, v) =
     let s = Xtmpl.apply env (Printf.sprintf "<%s/>" att) in
-    prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);
+    (*prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);*)
     s = v
   in
   let cond = List.for_all pred args in
@@ -129,7 +129,7 @@ let fun_if env args subs =
     (function Xtmpl.D _ -> false | _ -> true)
     subs
   in
-  prerr_endline (Printf.sprintf "if: length(subs)=%d" (List.length subs));
+  (*prerr_endline (Printf.sprintf "if: length(subs)=%d" (List.length subs));*)
   match cond, subs with
   | true, [] -> failwith "<if>: missing children"
   | true, h :: _

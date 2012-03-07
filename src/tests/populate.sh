@@ -6,6 +6,8 @@ WHY=`./genet add tool why`
 ./genet add version ${WHY} ${WHY}/branches/1.x 1.2
 ./genet add version ${WHY} ${WHY}/branches/1.x 1.3
 ./genet add version ${WHY} ${WHY}/branches/2.x 2.1
+./genet add version ${WHY} ${WHY}/branches/2.x 07a10043b2f4ee1d9edae560b1c567029e59dd21
+./genet add version ${WHY} ${WHY}/branches/2.x ff51ebabd5953c54607fdd3a2251fb8095806cfe
 ./genet add interface ${WHY}/branches/1.x prove
 ./genet add interface ${WHY}/branches/1.x prove2
 ./genet add filetype "coq" v "coq file"

@@ -117,8 +117,6 @@ let remove_prefix prefix uri =
 
 (** {2 Utilities} *)
 
-
-
 let is_a world model ~sub ~obj =
   dbg ~level: 1 (fun () -> "Grdfs.is_a");
   let pred = Rdf_node.new_from_uri_string world rdf_type in
@@ -138,6 +136,20 @@ let is_a_tool = is_a_ genet_tool;;
 let is_a_branch = is_a_ genet_branch;;
 let is_a_version = is_a_ genet_version;;
 let is_a_intf = is_a_ genet_intf;;
+
+let is_uri_tool_versions wld uri =
+  match Filename.basename uri with
+    "versions" ->
+      begin
+        let uri = Filename.dirname uri in
+        let node = Rdf_node.new_from_uri_string wld.wld_world uri in
+        if is_a_tool wld node then
+          Some uri
+        else
+          None
+      end
+  | _ -> None
+;;
 
 let add_name wld sub name =
   let pred = Rdf_node.new_from_uri_string wld.wld_world genet_name in

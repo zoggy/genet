@@ -110,6 +110,16 @@ let a_filetype ctx uri =
   a ~href: uri name
 ;;
 
+let a_tool ctx uri =
+  let name = Grdf_tool.name ctx.ctx_rdf uri in
+  a ~href: uri name
+;;
+
+let a_version ctx uri =
+  let name = Grdf_version.name ctx.ctx_rdf uri in
+  a ~href: uri name
+;;
+
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_intf.ports ctx.ctx_rdf dir uri in
   let of_port (n, p) =
@@ -166,7 +176,6 @@ let get_intf ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
-  prerr_endline contents;
   ([ctype ()], tool_page ctx ~title contents)
 ;;
 
@@ -196,6 +205,21 @@ let get_filetypes ctx =
   ([ctype ()], filetype_page ctx ~title: "Filetypes" contents)
 ;;
 
+let get_versions ctx tool =
+  let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
+  let heads = ["Active" ; "Version" ; "Date"] in
+  let f version = ["" ; a_version ctx version ; ""] in
+  let rows = List.sort Pervasives.compare (List.map f versions) in
+  let versions_table = table ~heads rows in
+  let contents =
+    Printf.sprintf "<p>Versions of %s:</p><p>%s</p>"
+      (a_tool ctx tool)
+      versions_table
+  in
+  let title = Printf.sprintf "Versions of %s" (Grdf_tool.name ctx.ctx_rdf tool) in
+  ([ctype ()], tool_page ctx ~title contents)
+;;
+
 let get_root ctx =
   let dot = Grdf_dot.dot ~edge_labels: false ctx.ctx_rdf in
   let svg = dot_to_svg dot in
@@ -213,6 +237,7 @@ let get ctx thing args =
   | Intfs uri -> get_intfs ctx uri
   | Filetype uri -> get_filetype ctx uri
   | Filetypes -> get_filetypes ctx
+  | Versions uri -> get_versions ctx uri
 
-  | _ -> ([ctype ()], page ctx ~title: "coucou" "Coucou")
+  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")
 ;;

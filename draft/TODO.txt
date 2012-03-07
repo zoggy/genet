@@ -6,3 +6,10 @@
   use this information when opening the storage
 
 - configure: detect ocamlnet libraries
+
+Add information:
+- date of versions
+- description of interfaces
+- instanciated chains
+- a class and resources for /tools/xxx/interfaces/yyy/input
+- a class and resources for /tools/xxx/interfaces/yyy/output
