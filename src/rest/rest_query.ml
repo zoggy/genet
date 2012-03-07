@@ -49,6 +49,31 @@ let uri_of_query_path ctx path =
   uri
 ;;
 
+let try_is_uri_of wld uri =
+  let l =
+    [
+      Grdfs.is_uri_tool_versions, (fun uri -> Versions uri) ;
+      Grdfs.is_uri_tool_branches, (fun uri -> Branches uri) ;
+      Grdfs.is_uri_tool_interfaces, (fun uri -> Intfs uri) ;
+
+      Grdfs.is_uri_branch_versions, (fun uri -> Versions uri) ;
+      Grdfs.is_uri_branch_branches, (fun uri -> Branches uri) ;
+      Grdfs.is_uri_branch_interfaces, (fun uri -> Intfs uri) ;
+
+      Grdfs.is_uri_version_interfaces, (fun uri -> Intfs uri) ;
+    ]
+  in
+  let rec iter = function
+    [] -> None
+  | (test, build) :: q ->
+      match test wld uri with
+        None -> iter q
+      | Some uri -> Some (build uri)
+  in
+  iter l
+;;
+
+
 let rec thing_of_path ctx path =
   prerr_endline (Printf.sprintf "thing_of_path %s" path);
   (* we must change the path to an uri according to rest_api *)
@@ -63,14 +88,15 @@ let rec thing_of_path ctx path =
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None ->
       begin
-        match Grdfs.is_uri_tool_versions wld uri with
-          Some uri -> Versions uri
+        match try_is_uri_of wld uri with
+          Some res -> res
         | None ->
             try
+              prerr_endline ("not a special uri: "^uri);
               let (f, t) = List.assoc uri static_files in
               let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
                 ["in" ; "web" ; f]
-          in
+              in
               Static_file (f, t)
             with
               Not_found -> Other uri

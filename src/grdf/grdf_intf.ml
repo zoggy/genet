@@ -105,17 +105,23 @@ let add wld ~parent name =
   uri
 ;;
 
+let explicit_intfs_of wld uri =
+  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  Grdfs.target_uris wld source Grdfs.genet_hasintf
+;;
+
+let explicit_no_intfs_of wld uri =
+  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  Grdfs.target_uris wld source Grdfs.genet_nointf
+;;
+
 let intfs_of wld ?(recur=false) uri =
   dbg ~level: 1 (fun () -> "Grdf_intf.intfs uri="^uri);
-  let get_of uri =
-    let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-    Grdfs.target_uris wld source Grdfs.genet_hasintf
-  in
   if recur then
     begin
       let add set uri = Sset.add uri set in
       let rec iter set uri =
-        let uris = get_of uri in
+        let uris = explicit_intfs_of wld uri in
         let set = List.fold_left add set uris in
         match Grdf_branch.parent wld uri with
           None -> set
@@ -125,7 +131,7 @@ let intfs_of wld ?(recur=false) uri =
       Sset.elements set
     end
   else
-    get_of uri
+    explicit_intfs_of wld uri
 ;;
 
 let intfs_of_tool wld uri =
@@ -136,6 +142,34 @@ let intfs_of_tool wld uri =
     Sset.empty branches
   in
   Sset.elements set
+;;
+
+let compute_intfs_of wld uri =
+  let set_of_list = List.fold_left (fun set x -> Sset.add x set) Sset.empty in
+  let rec inher = function
+    None -> Sset.empty
+  | Some (uri, _) ->
+      let set = inher (Grdf_branch.parent wld uri) in
+      let explicit = set_of_list (explicit_intfs_of wld uri) in
+      let explicit_no = set_of_list (explicit_no_intfs_of wld uri) in
+      Sset.union (Sset.diff set explicit_no) explicit
+  in
+  let node = Rdf_node.new_from_uri_string wld.wld_world uri in
+  if Grdfs.is_a_tool wld node then
+    (* show all interfaces *)
+    (set_of_list (intfs_of_tool wld uri), Sset.empty)
+  else
+    begin  
+      let explicit = set_of_list (explicit_intfs_of wld uri) in
+      let parent =
+        if Grdfs.is_a_version wld node then
+          (match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false))
+        else
+     Grdf_branch.parent wld uri
+      in
+      let inherited = inher parent in
+      (explicit, inherited)
+    end
 ;;
 
 let implementors wld uri =

@@ -95,6 +95,7 @@ let uri_filetypes prefix = Printf.sprintf "%sfiletypes" prefix;;
 let uri_filetype ~prefix name =
   Printf.sprintf "%s/%s" (uri_filetypes prefix) name;;
 
+let uri_branches parent = Printf.sprintf "%s/branches" parent;;
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
 
@@ -137,19 +138,30 @@ let is_a_branch = is_a_ genet_branch;;
 let is_a_version = is_a_ genet_version;;
 let is_a_intf = is_a_ genet_intf;;
 
-let is_uri_tool_versions wld uri =
+let is_uri_for_ f_is string wld uri =
   match Filename.basename uri with
-    "versions" ->
+    s when s = string ->
       begin
         let uri = Filename.dirname uri in
         let node = Rdf_node.new_from_uri_string wld.wld_world uri in
-        if is_a_tool wld node then
+        if f_is wld node then
           Some uri
         else
           None
       end
-  | _ -> None
-;;
+  | _ -> None;;
+
+let is_uri_tool_ = is_uri_for_ is_a_tool;;
+let is_uri_tool_versions = is_uri_tool_ "versions";;
+let is_uri_tool_interfaces = is_uri_tool_ "interfaces";;
+let is_uri_tool_branches = is_uri_tool_ "branches";;
+
+let is_uri_branch_ = is_uri_for_ is_a_branch;;
+let is_uri_branch_versions = is_uri_branch_ "versions";;
+let is_uri_branch_interfaces = is_uri_branch_ "interfaces";;
+let is_uri_branch_branches = is_uri_branch_ "branches";;
+
+let is_uri_version_interfaces = is_uri_for_ is_a_version "interfaces";;
 
 let add_name wld sub name =
   let pred = Rdf_node.new_from_uri_string wld.wld_world genet_name in

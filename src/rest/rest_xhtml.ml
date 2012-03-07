@@ -80,14 +80,15 @@ let get_tools ctx =
     let n_versions = List.length (Grdf_version.versions_of wld ~recur: true uri) in
     let href_versions = Grdfs.uri_versions uri in
 
-    let n_branches = List.length (Grdf_branch.subs wld ~recur: true uri) in
+    let n_branches = List.length (Grdf_branch.subs wld ~recur: false uri) in
+    let href_branches = Grdfs.uri_branches uri in
 
     let n_intfs = List.length (Grdf_intf.intfs_of_tool wld uri) in
     let href_intfs = Grdfs.uri_intfs uri in
 
     [ a ~href: uri (Grdf_tool.name wld uri) ;
       a ~href: href_versions (string_of_int n_versions) ;
-      string_of_int n_branches;
+      a ~href: href_branches (string_of_int n_branches);
       a ~href: href_intfs (string_of_int n_intfs) ;
     ]
   in
@@ -132,6 +133,12 @@ let xhtml_of_ports ctx dir uri =
   | _ ->
       let sep = match dir with Grdf_intf.In -> " -&gt; " | Grdf_intf.Out -> " * " in
       String.concat sep (List.map of_port ports)
+;;
+
+let xhtml_of_intf_type ctx uri =
+  Printf.sprintf "%s -&gt; %s"
+    (xhtml_of_ports ctx Grdf_intf.In uri)
+    (xhtml_of_ports ctx Grdf_intf.Out uri)
 ;;
 
 let get_intf ctx uri =
@@ -179,9 +186,38 @@ let get_intf ctx uri =
   ([ctype ()], tool_page ctx ~title contents)
 ;;
 
+let intf_list ctx intfs =
+  let heads = [ "Name" ; "Type" ] in
+  let f intf =
+    [ a ~href: intf (Grdf_intf.name ctx.ctx_rdf intf) ;
+      Printf.sprintf "<code>%s</code>" (xhtml_of_intf_type ctx intf) ;
+    ]
+  in
+  let rows = List.map f intfs in
+  table ~heads rows
+;;
+
 let get_intfs ctx uri =
-  let title = Grdfs.uri_intfs uri in
-  ([ctype ()], tool_page ctx ~title "")
+  let title = Printf.sprintf "Interfaces of %s"
+    (Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri)
+  in
+  let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
+  let intfs = intf_list ctx (Sset.elements explicit) in
+  let inherited_intfs = intf_list ctx (Sset.elements inherited) in
+  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
+  let env = List.fold_left
+    (fun e (name, v) -> Xtmpl.env_add_att name v e)
+    Xtmpl.env_empty
+    [
+      "has_intfs", (if Sset.is_empty explicit then "" else "true") ;
+      "intfs", intfs ;
+      "has_inherited_intfs", (if Sset.is_empty inherited then "" else "true") ;
+      "inherited_intfs", inherited_intfs ;
+    ]
+  in
+  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
+  let contents = Xtmpl.apply_from_file env tmpl in
+  ([ctype ()], tool_page ctx ~title contents)
 ;;
 
 let get_filetype ctx uri =
