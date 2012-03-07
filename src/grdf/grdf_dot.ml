@@ -6,16 +6,16 @@ let dot_id uri = Printf.sprintf "N%s" (md5 uri);;
 
 let tool_bgcolor2 = "#d7d7d9";;
 let tool_bgcolor = "#e7e7e9";;
-let tool_fgcolor = "#black";;
+let tool_fgcolor = "black";;
 
 let version_bgcolor = "#a1d99b";;
-let version_fgcolor = "#black";;
+let version_fgcolor = "black";;
 
 let branch_bgcolor = "#ccebc5";;
-let branch_fgcolor = "#black";;
+let branch_fgcolor = "black";;
 
 let intf_bgcolor = "#fdcdac";;
-let intf_fgcolor = "#black";;
+let intf_fgcolor = "black";;
 
 let ftype_bgcolor = "#0868ac";;
 let ftype_fgcolor = "#white";;

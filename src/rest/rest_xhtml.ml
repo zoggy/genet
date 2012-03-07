@@ -65,7 +65,7 @@ let a_by_class ctx uri =
   let cl =
     match Grdfs.class_of_uri_string ctx.ctx_rdf uri with
       None -> ""
-    | Some cl -> String.capitalize (Grdfs.string_of_class cl)
+    | Some cl -> Grdfs.string_of_class cl
   in
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   Printf.sprintf "%s%s"
@@ -118,6 +118,11 @@ let a_tool ctx uri =
 
 let a_version ctx uri =
   let name = Grdf_version.name ctx.ctx_rdf uri in
+  a ~href: uri name
+;;
+
+let a_branch ctx uri =
+  let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   a ~href: uri name
 ;;
 
@@ -256,6 +261,27 @@ let get_versions ctx tool =
   ([ctype ()], tool_page ctx ~title contents)
 ;;
 
+let get_branches ctx uri =
+  let branches = Grdf_branch.subs ctx.ctx_rdf uri in
+  let branches_table =
+    match branches with
+      [] -> "No branch."
+    | _ ->
+        let heads = ["Branch"] in
+        let f br = [a_branch ctx br] in
+        let rows = List.sort Pervasives.compare (List.map f branches) in
+        table ~heads rows
+  in
+  let contents =
+    Printf.sprintf "<p>Branches of %s:</p><p>%s</p>"
+      (a_by_class ctx uri)
+      branches_table
+  in
+  let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  let title = Printf.sprintf "Branches of %s" name in
+  ([ctype ()], tool_page ctx ~title contents)
+;;
+
 let get_root ctx =
   let dot = Grdf_dot.dot ~edge_labels: false ctx.ctx_rdf in
   let svg = dot_to_svg dot in
@@ -274,6 +300,7 @@ let get ctx thing args =
   | Filetype uri -> get_filetype ctx uri
   | Filetypes -> get_filetypes ctx
   | Versions uri -> get_versions ctx uri
+  | Branches uri -> get_branches ctx uri
 
   | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")
 ;;

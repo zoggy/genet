@@ -133,9 +133,9 @@ let main () =
     | Some Dot -> dot rdf_wld
     | Some Test -> test rdf_wld
   end;
-  Unix.sleep 2;
+(*  Unix.sleep 2;*)
   Grdf_init.close rdf_wld;
-  Unix.sleep 3;
+(*  Unix.sleep 3;*)
 
 ;;
 
