@@ -26,9 +26,9 @@ let intfs wld =
     | Some uri ->
         match Rdf_node.get_uri uri with
           None -> acc
-        | Some uri -> (Rdf_uri.as_string uri :: acc)
+        | Some uri -> Sset.add (Rdf_uri.as_string uri) acc
   in
-  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
+  Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f Sset.empty
 ;;
 
 let name wld uri =
@@ -105,30 +105,30 @@ let add wld ~parent name =
   uri
 ;;
 
+let sset_of_list = List.fold_left (fun set x -> Sset.add x set) Sset.empty ;;
+
 let explicit_intfs_of wld uri =
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-  Grdfs.target_uris wld source Grdfs.genet_hasintf
+  sset_of_list (Grdfs.target_uris wld source Grdfs.genet_hasintf)
 ;;
 
 let explicit_no_intfs_of wld uri =
   let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-  Grdfs.target_uris wld source Grdfs.genet_nointf
+  sset_of_list (Grdfs.target_uris wld source Grdfs.genet_nointf)
 ;;
 
 let intfs_of wld ?(recur=false) uri =
   dbg ~level: 1 (fun () -> "Grdf_intf.intfs uri="^uri);
   if recur then
     begin
-      let add set uri = Sset.add uri set in
       let rec iter set uri =
         let uris = explicit_intfs_of wld uri in
-        let set = List.fold_left add set uris in
+        let set = Sset.union set uris in
         match Grdf_branch.parent wld uri with
           None -> set
         | Some (uri, _) -> iter set uri
       in
-      let set = iter Sset.empty uri in
-      Sset.elements set
+      iter Sset.empty uri
     end
   else
     explicit_intfs_of wld uri
@@ -136,31 +136,27 @@ let intfs_of wld ?(recur=false) uri =
 
 let intfs_of_tool wld uri =
   let branches = Grdf_branch.subs wld ~recur: true uri in
-  let add set uri = Sset.add uri set in
-  let set = List.fold_left
-    (fun acc b -> List.fold_left add acc (intfs_of wld b))
-    Sset.empty branches
-  in
-  Sset.elements set
+  List.fold_left
+    (fun acc b -> Sset.union acc (intfs_of wld b))
+    (explicit_intfs_of wld uri) branches
 ;;
 
 let compute_intfs_of wld uri =
-  let set_of_list = List.fold_left (fun set x -> Sset.add x set) Sset.empty in
   let rec inher = function
     None -> Sset.empty
   | Some (uri, _) ->
       let set = inher (Grdf_branch.parent wld uri) in
-      let explicit = set_of_list (explicit_intfs_of wld uri) in
-      let explicit_no = set_of_list (explicit_no_intfs_of wld uri) in
+      let explicit = explicit_intfs_of wld uri in
+      let explicit_no = explicit_no_intfs_of wld uri in
       Sset.union (Sset.diff set explicit_no) explicit
   in
   let node = Rdf_node.new_from_uri_string wld.wld_world uri in
   if Grdfs.is_a_tool wld node then
     (* show all interfaces *)
-    (set_of_list (intfs_of_tool wld uri), Sset.empty)
+    (intfs_of_tool wld uri, Sset.empty)
   else
-    begin  
-      let explicit = set_of_list (explicit_intfs_of wld uri) in
+    begin
+      let explicit = explicit_intfs_of wld uri in
       let parent =
         if Grdfs.is_a_version wld node then
           (match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false))

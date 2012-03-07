@@ -15,15 +15,15 @@ let dot_to_svg dot =
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
-let page ?env ctx ~title contents =
-  let s = Rest_xpage.page ctx.ctx_cfg ?env
-    ~title [Xtmpl.xml_of_string contents]
+let page ?(env=Xtmpl.env_empty) ctx ~title ?wtitle contents =
+  let s = Rest_xpage.page ctx.ctx_cfg ~env
+    ~title ?wtitle [Xtmpl.xml_of_string contents]
   in
   Printf.sprintf "<!DOCTYPE html>\n%s\n" s
 ;;
 
-let page_active v =
-  let env = Xtmpl.env_add_att ("navbar-"^v) "active" Xtmpl.env_empty in
+let page_active ?(env=Xtmpl.env_empty) v =
+  let env = Xtmpl.env_add_att ("navbar-"^v) "active" env in
   page ~env
 ;;
 
@@ -83,7 +83,7 @@ let get_tools ctx =
     let n_branches = List.length (Grdf_branch.subs wld ~recur: false uri) in
     let href_branches = Grdfs.uri_branches uri in
 
-    let n_intfs = List.length (Grdf_intf.intfs_of_tool wld uri) in
+    let n_intfs = Sset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
     let href_intfs = Grdfs.uri_intfs uri in
 
     [ a ~href: uri (Grdf_tool.name wld uri) ;
@@ -202,10 +202,7 @@ let intf_list ctx intfs =
   table ~heads rows
 ;;
 
-let get_intfs ctx uri =
-  let title = Printf.sprintf "Interfaces of %s"
-    (Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri)
-  in
+let xhtml_of_intfs_of ctx uri =
   let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
   let intfs = intf_list ctx (Sset.elements explicit) in
   let inherited_intfs = intf_list ctx (Sset.elements inherited) in
@@ -221,8 +218,16 @@ let get_intfs ctx uri =
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_from_file env tmpl in
-  ([ctype ()], tool_page ctx ~title contents)
+  Xtmpl.apply_from_file env tmpl
+;;
+
+let get_intfs ctx uri =
+  let pre = "Interfaces of " in
+  let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  let wtitle = Printf.sprintf "%s %s" pre name in
+  let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
+  let contents = xhtml_of_intfs_of ctx uri in
+  ([ctype ()], tool_page ctx ~title ~wtitle contents)
 ;;
 
 let get_filetype ctx uri =
@@ -246,6 +251,16 @@ let get_filetypes ctx =
   ([ctype ()], filetype_page ctx ~title: "Filetypes" contents)
 ;;
 
+let get_version ctx uri =
+  let wtitle = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  let name = Grdf_version.name ctx.ctx_rdf uri in
+  let tool = Grdf_version.tool_of_version uri in
+  let title = Printf.sprintf "%s / %s" (a_tool ctx tool) (a ~href: uri name) in
+  prerr_endline (Printf.sprintf "wtitle=%s, title=%s" wtitle title);
+  let contents = xhtml_of_intfs_of ctx uri in
+  ([ctype ()], tool_page ctx ~title ~wtitle contents)
+;;
+
 let get_versions ctx tool =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
   let heads = ["Active" ; "Version" ; "Date"] in
@@ -259,6 +274,14 @@ let get_versions ctx tool =
   in
   let title = Printf.sprintf "Versions of %s" (Grdf_tool.name ctx.ctx_rdf tool) in
   ([ctype ()], tool_page ctx ~title contents)
+;;
+
+let get_branch ctx uri =
+  let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  let dot = Grdf_dot.dot_of_branch ctx.ctx_rdf uri in
+  let svg = dot_to_svg dot in
+  let contents = svg in
+  ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
 let get_branches ctx uri =
@@ -295,6 +318,8 @@ let get ctx thing args =
   | Static_file (f, t) -> ([ctype ~t ()], Misc.string_of_file f)
   | Tool uri -> get_tool ctx uri
   | Tools -> get_tools ctx
+  | Branch uri -> get_branch ctx uri
+  | Version uri -> get_version ctx uri
   | Intf uri -> get_intf ctx uri
   | Intfs uri -> get_intfs ctx uri
   | Filetype uri -> get_filetype ctx uri
@@ -302,5 +327,5 @@ let get ctx thing args =
   | Versions uri -> get_versions ctx uri
   | Branches uri -> get_branches ctx uri
 
-  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")
+(*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

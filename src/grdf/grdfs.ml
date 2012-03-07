@@ -85,6 +85,7 @@ let uri_chain ~prefix ~chain =
 let uri_versions ~tool = Printf.sprintf "%s/versions" tool;;
 let uri_version ~tool ~version =
   Printf.sprintf "%s/%s" (uri_versions tool) version;;
+let uri_tool_of_version uri = Filename.dirname (Filename.dirname uri);;
 
 let uri_intfs ~tool = Printf.sprintf "%s/interfaces" tool;;
 let uri_intf ~tool ~intf =

@@ -79,14 +79,12 @@ let list_interfaces wld options =
     match options.Options.args with
       [] -> Grdf_intf.intfs wld
     | l ->
-        let add set elt = Sset.add elt set in
         let f set uri =
-          List.fold_left add set (Grdf_intf.intfs_of ~recur: true wld uri)
+          Sset.union set (Grdf_intf.intfs_of ~recur: true wld uri)
         in
-        let set = List.fold_left f Sset.empty l in
-        Sset.elements set
+        List.fold_left f Sset.empty l
   in
-  List.iter (fun uri -> print_endline (Grdf_intf.string_of_intf wld uri)) intfs
+  Sset.iter (fun uri -> print_endline (Grdf_intf.string_of_intf wld uri)) intfs
 ;;
 
 let list_filetypes wld =
@@ -97,25 +95,26 @@ let list_filetypes wld =
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
 let test wld =
-  match Grdf_intf.intfs wld with
-    [] -> failwith "no interfaces to use to test"
-  | intf :: _ ->
-      match Grdf_ftype.filetypes wld with
-        [] -> failwith "no filetype to use to test"
-      | filetypes ->
-          let filetypes = Array.of_list filetypes in
-          prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
-          let n = Array.length filetypes in
-          prerr_endline (Grdf_intf.string_of_intf wld intf);
-(*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
-          Random.self_init();
-          let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
-          let ftype = filetypes.(Random.int n) in
-          let port =
-            if Random.int 1 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
-          in
-          Grdf_intf.add_port wld dir intf port;
-          prerr_endline (Grdf_intf.string_of_intf wld intf);
+  let intfs = Grdf_intf.intfs wld in
+  if Sset.is_empty intfs then
+    failwith "no interfaces to use to test";
+
+  match Grdf_ftype.filetypes wld with
+    [] -> failwith "no filetype to use to test"
+  | filetypes ->
+      let filetypes = Array.of_list filetypes in
+      prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
+      let n = Array.length filetypes in
+      (*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
+      Random.self_init();
+      let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
+      let ftype = filetypes.(Random.int n) in
+      let port =
+        if Random.int 1 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
+      in
+      let intf = Sset.choose intfs in
+      Grdf_intf.add_port wld dir intf port;
+      prerr_endline (Grdf_intf.string_of_intf wld intf);
 ;;
 
 let main () =

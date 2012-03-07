@@ -134,3 +134,5 @@ let versions_of wld ?(recur=false) uri =
      Grdfs.target_uris wld source Grdfs.genet_hasversion
     )
 ;;
+
+let tool_of_version uri = Grdfs.uri_tool_of_version uri;;

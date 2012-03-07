@@ -76,14 +76,14 @@ let gen_hasversion b wld ?(label=true) ?pred uri =
 ;;
 
 let gen_hasintf b wld ?(label=true) ?pred uri =
-  let l = Grdf_intf.intfs_of wld uri in
-  let l = match pred with None -> l | Some f -> List.filter f l in
-  List.iter
+  let set = Grdf_intf.intfs_of wld uri in
+  let set = match pred with None -> set | Some f -> Sset.filter f set in
+  Sset.iter
     (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
      (dot_id uri) (dot_id uri2)
      (if label then "label=\"hasIntf\"" else "")
   )
-     l
+     set
 ;;
 
 let dot ?(edge_labels=true) wld =
@@ -96,7 +96,7 @@ let dot ?(edge_labels=true) wld =
   List.iter (gen_tool b wld) tools;
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
-  List.iter (gen_intf b wld) intfs;
+  Sset.iter (gen_intf b wld) intfs;
 
   let label = edge_labels in
   List.iter (gen_hasbranch b ~label wld) (tools @ branches);
@@ -116,7 +116,7 @@ let dot_of_tool wld tool =
   gen_tool b wld tool;
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
-  List.iter (gen_intf b wld) intfs;
+  Sset.iter (gen_intf b wld) intfs;
 
   let all = tool :: branches in
   let pred = fun uri -> List.mem uri all in
@@ -126,7 +126,33 @@ let dot_of_tool wld tool =
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasversion b wld ~label: false ~pred) all;
 
-  let all = all @ intfs in
+  let all = all @ (Sset.elements intfs) in
+  let pred = fun uri -> List.mem uri all in
+  List.iter (gen_hasintf b wld ~label: false ~pred) all;
+
+  Buffer.add_string b "}\n";
+  Buffer.contents b
+;;
+
+let dot_of_branch wld uri =
+  let b = Buffer.create 256 in
+  Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
+  let versions = Grdf_version.versions_of wld ~recur: true uri in
+  let branches = Grdf_branch.subs wld ~recur:true uri in
+  let intfs = Grdf_intf.intfs_of_tool wld uri in
+  prerr_endline (Printf.sprintf "dot_of_branch: branch has %d interfaces" (Sset.cardinal intfs));
+  List.iter (gen_version b wld) versions;
+  List.iter (gen_branch b wld) branches;
+  Sset.iter (gen_intf b wld) intfs;
+
+  let pred = fun uri -> List.mem uri branches in
+  List.iter (gen_hasbranch b wld ~label: false ~pred) branches;
+
+  let all = branches @ versions in
+  let pred = fun uri -> List.mem uri all in
+  List.iter (gen_hasversion b wld ~label: false ~pred) all;
+
+  let all = all @ (Sset.elements intfs) in
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasintf b wld ~label: false ~pred) all;
 
