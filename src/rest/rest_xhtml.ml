@@ -105,21 +105,17 @@ let get_tool ctx uri =
   ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
-let filetype_link ctx uri =
+let a_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   a ~href: uri name
-;;
-
-let get_filetypes ctx =
-  assert false
 ;;
 
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_intf.ports ctx.ctx_rdf dir uri in
   let of_port (n, p) =
     match p with
-      Grdf_intf.One uri -> filetype_link ctx uri
-    | Grdf_intf.List uri -> Printf.sprintf "%s list" (filetype_link ctx uri)
+      Grdf_intf.One uri -> a_filetype ctx uri
+    | Grdf_intf.List uri -> Printf.sprintf "%s list" (a_filetype ctx uri)
   in
   match ports with
     [] -> "()"
@@ -185,6 +181,21 @@ let get_filetype ctx uri =
   ([ctype ()], filetype_page ctx ~title: name contents)
 ;;
 
+let get_filetypes ctx =
+  let ftypes = Grdf_ftype.filetypes ctx.ctx_rdf in
+  let heads = [ "Name" ; "Extension" ; "Description" ] in
+  let wld = ctx.ctx_rdf in
+  let f uri =
+    [ a_filetype ctx uri ;
+      Grdf_ftype.extension wld uri ;
+      Grdf_ftype.desc wld uri ;
+    ]
+  in
+  let rows = List.map f ftypes in
+  let contents = table ~heads rows in
+  ([ctype ()], filetype_page ctx ~title: "Filetypes" contents)
+;;
+
 let get_root ctx =
   let dot = Grdf_dot.dot ~edge_labels: false ctx.ctx_rdf in
   let svg = dot_to_svg dot in
@@ -201,6 +212,7 @@ let get ctx thing args =
   | Intf uri -> get_intf ctx uri
   | Intfs uri -> get_intfs ctx uri
   | Filetype uri -> get_filetype ctx uri
+  | Filetypes -> get_filetypes ctx
 
   | _ -> ([ctype ()], page ctx ~title: "coucou" "Coucou")
 ;;
