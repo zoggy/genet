@@ -37,6 +37,12 @@ let name wld uri =
   Grdfs.name wld source
 ;;
 
+let command_path wld uri =
+  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let pred = Grdfs.genet_haspath in
+  Grdfs.target_literal wld source pred
+;;
+
 let intf_exists wld uri =
   dbg ~level: 1 (fun () -> "Grdf_intf.intf_exists uri="^uri);
   let query =

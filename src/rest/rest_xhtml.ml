@@ -92,7 +92,7 @@ let get_tools ctx =
     ]
   in
   let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
-  let rows = List.map f_tool tools in
+  let rows = List.sort Pervasives.compare (List.map f_tool tools) in
   let contents = table ~heads rows in
   ([ctype ()], tool_page ctx ~title: "Tools" contents)
 ;;
@@ -108,6 +108,10 @@ let get_tool ctx uri =
 let filetype_link ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   a ~href: uri name
+;;
+
+let get_filetypes ctx =
+  assert false
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -149,12 +153,16 @@ let get_intf ctx uri =
     | l -> ul (List.map (a_by_class ctx) l)
   in
   let tool = a ~href: tool tool_name in
+  let path =
+    Misc.string_of_opt (Grdf_intf.command_path ctx.ctx_rdf uri)
+  in
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intf.tmpl" in
   let env = List.fold_left
     (fun e (name, v) -> Xtmpl.env_add_att name v e)
     Xtmpl.env_empty
     [
       "type", typ ;
+      "path", path ;
       "tool", tool ;
       "branches_yes", branches_yes ;
       "branches_no", branches_no ;
