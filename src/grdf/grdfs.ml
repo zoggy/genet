@@ -97,8 +97,7 @@ let is_a world model ~sub ~obj =
   let pred = Rdf_node.new_from_uri_string world rdf_type in
   let stmt = Rdf_statement.new_from_nodes world ~sub ~pred ~obj in
   dbg ~level: 2 (fun () -> "contains_statement ?");
-  let stream = Rdf_model.find_statements model stmt in
-  not (Rdf_stream.is_at_end stream)
+  Rdf_model.contains_statement model stmt
 ;;
 
 let is_a_ uri =
@@ -207,6 +206,7 @@ let fold_target_sequence f acc wld ~source ~pred =
   Rdf_sparql.select_and_fold wld.wld_world wld.wld_model sparql qf acc
 ;;
 
+(*
 let delete_from_sparql wld query =
   prerr_endline
   (Printf.sprintf "delete from sparql query=%s" (Rdf_sparql.string_of_construct query));
@@ -218,6 +218,7 @@ let delete_from_sparql wld query =
   )
   stream
 ;;
+*)
 
 let class_of wld sub =
   target_uri wld sub rdf_type;;

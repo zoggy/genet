@@ -20,7 +20,6 @@ let open_storage config =
         Rdf_storage.new_storage world
         ~options ~factory: config.db_engine ~name: "genet"
   in
-  prerr_endline "coucou le model va etre créé";
   let model = Rdf_model.new_model world storage in
   let rasqal_world = Rdf_rasqal.new_world () in
   Rdf_rasqal.open_world rasqal_world;

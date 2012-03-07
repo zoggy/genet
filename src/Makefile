@@ -305,7 +305,7 @@ dump.odoc: base/*.ml base/*.mli \
 	$(OCAMLDOCOPT) \
 	-v \
 	-m A \
-	$(INCLUDES) -keep-code $(COMPFLAGS) -sort -dump $@ \
+	$(INCLUDES) -keep-code $(COMPFLAGS) -rectypes -sort -dump $@ \
 	`ls $^ | grep  -v -e "_parser.ml$$" `
 
 doc: all dump.odoc

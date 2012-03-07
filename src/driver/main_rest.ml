@@ -19,27 +19,35 @@ let get_method cgi =
   | `PUT arg -> Rest_types.Put (uri, `Null)
 ;;
 
-let rest_api context host port (cgi : Netcgi.cgi_activation) =
- let env = cgi#environment in
- prerr_endline ("#cgi_server_name=" ^ env#cgi_server_name);
- prerr_endline ("#cgi_server_protocol=" ^ env#cgi_server_protocol);
- prerr_endline ("#cgi_path_info=" ^ env#cgi_path_info);
- prerr_endline ("#cgi_path_translated=" ^ env#cgi_path_translated);
- prerr_endline ("#cgi_query_string=" ^ env#cgi_query_string);
-
- let accept = env#input_header_field ~default: "" "Accept" in
- let content_type = content_type_of_string accept in
- let met = get_method cgi in
-
-
- try
+let rest_api config host port (cgi : Netcgi.cgi_activation) =
+  let env = cgi#environment in
+  (*
+     prerr_endline ("#cgi_server_name=" ^ env#cgi_server_name);
+     prerr_endline ("#cgi_server_protocol=" ^ env#cgi_server_protocol);
+  *)
+  prerr_endline ("#cgi_path_info=" ^ env#cgi_path_info);
+  prerr_endline ("#cgi_path_translated=" ^ env#cgi_path_translated);
+  (*
+     prerr_endline ("#cgi_query_string=" ^ env#cgi_query_string);
+  *)
+  let accept = env#input_header_field ~default: "" "Accept" in
+  let content_type = content_type_of_string accept in
+  let met = get_method cgi in
+  let rdf_wld = Grdf_init.open_storage config in
+  let context = {
+      Rest_types.ctx_rdf = rdf_wld ;
+      ctx_cfg = config ;
+      ctx_user = None ;
+      }
+  in
+  try
     let (header_fields, body) = Rest_query.query
       content_type context met
     in
-  (* Set the header. The header specifies that the page must not be
-   * cached. This is important for dynamic pages called by the GET
-   * method, otherwise the browser might display an old version of
-     * the page.*)
+    (* Set the header. The header specifies that the page must not be
+       * cached. This is important for dynamic pages called by the GET
+       * method, otherwise the browser might display an old version of
+       * the page.*)
     cgi#set_header
     ~cache:`No_cache
     ~fields: (List.map (fun (f,v) -> (f, [v])) header_fields)
@@ -138,7 +146,7 @@ let config_tree host port =
            `Parameter ("max_jobs_per_thread", `Int 1);  (* Everything else is senseless *)
            `Parameter ("min_free_jobs_capacity", `Int 1);
            `Parameter ("max_free_jobs_capacity", `Int 1);
-           `Parameter ("max_threads", `Int 1);
+           `Parameter ("max_threads", `Int 20);
          ]);
       ]);
    ]
@@ -158,18 +166,12 @@ let main () =
     prerr_endline (Printf.sprintf "host=%s, port=%d, path=%s" host port path);
 
   let parallelizer =
-    Netplex_mt.mt()     (* multi-threading *)
-    (*Netplex_mp.mp()*)   (* multi-processing *)
+    (*Netplex_mt.mt()*)     (* multi-threading *)
+    Netplex_mp.mp()   (* multi-processing *)
   in
-  let rdf_wld = Grdf_init.open_storage config in
-  let context = {
-      Rest_types.ctx_rdf = rdf_wld ;
-      ctx_cfg = config ;
-      ctx_user = None ;
-      }
-  in
+
   let fun_handler _ =
-    process (rest_api context host port)
+    process (rest_api config host port)
   in
 
   let api =

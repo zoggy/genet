@@ -133,7 +133,11 @@ let main () =
     | Some Dot -> dot rdf_wld
     | Some Test -> test rdf_wld
   end;
-  Grdf_init.close rdf_wld
+  Unix.sleep 2;
+  Grdf_init.close rdf_wld;
+    Gc.major();
+  Unix.sleep 3;
+
 ;;
 
 let () = Misc.safe_main main;;
