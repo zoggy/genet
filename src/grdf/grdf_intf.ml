@@ -132,6 +132,20 @@ let intfs_of_tool wld uri =
   Sset.elements set
 ;;
 
+let implementors wld uri =
+  let world = wld.wld_world in
+  let obj = Rdf_node.new_from_uri_string world uri in
+  Grdfs.source_uris wld Grdfs.genet_hasintf obj
+;;
+
+let not_implementors wld uri =
+  let world = wld.wld_world in
+  let obj = Rdf_node.new_from_uri_string world uri in
+  Grdfs.source_uris wld Grdfs.genet_nointf obj
+;;
+
+let tool_of_intf uri = Grdfs.uri_tool_of_intf uri
+
 type port = One of uri | List of uri;;
 type dir = In | Out ;;
 

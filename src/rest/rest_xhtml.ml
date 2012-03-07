@@ -51,9 +51,26 @@ let table ?heads rows =
   Buffer.contents b
 ;;
 
+let ul l =
+  let l = List.map (fun s -> Printf.sprintf "<li>%s</li>" s) l in
+  Printf.sprintf "<ul>%s</ul>" (String.concat "" l)
+;;
+
 let a ~href contents =
   Xtmpl.string_of_xml
   (Xtmpl.T ("a", ["href", href], [Xtmpl.xml_of_string contents]))
+;;
+
+let a_by_class ctx uri =
+  let cl =
+    match Grdfs.class_of_uri_string ctx.ctx_rdf uri with
+      None -> ""
+    | Some cl -> String.capitalize (Grdfs.string_of_class cl)
+  in
+  let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  Printf.sprintf "%s%s"
+  (match cl with  "" -> "" | _ ->  cl^" ")
+  (a ~href: uri name)
 ;;
 
 let get_tools ctx =
@@ -109,7 +126,10 @@ let xhtml_of_ports ctx dir uri =
 
 let get_intf ctx uri =
   let name = Grdf_intf.name ctx.ctx_rdf uri in
-  let contents =
+  let tool = Grdf_intf.tool_of_intf uri in
+  let tool_name = Grdf_tool.name ctx.ctx_rdf tool in
+  let title = Printf.sprintf "%s / %s" tool_name name in
+  let typ =
     let of_dir label dir =
       Printf.sprintf "<p><strong>%s:</strong> <code> %s </code></p>"
         label (xhtml_of_ports ctx dir uri)
@@ -118,7 +138,32 @@ let get_intf ctx uri =
     (of_dir "Input" Grdf_intf.In)
     (of_dir "Output" Grdf_intf.Out)
   in
-  ([ctype ()], tool_page ctx ~title: name contents)
+  let branches_yes =
+    match Grdf_intf.implementors ctx.ctx_rdf uri with
+      [] -> prerr_endline "empty branches_yes"; ""
+    | l -> ul (List.map (a_by_class ctx) l)
+  in
+  let branches_no =
+    match Grdf_intf.not_implementors ctx.ctx_rdf uri with
+      [] -> prerr_endline "empty branches_no"; ""
+    | l -> ul (List.map (a_by_class ctx) l)
+  in
+  let tool = a ~href: tool tool_name in
+  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intf.tmpl" in
+  let env = List.fold_left
+    (fun e (name, v) -> Xtmpl.env_add_att name v e)
+    Xtmpl.env_empty
+    [
+      "type", typ ;
+      "tool", tool ;
+      "branches_yes", branches_yes ;
+      "branches_no", branches_no ;
+    ]
+  in
+  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
+  let contents = Xtmpl.apply_from_file env tmpl in
+  prerr_endline contents;
+  ([ctype ()], tool_page ctx ~title contents)
 ;;
 
 let get_intfs ctx uri =

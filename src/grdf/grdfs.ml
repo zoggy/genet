@@ -35,6 +35,15 @@ let genet_intf = genet_ "Interface";;
 let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
 
+let string_of_class = function
+  s when s = genet_tool -> "tool"
+| s when s = genet_branch -> "branch"
+| s when s = genet_intf -> "interface"
+| s when s = genet_version -> "version"
+| s when s = genet_filetype -> "filetype"
+| _ -> ""
+;;
+
 let genet_name = genet_"name";;
 let genet_desc = dc_"description";;
 let genet_file_ext = genet_"file-extension";;
@@ -80,6 +89,7 @@ let uri_version ~tool ~version =
 let uri_intfs ~tool = Printf.sprintf "%s/interfaces" tool;;
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/%s" (uri_intfs tool) intf;;
+let uri_tool_of_intf uri = Filename.dirname (Filename.dirname uri);;
 
 let uri_filetypes prefix = Printf.sprintf "%sfiletypes" prefix;;
 let uri_filetype ~prefix name =
@@ -87,6 +97,23 @@ let uri_filetype ~prefix name =
 
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
+
+let remove_prefix prefix uri =
+  if Misc.is_prefix prefix uri then
+    begin
+      let len_uri = String.length uri in
+      let len_prefix = String.length prefix in
+      let len_prefix =
+        if len_prefix > 0 && prefix.[len_prefix - 1] = '/' then
+          len_prefix - 1
+        else
+          len_prefix
+      in
+      String.sub uri len_prefix (len_uri - len_prefix)
+    end
+  else
+    uri
+;;
 
 (** {2 Utilities} *)
 
@@ -145,22 +172,32 @@ let name wld source =
   Misc.string_of_opt (target_literal wld source genet_name)
 ;;
 
+let name_of_uri_string wld source =
+  let uri = Rdf_node.new_from_uri_string wld.wld_world source in
+  name wld uri
+;;
+
 let desc wld source =
   Misc.string_of_opt (target_literal wld source genet_desc)
 ;;
 
-let source_uri wld pred target =
+let source_uris wld pred target =
   let arc = Rdf_node.new_from_uri_string wld.wld_world pred in
-  let iterator = Rdf_model.get_sources wld.wld_model ~target ~arc in
-  if Rdf_iterator.is_at_end iterator then
-    None
-  else
-    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
-      None -> None
-    | Some node ->
-        match Rdf_node.get_uri node with
-          None -> None
-        | Some uri -> Some (Rdf_uri.as_string uri)
+  let iterator = Rdf_model.get_sources wld.wld_model ~arc ~target in
+  let f acc node =
+    match Rdf_node.get_uri node with
+      None -> acc
+    | Some uri ->
+        let s_uri = Rdf_uri.as_string uri in
+        s_uri :: acc
+  in
+  Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
+;;
+
+let source_uri wld pred target =
+  match source_uris wld pred target with
+    [] -> None
+  | uri :: _ -> Some uri
 ;;
 
 let target_uris wld source pred =
@@ -222,5 +259,10 @@ let delete_from_sparql wld query =
 
 let class_of wld sub =
   target_uri wld sub rdf_type;;
+
+let class_of_uri_string wld uri =
+  let uri = Rdf_node.new_from_uri_string wld.wld_world uri in
+  class_of wld uri
+;;
 
 
