@@ -276,7 +276,7 @@ let string_of_port wld = function
 | List uri -> Printf.sprintf "%s list" (Grdf_ftype.extension wld uri)
 ;;
 
-let string_of_intf wld uri =
+let string_of_intf wld ?(with_uri=true) uri =
   let ports_in = ports wld In uri in
   let ports_out = ports wld Out uri in
   let type_of sep = function
@@ -285,8 +285,9 @@ let string_of_intf wld uri =
       String.concat sep
       (List.map (fun (_, p) -> string_of_port wld p) l)
   in
-  Printf.sprintf "%s : %s -> %s"
-  uri (type_of " -> " ports_in) (type_of " * " ports_out)
+  Printf.sprintf "%s%s -> %s"
+  (if with_uri then Printf.sprintf "%s : " uri else "")
+  (type_of " -> " ports_in) (type_of " * " ports_out)
 ;;
 
 

@@ -26,9 +26,14 @@ let gen_branch b wld uri =
 
 let gen_intf b wld uri =
   let name = Grdf_intf.name wld uri in
+  let intf =
+    Printf.sprintf "%s : %s"
+    name
+    (Grdf_intf.string_of_intf wld ~with_uri: false uri)
+  in
   Printf.bprintf b
-  "%s [ label=\"%s\", fillcolor=\"olivedrab1\", style=\"filled\", shape=\"octagon\", href=\"%s\"];\n"
-  (dot_id uri) (String.escaped name) uri
+  "%s [ label=\"%s\", fillcolor=\"olivedrab1\", style=\"filled\", shape=\"octagon\", tooltip=\"%s\", href=\"%s\"];\n"
+  (dot_id uri) (String.escaped name) (String.escaped intf) uri
 ;;
 
 let gen_hasbranch b wld ?(label=true) ?pred uri =

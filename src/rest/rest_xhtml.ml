@@ -100,15 +100,18 @@ let xhtml_of_ports ctx dir uri =
       Grdf_intf.One uri -> filetype_link ctx uri
     | Grdf_intf.List uri -> Printf.sprintf "%s list" (filetype_link ctx uri)
   in
-  let sep = match dir with Grdf_intf.In -> " -&gt; " | Grdf_intf.Out -> " * " in
-  String.concat sep (List.map of_port ports)
+  match ports with
+    [] -> "()"
+  | _ ->
+      let sep = match dir with Grdf_intf.In -> " -&gt; " | Grdf_intf.Out -> " * " in
+      String.concat sep (List.map of_port ports)
 ;;
 
 let get_intf ctx uri =
   let name = Grdf_intf.name ctx.ctx_rdf uri in
   let contents =
     let of_dir label dir =
-      Printf.sprintf "<p><strong>%s:</strong> <code>%s</code></p>"
+      Printf.sprintf "<p><strong>%s:</strong> <code> %s </code></p>"
         label (xhtml_of_ports ctx dir uri)
     in
     Printf.sprintf "%s%s"
