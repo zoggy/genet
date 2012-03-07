@@ -9,14 +9,14 @@ let content_type_of_string s =
 ;;
 
 let get_method cgi =
-  let uri = cgi#environment#cgi_path_translated in
+  let path = cgi#environment#cgi_path_translated in
   match cgi#request_method with
     `GET | `HEAD ->
       let args = List.map (fun a -> (a#name, a#value)) cgi#arguments in
-      Rest_types.Get (uri, args)
-  | `DELETE -> Rest_types.Delete uri
-  | `POST -> Rest_types.Post (uri, `Null)
-  | `PUT arg -> Rest_types.Put (uri, `Null)
+      Rest_types.Get (path, args)
+  | `DELETE -> Rest_types.Delete path
+  | `POST -> Rest_types.Post (path, `Null)
+  | `PUT arg -> Rest_types.Put (path, `Null)
 ;;
 
 let rest_api config host port (cgi : Netcgi.cgi_activation) =

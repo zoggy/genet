@@ -104,10 +104,10 @@ let test wld =
         [] -> failwith "no filetype to use to test"
       | filetypes ->
           let filetypes = Array.of_list filetypes in
-          let _n = Array.length filetypes in
+          prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
+          let n = Array.length filetypes in
           prerr_endline (Grdf_intf.string_of_intf wld intf);
-          Grdf_intf.delete_ports wld Grdf_intf.In intf;
-(*
+(*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
           Random.self_init();
           let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
           let ftype = filetypes.(Random.int n) in
@@ -115,7 +115,7 @@ let test wld =
             if Random.int 1 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
           in
           Grdf_intf.add_port wld dir intf port;
-*)          prerr_endline (Grdf_intf.string_of_intf wld intf);
+          prerr_endline (Grdf_intf.string_of_intf wld intf);
 ;;
 
 let main () =
@@ -135,7 +135,6 @@ let main () =
   end;
   Unix.sleep 2;
   Grdf_init.close rdf_wld;
-    Gc.major();
   Unix.sleep 3;
 
 ;;

@@ -238,11 +238,14 @@ let exec world model query =
 
 let select_and_fold world model query f acc =
   let query = string_of_select query in
+  (*prerr_endline query;*)
   let q = Rdf_query.new_query ~name: "sparql" world ~query in
   try
     let qr = Rdf_model.query_execute model q in
     let rec iter acc =
-      if Rdf_query_results.finished qr then
+      let finished = Rdf_query_results.finished qr in
+      (*prerr_endline (Printf.sprintf "coucou, finished=%b" finished);*)
+      if finished then
         acc
       else
         (

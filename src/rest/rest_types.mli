@@ -3,12 +3,13 @@
 type arg = string * string
 
 type uri = Grdf_types.uri
+type path = string
 
 type met =
-  | Get of Grdf_types.uri * arg list
-  | Delete of Grdf_types.uri
-  | Post of Grdf_types.uri * Yojson.Basic.json
-  | Put of Grdf_types.uri * Yojson.Basic.json
+  | Get of path * arg list
+  | Delete of path
+  | Post of path * Yojson.Basic.json
+  | Put of path * Yojson.Basic.json
 ;;
 
 type content_type = Xhtml | Json
@@ -22,7 +23,7 @@ type thing =
   | Tools
   | Branches of uri (* uri of tool *)
   | Versions of uri (* uri of tool or branch *)
-  | Interfaces of uri (* uri of tool or branch *)
+  | Intfs of uri (* uri of tool or branch *)
   | Filetypes
   | Static_file of string * string
   | Other of string
@@ -37,7 +38,6 @@ type context =
     ctx_cfg: Config.t ;
     ctx_user : user option ;
   }
-
 
 type get_handler = context -> thing -> arg list -> response
 type delete_handler = context -> thing -> response

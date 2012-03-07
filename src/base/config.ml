@@ -26,8 +26,15 @@ let read_config file =
   let dbpasswd_cp = new CF.string_cp ~group ["db"; "password"] "" "" in
   let uri_prefix_cp = new CF.string_cp ~group ["uri_prefix"] "http://foo.net" "" in
 
-  let rest_api = new CF.string_cp ~group ["rest_api"] "http://localhost:8082/" "" in
+  let rest_api_cp = new CF.string_cp ~group ["rest_api"] "http://localhost:8082/" "do not forget ending /" in
+
   group#read file;
+  let rest_api =
+    let s = rest_api_cp#get in
+    let s = Misc.strip_string s in
+    let len = String.length s in
+    if len <= 0 || s.[len-1] <> '/' then s^"/" else s
+  in
   { project_name = pname_cp#get ;
     project_id = pid_cp#get ;
     db_engine = dbengine_cp#get ;
@@ -36,7 +43,7 @@ let read_config file =
     db_host = dbhost_cp#get ;
     db_passwd = dbpasswd_cp#get ;
     uri_prefix = uri_prefix_cp#get ;
-    rest_api = rest_api#get ;
+    rest_api = rest_api ;
     root_dir = Filename.dirname (Misc.normalized_path file) ;
   }
 ;;

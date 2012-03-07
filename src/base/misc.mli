@@ -92,3 +92,12 @@ val file_of_string : file:string -> string -> unit
 val strip_string : string -> string
 (*/i==v=[String.strip_string]=1.0====*)
 
+
+(*i==v=[String.is_prefix]=1.0====*)
+(** [is_prefix pattern s] returns true if string [s] begins with [pattern].
+@author Maxence Guesdon
+@version 1.0
+@cgname String.is_prefix*)
+val is_prefix : string -> string -> bool
+(*/i==v=[String.is_prefix]=1.0====*)
+

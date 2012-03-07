@@ -7,6 +7,7 @@ type world =
     wld_model : Rdf_types.model ;
     wld_storage : Rdf_types.storage ;
     wld_rasqal : Rdf_types.rasqal_world ;
+    wld_prefix : string ;
   }
 
 type error =

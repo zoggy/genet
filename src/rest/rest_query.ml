@@ -5,7 +5,7 @@ open Rest_types;;
 exception Not_implemented of string;;
 let not_implemented msg = raise (Not_implemented msg);;
 
-let allowed_files config =
+let rest_api_path config =
   let url = Neturl.parse_url config.Config.rest_api in
   let path = Neturl.join_path (Neturl.url_path url) in
   let path =
@@ -15,8 +15,12 @@ let allowed_files config =
     else
       path
   in
+  path
+;;
+
+let allowed_files config =
   List.map
-  (fun (f, t) -> Filename.concat path f, (f, t))
+  (fun (f, t) ->  (config.Config.rest_api ^ f, (f, t)))
   ["style.css", "text/css" ; "genet-logo.svg", "image/svg+xml"]
 ;;
 
@@ -36,17 +40,27 @@ let json_handlers =
   }
 
 
+let uri_of_query_path ctx path =
+  let url = Neturl.parse_url ctx.ctx_cfg.Config.rest_api in
+  let url = Neturl.modify_url ~path: [] url in
+  let s = Neturl.string_of_url url in
+  let uri = s ^ path in
+  (*prerr_endline (Printf.sprintf "uri_of_query_path: path=%s => uri=%s" path uri);*)
+  uri
+;;
 
-let rec thing_of_uri ctx uri =
-  prerr_endline (Printf.sprintf "thing_of_uri %s" uri);
+let rec thing_of_path ctx path =
+  prerr_endline (Printf.sprintf "thing_of_path %s" path);
+  (* we must change the path to an uri according to rest_api *)
+  let uri = uri_of_query_path ctx path in
   let wld = ctx.ctx_rdf in
   let static_files = allowed_files ctx.ctx_cfg in
   prerr_endline "allowed files:";
   List.iter (fun (f,_) -> prerr_endline f) static_files;
   let sub = Rdf_node.new_from_uri_string wld.Grdf_types.wld_world uri in
   match Grdfs.class_of wld sub with
-  | None when uri = Grdfs.uri_tools -> Tools
-  | None when uri = Grdfs.uri_filetypes -> Filetypes
+  | None when uri = Grdfs.uri_tools ctx.ctx_rdf.Grdf_types.wld_prefix -> Tools
+  | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None ->
       begin
         try
@@ -67,10 +81,10 @@ let rec thing_of_uri ctx uri =
 ;;
 
 let handler_by_method h ctx = function
-  Get (uri, args) -> h.h_get ctx (thing_of_uri ctx uri) args
-| Delete uri -> h.h_del ctx (thing_of_uri ctx uri)
-| Post (uri, json) -> h.h_post ctx (thing_of_uri ctx uri) json
-| Put (uri, json) -> h.h_put ctx (thing_of_uri ctx uri) json
+  Get (path, args) -> h.h_get ctx (thing_of_path ctx path) args
+| Delete path -> h.h_del ctx (thing_of_path ctx path)
+| Post (path, json) -> h.h_post ctx (thing_of_path ctx path) json
+| Put (path, json) -> h.h_put ctx (thing_of_path ctx path) json
 
 let query content_type =
   match content_type with

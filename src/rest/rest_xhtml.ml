@@ -88,6 +88,41 @@ let get_tool ctx uri =
   ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
+let filetype_link ctx uri =
+  let name = Grdf_ftype.name ctx.ctx_rdf uri in
+  a ~href: uri name
+;;
+
+let xhtml_of_ports ctx dir uri =
+  let ports = Grdf_intf.ports ctx.ctx_rdf dir uri in
+  let of_port (n, p) =
+    match p with
+      Grdf_intf.One uri -> filetype_link ctx uri
+    | Grdf_intf.List uri -> Printf.sprintf "%s list" (filetype_link ctx uri)
+  in
+  let sep = match dir with Grdf_intf.In -> " -&gt; " | Grdf_intf.Out -> " * " in
+  String.concat sep (List.map of_port ports)
+;;
+
+let get_intf ctx uri =
+  let name = Grdf_intf.name ctx.ctx_rdf uri in
+  let contents =
+    let of_dir label dir =
+      Printf.sprintf "<p><strong>%s:</strong> <code>%s</code></p>"
+        label (xhtml_of_ports ctx dir uri)
+    in
+    Printf.sprintf "%s%s"
+    (of_dir "Input" Grdf_intf.In)
+    (of_dir "Output" Grdf_intf.Out)
+  in
+  ([ctype ()], tool_page ctx ~title: name contents)
+;;
+
+let get_intfs ctx uri =
+  let title = Grdfs.uri_intfs uri in
+  ([ctype ()], tool_page ctx ~title "")
+;;
+
 let get_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   let contents = name in
@@ -107,6 +142,8 @@ let get ctx thing args =
   | Static_file (f, t) -> ([ctype ~t ()], Misc.string_of_file f)
   | Tool uri -> get_tool ctx uri
   | Tools -> get_tools ctx
+  | Intf uri -> get_intf ctx uri
+  | Intfs uri -> get_intfs ctx uri
   | Filetype uri -> get_filetype ctx uri
 
   | _ -> ([ctype ()], page ctx ~title: "coucou" "Coucou")

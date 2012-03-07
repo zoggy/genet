@@ -67,7 +67,7 @@ let tool_exists wld uri =
 ;;
 
 let add_tool wld name =
-  let uri = Grdfs.uri_tool ~tool: name in
+  let uri = Grdfs.uri_tool ~prefix: wld.wld_prefix ~tool: name in
   match tool_exists wld uri with
     Some name2 -> Grdf_types.error (Grdf_types.Tool_exists name2)
   | None ->

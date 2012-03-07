@@ -93,7 +93,7 @@ let do_add wld uri ~name ~desc ~extension =
 
 let add wld ~name ~desc ~extension =
   dbg ~level: 1 (fun () -> "Grdf_ftype.add name="^name);
-  let uri = Grdfs.uri_filetype name in
+  let uri = Grdfs.uri_filetype wld.wld_prefix name in
   match filetype_exists wld uri with
     Some name-> Grdf_types.error (Grdf_types.Filetype_exists name)
   | None -> do_add wld uri ~name ~desc ~extension; uri

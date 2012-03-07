@@ -27,6 +27,7 @@ let open_storage config =
     wld_model = model ;
     wld_storage = storage ;
     wld_rasqal = rasqal_world ;
+    wld_prefix = config.rest_api ;
   }
 ;;
 

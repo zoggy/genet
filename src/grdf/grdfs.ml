@@ -65,13 +65,13 @@ let add_type world model ~sub ~obj =
 
 (** {2 Uris of manipulated elements} *)
 
-let uri_tools = "/tools";;
-let uri_tool ~tool =
-  Printf.sprintf "%s/%s" uri_tools tool;;
+let uri_tools prefix = Printf.sprintf "%stools" prefix;;
+let uri_tool ~prefix ~tool =
+  Printf.sprintf "%s/%s" (uri_tools prefix) tool;;
 
-let uri_chains = "/chains";;
-let uri_chain ~chain =
-  Printf.sprintf "%s/%s" uri_chains chain;;
+let uri_chains prefix = Printf.sprintf "%schains" prefix;;
+let uri_chain ~prefix ~chain =
+  Printf.sprintf "%s/%s" (uri_chains prefix) chain;;
 
 let uri_versions ~tool = Printf.sprintf "%s/versions" tool;;
 let uri_version ~tool ~version =
@@ -81,9 +81,9 @@ let uri_intfs ~tool = Printf.sprintf "%s/interfaces" tool;;
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/%s" (uri_intfs tool) intf;;
 
-let uri_filetypes = "/filetypes";;
-let uri_filetype name =
-  Printf.sprintf "%s/%s" uri_filetypes name;;
+let uri_filetypes prefix = Printf.sprintf "%sfiletypes" prefix;;
+let uri_filetype ~prefix name =
+  Printf.sprintf "%s/%s" (uri_filetypes prefix) name;;
 
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
 let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
@@ -198,7 +198,7 @@ let fold_target_sequence f acc wld ~source ~pred =
       Rdf_query_results.get_binding_value_by_name qr "seq_index",
       Rdf_query_results.get_binding_value_by_name qr "uri"
     with
-      None, _ | _, None -> acc
+    | None, _ | _, None -> acc
     | Some index_node, Some uri_node ->
         let n = Rdf_node.get_li_ordinal index_node in
         f acc n uri_node

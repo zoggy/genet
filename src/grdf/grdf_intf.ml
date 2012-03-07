@@ -174,7 +174,6 @@ let insert_port wld seq_node (n, port) =
         ~sub: obj ~pred ~obj: ftype
 ;;
 
-(*
 let delete_ports wld dir uri =
   let pred = pred_of_dir dir in
   let query =
@@ -219,7 +218,7 @@ let delete_ports wld dir uri =
   in
   Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f ()
 ;;
-*)
+(*
 let delete_ports wld dir uri =
   let pred = pred_of_dir dir in
   let query =
@@ -239,7 +238,7 @@ let delete_ports wld dir uri =
   let query = Rdf_sparql.Delete_insert query in
   ignore (Rdf_sparql.exec wld.wld_world wld.wld_model query)
 ;;
-
+*)
 let set_ports wld dir uri ports =
   let pred = pred_of_dir dir in
   delete_ports wld dir uri ;
