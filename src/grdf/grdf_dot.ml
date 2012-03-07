@@ -29,9 +29,10 @@ let gen_tool b wld uri =
 
 let gen_version b wld uri =
   let name = Grdf_version.name wld uri in
+  let label = Misc.chop_n_char 8 name in
   Printf.bprintf b
-  "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"box3d\", href=\"%s\"];\n"
-  (dot_id uri) (String.escaped name) version_bgcolor version_fgcolor uri
+  "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"box3d\", tooltip=\"%s\" href=\"%s\"];\n"
+  (dot_id uri) (String.escaped label) version_bgcolor version_fgcolor (String.escaped name) uri
 ;;
 
 let gen_branch b wld uri =

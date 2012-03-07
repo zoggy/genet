@@ -176,3 +176,13 @@ let is_prefix s1 s2 =
     (String.sub s2 0 len1) = s1
 (*/c==v=[String.is_prefix]=1.0====*)
 
+
+(*c==v=[String.chop_n_char]=1.0====*)
+let chop_n_char n s =
+  let len = String.length s in
+  if len <= n +1 or n < 0 then
+    s
+  else
+    Printf.sprintf "%s..." (String.sub s 0 (n+1))
+(*/c==v=[String.chop_n_char]=1.0====*)
+

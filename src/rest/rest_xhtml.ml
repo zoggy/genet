@@ -3,7 +3,7 @@
 open Rest_types;;
 
 let svg_width = 700;;
-let svg_height = 500;;
+let svg_height = 300;;
 let svg_dpi = 96. ;;
 
 let dot_to_svg dot =
@@ -73,38 +73,7 @@ let a_by_class ctx uri =
   (a ~href: uri name)
 ;;
 
-let get_tools ctx =
-  let wld = ctx.ctx_rdf in
-  let tools = Grdf_tool.tools wld in
-  let f_tool uri =
-    let n_versions = List.length (Grdf_version.versions_of wld ~recur: true uri) in
-    let href_versions = Grdfs.uri_versions uri in
 
-    let n_branches = List.length (Grdf_branch.subs wld ~recur: false uri) in
-    let href_branches = Grdfs.uri_branches uri in
-
-    let n_intfs = Sset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
-    let href_intfs = Grdfs.uri_intfs uri in
-
-    [ a ~href: uri (Grdf_tool.name wld uri) ;
-      a ~href: href_versions (string_of_int n_versions) ;
-      a ~href: href_branches (string_of_int n_branches);
-      a ~href: href_intfs (string_of_int n_intfs) ;
-    ]
-  in
-  let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
-  let rows = List.sort Pervasives.compare (List.map f_tool tools) in
-  let contents = table ~heads rows in
-  ([ctype ()], tool_page ctx ~title: "Tools" contents)
-;;
-
-let get_tool ctx uri =
-  let name = Grdf_tool.name ctx.ctx_rdf uri in
-  let dot = Grdf_dot.dot_of_tool ctx.ctx_rdf uri in
-  let svg = dot_to_svg dot in
-  let contents = svg in
-  ([ctype ()], tool_page ctx ~title: name contents)
-;;
 
 let a_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
@@ -144,6 +113,93 @@ let xhtml_of_intf_type ctx uri =
   Printf.sprintf "%s -&gt; %s"
     (xhtml_of_ports ctx Grdf_intf.In uri)
     (xhtml_of_ports ctx Grdf_intf.Out uri)
+;;
+
+let intf_list ctx intfs =
+  let heads = [ "Name" ; "Type" ] in
+  let f intf =
+    [ a ~href: intf (Grdf_intf.name ctx.ctx_rdf intf) ;
+      Printf.sprintf "<code>%s</code>" (xhtml_of_intf_type ctx intf) ;
+    ]
+  in
+  let rows = List.map f intfs in
+  table ~heads rows
+;;
+
+let xhtml_of_intfs_of ctx uri =
+  let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
+  let intfs = intf_list ctx (Sset.elements explicit) in
+  let inherited_intfs = intf_list ctx (Sset.elements inherited) in
+  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
+  let env = List.fold_left
+    (fun e (name, v) -> Xtmpl.env_add_att name v e)
+    Xtmpl.env_empty
+    [
+      "has_intfs", (if Sset.is_empty explicit then "" else "true") ;
+      "intfs", intfs ;
+      "has_inherited_intfs", (if Sset.is_empty inherited then "" else "true") ;
+      "inherited_intfs", inherited_intfs ;
+    ]
+  in
+  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
+  Xtmpl.apply_from_file env tmpl
+;;
+
+let xhtml_of_branches_of ctx uri =
+  let branches = Grdf_branch.subs ctx.ctx_rdf uri in
+  match branches with
+    [] -> "No branch."
+  | _ ->
+        let heads = ["Branch"] in
+      let f br = [a_branch ctx br] in
+      let rows = List.sort Pervasives.compare (List.map f branches) in
+      table ~heads rows
+;;
+
+let get_tool ctx uri =
+  let name = Grdf_tool.name ctx.ctx_rdf uri in
+  let dot = Grdf_dot.dot_of_tool ctx.ctx_rdf uri in
+  let svg = dot_to_svg dot in
+  let branches = xhtml_of_branches_of ctx uri in
+  let intfs = xhtml_of_intfs_of ctx uri in
+  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "tool.tmpl" in
+  let env = List.fold_left
+    (fun e (name, v) -> Xtmpl.env_add_att name v e)
+    Xtmpl.env_empty
+    [
+      "graph", svg ;
+      "branches", branches ;
+      "interfaces", intfs ;
+    ]
+  in
+  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
+  let contents = Xtmpl.apply_from_file env tmpl in
+  ([ctype ()], tool_page ctx ~title: name contents)
+;;
+
+let get_tools ctx =
+  let wld = ctx.ctx_rdf in
+  let tools = Grdf_tool.tools wld in
+  let f_tool uri =
+    let n_versions = List.length (Grdf_version.versions_of wld ~recur: true uri) in
+    let href_versions = Grdfs.uri_versions uri in
+
+    let n_branches = List.length (Grdf_branch.subs wld ~recur: false uri) in
+    let href_branches = Grdfs.uri_branches uri in
+
+    let n_intfs = Sset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
+    let href_intfs = Grdfs.uri_intfs uri in
+
+    [ a ~href: uri (Grdf_tool.name wld uri) ;
+      a ~href: href_versions (string_of_int n_versions) ;
+      a ~href: href_branches (string_of_int n_branches);
+      a ~href: href_intfs (string_of_int n_intfs) ;
+    ]
+  in
+  let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
+  let rows = List.sort Pervasives.compare (List.map f_tool tools) in
+  let contents = table ~heads rows in
+  ([ctype ()], tool_page ctx ~title: "Tools" contents)
 ;;
 
 let get_intf ctx uri =
@@ -189,36 +245,6 @@ let get_intf ctx uri =
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
   ([ctype ()], tool_page ctx ~title contents)
-;;
-
-let intf_list ctx intfs =
-  let heads = [ "Name" ; "Type" ] in
-  let f intf =
-    [ a ~href: intf (Grdf_intf.name ctx.ctx_rdf intf) ;
-      Printf.sprintf "<code>%s</code>" (xhtml_of_intf_type ctx intf) ;
-    ]
-  in
-  let rows = List.map f intfs in
-  table ~heads rows
-;;
-
-let xhtml_of_intfs_of ctx uri =
-  let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
-  let intfs = intf_list ctx (Sset.elements explicit) in
-  let inherited_intfs = intf_list ctx (Sset.elements inherited) in
-  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
-  let env = List.fold_left
-    (fun e (name, v) -> Xtmpl.env_add_att name v e)
-    Xtmpl.env_empty
-    [
-      "has_intfs", (if Sset.is_empty explicit then "" else "true") ;
-      "intfs", intfs ;
-      "has_inherited_intfs", (if Sset.is_empty inherited then "" else "true") ;
-      "inherited_intfs", inherited_intfs ;
-    ]
-  in
-  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  Xtmpl.apply_from_file env tmpl
 ;;
 
 let get_intfs ctx uri =
@@ -284,25 +310,15 @@ let get_branch ctx uri =
   ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
+
+
 let get_branches ctx uri =
-  let branches = Grdf_branch.subs ctx.ctx_rdf uri in
-  let branches_table =
-    match branches with
-      [] -> "No branch."
-    | _ ->
-        let heads = ["Branch"] in
-        let f br = [a_branch ctx br] in
-        let rows = List.sort Pervasives.compare (List.map f branches) in
-        table ~heads rows
-  in
-  let contents =
-    Printf.sprintf "<p>Branches of %s:</p><p>%s</p>"
-      (a_by_class ctx uri)
-      branches_table
-  in
+  let pre = "Branches of " in
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
-  let title = Printf.sprintf "Branches of %s" name in
-  ([ctype ()], tool_page ctx ~title contents)
+  let wtitle = Printf.sprintf "%s %s" pre name in
+  let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
+  let contents = xhtml_of_branches_of ctx uri in
+  ([ctype ()], tool_page ctx ~title ~wtitle contents)
 ;;
 
 let get_root ctx =

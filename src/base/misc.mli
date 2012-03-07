@@ -101,3 +101,12 @@ val strip_string : string -> string
 val is_prefix : string -> string -> bool
 (*/i==v=[String.is_prefix]=1.0====*)
 
+
+(*i==v=[String.chop_n_char]=1.0====*)
+(** [chop_n_char n s] returns the given string where characters after position n
+   are replaced by ["..."].
+@version 1.0
+@cgname String.chop_n_char*)
+val chop_n_char : int -> string -> string
+(*/i==v=[String.chop_n_char]=1.0====*)
+
