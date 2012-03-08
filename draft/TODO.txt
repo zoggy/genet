@@ -13,3 +13,7 @@ Add information:
 - instanciated chains
 - a class and resources for /tools/xxx/interfaces/yyy/input
 - a class and resources for /tools/xxx/interfaces/yyy/output
+
+Web interface:
+- version: show branch tree above the version
+  in a b1 / b2 / ... way
