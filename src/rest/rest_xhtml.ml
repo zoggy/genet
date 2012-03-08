@@ -3,7 +3,7 @@
 open Rest_types;;
 
 let svg_width = 700;;
-let svg_height = 300;;
+let svg_height = 200;;
 let svg_dpi = 96. ;;
 
 let dot_to_svg dot =
@@ -156,6 +156,14 @@ let xhtml_of_branches_of ctx uri =
       table ~heads rows
 ;;
 
+let xhtml_of_versions_of ctx uri =
+  let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true uri in
+  let heads = ["Active" ; "Version" ; "Date"] in
+  let f version = ["" ; a_version ctx version ; ""] in
+  let rows = List.sort Pervasives.compare (List.map f versions) in
+  table ~heads rows
+;;
+
 let get_tool ctx uri =
   let name = Grdf_tool.name ctx.ctx_rdf uri in
   let dot = Grdf_dot.dot_of_tool ctx.ctx_rdf uri in
@@ -288,15 +296,10 @@ let get_version ctx uri =
 ;;
 
 let get_versions ctx tool =
-  let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
-  let heads = ["Active" ; "Version" ; "Date"] in
-  let f version = ["" ; a_version ctx version ; ""] in
-  let rows = List.sort Pervasives.compare (List.map f versions) in
-  let versions_table = table ~heads rows in
   let contents =
     Printf.sprintf "<p>Versions of %s:</p><p>%s</p>"
       (a_tool ctx tool)
-      versions_table
+      (xhtml_of_versions_of ctx tool)
   in
   let title = Printf.sprintf "Versions of %s" (Grdf_tool.name ctx.ctx_rdf tool) in
   ([ctype ()], tool_page ctx ~title contents)
@@ -306,7 +309,22 @@ let get_branch ctx uri =
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   let dot = Grdf_dot.dot_of_branch ctx.ctx_rdf uri in
   let svg = dot_to_svg dot in
-  let contents = svg in
+  let branches = xhtml_of_branches_of ctx uri in
+  let intfs = xhtml_of_intfs_of ctx uri in
+  let versions = xhtml_of_versions_of ctx uri in
+  let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "branch.tmpl" in
+  let env = List.fold_left
+    (fun e (name, v) -> Xtmpl.env_add_att name v e)
+    Xtmpl.env_empty
+    [
+      "graph", svg ;
+      "branches", branches ;
+      "interfaces", intfs ;
+      "versions", versions ;
+    ]
+  in
+  let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
+  let contents = Xtmpl.apply_from_file env tmpl in
   ([ctype ()], tool_page ctx ~title: name contents)
 ;;
 
