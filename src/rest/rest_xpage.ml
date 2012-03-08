@@ -164,10 +164,11 @@ let default_commands config =
     ]
 ;;
 
-let page config ?env ~title ?(wtitle=title) contents =
+let page config ?env ~title ?(wtitle=title) ?(navpath="") contents =
   let env = Xtmpl.env_of_list ?env
     (("page-title", (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
      ("window-title", (fun _ _ _ -> [Xtmpl.D wtitle])) ::
+     ("navpath", (fun _ _ _ -> [Xtmpl.xml_of_string navpath])) ::
      (default_commands config))
   in
   let f env args body = contents in
