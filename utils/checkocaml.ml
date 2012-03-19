@@ -919,7 +919,7 @@ let detect_ocamlrdf ?(modes=[`Byte;`Opt]) conf =
       None -> includes
     | Some s -> ("with ocamlfind", [s]) :: includes
   in
-  let libs = ["ocamlrdf.cma" ] in
+  let libs = ["unix.cma" ; "ocamlrdf.cma" ] in
   let f (mes, includes) mode =
     let mes = Printf.sprintf "checking for OCaml-RDF (%s) %s... "
       (string_of_mode mode) mes
