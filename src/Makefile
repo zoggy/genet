@@ -22,6 +22,7 @@ SYSTEM_INCLUDES= \
 MY_INCLUDES= \
 	-I base \
 	-I grdf \
+	-I chains \
 	-I rest \
 	-I driver \
 	-I ocsigen
@@ -168,6 +169,44 @@ LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
 
 GRDF_GUI_LIBS=$(LIB_GRDF_GUI) $(LIB_GRDF_GUI_BYTE) $(LIB_GRDF_GUI_CMI) $(LIB_GRDF_GUI_A)
 
+# Chains library
+LIB_CHN=chains/chains.cmxa
+LIB_CHN_BYTE=$(LIB_CHN:.cmxa=.cma)
+LIB_CHN_CMI=$(LIB_CHN:.cmxa=.cmi)
+LIB_CHN_A=$(LIB_CHN:.cmxa=.a)
+
+CHN_CMXFILES=chains/chn_types.cmx
+
+#	grdf/constant.cmx \
+#	grdf/grdf_types.cmx \
+#	grdf/colors.cmx \
+#	grdf/additional.cmx \
+#	grdf/checks.cmx \
+#	grdf/tmap.cmx \
+#	grdf/graph.cmx \
+#	grdf/loc.cmx \
+#	grdf/tokens.cmx \
+#	grdf/lexer.cmx \
+#	grdf/history.cmx \
+#	grdf/twdict.cmx \
+#	grdf/zipper.cmx \
+#	grdf/env.cmx
+CHN_CMOFILES=$(CHN_CMXFILES:.cmx=.cmo)
+CHN_CMIFILES=$(CHN_CMXFILES:.cmx=.cmi)
+
+CHN_LIBS=$(LIB_CHN) $(LIB_CHN_BYTE) $(LIB_CHN_CMI) $(LIB_CHN_A)
+
+CHN_GUI_CMXFILES=
+CHN_GUI_CMIFILES=$(CHN_GUI_CMXFILES:.cmx=.cmi)
+CHN_GUI_CMOFILES=$(CHN_GUI_CMXFILES:.cmx=.cmo)
+
+LIB_CHN_GUI=grdf/grdfgui.cmxa
+LIB_CHN_GUI_BYTE=$(LIB_CHN_GUI:.cmxa=.cma)
+LIB_CHN_GUI_CMI=$(LIB_CHN_GUI:.cmxa=.cmi)
+LIB_CHN_GUI_A=$(LIB_CHN_GUI:.cmxa=.a)
+
+CHN_GUI_LIBS=$(LIB_CHN_GUI) $(LIB_CHN_GUI_BYTE) $(LIB_CHN_GUI_CMI) $(LIB_CHN_GUI_A)
+
 # Rest library
 
 LIB_REST=rest/rest.cmxa
@@ -234,11 +273,11 @@ libs_byte: $(LIB_BYTE) $(LIBS_GUI_BYTE)
 tools: libs $(TOOLS)
 tools_byte: libs_byte $(TOOLS_BYTE)
 
-$(GENET): $(LIB_BASE)	$(LIB_GRDF) $(GENET_CMXFILES)
+$(GENET): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(GENET_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
 	$(RDF_LIBS)	$^
 
-$(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_CMOFILES)
+$(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(GENET_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
@@ -250,19 +289,19 @@ $(GENRDFS_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENRDFS_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
-$(GENET_QUERY): $(LIB_BASE)	$(LIB_GRDF) $(GENET_QUERY_CMXFILES)
+$(GENET_QUERY): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(GENET_QUERY_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
 	$(RDF_LIBS)	$^
 
-$(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENET_QUERY_CMOFILES)
+$(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(GENET_QUERY_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) $^
 
-$(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_REST) $(GENET_REST_CMXFILES)
+$(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(LIB_REST) $(GENET_REST_CMXFILES)
 	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
 	$(RDF_LIBS)	-thread threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
 
-$(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
+$(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
 
@@ -287,6 +326,16 @@ $(LIB_GRDF_GUI): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMXFILES)
 $(LIB_GRDF_GUI_BYTE): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMOFILES)
 	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
 
+$(LIB_CHN): $(CHN_CMIFILES) $(CHN_CMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(CHN_CMXFILES)
+$(LIB_CHN_BYTE): $(CHN_CMIFILES) $(CHN_CMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(CHN_CMOFILES)
+
+$(LIB_CHN_GUI): $(CHN_GUI_CMIFILES) $(CHN_GUI_CMXFILES)
+	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMXFILES)
+$(LIB_CHN_GUI_BYTE): $(CHN_GUI_CMIFILES) $(CHN_GUI_CMOFILES)
+	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMOFILES)
+
 
 $(LIB_REST): $(REST_CMIFILES) $(REST_CMXFILES)
 	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(REST_CMXFILES)
@@ -301,6 +350,7 @@ OK='\033[1;32m'"OK\033[1m\033[0m"
 #################
 dump.odoc: base/*.ml base/*.mli \
 	grdf/*.ml grdf/*.mli \
+	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
 	driver/*.ml driver/*.mli
 	$(OCAMLDOCOPT) \
@@ -343,6 +393,7 @@ clean: dummy
 	(cd base && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd driver && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd grdf && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
+	(cd chains && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd rest && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 
 
@@ -352,6 +403,7 @@ clean: dummy
 	base/*.ml base/*.mli \
 	driver/*.ml driver/*.mli \
 	grdf/*.ml grdf/*.mli \
+	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
 	  > .depend
 
