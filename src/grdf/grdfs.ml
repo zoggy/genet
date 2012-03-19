@@ -74,31 +74,38 @@ let add_type world model ~sub ~obj =
 
 (** {2 Uris of manipulated elements} *)
 
-let uri_tools prefix = Printf.sprintf "%stools" prefix;;
+let suffix_tools = "tools";;
+let uri_tools prefix = Printf.sprintf "%s%s" prefix suffix_tools;;
 let uri_tool ~prefix ~tool =
   Printf.sprintf "%s/%s" (uri_tools prefix) tool;;
 
-let uri_chains prefix = Printf.sprintf "%schains" prefix;;
+let suffix_chains = "chains";;
+let uri_chains prefix = Printf.sprintf "%s%s" prefix suffix_chains;;
 let uri_chain ~prefix ~chain =
   Printf.sprintf "%s/%s" (uri_chains prefix) chain;;
 
-let uri_versions ~tool = Printf.sprintf "%s/versions" tool;;
+let suffix_versions = "versions";;
+let uri_versions prefix = Printf.sprintf "%s/%s" prefix suffix_versions;;
 let uri_version ~tool ~version =
   Printf.sprintf "%s/%s" (uri_versions tool) version;;
 let uri_tool_of_version uri = Filename.dirname (Filename.dirname uri);;
 
-let uri_intfs ~tool = Printf.sprintf "%s/interfaces" tool;;
+let suffix_intfs = "interfaces"
+let uri_intfs ~tool = Printf.sprintf "%s/%s" tool suffix_intfs;;
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/%s" (uri_intfs tool) intf;;
 let uri_tool_of_intf uri = Filename.dirname (Filename.dirname uri);;
 
-let uri_filetypes prefix = Printf.sprintf "%sfiletypes" prefix;;
+let suffix_filetypes = "filetypes" ;;
+let uri_filetypes prefix = Printf.sprintf "%s%s" prefix suffix_filetypes;;
 let uri_filetype ~prefix name =
   Printf.sprintf "%s/%s" (uri_filetypes prefix) name;;
 
-let uri_branches parent = Printf.sprintf "%s/branches" parent;;
+let suffix_branches = "branches";;
+let uri_branches parent = Printf.sprintf "%s/%s" parent suffix_branches;;
 let uri_branch_from_parent_branch parent name = Printf.sprintf "%s/%s" parent name;;
-let uri_branch_from_parent_tool parent name = Printf.sprintf "%s/branches/%s" parent name;;
+let uri_branch_from_parent_tool parent name =
+  Printf.sprintf "%s/%s/%s" parent suffix_branches name;;
 
 let remove_prefix prefix uri =
   if Misc.is_prefix prefix uri then

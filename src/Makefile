@@ -8,6 +8,7 @@ SYSTEM_INCLUDES= \
 	$(BOXES_INCLUDES) \
 	$(OCAMLRDF_INCLUDES) \
 	$(XMLM_INCLUDES) \
+	`ocamlfind query -i-format xtmpl` \
 	`ocamlfind query -i-format equeue` \
 	`ocamlfind query -i-format pcre` \
 	`ocamlfind query -i-format netcgi2` \
@@ -54,8 +55,8 @@ GTK_LIBS_BYTE=lablgtk.cma lablglade.cma lablgnomecanvas.cma gmylist.cmo boxes.cm
 RDF_LIBS=ocamlrdf.cmxa
 RDF_LIBS_BYTE=ocamlrdf.cma
 
-XTMPL_LIBS=xmlm.cmx xtmpl.cmx
-XTMPL_LIBS_BYTE=xmlm.cmo xtmpl.cmo
+XTMPL_LIBS=xmlm.cmxa xtmpl.cmx
+XTMPL_LIBS_BYTE=xmlm.cma xtmpl.cmo
 
 OCAMLNET_LIBS= \
 	bigarray.cmxa pcre.cmxa \

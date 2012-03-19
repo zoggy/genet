@@ -73,11 +73,17 @@ let a_by_class ctx uri =
   (a ~href: uri name)
 ;;
 
-
+let a_filetypes ctx =
+  a ~href: (Grdfs.uri_filetypes ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_filetypes
+;;
 
 let a_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   a ~href: uri name
+;;
+
+let a_tools ctx =
+  a ~href: (Grdfs.uri_tools ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_tools
 ;;
 
 let a_tool ctx uri =
@@ -121,16 +127,39 @@ let xhtml_navpath_join_path path =
   | _ -> (String.concat " / " ("" :: path)) ^ " /"
 ;;
 
-let xhtml_navpath_of_branch ctx ?(inc_uri=false) uri =
+let navpath_of_tool ctx = [ a_tools ctx ];;
+
+let xhtml_navpath_of_tool ctx =
+  xhtml_navpath_join_path (navpath_of_tool ctx)
+;;
+
+let xhtml_navpath_of_filetype ctx uri =
+  xhtml_navpath_join_path [ a_filetypes ctx ]
+;;
+
+let navpath_of_branch ctx ?(inc_uri=false) uri =
   let link uri = a ~href: uri (Grdfs.name_of_uri_string ctx.ctx_rdf uri) in
   let rec iter acc = function
     None -> acc
   | Some (uri, is_tool) ->
-      let acc = link uri :: acc in
+      let acc =
+        if is_tool then
+          (
+           let href = Grdfs.uri_branches uri in
+           (link uri :: (a ~href Grdfs.suffix_branches) :: acc)
+          )
+        else
+          link uri :: acc
+      in
       iter acc (Grdf_branch.parent ctx.ctx_rdf uri)
   in
   let acc = if inc_uri then [link uri] else [] in
-  xhtml_navpath_join_path (iter acc (Grdf_branch.parent ctx.ctx_rdf uri))
+  let p = iter acc (Grdf_branch.parent ctx.ctx_rdf uri) in
+  (navpath_of_tool ctx) @ p
+;;
+
+let xhtml_navpath_of_branch ctx ?inc_uri uri =
+  xhtml_navpath_join_path (navpath_of_branch ctx ?inc_uri uri)
 ;;
 
 let xhtml_navpath_of_branches ctx uri =
@@ -138,16 +167,25 @@ let xhtml_navpath_of_branches ctx uri =
 ;;
 
 let xhtml_navpath_of_version ctx ?inc_uri uri =
-  xhtml_navpath_of_branch ctx ?inc_uri uri
+  (match Grdf_version.parent ctx.ctx_rdf uri with
+     None -> ""
+   | Some uri -> xhtml_navpath_of_branch ctx ~inc_uri: true uri
+  )
 ;;
 
 let xhtml_navpath_of_versions ctx uri =
-  xhtml_navpath_of_branch ctx ~inc_uri: true uri
+  let p = navpath_of_branch ctx ~inc_uri: true uri in
+  xhtml_navpath_join_path p
 ;;
 
 let xhtml_navpath_of_intf ctx uri =
   let tool = Grdf_intf.tool_of_intf uri in
-  Printf.sprintf "/ %s /" (a_tool ctx tool)
+  let uri_intfs = Grdfs.uri_intfs ~tool in
+  xhtml_navpath_join_path
+  [ a_tools ctx ;
+    (a_tool ctx tool) ;
+    a ~href: uri_intfs Grdfs.suffix_intfs ;
+  ]
 ;;
 
 let xhtml_navpath_of_intfs ctx uri =
@@ -161,13 +199,13 @@ let xhtml_navpath_of_intfs ctx uri =
 let xhtml_navpath ctx = function
 | Other _
 | Static_file _
-| Tool _
 | Tools -> ""
+| Tool uri -> xhtml_navpath_of_tool ctx
 | Branch uri -> xhtml_navpath_of_branch ctx uri
 | Version uri -> xhtml_navpath_of_version ctx uri
 | Intf uri -> xhtml_navpath_of_intf ctx uri
 | Intfs uri -> xhtml_navpath_of_intfs ctx uri
-| Filetype _ -> ""
+| Filetype uri -> xhtml_navpath_of_filetype ctx uri
 | Filetypes -> ""
 | Versions uri -> xhtml_navpath_of_versions ctx uri
 | Branches uri -> xhtml_navpath_of_branches ctx uri
@@ -240,7 +278,8 @@ let get_tool ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
-  ([ctype ()], tool_page ctx ~title: name contents)
+  let navpath = xhtml_navpath ctx (Tool uri) in
+  ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
 
 let get_tools ctx =
@@ -327,7 +366,8 @@ let get_intfs ctx uri =
 let get_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   let contents = name in
-  ([ctype ()], filetype_page ctx ~title: name contents)
+  let navpath = xhtml_navpath ctx (Filetype uri) in
+  ([ctype ()], filetype_page ctx ~title: name ~navpath contents)
 ;;
 
 let get_filetypes ctx =
@@ -348,21 +388,17 @@ let get_filetypes ctx =
 let get_version ctx uri =
   let wtitle = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   let name = Grdf_version.name ctx.ctx_rdf uri in
-  let tool = Grdf_version.tool_of_version uri in
-  let title = Printf.sprintf "%s / %s" (a_tool ctx tool) (a ~href: uri name) in
-  prerr_endline (Printf.sprintf "wtitle=%s, title=%s" wtitle title);
+  let title = a ~href: uri name in
   let contents = xhtml_of_intfs_of ctx uri in
-  ([ctype ()], tool_page ctx ~title ~wtitle contents)
+  let navpath = xhtml_navpath ctx (Version uri) in
+  ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get_versions ctx tool =
-  let contents =
-    Printf.sprintf "<p>Versions of %s:</p><p>%s</p>"
-      (a_tool ctx tool)
-      (xhtml_of_versions_of ctx tool)
-  in
+  let contents = xhtml_of_versions_of ctx tool in
   let title = Printf.sprintf "Versions of %s" (Grdf_tool.name ctx.ctx_rdf tool) in
-  ([ctype ()], tool_page ctx ~title contents)
+  let navpath = xhtml_navpath ctx (Versions tool) in
+  ([ctype ()], tool_page ctx ~title ~navpath contents)
 ;;
 
 let get_branch ctx uri =
@@ -385,10 +421,9 @@ let get_branch ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
-  ([ctype ()], tool_page ctx ~title: name contents)
+  let navpath = xhtml_navpath ctx (Branch uri) in
+  ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
-
-
 
 let get_branches ctx uri =
   let pre = "Branches of " in
@@ -396,7 +431,8 @@ let get_branches ctx uri =
   let wtitle = Printf.sprintf "%s %s" pre name in
   let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
   let contents = xhtml_of_branches_of ctx uri in
-  ([ctype ()], tool_page ctx ~title ~wtitle contents)
+  let navpath = xhtml_navpath ctx (Branches uri) in
+  ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get_root ctx =

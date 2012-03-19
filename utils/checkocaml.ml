@@ -948,7 +948,7 @@ let detect_xmlm ?(modes=[`Byte;`Opt]) conf =
       None -> includes
     | Some s -> ("with ocamlfind", [s]) :: includes
   in
-  let libs = ["xmlm.cmo" ] in
+  let libs = ["xmlm.cma" ] in
   let f (mes, includes) mode =
     let mes = Printf.sprintf "checking for Xmlm (%s) %s... "
       (string_of_mode mode) mes
