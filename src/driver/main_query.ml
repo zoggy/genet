@@ -9,7 +9,7 @@ type mode =
   | Interfaces
   | Filetypes
   | Dot
-  | Test
+  | Test of int
 
 let mode = ref None;;
 
@@ -33,7 +33,7 @@ let options =
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
 
-  ("--test", Arg.Unit (fun () -> mode := Some Test),
+  ("--test", Arg.Int (fun n -> mode := Some (Test n)),
    " not documented (testing purpose)") ::
 
   []
@@ -94,27 +94,36 @@ let list_filetypes wld =
 
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
-let test wld =
-  let intfs = Grdf_intf.intfs wld in
-  if Sset.is_empty intfs then
-    failwith "no interfaces to use to test";
+let test wld config n =
+  match n with
+  | 2 ->
+      begin
+        let chain_files = Chn_io.chain_files config in
+        List.iter prerr_endline chain_files
+      end
+  | _  ->
+      begin
+        let intfs = Grdf_intf.intfs wld in
+        if Sset.is_empty intfs then
+          failwith "no interfaces to use to test";
 
-  match Grdf_ftype.filetypes wld with
-    [] -> failwith "no filetype to use to test"
-  | filetypes ->
-      let filetypes = Array.of_list filetypes in
-      prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
-      let n = Array.length filetypes in
-      (*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
-      Random.self_init();
-      let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
-      let ftype = filetypes.(Random.int n) in
-      let port =
-        if Random.int 1 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
-      in
-      let intf = Sset.choose intfs in
-      Grdf_intf.add_port wld dir intf port;
-      prerr_endline (Grdf_intf.string_of_intf wld intf);
+        match Grdf_ftype.filetypes wld with
+          [] -> failwith "no filetype to use to test"
+        | filetypes ->
+            let filetypes = Array.of_list filetypes in
+            prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
+            let n = Array.length filetypes in
+            (*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
+            Random.self_init();
+            let dir = if Random.int 2 = 0 then Grdf_intf.In else Grdf_intf.Out in
+            let ftype = filetypes.(Random.int n) in
+            let port =
+              if Random.int 1 = 0 then Grdf_intf.List ftype else Grdf_intf.One ftype
+            in
+            let intf = Sset.choose intfs in
+            Grdf_intf.add_port wld dir intf port;
+            prerr_endline (Grdf_intf.string_of_intf wld intf);
+      end
 ;;
 
 let main () =
@@ -130,7 +139,7 @@ let main () =
     | Some Interfaces -> list_interfaces rdf_wld opts
     | Some Filetypes -> list_filetypes rdf_wld
     | Some Dot -> dot rdf_wld
-    | Some Test -> test rdf_wld
+    | Some (Test n) -> test rdf_wld config n
   end;
 (*  Unix.sleep 2;*)
   Grdf_init.close rdf_wld;

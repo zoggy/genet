@@ -23,3 +23,10 @@ let ast_of_file file =
 let print_ast oc ast =
   output_string oc ((Chn_ast.printer ())#string_of_ast ast)
 ;;
+
+let chain_files config =
+  let dir = Config.chains_dir config in
+  Find.find_list Find.Stderr [dir]
+  [ Find.Maxdepth 1 ; Find.Type Unix.S_REG ;
+    Find.Regexp (Str.regexp ".*\\.gnt$") ]
+;;

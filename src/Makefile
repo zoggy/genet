@@ -86,6 +86,7 @@ LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
 BASE_CMXFILES=base/version.cmx \
 	base/install.cmx \
 	base/sset.cmx \
+	base/find.cmx \
 	base/misc.cmx \
 	base/config.cmx \
 	base/checks.cmx \
