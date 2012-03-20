@@ -3,9 +3,9 @@
 chain foo
   (* ... *)
 {
-  in: i1.foo ;
-  out: o1.data ;
-  ...
+  in: foo i1 ;
+  out: data o1 ;
+
 }
 
 chain test1
@@ -18,8 +18,8 @@ chain test1
   operation op2 : "/tools/why/Fait cela" ;
   operation op3 : "/chains/Chain1.foo" ;
 
-  i1 -> op1.i1 (* automatically generated name for 1st input of op1 *);
-  i2 -> op1.i2 (* automatically generated name for 2nd input of op1 *);
+  i1 -> op1.i1 ;(* automatically generated name for 1st input of op1 *)
+  i2 -> op1.i2 ;(* automatically generated name for 2nd input of op1 *)
   op1.o1 -> op2.i1 ;
   i3 -> op2.i2 ;
   op2.o1 -> o1 ;

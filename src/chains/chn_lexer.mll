@@ -86,7 +86,7 @@ and string = parse
 
 and comment = parse
 | "*)"  {
-    let s = Buffer.contents string_buffer in
+    let s = Misc.strip_string (Buffer.contents string_buffer) in
     Comment s
     }
 | '\n' {

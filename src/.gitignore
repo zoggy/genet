@@ -13,3 +13,6 @@ chains/chn_parser.ml
 chains/chn_parser.mli
 chains/chn_lexer.ml
 
+chains/chn_lexer.mli
+chains/chn_parser.conflicts
+genet-chain*

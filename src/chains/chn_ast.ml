@@ -75,8 +75,8 @@ class ['a] ast_printer (f_from : 'a -> string) =
       Printf.bprintf b "chain %s\n(* %s *)\n{\n" chn.chn_name chn.chn_comment ;
       Printf.bprintf b "  in: %s ;\n" (self#string_of_port_array chn.chn_inputs) ;
       Printf.bprintf b "  out: %s ;\n" (self#string_of_port_array chn.chn_outputs) ;
-      Printf.bprintf b "\n%s\n" (self#string_of_operation_list chn.chn_ops);
-      Printf.bprintf b "\n%s\n" (self#string_of_edge_list chn.chn_edges);
+      Printf.bprintf b "\n%s" (self#string_of_operation_list chn.chn_ops);
+      Printf.bprintf b "\n%s" (self#string_of_edge_list chn.chn_edges);
       Buffer.add_string b "}\n";
       Buffer.contents b
 
@@ -85,5 +85,5 @@ class ['a] ast_printer (f_from : 'a -> string) =
 
   end
 
-let raw_printer = new ast_printer (fun s -> Printf.sprintf "%S" s);;
+let raw_printer () = new ast_printer (fun s -> Printf.sprintf "%S" s);;
 

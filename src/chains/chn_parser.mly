@@ -25,9 +25,9 @@ open Chn_ast
 
 %%
 
-%public ast: list(chain) option(EOF) { $1 }
+%public ast: option(Comment) chains=list(chain) option(EOF) { chains }
 
-chain: CHAIN ident=Ident comment=Comment LBRACE body=chain_body RBRACE
+chain: option(Comment) CHAIN ident=Ident comment=Comment LBRACE body=chain_body RBRACE
   {
     let (inputs, outputs, ops, edges) = body in
     let start = $startpos(ident) in
@@ -55,8 +55,8 @@ chain_body: ins=inputs outs=option(outputs) ops=list(operation) edges=list(edge)
     )
   }
 
-inputs: IN COLON nonempty_list(port) SEMICOLON { $3 }
-outputs: OUT COLON nonempty_list(port) SEMICOLON { $3 }
+inputs: IN COLON separated_nonempty_list(COMMA, port) SEMICOLON option(Comment) { $3 }
+outputs: OUT COLON separated_nonempty_list(COMMA, port) SEMICOLON option(Comment) { $3 }
 
 port: ftype=Ident name=Ident {
   let start = $startpos(ftype) in
@@ -71,7 +71,7 @@ port: ftype=Ident name=Ident {
   }
 }
 
-operation: OPERATION ident=Ident COLON from=String SEMICOLON
+operation: OPERATION ident=Ident COLON from=String SEMICOLON option(Comment)
   {
   let start = $startpos(ident) in
   let stop = $endpos(from) in
@@ -91,7 +91,7 @@ operation: OPERATION ident=Ident COLON from=String SEMICOLON
   }
 }
 
-edge: src=edge_part RIGHTARROW dst=edge_part
+edge: src=edge_part RIGHTARROW dst=edge_part SEMICOLON option(Comment)
   {
    { edge_src = src ; edge_dst = dst }
   }
