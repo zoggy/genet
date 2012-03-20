@@ -2,6 +2,7 @@
 
 type operation_name = string
 type port_name = string
+type qname = string list
 
 type port = {
   p_name : port_name ;
@@ -22,26 +23,28 @@ type edge = {
     edge_dst : edge_part ;
   }
 
-type 'a operation = {
+type op_origin = Chain of qname | Interface of Grdf_types.uri
+
+type operation = {
   op_name : operation_name ;
   op_loc : Loc.t ;
-  op_from : 'a ;
+  op_from : op_origin ;
   op_from_loc : Loc.t ;
 }
 
-type 'a chain = {
+type chain = {
   chn_name : string ;
   chn_loc : Loc.t ;
   chn_comment : string ;
   chn_inputs : port array ;
   chn_outputs : port array ;
-  chn_ops : 'a operation list ;
+  chn_ops : operation list ;
   chn_edges : edge list ;
 }
 
-type 'a ast = 'a chain list;;
+type ast = chain list;;
 
-class ['a] ast_printer (f_from : 'a -> string) =
+class ast_printer =
   object(self)
 
     method string_of_port p = Printf.sprintf "%s %s" p.p_ftype p.p_name
@@ -50,8 +53,13 @@ class ['a] ast_printer (f_from : 'a -> string) =
       let l = Array.to_list l in
       String.concat ", " (List.map self#string_of_port l)
 
+    method string_of_op_origin = function
+      Chain s -> String.concat "." s
+    | Interface uri -> Printf.sprintf "%S" uri
+
     method string_of_operation op =
-      Printf.sprintf "  operation %s : %s ;\n" op.op_name (f_from op.op_from)
+      Printf.sprintf "  operation %s : %s ;\n" op.op_name
+      (self#string_of_op_origin op.op_from)
 
     method string_of_operation_list l =
       String.concat "" (List.map self#string_of_operation l)
@@ -85,5 +93,5 @@ class ['a] ast_printer (f_from : 'a -> string) =
 
   end
 
-let raw_printer () = new ast_printer (fun s -> Printf.sprintf "%S" s);;
+let printer () = new ast_printer ;;
 

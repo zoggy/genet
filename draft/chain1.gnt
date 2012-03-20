@@ -16,7 +16,7 @@ chain test1
 
   operation op1 : "/tools/why/Fait ceci" ;
   operation op2 : "/tools/why/Fait cela" ;
-  operation op3 : "/chains/Chain1.foo" ;
+  operation op3 : Chain1.foo ;
 
   i1 -> op1.i1 ;(* automatically generated name for 1st input of op1 *)
   i2 -> op1.i2 ;(* automatically generated name for 2nd input of op1 *)

@@ -21,5 +21,5 @@ let ast_of_file file =
 ;;
 
 let print_ast oc ast =
-  output_string oc ((Chn_ast.raw_printer ())#string_of_ast ast)
+  output_string oc ((Chn_ast.printer ())#string_of_ast ast)
 ;;

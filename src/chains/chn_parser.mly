@@ -21,7 +21,7 @@ open Chn_ast
 
 %token EOF
 
-%start <string Chn_ast.ast> ast
+%start <Chn_ast.ast> ast
 
 %%
 
@@ -71,7 +71,7 @@ port: ftype=Ident name=Ident {
   }
 }
 
-operation: OPERATION ident=Ident COLON from=String SEMICOLON option(Comment)
+operation: OPERATION ident=Ident COLON from=op_origin SEMICOLON option(Comment)
   {
   let start = $startpos(ident) in
   let stop = $endpos(from) in
@@ -90,6 +90,14 @@ operation: OPERATION ident=Ident COLON from=String SEMICOLON option(Comment)
     op_from_loc = loc_from ;
   }
 }
+
+op_origin:
+| s=String { Interface s}
+| ident=qname { Chain ident }
+
+qname:
+  q=qname DOT ident=Ident { q @ [ident] }
+| q=CapIdent { [q] }
 
 edge: src=edge_part RIGHTARROW dst=edge_part SEMICOLON option(Comment)
   {

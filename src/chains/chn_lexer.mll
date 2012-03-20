@@ -53,7 +53,8 @@ rule main = parse
 | capident {
     let lexeme = Lexing.lexeme lexbuf in
     try List.assoc (String.lowercase lexeme) keywords
-    with Not_found -> CapIdent lexeme
+    with Not_found ->
+        CapIdent lexeme
   }
 | '.' { DOT }
 | '{' { LBRACE }
