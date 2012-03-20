@@ -4,6 +4,8 @@ type operation_name = string
 type port_name = string
 type qname = string list
 
+let string_of_qname = String.concat "." ;;
+
 type port = {
   p_name : port_name ;
   p_loc : Loc.t ;
@@ -23,7 +25,7 @@ type edge = {
     edge_dst : edge_part ;
   }
 
-type op_origin = Chain of qname | Interface of Grdf_types.uri
+type op_origin = Chain of qname | Interface of string
 
 type operation = {
   op_name : operation_name ;
@@ -54,7 +56,7 @@ class ast_printer =
       String.concat ", " (List.map self#string_of_port l)
 
     method string_of_op_origin = function
-      Chain s -> String.concat "." s
+      Chain s -> string_of_qname s
     | Interface uri -> Printf.sprintf "%S" uri
 
     method string_of_operation op =

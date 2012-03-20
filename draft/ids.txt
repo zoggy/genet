@@ -1,23 +1,45 @@
 Identfiant d'un outil:
-http://<hostname>/projects/<project>/tools/<tool>
+http://<prefix>/tools/<tool>
 
 Identifiant d'une branche
-http://<hostname>/projects/<project>/tools/<tool>/branches/<branch>
+http://<prefix>/tools/<tool>/branches/<branch>
 
 Interfaces d'un outil:
-http://<hostname>/projects/<project>/tools/<tool>/interfaces/<interface>
+http://<prefix>/tools/<tool>/interfaces/<interface>
 
 Identifiant d'une branche b2 d'une branche b1:
-http://<hostname>/projects/<project>/tools/<tool>/branches/b1/b2
+http://<prefix>/tools/<tool>/branches/b1/b2
 
 Versions d'un outil:
-http://<hostname>/projects/<project>/tools/<tool>/versions/<version>
+http://<prefix>/tools/<tool>/versions/<version>
 
-ex: http://shed.inria.fr/projects/proval/tools/why/versions/1.1
+ex: http://shed.inria.fr/tools/why/versions/1.1
 
 Types de fichiers:
-http://<hostname>/projects/<project>/filetypes/<name>
+http://<prefix>/filetypes/<name>
 
-Identifiant d'une cha�ne de traitement:
-http://<hostname>/projects/<project>/chains/<chain1>
+Identifiant d'une chaîne de traitement:
+http://<prefix>/chains/Chain1.op
+
+Chaîne mise à plat
+http://<prefix>/fchains/Chain1.op/in/1  : 1er port d'entrée de la chaine Chain1.op
+http://<prefix>/fchains/Chain1.op/out/2  : 2ème port de sortie de la chaine Chain1.op
+http://<prefix>/fchains/Chain1.op/op.o1  : port o1 de l'opération op
+http://<prefix>/fchains/Chain1.op/op2/opN/in/2 :
+   2ème port d'entrée de l'opération opN contenue dans la chaine référencée par op2
+   avec des liens entre les ports, et des arcs
+   des opérations feuilles vers les interfaces des outils
+
+Chaîne à plat instanciée:
+http://<prefix>/ichains/<unique generated id>/.... (comme ci-dessus, pour les urls)
+    lien vers la chaine à plat originale
+  + liens vers les versions utilisées
+  Pour chaque fichier généré,
+    lien vers le port de la chaine aplatie originale
+    + lien la chaine instancieé
+     => sous forme de triplet, pour qu'un même fichier (MD5) puisse être lié
+     à plusieurs exécutions de chaines
+
+1 chaine instanciée = 1 flot d'exécution pour une combinaison de versions des outils
+utilisés par la chaine
 
