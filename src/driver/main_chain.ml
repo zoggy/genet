@@ -1,6 +1,5 @@
 (** Main module of the [genet-chain] tool. *)
 
-
 let test_file file =
   try
     let ast = Chn_io.ast_of_file file in
@@ -23,6 +22,5 @@ let main () =
     prerr_endline (Printf.sprintf "%d problem(s) encountered" n);
   exit n
 ;;
-
 
 let () = Misc.safe_main main;;

@@ -16,4 +16,4 @@ site:
 	cp -f *.svg $(DEST_DIR)/
 
 test:
-	$(MAKE) BASE_URL_OPTION="--base-url file://$(DEST_DIR)" site
+	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site
