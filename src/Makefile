@@ -37,9 +37,9 @@ LINKFLAGS_BYTE=$(INCLUDES)
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST)
+TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST) $(GENET_CHAIN)
 TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE) \
-	$(GENET_REST_BYTE)
+	$(GENET_REST_BYTE) $(GENET_CHAIN_BYTE)
 
 SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
 SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
@@ -141,20 +141,6 @@ GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/grdf_init.cmx \
 	grdf/grdf_dot.cmx
 
-#	grdf/constant.cmx \
-#	grdf/grdf_types.cmx \
-#	grdf/colors.cmx \
-#	grdf/additional.cmx \
-#	grdf/checks.cmx \
-#	grdf/tmap.cmx \
-#	grdf/graph.cmx \
-#	grdf/loc.cmx \
-#	grdf/tokens.cmx \
-#	grdf/lexer.cmx \
-#	grdf/history.cmx \
-#	grdf/twdict.cmx \
-#	grdf/zipper.cmx \
-#	grdf/env.cmx
 GRDF_CMOFILES=$(GRDF_CMXFILES:.cmx=.cmo)
 GRDF_CMIFILES=$(GRDF_CMXFILES:.cmx=.cmi)
 
@@ -180,22 +166,9 @@ LIB_CHN_A=$(LIB_CHN:.cmxa=.a)
 CHN_CMXFILES=chains/chn_types.cmx \
 	chains/chn_ast.cmx \
 	chains/chn_parser.cmx \
-	chains/chn_lexer.cmx
+	chains/chn_lexer.cmx \
+	chains/chn_io.cmx
 
-#	grdf/constant.cmx \
-#	grdf/grdf_types.cmx \
-#	grdf/colors.cmx \
-#	grdf/additional.cmx \
-#	grdf/checks.cmx \
-#	grdf/tmap.cmx \
-#	grdf/graph.cmx \
-#	grdf/loc.cmx \
-#	grdf/tokens.cmx \
-#	grdf/lexer.cmx \
-#	grdf/history.cmx \
-#	grdf/twdict.cmx \
-#	grdf/zipper.cmx \
-#	grdf/env.cmx
 CHN_CMOFILES=$(CHN_CMXFILES:.cmx=.cmo)
 CHN_CMIFILES=$(CHN_CMXFILES:.cmx=.cmi)
 
@@ -225,20 +198,6 @@ REST_CMXFILES= \
 	rest/rest_xhtml.cmx \
 	rest/rest_query.cmx
 
-#	grdf/constant.cmx \
-#	grdf/grdf_types.cmx \
-#	grdf/colors.cmx \
-#	grdf/additional.cmx \
-#	grdf/checks.cmx \
-#	grdf/tmap.cmx \
-#	grdf/graph.cmx \
-#	grdf/loc.cmx \
-#	grdf/tokens.cmx \
-#	grdf/lexer.cmx \
-#	grdf/history.cmx \
-#	grdf/twdict.cmx \
-#	grdf/zipper.cmx \
-#	grdf/env.cmx
 REST_CMOFILES=$(REST_CMXFILES:.cmx=.cmo)
 REST_CMIFILES=$(REST_CMXFILES:.cmx=.cmi)
 
@@ -268,6 +227,13 @@ GENET_REST_CMXFILES=\
 	driver/main_rest.cmx
 GENET_REST_CMOFILES=$(GENET_REST_CMXFILES:.cmx=.cmo)
 GENET_REST_CMIFILES=$(GENET_REST_CMXFILES:.cmx=.cmi)
+
+# Genet-chain files
+GENET_CHAIN_CMXFILES=\
+	driver/options.cmx \
+	driver/main_chain.cmx
+GENET_CHAIN_CMOFILES=$(GENET_CHAIN_CMXFILES:.cmx=.cmo)
+GENET_CHAIN_CMIFILES=$(GENET_CHAIN_CMXFILES:.cmx=.cmi)
 
 opt: libs tools
 all: opt byte
@@ -309,6 +275,15 @@ $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(LIB_REST) $(GENET_REST_CMXFI
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
 	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
 	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+
+$(GENET_CHAIN): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(LIB_CHAIN) $(GENET_CHAIN_CMXFILES)
+	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
+	$(RDF_LIBS)	-thread threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
+
+$(GENET_CHAIN_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_CHAIN_BYTE) $(GENET_CHAIN_CMOFILES)
+	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
+	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
 	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)
