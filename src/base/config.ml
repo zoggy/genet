@@ -61,3 +61,9 @@ let string_of_config c =
   Printf.bprintf b "rest_api=%s\n" c.rest_api;
   Buffer.contents b
 ;;
+
+let in_dir cfg = Filename.concat cfg.root_dir "in";;
+let out_dir cfg = Filename.concat cfg.root_dir "out";;
+let chains_dir cfg = Filename.concat (in_dir cfg) "chains";;
+let data_dir cfg =  Filename.concat (in_dir cfg) "data";;
+let web_dir cfg = Filename.concat (in_dir cfg) "web";;

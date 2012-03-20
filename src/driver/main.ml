@@ -172,14 +172,15 @@ let init_dir ?git_repo opts =
   let verbose = opts.Options.verb_level > 0 in
   let mkdir = Misc.mkdir ~verbose in
   mkdir dir;
-  mkdir (Filename.concat dir "out");
-  let in_dir = Filename.concat dir "in" in
+  let config_file = Install.default_config_file in
+  let config = Config.read_config config_file in
+  mkdir (Config.out_dir config);
+  let in_dir = Config.in_dir config in
   begin
     match git_repo with
       None ->
-        List.iter (fun d -> mkdir (Filename.concat in_dir d))
-        [ "chains" ; "data" ];
-        let web_dir = Filename.concat in_dir "web" in
+        List.iter mkdir [Config.chains_dir config; Config.data_dir config];
+        let web_dir = Config.web_dir config in
         begin
           let com = Printf.sprintf "cp -r %s %s"
             (Filename.quote Install.share_web_dir)
@@ -203,8 +204,6 @@ let init_dir ?git_repo opts =
           0 -> ()
         | _ -> failwith (Printf.sprintf "Command failed: %s" com)
   end;
-  let config_file = Filename.concat in_dir Install.default_config_file in
-  ignore(Config.read_config config_file)
 ;;
 
 let main () =
