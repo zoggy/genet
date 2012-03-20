@@ -11,11 +11,11 @@ chain foo
 chain test1
 (*  This is the description of the chain *)
 {
-  in: i1.v, i2.vo, i3.ml;
-  out: o1.bar, o2.data ;
+  in: v i1, vo i2, ml i3l;
+  out: bar o1, data o2 ; (* bar = /filetypes/bar *)
 
-  operation op1 : "/tools/why/branches/1.x/Fait ceci" ;
-  operation op2 : "/tools/why/branches/1.x/Fait cela" ;
+  operation op1 : "/tools/why/Fait ceci" ;
+  operation op2 : "/tools/why/Fait cela" ;
   operation op3 : "/chains/Chain1.foo" ;
 
   i1 -> op1.i1 (* automatically generated name for 1st input of op1 *);

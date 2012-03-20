@@ -88,6 +88,8 @@ BASE_CMXFILES=base/version.cmx \
 	base/sset.cmx \
 	base/misc.cmx \
 	base/config.cmx \
+	base/checks.cmx \
+	base/loc.cmx \
 	base/cmdline.cmx
 
 #	base/constant.cmx \
