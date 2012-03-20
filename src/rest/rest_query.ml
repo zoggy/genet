@@ -49,7 +49,7 @@ let uri_of_query_path ctx path =
   uri
 ;;
 
-let try_is_uri_of wld uri =
+let try_is_uri_of ctx uri =
   let l =
     [
       Grdfs.is_uri_tool_versions, (fun uri -> Versions uri) ;
@@ -61,12 +61,15 @@ let try_is_uri_of wld uri =
       Grdfs.is_uri_branch_interfaces, (fun uri -> Intfs uri) ;
 
       Grdfs.is_uri_version_interfaces, (fun uri -> Intfs uri) ;
+
+      (fun _ uri -> Grdfs.is_uri_chain_module ctx.ctx_cfg.Config.rest_api uri),
+      (fun uri -> Chain_module uri) ;
     ]
   in
   let rec iter = function
     [] -> None
   | (test, build) :: q ->
-      match test wld uri with
+      match test ctx.ctx_rdf uri with
         None -> iter q
       | Some uri -> Some (build uri)
   in
@@ -75,7 +78,6 @@ let try_is_uri_of wld uri =
 
 
 let rec thing_of_path ctx path =
-  prerr_endline (Printf.sprintf "thing_of_path %s" path);
   (* we must change the path to an uri according to rest_api *)
   let uri = uri_of_query_path ctx path in
   let wld = ctx.ctx_rdf in
@@ -86,9 +88,10 @@ let rec thing_of_path ctx path =
   match Grdfs.class_of wld sub with
   | None when uri = Grdfs.uri_tools ctx.ctx_rdf.Grdf_types.wld_prefix -> Tools
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
+  | None when uri = Grdfs.uri_chains ctx.ctx_rdf.Grdf_types.wld_prefix -> Chains
   | None ->
       begin
-        match try_is_uri_of wld uri with
+        match try_is_uri_of ctx uri with
           Some res -> res
         | None ->
             try

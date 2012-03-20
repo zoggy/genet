@@ -26,6 +26,8 @@ type thing =
   | Filetypes
   | Static_file of string * string
   | Other of string
+  | Chains
+  | Chain_module of uri
 ;;
 
 type response = arg list * string

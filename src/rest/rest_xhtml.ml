@@ -15,9 +15,9 @@ let dot_to_svg dot =
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
-let page ?(env=Xtmpl.env_empty) ctx ~title ?wtitle ?navpath contents =
+let page ?(env=Xtmpl.env_empty) ctx ~title ?wtitle ?navpath ?error contents =
   let s = Rest_xpage.page ctx.ctx_cfg ~env
-    ~title ?wtitle ?navpath [Xtmpl.xml_of_string contents]
+    ~title ?wtitle ?navpath ?error [Xtmpl.xml_of_string contents]
   in
   Printf.sprintf "<!DOCTYPE html>\n%s\n" s
 ;;
@@ -30,6 +30,7 @@ let page_active ?(env=Xtmpl.env_empty) v =
 let home_page = page_active "home";;
 let tool_page = page_active "tools";;
 let filetype_page = page_active "filetypes";;
+let chain_page = page_active "chains";;
 
 let table ?heads rows =
   let b = Buffer.create 256 in
@@ -99,6 +100,11 @@ let a_version ctx uri =
 let a_branch ctx uri =
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   a ~href: uri name
+;;
+
+let a_chain ctx name =
+  let href = Grdfs.uri_chain ctx.ctx_cfg.Config.rest_api name in
+  a ~href name
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -196,9 +202,15 @@ let xhtml_navpath_of_intfs ctx uri =
     xhtml_navpath_of_branch ctx ~inc_uri: true uri
 ;;
 
+let xhtml_navbar_of_chain_module ctx =
+  let path = [ Grdfs.uri_chains ctx.ctx_cfg.Config.rest_api ] in
+  xhtml_navpath_join_path path
+;;
+
 let xhtml_navpath ctx = function
 | Other _
 | Static_file _
+| Chains
 | Tools -> ""
 | Tool uri -> xhtml_navpath_of_tool ctx
 | Branch uri -> xhtml_navpath_of_branch ctx uri
@@ -209,6 +221,7 @@ let xhtml_navpath ctx = function
 | Filetypes -> ""
 | Versions uri -> xhtml_navpath_of_versions ctx uri
 | Branches uri -> xhtml_navpath_of_branches ctx uri
+| Chain_module uri -> xhtml_navbar_of_chain_module ctx
 ;;
 
 let intf_list ctx intfs =
@@ -246,7 +259,7 @@ let xhtml_of_branches_of ctx uri =
   match branches with
     [] -> "No branch."
   | _ ->
-        let heads = ["Branch"] in
+      let heads = ["Branch"] in
       let f br = [a_branch ctx br] in
       let rows = List.sort Pervasives.compare (List.map f branches) in
       table ~heads rows
@@ -442,6 +455,40 @@ let get_root ctx =
   let contents = svg in
   ([ctype ()], home_page ctx ~title contents)
 
+let get_chains ctx =
+  let chain_files = Chn_io.chain_files ctx.ctx_cfg in
+  let modules = List.map Chn_io.modname_of_file chain_files in
+  let modules = List.sort Pervasives.compare modules in
+  let rows = List.map (fun m -> [a_chain ctx m]) modules in
+  let heads = ["Chain module"] in
+  let contents = table ~heads rows in
+  let title = "Chains" in
+  ([ctype ()], chain_page ctx ~title contents)
+;;
+
+let get_chain_module ctx uri =
+  let config = ctx.ctx_cfg in
+  let modname = Grdfs.chain_module_of_uri config.Config.rest_api uri in
+  let file = Chn_io.file_of_modname config modname in
+  let title = Printf.sprintf "Chain module %s" modname in
+  try
+    let ast = Chn_io.ast_of_file file in
+    let heads = ["Chain"] in
+    let rows = List.map (fun chain -> [chain.Chn_ast.chn_name]) ast in
+    let contents = table ~heads rows in
+    ([ctype ()], chain_page ctx ~title contents)
+  with
+    e ->
+      let error =
+        match e with
+          Loc.Problem pb -> Loc.string_of_problem pb
+        | Sys_error msg | Failure msg -> msg
+        | e -> Printexc.to_string e
+      in
+      let error = Printf.sprintf "<pre><![CDATA[%s]]></pre>" error in
+      ([ctype ()], chain_page ctx ~title ~error "")
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -456,6 +503,8 @@ let get ctx thing args =
   | Filetypes -> get_filetypes ctx
   | Versions uri -> get_versions ctx uri
   | Branches uri -> get_branches ctx uri
+  | Chains -> get_chains ctx
+  | Chain_module uri -> get_chain_module ctx uri
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

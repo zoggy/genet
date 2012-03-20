@@ -30,3 +30,14 @@ let chain_files config =
   [ Find.Maxdepth 1 ; Find.Type Unix.S_REG ;
     Find.Regexp (Str.regexp ".*\\.gnt$") ]
 ;;
+
+let modname_of_file f =
+  String.capitalize (Filename.basename (Filename.chop_extension f))
+;;
+
+let file_of_modname config name =
+  let dir = Config.chains_dir config in
+  Filename.concat dir (Printf.sprintf "%s.gnt" (String.uncapitalize name))
+;;
+
+  

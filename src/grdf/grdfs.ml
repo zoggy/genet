@@ -85,6 +85,19 @@ let suffix_chains = "chains";;
 let uri_chains prefix = Printf.sprintf "%s%s" prefix suffix_chains;;
 let uri_chain ~prefix ~chain =
   Printf.sprintf "%s/%s" (uri_chains prefix) chain;;
+let is_uri_chain_module prefix uri =
+  let base = uri_chains prefix in
+  if Filename.dirname uri = base then
+    Some uri
+  else
+    None
+;;
+let chain_module_of_uri prefix uri =
+  match is_uri_chain_module prefix uri with
+    Some uri -> Filename.basename uri
+  | None ->
+      failwith (Printf.sprintf "%s is not a chain module uri" uri)
+;;
 
 let suffix_versions = "versions";;
 let uri_versions prefix = Printf.sprintf "%s/%s" prefix suffix_versions;;
