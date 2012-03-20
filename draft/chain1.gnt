@@ -11,7 +11,7 @@ chain foo
 chain test1
 (*  This is the description of the chain *)
 {
-  in: v i1, vo i2, ml i3l;
+  in: v i1, vo i2, ml i3;
   out: bar o1, data o2 ; (* bar = /filetypes/bar *)
 
   operation op1 : "/why/Fait ceci" ;

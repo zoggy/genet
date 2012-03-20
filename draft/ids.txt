@@ -20,6 +20,8 @@ http://<prefix>/filetypes/<name>
 
 Identifiant d'une chaîne de traitement:
 http://<prefix>/chains/Chain1.op
+http://<prefix>/chains/Chain1.op/in/1 : premier port d'entrée (avec propriété name et filetype)
+http://<prefix>/chains/Chain1.op/out/2 : deuxième port de sortie (avec propriété name et filetype)
 
 Chaîne mise à plat
 http://<prefix>/fchains/Chain1.op/in/1  : 1er port d'entrée de la chaine Chain1.op

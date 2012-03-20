@@ -34,6 +34,7 @@ let genet_branch = genet_ "Branch";;
 let genet_intf = genet_ "Interface";;
 let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
+let genet_chain = genet_ "Chain";;
 
 let string_of_class = function
   s when s = genet_tool -> "tool"
@@ -41,6 +42,7 @@ let string_of_class = function
 | s when s = genet_intf -> "interface"
 | s when s = genet_version -> "version"
 | s when s = genet_filetype -> "filetype"
+| s when s = genet_chain -> "chain"
 | _ -> ""
 ;;
 

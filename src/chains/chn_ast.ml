@@ -48,7 +48,6 @@ type ast = chain list;;
 
 class ast_printer =
   object(self)
-
     method string_of_port p = Printf.sprintf "%s %s" p.p_ftype p.p_name
 
     method string_of_port_array l =
@@ -97,3 +96,75 @@ class ast_printer =
 
 let printer () = new ast_printer ;;
 
+module Dot =
+  struct
+    let string_of_port_ref = function
+      Pint n -> Printf.sprintf "p%d" n
+    | Pname s -> s
+
+    let string_of_op_origin = function
+      Chain s -> string_of_qname s
+    | Interface uri -> Printf.sprintf "%S" uri
+
+    let print_operation b chn op =
+      let f map acc edge =
+        let ep = map edge in
+        match ep.ep_op with
+        | Some name when name = op.op_name ->
+            let p = ep.ep_port in
+            if List.mem p acc then acc else p :: acc
+        | _-> acc
+      in
+      (*
+      let string_of_port_ref p =
+        let s = string_of_port_ref p in
+        Printf.sprintf "<%s> %s" s s
+      in
+      *)
+      let get_ports map = List.fold_left (f map) [] chn.chn_edges in
+      let inputs = get_ports (fun edge -> edge.edge_dst) in
+      let outputs = get_ports (fun edge -> edge.edge_src) in
+      let string_of_port color p =
+        Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
+        color (string_of_port_ref p) (string_of_port_ref p)
+      in
+      let string_of_ports color ports =
+        Printf.sprintf  "<TD><TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">%s</TABLE></TD>"
+        (String.concat "" (List.map (string_of_port color) ports))
+      in
+      Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name;
+      Printf.bprintf b "%s" (string_of_ports "palegreen" inputs);
+      Printf.bprintf b "<TD ALIGN=\"CENTER\" CELLPADDING=\"4\">%s</TD>" (string_of_op_origin op.op_from);
+      Printf.bprintf b "%s" (string_of_ports "paleturquoise" outputs);
+      Buffer.add_string b "</TR></TABLE>>];\n"
+      (*
+       "{ { %s } | %s | { %s } }\" ];\n"
+        op.op_name
+        (String.concat " | " (List.map (string_of_port_ref "palegreen") inputs))
+        (string_of_op_origin op.op_from)
+        (String.concat " | " (List.map (string_of_port_ref "paleturquoise") outputs))
+      *)
+    let string_of_edge_part ep =
+      match ep.ep_op with
+        None -> string_of_port_ref ep.ep_port
+      | Some op_name -> Printf.sprintf "%s:%s" op_name (string_of_port_ref ep.ep_port)
+
+    let print_edge b edge =
+      Printf.bprintf b "%s -> %s ;\n"
+      (string_of_edge_part edge.edge_src)
+      (string_of_edge_part edge.edge_dst)
+
+    let print_port b color p =
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" label=\"%s\"];\n"
+        p.p_name color p.p_name
+
+    let dot_of_chain chain =
+      let b = Buffer.create 256 in
+      Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
+      List.iter (print_operation b chain) chain.chn_ops;
+      List.iter (print_edge b) chain.chn_edges;
+      Array.iter (print_port b "palegreen") chain.chn_inputs;
+      Array.iter (print_port b "paleturquoise") chain.chn_outputs;
+      Buffer.add_string b "}\n";
+      Buffer.contents b
+  end;;
