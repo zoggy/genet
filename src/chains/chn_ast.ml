@@ -51,7 +51,7 @@ class ['a] ast_printer (f_from : 'a -> string) =
       String.concat ", " (List.map self#string_of_port l)
 
     method string_of_operation op =
-      Printf.sprintf "  operation %s : %s;\n" op.op_name (f_from op.op_from)
+      Printf.sprintf "  operation %s : %s ;\n" op.op_name (f_from op.op_from)
 
     method string_of_operation_list l =
       String.concat "" (List.map self#string_of_operation l)

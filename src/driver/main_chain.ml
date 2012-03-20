@@ -18,8 +18,9 @@ let main () =
     (fun acc file -> if test_file file then acc else acc + 1)
     0 opts.Options.args
   in
+  flush stdout;
   if n > 0 then
-    prerr_endline (Printf.sprintf "%d problems encountered" n);
+    prerr_endline (Printf.sprintf "%d problem(s) encountered" n);
   exit n
 ;;
 
