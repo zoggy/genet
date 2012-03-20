@@ -9,3 +9,7 @@ genet-rest*
 ocsigen/ocsigen.conf.xtmpl
 base/install.ml
 dump.odoc
+chains/chn_parser.ml
+chains/chn_parser.mli
+chains/chn_lexer.ml
+

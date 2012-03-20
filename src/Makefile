@@ -177,7 +177,9 @@ LIB_CHN_BYTE=$(LIB_CHN:.cmxa=.cma)
 LIB_CHN_CMI=$(LIB_CHN:.cmxa=.cmi)
 LIB_CHN_A=$(LIB_CHN:.cmxa=.a)
 
-CHN_CMXFILES=chains/chn_types.cmx
+CHN_CMXFILES=chains/chn_types.cmx \
+	chains/chn_ast.cmx \
+	chains/chn_parser.cmx
 
 #	grdf/constant.cmx \
 #	grdf/grdf_types.cmx \
@@ -447,15 +449,16 @@ install-web-files:
 ###########################
 # additional dependencies
 ###########################
+chains/chn_parser.ml chains/chn_parser.mli: chains/chn_parser.mly
+	$(MENHIR) --explain --base chains/chn_parser $^
+
+
 base/tokens.ml base/tokens.mli: base/tokens.mly
 	$(MENHIR) $<
 
 base/lexer.ml base/lexer.mli: base/lexer.mll
 	$(OCAMLLEX) $<
 	$(OCAMLC) $(INCLUDES) -i base/lexer.ml > base/lexer.mli
-
-algo/algo_lang_parser.ml algo/algo_lang_parser.mli: base/tokens.mly algo/algo_lang_parser.mly
-	$(MENHIR) --explain --base algo/algo_lang_parser --external-tokens Tokens $^
 
 arch/arch_lang_parser.ml arch/arch_lang_parser.mli: base/tokens.mly arch/arch_lang_parser.mly
 	$(MENHIR) --base arch/arch_lang_parser --external-tokens Tokens $^
