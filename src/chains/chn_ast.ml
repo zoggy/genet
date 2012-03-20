@@ -98,6 +98,9 @@ let printer () = new ast_printer ;;
 
 module Dot =
   struct
+    let color_in = "palegreen"
+    let color_out = "paleturquoise"
+
     let string_of_port_ref = function
       Pint n -> Printf.sprintf "p%d" n
     | Pname s -> s
@@ -115,12 +118,6 @@ module Dot =
             if List.mem p acc then acc else p :: acc
         | _-> acc
       in
-      (*
-      let string_of_port_ref p =
-        let s = string_of_port_ref p in
-        Printf.sprintf "<%s> %s" s s
-      in
-      *)
       let get_ports map = List.fold_left (f map) [] chn.chn_edges in
       let inputs = get_ports (fun edge -> edge.edge_dst) in
       let outputs = get_ports (fun edge -> edge.edge_src) in
@@ -133,17 +130,10 @@ module Dot =
         (String.concat "" (List.map (string_of_port color) ports))
       in
       Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name;
-      Printf.bprintf b "%s" (string_of_ports "palegreen" inputs);
+      Printf.bprintf b "%s" (string_of_ports color_in inputs);
       Printf.bprintf b "<TD ALIGN=\"CENTER\" CELLPADDING=\"4\">%s</TD>" (string_of_op_origin op.op_from);
-      Printf.bprintf b "%s" (string_of_ports "paleturquoise" outputs);
+      Printf.bprintf b "%s" (string_of_ports color_out outputs);
       Buffer.add_string b "</TR></TABLE>>];\n"
-      (*
-       "{ { %s } | %s | { %s } }\" ];\n"
-        op.op_name
-        (String.concat " | " (List.map (string_of_port_ref "palegreen") inputs))
-        (string_of_op_origin op.op_from)
-        (String.concat " | " (List.map (string_of_port_ref "paleturquoise") outputs))
-      *)
     let string_of_edge_part ep =
       match ep.ep_op with
         None -> string_of_port_ref ep.ep_port
@@ -163,8 +153,8 @@ module Dot =
       Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
       List.iter (print_operation b chain) chain.chn_ops;
       List.iter (print_edge b) chain.chn_edges;
-      Array.iter (print_port b "palegreen") chain.chn_inputs;
-      Array.iter (print_port b "paleturquoise") chain.chn_outputs;
+      Array.iter (print_port b color_in) chain.chn_inputs;
+      Array.iter (print_port b color_out) chain.chn_outputs;
       Buffer.add_string b "}\n";
       Buffer.contents b
   end;;
