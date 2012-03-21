@@ -21,3 +21,7 @@ Web interface:
 Ids:
 In ids: forbid '-' (as in filetype ids): else can't match between ids in
 .gnt file and ids in uri
+
+Chains:
+- after parsing: check all operations refer to known operations
+- after parsing: checkk all orphan ports refer to a port of the chain

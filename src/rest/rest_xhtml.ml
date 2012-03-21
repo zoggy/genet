@@ -487,9 +487,25 @@ let get_chains ctx =
   let modules = List.sort Chn_types.compare_chain_modname modules in
   let rows = List.map (fun m -> [a_chain_module ctx m]) modules in
   let heads = ["Chain module"] in
-  let contents = table ~heads rows in
+  let (deps, error) =
+    let config = ctx.ctx_cfg in
+    let (cmods, errors) = Chn_io.load_chain_files config in
+    let deps = Chn_ast.compute_deps ctx.ctx_rdf config cmods in
+    let dot = Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api deps in
+    let svg = dot_to_svg dot in
+    let error = Printf.sprintf "<pre><![CDATA[%s]]></pre>"
+      (String.concat "\n" errors)
+    in
+    (svg, error)
+  in
+  let contents =
+    Printf.sprintf
+      "<section>%s</section><section title=\"Dependencies\">%s</section>"
+      (table ~heads rows)
+      deps
+  in
   let title = "Chains" in
-  ([ctype ()], chain_page ctx ~title contents)
+  ([ctype ()], chain_page ctx ~title ~error contents)
 ;;
 
 let get_chain_module ctx modname =
@@ -498,7 +514,7 @@ let get_chain_module ctx modname =
   let title = Printf.sprintf "Chain module %s"
     (Chn_types.string_of_chain_modname modname)
   in
-  let ast = Chn_io.ast_of_file file in
+  let cmod = Chn_io.chn_module_of_file file in
   let heads = ["Chain"] in
   let rows = List.map
     (fun chain ->
@@ -506,9 +522,22 @@ let get_chain_module ctx modname =
          chain.Chn_ast.chn_name
        in
          [a_chain ctx name]
-    ) ast
+    ) cmod.Chn_ast.cmod_chains
   in
-  let contents = table ~heads rows in
+  let deps =
+    let deps = Chn_ast.compute_deps ctx.ctx_rdf config [cmod] in
+    let dot =
+      Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api
+      ~fullnames: false deps
+    in
+    dot_to_svg dot
+  in
+  let contents =
+    Printf.sprintf
+    "<section>%s</section><section title=\"Dependencies\">%s</section>"
+    (table ~heads rows)
+    deps
+  in
   let navpath = xhtml_navpath ctx (Chain_module modname) in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
@@ -519,10 +548,10 @@ let get_chain ctx fullname =
   in
   let config = ctx.ctx_cfg in
   let file = Chn_io.file_of_modname config (Chn_types.chain_modname fullname) in
-  let ast = Chn_io.ast_of_file file in
+  let cmod = Chn_io.chn_module_of_file file in
   let basename = Chn_types.chain_basename fullname in
   let (code, svg) =
-    match Chn_ast.get_chain ast basename with
+    match Chn_ast.get_chain cmod basename with
       None -> ("No code found", "")
     | Some chn ->
         let prefix = config.Config.rest_api in

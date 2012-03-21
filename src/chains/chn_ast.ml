@@ -43,18 +43,83 @@ type chain = {
   chn_edges : edge list ;
 }
 
-type ast = chain list;;
+type chn_module = {
+  cmod_name : Chn_types.chain_modname ;
+  cmod_chains : chain list ;
+  }
 
-let get_chain ast basename =
+let get_chain cmod basename =
   try
     let chn =
       List.find
       (fun chn -> Chn_types.compare_chain_basename chn.chn_name basename = 0)
-      ast
+      cmod.cmod_chains
     in
     Some chn
   with
     Not_found -> None
+;;
+
+module Chn_ord_type =
+  struct
+     type t = Chn_types.chain_name
+     let compare = Chn_types.compare_chain_name
+   end;;
+
+module Cset = Set.Make(Chn_ord_type);;
+module Cmap = Map.Make(Chn_ord_type);;
+
+type chain_deps = {
+  dep_chn : chain ;
+  dep_intfs : Sset.t ; (* interfaces (in the form "/tool/intf") a chain depends on *)
+  dep_chains : Cset.t ; (* chains a chain depends on *)
+  dep_unknown : op_origin list ; (* unknown origins the chain refers to *)
+};;
+let empty_chain_deps chn =
+  { dep_chn = chn ;
+    dep_intfs = Sset.empty ;
+    dep_chains = Cset.empty ;
+    dep_unknown = [] ;
+  };;
+
+type deps = chain_deps Cmap.t ;;
+
+let compute_deps wld config cmods =
+  let f_chn modname map chn =
+    Cmap.add
+    (Chn_types.mk_chain_name modname chn.chn_name) (empty_chain_deps chn)
+    map
+  in
+  let f_cmod map cmod =
+    List.fold_left (f_chn cmod.cmod_name) map cmod.cmod_chains
+  in
+  let map = List.fold_left f_cmod Cmap.empty cmods in
+
+  let f_origin d op =
+    match op.op_from with
+    | Interface s ->
+        begin
+          try
+            let uri = uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
+            match Grdf_intf.intf_exists wld uri with
+              Some _ -> { d with dep_intfs = Sset.add s d.dep_intfs }
+            | None -> raise Not_found
+          with
+            _ ->
+            { d with dep_unknown = (Interface s) :: d.dep_unknown }
+        end
+    | Chain fullname ->
+        try
+          ignore(Cmap.find fullname map);
+          { d with dep_chains = Cset.add fullname d.dep_chains }
+        with Not_found ->
+            { d with dep_unknown = (Chain fullname) :: d.dep_unknown }
+  in
+  let f_chn fullname d map =
+    let d = List.fold_left f_origin d d.dep_chn.chn_ops in
+    Cmap.add fullname d map
+  in
+  Cmap.fold f_chn map map
 ;;
 
 class ast_printer =
@@ -101,8 +166,8 @@ class ast_printer =
       Buffer.add_string b "}\n";
       Buffer.contents b
 
-    method string_of_ast l =
-      String.concat "\n" (List.map self#string_of_chain l)
+    method string_of_chn_module cmod =
+      String.concat "\n" (List.map self#string_of_chain cmod.cmod_chains)
 
   end
 
@@ -181,6 +246,49 @@ module Dot =
       List.iter (print_edge b) chain.chn_edges;
       Array.iter (print_port b color_in) chain.chn_inputs;
       Array.iter (print_port b color_out) chain.chn_outputs;
+      Buffer.add_string b "}\n";
+      Buffer.contents b
+
+  end;;
+
+module Dot_deps =
+  struct
+    let id s = Printf.sprintf "%S" s
+    let chain_id n = id (Chn_types.string_of_chain_name n)
+    let intf_id s = id (String.concat "___" (Misc.split_string s ['/']))
+
+    let print_dep_chn b id fullname =
+      Printf.bprintf b "%s -> %s;\n" id (chain_id fullname)
+
+    let print_dep_intf b id s intfs =
+      Printf.bprintf b "%s -> %s;\n" id (intf_id s);
+      Sset.add s intfs
+
+    let print_chn b ~prefix ~fullnames fullname dep intfs =
+      let label =
+        if fullnames then
+          Chn_types.string_of_chain_name fullname
+        else
+          Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname)
+      in
+      let id = chain_id fullname in
+      Printf.bprintf b "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
+        id label (Chn_types.uri_chain prefix fullname) Dot.color_chain;
+      Cset.iter (print_dep_chn b id) dep.dep_chains ;
+      let intfs = Sset.fold (print_dep_intf b id) dep.dep_intfs intfs in
+      intfs
+
+    let print_intf b ~prefix intf =
+      let uri = Chn_types.uri_intf_of_interface_spec ~prefix intf in
+      Printf.bprintf b
+      "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
+      (intf_id intf) intf uri Dot.color_interface
+
+    let dot_of_deps prefix ?(fullnames=true) deps =
+      let b = Buffer.create 256 in
+      Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
+      let intfs = Cmap.fold (print_chn b ~prefix ~fullnames) deps Sset.empty in
+      Sset.iter (print_intf b ~prefix) intfs;
       Buffer.add_string b "}\n";
       Buffer.contents b
   end;;

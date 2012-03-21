@@ -13,9 +13,9 @@ let gen_dot file chain =
 
 let test_file ?(dot=false) file =
   try
-    let ast = Chn_io.ast_of_file file in
-    Chn_io.print_ast stdout ast;
-    if dot then List.iter (gen_dot file) ast;
+    let cmod = Chn_io.chn_module_of_file file in
+    Chn_io.print_chn_module stdout cmod;
+    if dot then List.iter (gen_dot file) cmod.cmod_chains;
     true
   with
     Loc.Problem pb ->

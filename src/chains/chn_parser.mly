@@ -21,7 +21,7 @@ open Chn_ast
 
 %token EOF
 
-%start <Chn_ast.ast> ast
+%start <Chn_ast.chain list> ast
 
 %%
 

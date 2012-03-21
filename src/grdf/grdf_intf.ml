@@ -161,7 +161,7 @@ let compute_intfs_of wld uri =
         if Grdfs.is_a_version wld node then
           (match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false))
         else
-     Grdf_branch.parent wld uri
+          Grdf_branch.parent wld uri
       in
       let inherited = inher parent in
       (explicit, inherited)

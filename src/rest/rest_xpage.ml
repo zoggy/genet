@@ -239,9 +239,9 @@ class xhtml_ast_printer prefix =
     method! string_of_chain chn =
      Printf.sprintf "<pre>%s</pre>" (self#string_of_chain_in_pre chn)
 
-    method string_of_ast l =
+    method string_of_chn_module cmod =
       Printf.sprintf "<pre>%s</pre>"
-      (String.concat "\n" (List.map self#string_of_chain_in_pre l))
+      (String.concat "\n" (List.map self#string_of_chain_in_pre cmod.cmod_chains))
   end
 ;;
 
