@@ -220,7 +220,7 @@ module Dot =
       let bgcolor = color_of_op_origin op.op_from in
 
       let string_of_ports color ports =
-        Printf.sprintf  "<TD><TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">%s</TABLE></TD>"
+        Printf.sprintf  "<TD><TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"3\" CELLPADDING=\"4\">%s</TABLE></TD>"
         (String.concat "" (List.map (string_of_port color) ports))
       in
       Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BGCOLOR=\"%s\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name bgcolor;
