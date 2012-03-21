@@ -18,6 +18,7 @@ open Chn_ast
 
 %token CHAIN OPERATION
 %token IN OUT
+%token LIST
 
 %token EOF
 
@@ -58,12 +59,17 @@ chain_body: ins=inputs outs=option(outputs) ops=list(operation) edges=list(edge)
 inputs: IN COLON separated_nonempty_list(COMMA, port) SEMICOLON option(Comment) { $3 }
 outputs: OUT COLON separated_nonempty_list(COMMA, port) SEMICOLON option(Comment) { $3 }
 
-port: ftype=Ident name=Ident {
+port: ftype=Ident l=option(LIST) name=Ident {
   let start = $startpos(ftype) in
   let stop = $endpos(name) in
   let loc =
       { Loc.loc_start = start ;
         Loc.loc_end = stop ;}
+  in
+  let ftype =
+    match l with
+      None -> Grdf_port.One ftype
+    | Some _ -> Grdf_port.List ftype
   in
   { p_name = name ;
     p_loc = loc ;

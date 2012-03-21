@@ -185,12 +185,17 @@ class xhtml_ast_printer prefix =
     inherit Chn_ast.ast_printer
 
     method string_of_port p =
-      let href = Grdfs.uri_filetype ~prefix p.p_ftype in
-      let ft = Xtmpl.string_of_xml
-        (Xtmpl.T ("a", ["href", href], [Xtmpl.D p.p_ftype]))
+      let link ftype =
+        let href = Grdfs.uri_filetype ~prefix ftype in
+        Xtmpl.string_of_xml
+        (Xtmpl.T ("a", ["href", href], [Xtmpl.D ftype]))
       in
-      Printf.sprintf "%s %s"
-      ft p.p_name
+      let ft =
+        match p.p_ftype with
+          Grdf_port.One ftype -> link ftype
+        | Grdf_port.List ftype -> Printf.sprintf "%s list" (link ftype)
+      in
+      Printf.sprintf "%s %s" ft p.p_name
 
     method string_of_op_origin = function
       Chain fullname ->

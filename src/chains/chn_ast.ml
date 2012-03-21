@@ -8,7 +8,7 @@ type port_name = string
 type port = {
   p_name : port_name ;
   p_loc : Loc.t ;
-  p_ftype : string ;
+  p_ftype : Grdf_port.port_type ;
 }
 
 
@@ -124,7 +124,12 @@ let compute_deps wld config cmods =
 
 class ast_printer =
   object(self)
-    method string_of_port p = Printf.sprintf "%s %s" p.p_ftype p.p_name
+    method string_of_port_type = function
+      Grdf_port.One ftype -> ftype
+    | Grdf_port.List ftype -> Printf.sprintf "%s list" ftype
+
+    method string_of_port p =
+      Printf.sprintf "%s %s" (self#string_of_port_type p.p_ftype) p.p_name
 
     method string_of_port_array l =
       let l = Array.to_list l in

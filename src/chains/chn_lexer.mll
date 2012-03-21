@@ -13,6 +13,7 @@ let keywords = [
     "chain", CHAIN ;
     "operation", OPERATION ;
     "in", IN ;
+    "list", LIST ;
     "out", OUT ;
   ]
 

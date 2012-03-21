@@ -11,7 +11,7 @@ chain foo
 chain test1
 (*  This is the description of the chain *)
 {
-  in: coq i1, coqo i2, ocamlimpl i3;
+  in: coq i1, coqo list i2, ocamlimpl i3;
   out: ocamlimpl o1, coq o2 ; (* bar = /filetypes/bar *)
 
   operation op1 : "/why/prove" ;
