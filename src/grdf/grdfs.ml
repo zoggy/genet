@@ -59,6 +59,8 @@ let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
 let genet_hasfiletype = genet_"hasFiletype";;
 let genet_hasfiletypelist = genet_"hasFiletypeList";;
+let genet_md5 = genet_"md5";;
+let genet_flattenedto = genet_"flattenedTo";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model

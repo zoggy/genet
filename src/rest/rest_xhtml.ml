@@ -508,14 +508,14 @@ let get_chains ctx =
       (table ~heads rows)
       deps
   in
-  let title = "Chains" in
+  let title = "Modules" in
   ([ctype ()], chain_page ctx ~title ~error contents)
 ;;
 
 let get_chain_module ctx modname =
   let config = ctx.ctx_cfg in
   let file = Chn_io.file_of_modname config modname in
-  let title = Printf.sprintf "Chain module %s"
+  let title = Printf.sprintf "Module %s"
     (Chn_types.string_of_chain_modname modname)
   in
   let cmod = Chn_io.chn_module_of_file file in
@@ -547,9 +547,7 @@ let get_chain_module ctx modname =
 ;;
 
 let get_chain ctx fullname =
-  let title = Printf.sprintf "Chain %s"
-    (Chn_types.string_of_chain_name fullname)
-  in
+  let title = Chn_types.string_of_chain_name fullname in
   let config = ctx.ctx_cfg in
   let file = Chn_io.file_of_modname config (Chn_types.chain_modname fullname) in
   let cmod = Chn_io.chn_module_of_file file in
