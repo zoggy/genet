@@ -18,6 +18,14 @@ val safe_main : (unit -> unit) -> unit
 val string_of_opt : string option -> string
 (*/i==v=[String.string_of_opt]=1.0====*)
 
+(*i==v=[String.opt_of_string]=1.0====*)
+(** [opt_of_string s] returns [None] if the string if empty
+   (length is 0) or [Some s].
+@@version 1.0
+@@cgname String.opt_of_string*)
+val opt_of_string : string -> string option
+(*/i==v=[String.opt_of_string]=1.0====*)
+
 (** Creating a log function.
   [create_log_fun env_var] get the log level (an integer) from the given
   environment variable, and returns a function to print messages.

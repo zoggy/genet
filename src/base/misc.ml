@@ -17,6 +17,12 @@ let string_of_opt = function
 | Some s -> s
 (*/c==v=[String.string_of_opt]=1.0====*)
 
+(*c==v=[String.opt_of_string]=1.0====*)
+let opt_of_string = function
+  "" -> None
+| s -> Some s
+(*/c==v=[String.opt_of_string]=1.0====*)
+
 let create_log_fun_with_set ?prefix ?(print=prerr_endline) env_var =
   let log_level =
     ref

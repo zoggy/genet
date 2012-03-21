@@ -183,17 +183,12 @@ let not_implementors wld uri =
 let tool_of_intf uri = Grdfs.uri_tool_of_intf uri
 
 let string_of_intf wld ?(with_uri=true) uri =
-  let ports_in = Grdf_port.ports wld Grdf_port.In uri in
-  let ports_out = Grdf_port.ports wld Grdf_port.Out uri in
-  let type_of sep = function
-    [] -> "()"
-  | l ->
-      String.concat sep
-      (List.map (fun (_, p) -> Grdf_port.string_of_port wld p) l)
-  in
+  let ports_in = Grdf_port.ports wld uri Grdf_port.In in
+  let ports_out = Grdf_port.ports wld uri Grdf_port.Out in
   Printf.sprintf "%s%s -> %s"
   (if with_uri then Printf.sprintf "%s : " uri else "")
-  (type_of " -> " ports_in) (type_of " * " ports_out)
+  (Grdf_port.string_type_of_ports wld ~sep: " -> " ports_in)
+  (Grdf_port.string_type_of_ports wld ~sep: " * " ports_out)
 ;;
 
 

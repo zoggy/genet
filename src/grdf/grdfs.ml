@@ -57,7 +57,8 @@ let genet_consumes = genet_"consumes";;
 let genet_produces = genet_"produces";;
 let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
-let genet_listof = genet_"listOf";;
+let genet_hasfiletype = genet_"hasFiletype";;
+let genet_hasfiletypelist = genet_"hasFiletypeList";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model
@@ -155,6 +156,10 @@ let uri_intf_in intf = Printf.sprintf "%s/in" intf;;
 let uri_intf_out intf = Printf.sprintf "%s/out" intf;;
 let uri_intf_in_port intf n = Printf.sprintf "%s/in/%d" intf n
 let uri_intf_out_port intf n = Printf.sprintf "%s/out/%d" intf n
+let port_rank uri =
+  try int_of_string (Filename.basename uri)
+  with _ -> failwith ("Invalid port uri: "^uri)
+;;
 
 let suffix_filetypes = "filetypes" ;;
 let uri_filetypes prefix = Printf.sprintf "%s%s" prefix suffix_filetypes;;
@@ -294,15 +299,19 @@ let source_uri wld pred target =
 
 let target_uris wld source pred =
   let arc = Rdf_node.new_from_uri_string wld.wld_world pred in
-  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
-  let f acc node =
-    match Rdf_node.get_uri node with
-      None -> acc
-    | Some uri ->
-        let s_uri = Rdf_uri.as_string uri in
+  let l =
+    let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
+    let f acc node =
+      match Rdf_node.get_uri node with
+        None -> acc
+      | Some uri ->
+          let s_uri = Rdf_uri.as_string uri in
         s_uri :: acc
+    in
+    Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
   in
-  Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
+  Gc.major();
+  l
 ;;
 
 let target_uri wld source pred =
@@ -311,6 +320,7 @@ let target_uri wld source pred =
   | uri :: _ -> Some uri
 ;;
 
+(*
 let fold_target_sequence f acc wld ~source ~pred =
   let sparql =
     { Rdf_sparql.select_proj = [ "seq_index" ; "uri" ];
@@ -334,6 +344,7 @@ let fold_target_sequence f acc wld ~source ~pred =
   in
   Rdf_sparql.select_and_fold wld.wld_world wld.wld_model sparql qf acc
 ;;
+*)
 
 (*
 let delete_from_sparql wld query =

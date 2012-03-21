@@ -171,6 +171,7 @@ and string_of_quads =
           Printf.sprintf "%s %s"
             (string_of_triples_template tpl_tmpl)
             (String.concat " " (List.map f l))
+
 and string_of_triples_template l =
   String.concat " . " (List.map string_of_triple l)
 

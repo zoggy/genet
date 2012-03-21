@@ -120,9 +120,13 @@ let test wld config n =
             let port =
               if Random.int 1 = 0 then Grdf_port.List ftype else Grdf_port.One ftype
             in
-            let intf = Sset.choose intfs in
-            Grdf_port.add_port wld dir intf port;
+            let _intfs = Sset.elements intfs in
+            let intf = "http://localhost:8082/tools/altergo/interfaces/ae-prove" in
+            (*List.nth intfs (Random.int (List.length intfs)) in*)
             prerr_endline (Grdf_intf.string_of_intf wld intf);
+            Grdf_port.add_port wld intf dir port;
+            prerr_endline (Grdf_intf.string_of_intf wld intf);
+            Grdf_port.delete_ports wld intf Grdf_port.In ;
       end
 ;;
 
