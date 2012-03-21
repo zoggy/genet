@@ -1,6 +1,6 @@
 (* Example of genet chain description *)
 
-cin foo
+chain foo
   (* ... *)
 {
   in: foo i1 ;
@@ -14,8 +14,8 @@ chain test1
   in: v i1, vo i2, ml i3;
   out: bar o1, data o2 ; (* bar = /filetypes/bar *)
 
-  operation op1 : "/why/Fait ceci" ;
-  operation op2 : "/why/Fait cela" ;
+  operation op1 : "/altergo/ae-prove" ;
+  operation op2 : "/altergo/ae-prove2" ;
   operation op3 : Chain1.foo ;
 
   i1 -> op1.i1 ;(* automatically generated name for 1st input of op1 *)
