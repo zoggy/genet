@@ -1,5 +1,13 @@
 (** Basic types for chains. *)
 
+type user = string
+
+type context =
+  { ctx_rdf: Grdf_types.world ;
+    ctx_cfg: Config.t ;
+    ctx_user : user option ;
+  }
+
 type chain_modname
 type chain_basename
 type chain_name

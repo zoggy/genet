@@ -33,9 +33,9 @@ type thing =
 
 type response = arg list * string
 
-type user = string
+type user = Chn_types.user
 
-type context =
+type context = Chn_types.context =
   { ctx_rdf: Grdf_types.world ;
     ctx_cfg: Config.t ;
     ctx_user : user option ;

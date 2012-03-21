@@ -1,5 +1,13 @@
 (** *)
 
+type user = string
+
+type context =
+  { ctx_rdf: Grdf_types.world ;
+    ctx_cfg: Config.t ;
+    ctx_user : user option ;
+  }
+
 type chain_modname = string list
 type chain_basename = string
 type chain_name = chain_modname * chain_basename
