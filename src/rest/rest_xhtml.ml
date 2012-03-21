@@ -493,8 +493,12 @@ let get_chains ctx =
     let deps = Chn_ast.compute_deps ctx.ctx_rdf config cmods in
     let dot = Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api deps in
     let svg = dot_to_svg dot in
-    let error = Printf.sprintf "<pre><![CDATA[%s]]></pre>"
-      (String.concat "\n" errors)
+    let error =
+      match errors with
+        [] -> ""
+      | _ ->
+          Printf.sprintf "<pre><![CDATA[%s]]></pre>"
+          (String.concat "\n" errors)
     in
     (svg, error)
   in
