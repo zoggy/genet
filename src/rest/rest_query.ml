@@ -62,8 +62,11 @@ let try_is_uri_of ctx uri =
 
       Grdfs.is_uri_version_interfaces, (fun uri -> Intfs uri) ;
 
-      (fun _ uri -> Grdfs.is_uri_chain_module ctx.ctx_cfg.Config.rest_api uri),
-      (fun uri -> Chain_module uri) ;
+      (fun _ uri -> Chn_types.is_uri_chain_module ctx.ctx_cfg.Config.rest_api uri),
+      (fun modname -> Chain_module (Chn_types.chain_modname_of_string modname)) ;
+
+      (fun _ uri -> Chn_types.is_uri_chain ctx.ctx_cfg.Config.rest_api uri),
+      (fun fullname -> Chain (Chn_types.chain_name_of_string fullname)) ;
     ]
   in
   let rec iter = function

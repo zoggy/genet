@@ -27,7 +27,8 @@ type thing =
   | Static_file of string * string
   | Other of string
   | Chains
-  | Chain_module of uri
+  | Chain_module of Chn_types.chain_modname
+  | Chain of Chn_types.chain_name
 ;;
 
 type response = arg list * string

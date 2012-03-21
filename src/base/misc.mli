@@ -110,3 +110,15 @@ val is_prefix : string -> string -> bool
 val chop_n_char : int -> string -> string
 (*/i==v=[String.chop_n_char]=1.0====*)
 
+
+(*i==v=[String.split_string]=1.1====*)
+(** Separate the given string according to the given list of characters.
+@@author Maxence Guesdon
+@@version 1.1
+@@param keep_empty is [false] by default. If set to [true],
+   the empty strings between separators are kept.
+@@cgname String.split_string*)
+val split_string : ?keep_empty:bool -> string -> char list -> string list
+(*/i==v=[String.split_string]=1.1====*)
+
+val is_capitalized : string -> bool

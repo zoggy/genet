@@ -36,7 +36,7 @@ chain: option(Comment) CHAIN ident=Ident comment=Comment LBRACE body=chain_body 
       { Loc.loc_start = start ;
         Loc.loc_end = stop ;}
     in
-    { chn_name = ident ;
+    { chn_name = Chn_types.chain_basename_of_string ident ;
       chn_loc = loc ;
       chn_comment = comment ;
       chn_inputs = inputs ;
@@ -93,10 +93,17 @@ operation: OPERATION ident=Ident COLON from=op_origin SEMICOLON option(Comment)
 
 op_origin:
 | s=String { Interface s}
-| ident=qname { Chain ident }
+| name=chain_fullname { Chain name }
 
-qname:
-  q=qname DOT ident=Ident { q @ [ident] }
+chain_fullname:
+| modname=chain_modname DOT ident=Ident {
+    let modname = Chn_types.chain_modname_of_string (String.concat "." modname) in
+  let basename = Chn_types.chain_basename_of_string ident in
+    Chn_types.mk_chain_name modname basename
+ }
+
+chain_modname:
+| h=chain_modname DOT q=CapIdent { h @ [q] }
 | q=CapIdent { [q] }
 
 edge: src=edge_part RIGHTARROW dst=edge_part SEMICOLON option(Comment)

@@ -21,14 +21,15 @@ type thing =
   | Intf of uri
   | Filetype of uri
   | Tools
-  | Branches of uri (* uri of tool *)
-  | Versions of uri (* uri of tool or branch *)
-  | Intfs of uri (* uri of tool or branch *)
+  | Branches of uri (** uri of tool *)
+  | Versions of uri (** uri of tool or branch *)
+  | Intfs of uri (** uri of tool or branch *)
   | Filetypes
   | Static_file of string * string
   | Other of string
   | Chains
-  | Chain_module of uri
+  | Chain_module of Chn_types.chain_modname
+  | Chain of Chn_types.chain_name
 ;;
 
 type response = arg list * string

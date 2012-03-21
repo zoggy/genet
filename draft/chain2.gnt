@@ -1,6 +1,6 @@
 (* Example of genet chain description *)
 
-chain foo
+cin foo
   (* ... *)
 {
   in: foo i1 ;
@@ -11,11 +11,11 @@ chain foo
 chain test1
 (*  This is the description of the chain *)
 {
-  in: coq i1, coqo i2, ocamlimpl i3;
-  out: ocamlimpl o1, coq o2 ; (* bar = /filetypes/bar *)
+  in: v i1, vo i2, ml i3;
+  out: bar o1, data o2 ; (* bar = /filetypes/bar *)
 
-  operation op1 : "/why/prove" ;
-  operation op2 : "/why/prove2" ;
+  operation op1 : "/why/Fait ceci" ;
+  operation op2 : "/why/Fait cela" ;
   operation op3 : Chain1.foo ;
 
   i1 -> op1.i1 ;(* automatically generated name for 1st input of op1 *)

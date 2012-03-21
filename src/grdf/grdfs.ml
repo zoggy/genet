@@ -83,20 +83,61 @@ let uri_tool ~prefix ~tool =
 
 let suffix_chains = "chains";;
 let uri_chains prefix = Printf.sprintf "%s%s" prefix suffix_chains;;
-let uri_chain ~prefix ~chain =
-  Printf.sprintf "%s/%s" (uri_chains prefix) chain;;
-let is_uri_chain_module prefix uri =
-  let base = uri_chains prefix in
-  if Filename.dirname uri = base then
-    Some uri
+
+let concat_chain_name modname name = Printf.sprintf "%s.%s" modname name;;
+let split_chain_name s =
+  match List.rev (Misc.split_string s ['/']) with
+    [] -> failwith ("Invalid name "^s)
+  | name :: rest ->
+      if Misc.is_capitalized name then
+        `Modname s
+      else
+        match rest with
+          [] -> `Chainname name
+        | _ -> `Fullname (String.concat "/" (List.rev rest), name)
+;;
+
+let uri_chain_module ~prefix modname =
+  Printf.sprintf "%s/%s" (uri_chains prefix) modname;;
+
+let uri_chain ~prefix ~modname name  =
+  Printf.sprintf "%s/%s" (uri_chain_module ~prefix modname) name
+;;
+
+let is_in_chains prefix uri =
+  let prefix = uri_chains prefix in
+  if Misc.is_prefix prefix uri then
+    begin
+      let len = String.length prefix in
+      let base = String.sub uri len (String.length uri - len) in
+      Some base
+    end
   else
     None
 ;;
+let is_uri_chain_module prefix uri =
+  match is_in_chains prefix uri with
+    None -> None
+  | Some base ->
+      match split_chain_name base with
+        `Modname modname -> Some modname
+      | _ -> None
+;;
+
+let is_uri_chain prefix uri =
+  match is_in_chains prefix uri with
+    None -> None
+  | Some base ->
+      match split_chain_name base with
+        `Fullname fullname -> Some fullname
+      | _ -> None
+;;
+
+
 let chain_module_of_uri prefix uri =
   match is_uri_chain_module prefix uri with
-    Some uri -> Filename.basename uri
-  | None ->
-      failwith (Printf.sprintf "%s is not a chain module uri" uri)
+    Some modname -> modname
+  | None -> failwith (Printf.sprintf "%s is not a chain module uri" uri)
 ;;
 
 let suffix_versions = "versions";;

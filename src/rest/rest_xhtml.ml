@@ -102,9 +102,16 @@ let a_branch ctx uri =
   a ~href: uri name
 ;;
 
-let a_chain ctx name =
-  let href = Grdfs.uri_chain ctx.ctx_cfg.Config.rest_api name in
+let a_chain ctx fullname =
+  let href = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
+  let name = Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname) in
   a ~href name
+;;
+
+let a_chain_module ctx modname =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let href = Chn_types.uri_chain_module prefix modname in
+  a ~href (Chn_types.string_of_chain_modname modname)
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -202,8 +209,24 @@ let xhtml_navpath_of_intfs ctx uri =
     xhtml_navpath_of_branch ctx ~inc_uri: true uri
 ;;
 
-let xhtml_navbar_of_chain_module ctx =
-  let path = [ Grdfs.uri_chains ctx.ctx_cfg.Config.rest_api ] in
+let navpath_of_chain_module ctx =
+  [
+    a ~href: (Grdfs.uri_chains ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_chains ;
+  ]
+
+let xhtml_navpath_of_chain_module ctx =
+  let path = navpath_of_chain_module ctx in
+  xhtml_navpath_join_path path
+;;
+
+let xhtml_navpath_of_chain ctx fullname =
+  let modname = Chn_types.chain_modname fullname in
+  let path =
+    (navpath_of_chain_module ctx) @
+    [
+      a_chain_module ctx modname;
+    ]
+  in
   xhtml_navpath_join_path path
 ;;
 
@@ -221,7 +244,8 @@ let xhtml_navpath ctx = function
 | Filetypes -> ""
 | Versions uri -> xhtml_navpath_of_versions ctx uri
 | Branches uri -> xhtml_navpath_of_branches ctx uri
-| Chain_module uri -> xhtml_navbar_of_chain_module ctx
+| Chain_module modname -> xhtml_navpath_of_chain_module ctx
+| Chain fullname -> xhtml_navpath_of_chain ctx fullname
 ;;
 
 let intf_list ctx intfs =
@@ -458,27 +482,57 @@ let get_root ctx =
 let get_chains ctx =
   let chain_files = Chn_io.chain_files ctx.ctx_cfg in
   let modules = List.map Chn_io.modname_of_file chain_files in
-  let modules = List.sort Pervasives.compare modules in
-  let rows = List.map (fun m -> [a_chain ctx m]) modules in
+  let modules = List.sort Chn_types.compare_chain_modname modules in
+  let rows = List.map (fun m -> [a_chain_module ctx m]) modules in
   let heads = ["Chain module"] in
   let contents = table ~heads rows in
   let title = "Chains" in
   ([ctype ()], chain_page ctx ~title contents)
 ;;
 
-let get_chain_module ctx uri =
+let get_chain_module ctx modname =
   let config = ctx.ctx_cfg in
-  let modname = Grdfs.chain_module_of_uri config.Config.rest_api uri in
   let file = Chn_io.file_of_modname config modname in
-  let title = Printf.sprintf "Chain module %s" modname in
-  try
-    let ast = Chn_io.ast_of_file file in
-    let heads = ["Chain"] in
-    let rows = List.map (fun chain -> [chain.Chn_ast.chn_name]) ast in
-    let contents = table ~heads rows in
-    ([ctype ()], chain_page ctx ~title contents)
-  with
-    e ->
+  let title = Printf.sprintf "Chain module %s"
+    (Chn_types.string_of_chain_modname modname)
+  in
+  let ast = Chn_io.ast_of_file file in
+  let heads = ["Chain"] in
+  let rows = List.map
+    (fun chain ->
+       let name = Chn_types.mk_chain_name modname
+         chain.Chn_ast.chn_name
+       in
+         [a_chain ctx name]
+    ) ast
+  in
+  let contents = table ~heads rows in
+  let navpath = xhtml_navpath ctx (Chain_module modname) in
+  ([ctype ()], chain_page ctx ~title ~navpath contents)
+;;
+
+let get_chain ctx fullname =
+  let title = Printf.sprintf "Chain %s"
+    (Chn_types.string_of_chain_name fullname)
+  in
+  let config = ctx.ctx_cfg in
+  let file = Chn_io.file_of_modname config (Chn_types.chain_modname fullname) in
+  let ast = Chn_io.ast_of_file file in
+  let basename = Chn_types.chain_basename fullname in
+  let code =
+    match Chn_ast.get_chain ast basename with
+      None -> "No code found"
+    | Some chn -> Rest_xpage.xhtml_of_chain config.Config.rest_api chn
+  in
+  let navpath = xhtml_navpath ctx (Chain fullname) in
+  let contents = code in
+  ([ctype ()], chain_page ctx ~title ~navpath contents)
+;;
+
+let handle_chain_error f ctx p =
+  try f ctx p
+  with  e ->
+      let title = "Error" in
       let error =
         match e with
           Loc.Problem pb -> Loc.string_of_problem pb
@@ -504,7 +558,8 @@ let get ctx thing args =
   | Versions uri -> get_versions ctx uri
   | Branches uri -> get_branches ctx uri
   | Chains -> get_chains ctx
-  | Chain_module uri -> get_chain_module ctx uri
+  | Chain_module modname -> handle_chain_error get_chain_module ctx modname
+  | Chain fullname -> handle_chain_error get_chain ctx fullname
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

@@ -1,10 +1,9 @@
 (** *)
 
+open Chn_types;;
+
 type operation_name = string
 type port_name = string
-type qname = string list
-
-let string_of_qname = String.concat "." ;;
 
 type port = {
   p_name : port_name ;
@@ -25,7 +24,7 @@ type edge = {
     edge_dst : edge_part ;
   }
 
-type op_origin = Chain of qname | Interface of string
+type op_origin = Chain of chain_name | Interface of string
 
 type operation = {
   op_name : operation_name ;
@@ -35,7 +34,7 @@ type operation = {
 }
 
 type chain = {
-  chn_name : string ;
+  chn_name : chain_basename ;
   chn_loc : Loc.t ;
   chn_comment : string ;
   chn_inputs : port array ;
@@ -46,6 +45,18 @@ type chain = {
 
 type ast = chain list;;
 
+let get_chain ast basename =
+  try
+    let chn =
+      List.find
+      (fun chn -> Chn_types.compare_chain_basename chn.chn_name basename = 0)
+      ast
+    in
+    Some chn
+  with
+    Not_found -> None
+;;
+
 class ast_printer =
   object(self)
     method string_of_port p = Printf.sprintf "%s %s" p.p_ftype p.p_name
@@ -55,7 +66,7 @@ class ast_printer =
       String.concat ", " (List.map self#string_of_port l)
 
     method string_of_op_origin = function
-      Chain s -> string_of_qname s
+      Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
 
     method string_of_operation op =
@@ -81,7 +92,8 @@ class ast_printer =
 
     method string_of_chain chn =
       let b = Buffer.create 256 in
-      Printf.bprintf b "chain %s\n(* %s *)\n{\n" chn.chn_name chn.chn_comment ;
+      Printf.bprintf b "chain %s\n(* %s *)\n{\n"
+      (Chn_types.string_of_chain_basename chn.chn_name) chn.chn_comment ;
       Printf.bprintf b "  in: %s ;\n" (self#string_of_port_array chn.chn_inputs) ;
       Printf.bprintf b "  out: %s ;\n" (self#string_of_port_array chn.chn_outputs) ;
       Printf.bprintf b "\n%s" (self#string_of_operation_list chn.chn_ops);
@@ -106,7 +118,7 @@ module Dot =
     | Pname s -> s
 
     let string_of_op_origin = function
-      Chain s -> string_of_qname s
+      Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
 
     let print_operation b chn op =

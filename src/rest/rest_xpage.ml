@@ -177,3 +177,78 @@ let page config ?env ~title ?(wtitle=title) ?(navpath="") ?(error="") contents =
   let tmpl_file = tmpl_file config "page.tmpl" in
   Xtmpl .apply_from_file env tmpl_file
 ;;
+
+open Chn_ast;;
+
+class xhtml_ast_printer prefix =
+  object(self)
+    inherit Chn_ast.ast_printer
+
+    method string_of_port p =
+      let href = Grdfs.uri_filetype ~prefix p.p_ftype in
+      let ft = Xtmpl.string_of_xml
+        (Xtmpl.T ("a", ["href", href], [Xtmpl.D p.p_ftype]))
+      in
+      Printf.sprintf "%s %s"
+      ft p.p_name
+
+    method string_of_op_origin = function
+      Chain fullname ->
+        Xtmpl.string_of_xml
+        (Xtmpl.T
+         ("a", ["href", Chn_types.uri_chain prefix fullname],
+          [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
+    | Interface s ->
+        match Misc.split_string s ['/'] with
+          [tool ; intf] ->
+            let tool = Grdfs.uri_tool ~prefix ~tool in
+            let href = Grdfs.uri_intf ~tool ~intf in
+            Xtmpl.string_of_xml
+            (Xtmpl.T
+             ("a", ["href", href], [Xtmpl.D (Printf.sprintf "%S" s)]))
+        | _ ->
+          Xtmpl.string_of_xml
+           (Xtmpl.T ("i", [], [Xtmpl.D (Printf.sprintf "invalid interface name: %S" s)]))
+
+    method private kwd ?(cls="kwa")s =
+      let cls = Printf.sprintf "hl %s" cls in
+      Xtmpl.string_of_xml (Xtmpl.T ("span",["class", cls], [Xtmpl.D s]))
+
+    method string_of_operation op =
+      Printf.sprintf "  %s %s : %s ;\n"
+      (self#kwd ~cls: "kwb" "operation")
+      op.op_name (self#string_of_op_origin op.op_from)
+
+    method private string_of_chain_in_pre chn =
+      let b = Buffer.create 256 in
+      Printf.bprintf b "%s %s \n%s\n{\n"
+      (self#kwd "chain")
+      (Chn_types.string_of_chain_basename chn.chn_name)
+      (self#kwd ~cls:"com" (Printf.sprintf "(* %s *)" chn.chn_comment)) ;
+
+      Printf.bprintf b "  %s: %s ;\n"
+      (self#kwd ~cls: "kwb" "in") (self#string_of_port_array chn.chn_inputs) ;
+
+      Printf.bprintf b "  %s: %s ;\n"
+      (self#kwd ~cls: "kwb" "in") (self#string_of_port_array chn.chn_outputs) ;
+
+      Printf.bprintf b "\n%s" (self#string_of_operation_list chn.chn_ops);
+
+      Printf.bprintf b "\n%s" (self#string_of_edge_list chn.chn_edges);
+      Buffer.add_string b "}\n";
+      Buffer.contents b
+
+    method! string_of_chain chn =
+     Printf.sprintf "<pre>%s</pre>" (self#string_of_chain_in_pre chn)
+
+    method string_of_ast l =
+      Printf.sprintf "<pre>%s</pre>"
+      (String.concat "\n" (List.map self#string_of_chain_in_pre l))
+  end
+;;
+
+let xhtml_of_chain prefix chain =
+  let printer = new xhtml_ast_printer prefix in
+  printer#string_of_chain chain
+;;
+

@@ -17,3 +17,7 @@ Add information:
 Web interface:
 - version: show branch tree above the version
   in a b1 / b2 / ... way
+
+Ids:
+In ids: forbid '-' (as in filetype ids): else can't match between ids in
+.gnt file and ids in uri

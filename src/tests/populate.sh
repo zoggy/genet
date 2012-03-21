@@ -11,8 +11,8 @@ WHY=`./genet add tool why`
 ./genet add interface ${WHY}/branches/1.x prove
 ./genet add interface ${WHY}/branches/1.x prove2
 ./genet add filetype "coq" v "coq file"
-./genet add filetype "ocaml-impl" ml "ocaml implementation"
-./genet add filetype "ocaml-intf" mli "ocaml interface"
+./genet add filetype "ocamlimpl" ml "ocaml implementation"
+./genet add filetype "ocamlintf" mli "ocaml interface"
 
 ALTERGO=`./genet add tool altergo`
 ./genet add branch ${ALTERGO} 1.x

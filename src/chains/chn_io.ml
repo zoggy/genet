@@ -32,12 +32,14 @@ let chain_files config =
 ;;
 
 let modname_of_file f =
-  String.capitalize (Filename.basename (Filename.chop_extension f))
+  Chn_types.chain_modname_of_string
+  (String.capitalize (Filename.basename (Filename.chop_extension f)))
 ;;
 
 let file_of_modname config name =
   let dir = Config.chains_dir config in
-  Filename.concat dir (Printf.sprintf "%s.gnt" (String.uncapitalize name))
+  let name = String.uncapitalize (Chn_types.string_of_chain_modname name) in
+  Filename.concat dir (Printf.sprintf "%s.gnt" name)
 ;;
 
   
