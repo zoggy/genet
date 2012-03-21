@@ -22,3 +22,4 @@ val uri_chain : string -> chain_name -> Grdf_types.uri
 
 val is_uri_chain_module : string -> Grdf_types.uri -> string option
 val is_uri_chain : string -> Grdf_types.uri -> string option
+val uri_intf_of_interface_spec : prefix: string -> string -> string

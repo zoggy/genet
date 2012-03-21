@@ -519,13 +519,23 @@ let get_chain ctx fullname =
   let file = Chn_io.file_of_modname config (Chn_types.chain_modname fullname) in
   let ast = Chn_io.ast_of_file file in
   let basename = Chn_types.chain_basename fullname in
-  let code =
+  let (code, svg) =
     match Chn_ast.get_chain ast basename with
-      None -> "No code found"
-    | Some chn -> Rest_xpage.xhtml_of_chain config.Config.rest_api chn
+      None -> ("No code found", "")
+    | Some chn ->
+        let prefix = config.Config.rest_api in
+        let code = Rest_xpage.xhtml_of_chain prefix chn in
+        let svg =
+          let dot = Chn_ast.Dot.dot_of_chain ~prefix chn in
+          dot_to_svg dot
+        in
+        (code, svg)
   in
   let navpath = xhtml_navpath ctx (Chain fullname) in
-  let contents = code in
+  let contents =
+    Printf.sprintf "<section>%s</section><section title=\"Source from %s\">%s</section>"
+      svg (Filename.quote file) code
+  in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 

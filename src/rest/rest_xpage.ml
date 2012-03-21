@@ -199,16 +199,14 @@ class xhtml_ast_printer prefix =
          ("a", ["href", Chn_types.uri_chain prefix fullname],
           [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
     | Interface s ->
-        match Misc.split_string s ['/'] with
-          [tool ; intf] ->
-            let tool = Grdfs.uri_tool ~prefix ~tool in
-            let href = Grdfs.uri_intf ~tool ~intf in
-            Xtmpl.string_of_xml
-            (Xtmpl.T
-             ("a", ["href", href], [Xtmpl.D (Printf.sprintf "%S" s)]))
-        | _ ->
+        try
+          let href = Chn_types.uri_intf_of_interface_spec ~prefix s in
           Xtmpl.string_of_xml
-           (Xtmpl.T ("i", [], [Xtmpl.D (Printf.sprintf "invalid interface name: %S" s)]))
+          (Xtmpl.T
+           ("a", ["href", href], [Xtmpl.D (Printf.sprintf "%S" s)]))
+        with
+          Failure s ->
+            Xtmpl.string_of_xml (Xtmpl.T ("i", [], [Xtmpl.D s]))
 
     method private kwd ?(cls="kwa")s =
       let cls = Printf.sprintf "hl %s" cls in

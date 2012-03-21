@@ -112,6 +112,8 @@ module Dot =
   struct
     let color_in = "palegreen"
     let color_out = "paleturquoise"
+    let color_chain = "grey75"
+    let color_interface = "lightsalmon"
 
     let string_of_port_ref = function
       Pint n -> Printf.sprintf "p%d" n
@@ -121,7 +123,15 @@ module Dot =
       Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
 
-    let print_operation b chn op =
+    let uri_of_op_origin prefix = function
+      Chain s -> Chn_types.uri_chain prefix s
+    | Interface uri -> Chn_types.uri_intf_of_interface_spec ~prefix uri
+
+    let color_of_op_origin = function
+      Chain _ -> color_chain
+    | Interface _ -> color_interface
+
+    let print_operation ?prefix b chn op =
       let f map acc edge =
         let ep = map edge in
         match ep.ep_op with
@@ -137,13 +147,17 @@ module Dot =
         Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
         color (string_of_port_ref p) (string_of_port_ref p)
       in
+      let bgcolor = color_of_op_origin op.op_from in
+
       let string_of_ports color ports =
         Printf.sprintf  "<TD><TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">%s</TABLE></TD>"
         (String.concat "" (List.map (string_of_port color) ports))
       in
-      Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name;
+      Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BGCOLOR=\"%s\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name bgcolor;
       Printf.bprintf b "%s" (string_of_ports color_in inputs);
-      Printf.bprintf b "<TD ALIGN=\"CENTER\" CELLPADDING=\"4\">%s</TD>" (string_of_op_origin op.op_from);
+      Printf.bprintf b "<TD ALIGN=\"CENTER\" HREF=\"%s\" CELLPADDING=\"4\">%s</TD>"
+      (match prefix with None -> "" | Some prefix -> uri_of_op_origin prefix op.op_from)
+      (string_of_op_origin op.op_from);
       Printf.bprintf b "%s" (string_of_ports color_out outputs);
       Buffer.add_string b "</TR></TABLE>>];\n"
     let string_of_edge_part ep =
@@ -160,10 +174,10 @@ module Dot =
       Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" label=\"%s\"];\n"
         p.p_name color p.p_name
 
-    let dot_of_chain chain =
+    let dot_of_chain ?prefix chain =
       let b = Buffer.create 256 in
       Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
-      List.iter (print_operation b chain) chain.chn_ops;
+      List.iter (print_operation ?prefix b chain) chain.chn_ops;
       List.iter (print_edge b) chain.chn_edges;
       Array.iter (print_port b color_in) chain.chn_inputs;
       Array.iter (print_port b color_out) chain.chn_outputs;

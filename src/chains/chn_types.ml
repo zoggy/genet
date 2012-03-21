@@ -54,3 +54,14 @@ let is_uri_chain prefix uri =
       let s = Misc.split_string slashes_modname ['/'] in
       Some (String.concat "." (s@[name]))
 ;;
+
+let uri_intf_of_interface_spec ~prefix s  =
+  match Misc.split_string s ['/'] with
+    [tool ; intf] ->
+      let tool = Grdfs.uri_tool ~prefix ~tool in
+      Grdfs.uri_intf ~tool ~intf
+  | _ ->
+      failwith (Printf.sprintf "invalid interface name: %S" s)
+;;
+
+          
