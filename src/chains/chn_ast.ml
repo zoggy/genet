@@ -115,8 +115,8 @@ module Dot =
     let color_chain = "grey75"
     let color_interface = "lightsalmon"
 
-    let string_of_port_ref = function
-      Pint n -> Printf.sprintf "p%d" n
+    let string_of_port_ref ?(label=false) = function
+      Pint n -> if label then string_of_int n else Printf.sprintf "p%d" n
     | Pname s -> s
 
     let string_of_op_origin = function
@@ -145,7 +145,7 @@ module Dot =
       let outputs = get_ports (fun edge -> edge.edge_src) in
       let string_of_port color p =
         Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
-        color (string_of_port_ref p) (string_of_port_ref p)
+        color (string_of_port_ref p) (string_of_port_ref ~label: true p)
       in
       let bgcolor = color_of_op_origin op.op_from in
 
