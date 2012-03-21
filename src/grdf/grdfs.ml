@@ -151,6 +151,10 @@ let uri_intfs ~tool = Printf.sprintf "%s/%s" tool suffix_intfs;;
 let uri_intf ~tool ~intf =
   Printf.sprintf "%s/%s" (uri_intfs tool) intf;;
 let uri_tool_of_intf uri = Filename.dirname (Filename.dirname uri);;
+let uri_intf_in intf = Printf.sprintf "%s/in" intf;;
+let uri_intf_out intf = Printf.sprintf "%s/out" intf;;
+let uri_intf_in_port intf n = Printf.sprintf "%s/in/%d" intf n
+let uri_intf_out_port intf n = Printf.sprintf "%s/out/%d" intf n
 
 let suffix_filetypes = "filetypes" ;;
 let uri_filetypes prefix = Printf.sprintf "%s%s" prefix suffix_filetypes;;

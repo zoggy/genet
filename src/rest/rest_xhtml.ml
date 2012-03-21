@@ -115,23 +115,23 @@ let a_chain_module ctx modname =
 ;;
 
 let xhtml_of_ports ctx dir uri =
-  let ports = Grdf_intf.ports ctx.ctx_rdf dir uri in
+  let ports = Grdf_port.ports ctx.ctx_rdf dir uri in
   let of_port (n, p) =
     match p with
-      Grdf_intf.One uri -> a_filetype ctx uri
-    | Grdf_intf.List uri -> Printf.sprintf "%s list" (a_filetype ctx uri)
+      Grdf_port.One uri -> a_filetype ctx uri
+    | Grdf_port.List uri -> Printf.sprintf "%s list" (a_filetype ctx uri)
   in
   match ports with
     [] -> "()"
   | _ ->
-      let sep = match dir with Grdf_intf.In -> " -&gt; " | Grdf_intf.Out -> " * " in
+      let sep = match dir with Grdf_port.In -> " -&gt; " | Grdf_port.Out -> " * " in
       String.concat sep (List.map of_port ports)
 ;;
 
 let xhtml_of_intf_type ctx uri =
   Printf.sprintf "%s -&gt; %s"
-    (xhtml_of_ports ctx Grdf_intf.In uri)
-    (xhtml_of_ports ctx Grdf_intf.Out uri)
+    (xhtml_of_ports ctx Grdf_port.In uri)
+    (xhtml_of_ports ctx Grdf_port.Out uri)
 ;;
 
 let xhtml_navpath_join_path path =
@@ -355,8 +355,8 @@ let get_intf ctx uri =
         label (xhtml_of_ports ctx dir uri)
     in
     Printf.sprintf "%s%s"
-    (of_dir "Input" Grdf_intf.In)
-    (of_dir "Output" Grdf_intf.Out)
+    (of_dir "Input" Grdf_port.In)
+    (of_dir "Output" Grdf_port.Out)
   in
   let branches_yes =
     match Grdf_intf.implementors ctx.ctx_rdf uri with
