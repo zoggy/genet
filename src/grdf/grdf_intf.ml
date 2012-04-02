@@ -142,6 +142,7 @@ let intfs_of_tool wld uri =
 ;;
 
 let compute_intfs_of wld uri =
+  prerr_endline "Grdf_intf.compute_intfs_of: start";
   let rec inher = function
     None -> Sset.empty
   | Some (uri, _) ->
@@ -151,19 +152,38 @@ let compute_intfs_of wld uri =
       Sset.union (Sset.diff set explicit_no) explicit
   in
   let node = Rdf_node.new_from_uri_string wld.wld_world uri in
+  prerr_endline ("Grdf_intf.compute_intfs_of: node ok, uri="^uri);
   if Grdfs.is_a_tool wld node then
     (* show all interfaces *)
-    (intfs_of_tool wld uri, Sset.empty)
+    (
+     prerr_endline "Grdf_intf.compute_intfs_of: then";
+     let ret = (intfs_of_tool wld uri, Sset.empty) in
+     prerr_endline "Grdf_intf.compute_intfs_of: ok";
+     ret
+    )
   else
     begin
+      prerr_endline "Grdf_intf.compute_intfs_of: else";
       let explicit = explicit_intfs_of wld uri in
+      prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";
+      (* FIXME: when librdf_new_node_from_node will make a deep copy,
+        remove the following line and use the previously defined node *)
+      let node = Rdf_node.new_from_uri_string wld.wld_world uri in
       let parent =
         if Grdfs.is_a_version wld node then
-          (match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false))
+          (
+           prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: true";
+           match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false)
+          )
         else
-          Grdf_branch.parent wld uri
+          (
+           prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: false";
+           Grdf_branch.parent wld uri
+          )
       in
+      prerr_endline "Grdf_intf.compute_intfs_of: parent ok";
       let inherited = inher parent in
+      prerr_endline "Grdf_intf.compute_intfs_of: inherited ok";
       (explicit, inherited)
     end
 ;;

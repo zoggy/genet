@@ -262,9 +262,13 @@ let intf_list ctx intfs =
 ;;
 
 let xhtml_of_intfs_of ctx uri =
+  prerr_endline "xhtml_of_intfs: start";
   let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
+  prerr_endline "xhtml_of_intfs: explicit,inherited ok";
   let intfs = intf_list ctx (Sset.elements explicit) in
+  prerr_endline "xhtml_of_intfs: intfs ok";
   let inherited_intfs = intf_list ctx (Sset.elements inherited) in
+  prerr_endline "xhtml_of_intfs: inherited ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
   let env = List.fold_left
     (fun e (name, v) -> Xtmpl.env_add_att name v e)
@@ -441,12 +445,18 @@ let get_versions ctx tool =
 ;;
 
 let get_branch ctx uri =
+  prerr_endline "get_branch: start";
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
+  prerr_endline "get_branch: name ok";
   let dot = Grdf_dot.dot_of_branch ctx.ctx_rdf uri in
   let svg = dot_to_svg dot in
+  prerr_endline "get_branch: svg ok";
   let branches = xhtml_of_branches_of ctx uri in
+  prerr_endline "get_branch: branches ok";
   let intfs = xhtml_of_intfs_of ctx uri in
+  prerr_endline "get_branch: intfs ok";
   let versions = xhtml_of_versions_of ctx uri in
+  prerr_endline "get_branch: versions ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "branch.tmpl" in
   let env = List.fold_left
     (fun e (name, v) -> Xtmpl.env_add_att name v e)
