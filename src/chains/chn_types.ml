@@ -72,4 +72,31 @@ let uri_intf_of_interface_spec ~prefix s  =
       failwith (Printf.sprintf "invalid interface name: %S" s)
 ;;
 
-          
+let uri_fchain_module prefix modname =
+  let s = String.concat "/" modname in
+  Grdfs.uri_fchain_module prefix s
+;;
+
+
+let uri_fchain prefix fullname id =
+  let modname = String.concat "/" (chain_modname fullname) in
+  let name = chain_basename fullname in
+  Grdfs.uri_fchain ~prefix ~modname ~name ~id
+;;
+
+let is_uri_fchain_module prefix uri =
+  prerr_endline (Printf.sprintf "is_uri_fchain_module %s" uri);
+  match Grdfs.is_uri_fchain_module prefix uri with
+    None -> None
+  | Some slashes_modname ->
+      let modname = Misc.split_string slashes_modname ['/'] in
+      Some (modname)
+;;
+
+let is_uri_fchain prefix uri =
+  match Grdfs.is_uri_fchain prefix uri with
+    None -> None
+  | Some ((slashes_modname, name), id) ->
+      let s = Misc.split_string slashes_modname ['/'] in
+      Some ((s, name), id)
+;;    

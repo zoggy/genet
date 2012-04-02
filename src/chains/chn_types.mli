@@ -31,3 +31,10 @@ val uri_chain : string -> chain_name -> Grdf_types.uri
 val is_uri_chain_module : string -> Grdf_types.uri -> string option
 val is_uri_chain : string -> Grdf_types.uri -> string option
 val uri_intf_of_interface_spec : prefix: string -> string -> string
+
+val uri_fchain_module : string -> chain_modname -> Grdf_types.uri
+val uri_fchain : string -> chain_name -> string -> Grdf_types.uri
+
+val is_uri_fchain_module : string -> Grdf_types.uri -> chain_modname option
+val is_uri_fchain : string -> Grdf_types.uri -> (chain_name * string) option
+

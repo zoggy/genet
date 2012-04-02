@@ -114,6 +114,12 @@ let a_chain_module ctx modname =
   a ~href (Chn_types.string_of_chain_modname modname)
 ;;
 
+let a_fchain_module ctx modname =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let href = Chn_types.uri_fchain_module prefix modname in
+  a ~href (Chn_types.string_of_chain_modname modname)
+;;
+
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
   let ports = Grdf_port.sort_ports ports in
@@ -232,10 +238,32 @@ let xhtml_navpath_of_chain ctx fullname =
   xhtml_navpath_join_path path
 ;;
 
+let navpath_of_fchain_module ctx =
+  [
+    a ~href: (Grdfs.uri_fchains ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_fchains ;
+  ]
+
+let xhtml_navpath_of_fchain_module ctx =
+  let path = navpath_of_fchain_module ctx in
+  xhtml_navpath_join_path path
+;;
+
+let xhtml_navpath_of_fchain ctx fullname id =
+  let modname = Chn_types.chain_modname fullname in
+  let path =
+    (navpath_of_fchain_module ctx) @
+    [
+      a_fchain_module ctx modname;
+    ]
+  in
+  xhtml_navpath_join_path path
+;;
+
 let xhtml_navpath ctx = function
 | Other _
 | Static_file _
 | Chains
+| Flat_chains
 | Tools -> ""
 | Tool uri -> xhtml_navpath_of_tool ctx
 | Branch uri -> xhtml_navpath_of_branch ctx uri
@@ -248,6 +276,8 @@ let xhtml_navpath ctx = function
 | Branches uri -> xhtml_navpath_of_branches ctx uri
 | Chain_module modname -> xhtml_navpath_of_chain_module ctx
 | Chain fullname -> xhtml_navpath_of_chain ctx fullname
+| Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
+| Flat_chain (fullname, id) -> xhtml_navpath_of_fchain ctx fullname id
 ;;
 
 let intf_list ctx intfs =
@@ -596,6 +626,86 @@ let handle_chain_error f ctx p =
       ([ctype ()], chain_page ctx ~title ~error "")
 ;;
 
+let get_fchains ctx =
+(*
+  let chain_files = Chn_io.chain_files ctx.ctx_cfg in
+  let modules = List.map Chn_io.modname_of_file chain_files in
+  let modules = List.sort Chn_types.compare_chain_modname modules in
+  let rows = List.map (fun m -> [a_chain_module ctx m]) modules in
+  let heads = ["Chain module"] in
+  let (deps, error) =
+    let config = ctx.ctx_cfg in
+    let (cmods, errors) = Chn_io.load_chain_files config in
+    let deps = Chn_ast.compute_deps ctx.ctx_rdf config cmods in
+    let dot = Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api deps in
+    let svg = dot_to_svg dot in
+    let error =
+      match errors with
+        [] -> ""
+      | _ ->
+          Printf.sprintf "<pre><![CDATA[%s]]></pre>"
+          (String.concat "\n" errors)
+    in
+    (svg, error)
+  in
+  let contents =
+    Printf.sprintf
+      "<section>%s</section><section title=\"Dependencies\">%s</section>"
+      (table ~heads rows)
+      deps
+  in
+*)
+  let title = "Modules" in
+  let contents = "" in
+  let error = "not implemented" in
+  ([ctype ()], chain_page ctx ~title ~error contents)
+;;
+let get_fchain_module ctx modname =
+(*
+  let config = ctx.ctx_cfg in
+  let file = Chn_io.file_of_modname config modname in
+*)
+  let title = Printf.sprintf "Module %s"
+    (Chn_types.string_of_chain_modname modname)
+  in
+(*
+  let heads = ["Chain"] in
+  let rows = List.map
+    (fun chain ->
+       let name = Chn_types.mk_chain_name modname
+         chain.Chn_ast.chn_name
+       in
+         [a_chain ctx name]
+    ) cmod.Chn_ast.cmod_chains
+  in
+  let deps =
+    let deps = Chn_ast.compute_deps ctx.ctx_rdf config [cmod] in
+    let dot =
+      Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api
+      ~fullnames: false deps
+    in
+    dot_to_svg dot
+  in
+  let contents =
+    Printf.sprintf
+    "<section>%s</section><section title=\"Dependencies\">%s</section>"
+    (table ~heads rows)
+    deps
+  in
+  let navpath = xhtml_navpath ctx (Chain_module modname) in
+*)
+  let navpath = "" in
+  let contents = "Not implemented" in
+  ([ctype ()], chain_page ctx ~title ~navpath contents)
+;;
+
+let get_fchain ctx fullname id =
+  let title = Printf.sprintf "%s (%s)" (Chn_types.string_of_chain_name fullname) id in
+  let navpath = xhtml_navpath ctx (Flat_chain (fullname, id)) in
+  let contents = "" in
+  ([ctype ()], chain_page ctx ~title ~navpath contents)
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -613,6 +723,9 @@ let get ctx thing args =
   | Chains -> get_chains ctx
   | Chain_module modname -> handle_chain_error get_chain_module ctx modname
   | Chain fullname -> handle_chain_error get_chain ctx fullname
+  | Flat_chains -> get_fchains ctx
+  | Flat_chain_module modname -> get_fchain_module ctx modname
+  | Flat_chain (fullname, id) -> get_fchain ctx fullname id
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

@@ -233,7 +233,7 @@ class xhtml_ast_printer prefix =
       (self#kwd ~cls: "kwb" "in") (self#string_of_port_array chn.chn_inputs) ;
 
       Printf.bprintf b "  %s: %s ;\n"
-      (self#kwd ~cls: "kwb" "in") (self#string_of_port_array chn.chn_outputs) ;
+      (self#kwd ~cls: "kwb" "out") (self#string_of_port_array chn.chn_outputs) ;
 
       Printf.bprintf b "\n%s" (self#string_of_operation_list chn.chn_ops);
 

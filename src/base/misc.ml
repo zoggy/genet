@@ -225,8 +225,10 @@ let is_capitalized s =
 
 let get_git_id file =
   let temp_file = Filename.temp_file "git" "log" in
-  let com = Printf.sprintf "git log -n 1 %s | head -n 1 | cut -d' ' -f 2 > %s"
-    (Filename.quote file) (Filename.quote temp_file)
+  let dir = Filename.dirname file in
+  let basename = Filename.basename file in
+  let com = Printf.sprintf "(cd %s ; git log -n 1 %s | head -n 1 | cut -d' ' -f 2) > %s"
+    (Filename.quote dir) (Filename.quote basename) (Filename.quote temp_file)
   in
   match Sys.command com with
     0 ->

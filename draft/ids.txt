@@ -24,10 +24,10 @@ http://<prefix>/chains/Chain1/op/in/1 : premier port d'entrée (avec propriété
 http://<prefix>/chains/Chain1/op/out/2 : deuxième port de sortie (avec propriété name et filetype)
 
 Chaîne mise à plat
-http://<prefix>/fchains/Chain1/op/in/1  : 1er port d'entrée de la chaine Chain1.op
-http://<prefix>/fchains/Chain1/op/out/2  : 2ème port de sortie de la chaine Chain1.op
-http://<prefix>/fchains/Chain1/op/op.o1  : port o1 de l'opération op
-http://<prefix>/fchains/Chain1/op/op2/opN/in/2 :
+http://<prefix>/fchains/Mod1/chain1/git-id/op/in/1  : 1er port d'entrée de la chaine Mod1.chain1
+http://<prefix>/fchains/Mod1/chain1/git-id/op/out/2  : 2ème port de sortie de la chaine Mod1.chain1
+http://<prefix>/fchains/Mod1/chain1/git-id/op/op.o1  : port o1 de l'opération op
+http://<prefix>/fchains/Mod1/chain1/git-id/op/op2/opN/in/2 :
    2ème port d'entrée de l'opération opN contenue dans la chaine référencée par op2
    avec des liens entre les ports, et des arcs
    des opérations feuilles vers les interfaces des outils

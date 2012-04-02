@@ -50,31 +50,49 @@ let uri_of_query_path ctx path =
 ;;
 
 let try_is_uri_of ctx uri =
+  let embed1 test build =
+    fun uri ->
+      match test ctx.ctx_rdf uri with
+        None -> None
+      | Some uri -> Some (build uri)
+  in
   let l =
     [
-      Grdfs.is_uri_tool_versions, (fun uri -> Versions uri) ;
-      Grdfs.is_uri_tool_branches, (fun uri -> Branches uri) ;
-      Grdfs.is_uri_tool_interfaces, (fun uri -> Intfs uri) ;
+      (embed1 Grdfs.is_uri_tool_versions (fun uri -> Versions uri)) ;
+      (embed1 Grdfs.is_uri_tool_branches (fun uri -> Branches uri)) ;
+      (embed1 Grdfs.is_uri_tool_interfaces (fun uri -> Intfs uri)) ;
 
-      Grdfs.is_uri_branch_versions, (fun uri -> Versions uri) ;
-      Grdfs.is_uri_branch_branches, (fun uri -> Branches uri) ;
-      Grdfs.is_uri_branch_interfaces, (fun uri -> Intfs uri) ;
+      (embed1 Grdfs.is_uri_branch_versions (fun uri -> Versions uri)) ;
+      (embed1 Grdfs.is_uri_branch_branches (fun uri -> Branches uri)) ;
+      (embed1 Grdfs.is_uri_branch_interfaces (fun uri -> Intfs uri)) ;
 
-      Grdfs.is_uri_version_interfaces, (fun uri -> Intfs uri) ;
+      (embed1 Grdfs.is_uri_version_interfaces (fun uri -> Intfs uri)) ;
 
-      (fun _ uri -> Chn_types.is_uri_chain_module ctx.ctx_cfg.Config.rest_api uri),
-      (fun modname -> Chain_module (Chn_types.chain_modname_of_string modname)) ;
+      (embed1
+         (fun _ uri -> Chn_types.is_uri_chain_module ctx.ctx_cfg.Config.rest_api uri)
+         (fun modname -> Chain_module (Chn_types.chain_modname_of_string modname))) ;
 
-      (fun _ uri -> Chn_types.is_uri_chain ctx.ctx_cfg.Config.rest_api uri),
-      (fun fullname -> Chain (Chn_types.chain_name_of_string fullname)) ;
+      (embed1
+         (fun _ uri -> Chn_types.is_uri_chain ctx.ctx_cfg.Config.rest_api uri)
+         (fun fullname -> Chain (Chn_types.chain_name_of_string fullname))) ;
+
+
+      (embed1
+         (fun _ uri -> Chn_types.is_uri_fchain_module ctx.ctx_cfg.Config.rest_api uri)
+         (fun modname -> Flat_chain_module modname)) ;
+
+      (fun uri ->
+        match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
+           None -> None
+         | Some (fullname, id) -> Some (Flat_chain (fullname, id))) ;
     ]
   in
   let rec iter = function
     [] -> None
-  | (test, build) :: q ->
-      match test ctx.ctx_rdf uri with
+  | f :: q ->
+      match f uri with
         None -> iter q
-      | Some uri -> Some (build uri)
+      | x -> x
   in
   iter l
 ;;
@@ -92,6 +110,7 @@ let rec thing_of_path ctx path =
   | None when uri = Grdfs.uri_tools ctx.ctx_rdf.Grdf_types.wld_prefix -> Tools
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None when uri = Grdfs.uri_chains ctx.ctx_rdf.Grdf_types.wld_prefix -> Chains
+  | None when uri = Grdfs.uri_fchains ctx.ctx_rdf.Grdf_types.wld_prefix -> Flat_chains
   | None ->
       begin
         match try_is_uri_of ctx uri with

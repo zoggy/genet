@@ -30,6 +30,9 @@ type thing =
   | Chains
   | Chain_module of Chn_types.chain_modname
   | Chain of Chn_types.chain_name
+  | Flat_chains
+  | Flat_chain_module of Chn_types.chain_modname
+  | Flat_chain of Chn_types.chain_name * string
 ;;
 
 type response = arg list * string

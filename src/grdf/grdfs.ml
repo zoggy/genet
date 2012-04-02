@@ -59,8 +59,9 @@ let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
 let genet_hasfiletype = genet_"hasFiletype";;
 let genet_hasfiletypelist = genet_"hasFiletypeList";;
-let genet_md5 = genet_"md5";;
+let genet_versionid = genet_"versionId";;
 let genet_flattenedto = genet_"flattenedTo";;
+let genet_opfrom = genet_"operationFrom";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model
@@ -77,12 +78,23 @@ let add_type world model ~sub ~obj =
   add_stmt world model ~sub ~pred ~obj
 ;;
 
+let add_stmt_uris world model ~sub ~pred ~obj =
+  let sub = Rdf_node.new_from_uri_string world sub in
+  let pred = Rdf_node.new_from_uri_string world pred in
+  let obj = Rdf_node.new_from_uri_string world obj in
+  add_stmt world model ~sub ~pred ~obj
+;;
+
 (** {2 Uris of manipulated elements} *)
+
+(** {3 Tools} *)
 
 let suffix_tools = "tools";;
 let uri_tools prefix = Printf.sprintf "%s%s" prefix suffix_tools;;
 let uri_tool ~prefix ~tool =
   Printf.sprintf "%s/%s" (uri_tools prefix) tool;;
+
+(** {3 Chains} *)
 
 let suffix_chains = "chains";;
 let uri_chains prefix = Printf.sprintf "%s%s" prefix suffix_chains;;
@@ -118,6 +130,7 @@ let is_in_chains prefix uri =
   else
     None
 ;;
+
 let is_uri_chain_module prefix uri =
   match is_in_chains prefix uri with
     None -> None
@@ -136,18 +149,80 @@ let is_uri_chain prefix uri =
       | _ -> None
 ;;
 
-
 let chain_module_of_uri prefix uri =
   match is_uri_chain_module prefix uri with
     Some modname -> modname
   | None -> failwith (Printf.sprintf "%s is not a chain module uri" uri)
 ;;
 
+(** {3 Flat chains} *)
+
+let suffix_fchains = "flat-chains";;
+let uri_fchains prefix = Printf.sprintf "%s%s" prefix suffix_fchains;;
+
+let uri_fchain_module ~prefix modname =
+  Printf.sprintf "%s/%s" (uri_fchains prefix) modname;;
+
+let split_fchain_name s =
+  prerr_endline ("SPLIT: "^s);
+  match List.rev (Misc.split_string s ['/']) with
+    [] -> failwith ("Invalid name "^s)
+  | id :: rest ->
+      if Misc.is_capitalized id then
+        `Modname s
+      else
+        match rest with
+          [] -> failwith ("Invalid name "^s)
+        | [name] -> `Chainname (name, id)
+        | name :: rest -> `Fullname ((String.concat "/" (List.rev rest), name), id)
+;;
+let uri_fchain ~prefix ~modname ~name ~id  =
+  Printf.sprintf "%s/%s/%s" (uri_fchain_module ~prefix modname) name id;;
+
+let  uri_fchain_op fchain path =
+  Printf.sprintf "%s/%s"
+    fchain (String.concat "/" (List.rev path))
+;;
+
+let is_in_fchains prefix uri =
+  let prefix = uri_fchains prefix in
+  if Misc.is_prefix prefix uri then
+    begin
+      let len = String.length prefix in
+      let base = String.sub uri len (String.length uri - len) in
+      Some base
+    end
+  else
+    None
+;;
+
+let is_uri_fchain_module prefix uri =
+  match is_in_fchains prefix uri with
+    None -> None
+  | Some base ->
+      match split_fchain_name base with
+        `Modname modname -> Some modname
+      | _ -> None
+;;
+
+let is_uri_fchain prefix uri =
+  match is_in_fchains prefix uri with
+    None -> None
+  | Some base ->
+      match split_fchain_name base with
+        `Fullname (fullname, id) -> Some (fullname, id)
+      | _ -> None
+;;
+
+(** {3 Versions} *)
+
 let suffix_versions = "versions";;
 let uri_versions prefix = Printf.sprintf "%s/%s" prefix suffix_versions;;
 let uri_version ~tool ~version =
   Printf.sprintf "%s/%s" (uri_versions tool) version;;
 let uri_tool_of_version uri = Filename.dirname (Filename.dirname uri);;
+
+(** {3 Interfaces} *)
 
 let suffix_intfs = "interfaces"
 let uri_intfs ~tool = Printf.sprintf "%s/%s" tool suffix_intfs;;
@@ -163,10 +238,14 @@ let port_rank uri =
   with _ -> failwith ("Invalid port uri: "^uri)
 ;;
 
+(** {3 Filetypes} *)
+
 let suffix_filetypes = "filetypes" ;;
 let uri_filetypes prefix = Printf.sprintf "%s%s" prefix suffix_filetypes;;
 let uri_filetype ~prefix name =
   Printf.sprintf "%s/%s" (uri_filetypes prefix) name;;
+
+(** {3 Branches} *)
 
 let suffix_branches = "branches";;
 let uri_branches parent = Printf.sprintf "%s/%s" parent suffix_branches;;
