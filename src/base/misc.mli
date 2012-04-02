@@ -130,3 +130,6 @@ val split_string : ?keep_empty:bool -> string -> char list -> string list
 (*/i==v=[String.split_string]=1.1====*)
 
 val is_capitalized : string -> bool
+
+(** Get the git last commit id of the given file, or raise [Failure]. *)
+val get_git_id : string -> string

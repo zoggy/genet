@@ -222,3 +222,22 @@ let is_capitalized s =
   else
     false
 ;;
+
+let get_git_id file =
+  let temp_file = Filename.temp_file "git" "log" in
+  let com = Printf.sprintf "git log -n 1 %s | head -n 1 | cut -d' ' -f 2 > %s"
+    (Filename.quote file) (Filename.quote temp_file)
+  in
+  match Sys.command com with
+    0 ->
+      let s = string_of_file temp_file in
+      Sys.remove temp_file ;
+      begin
+        match split_string s ['\n'] with
+          id :: _ -> id
+        | _ -> failwith "No git id"
+      end
+  | n ->
+      let msg = Printf.sprintf "Command failed with code %d: %s" n com in
+      failwith msg
+;;
