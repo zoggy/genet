@@ -133,6 +133,7 @@ let create_data_edge ctx uri map edge =
       (Printf.sprintf "Incompatible types: %s <--> %s"
         (Grdf_port.string_of_port_type ctx.ctx_rdf type_src)
         (Grdf_port.string_of_port_type ctx.ctx_rdf type_dst));
+  (* TODO: check that two edges don't have the same destination *)
   Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model
     ~sub: uri_src ~pred: Grdfs.genet_produces ~obj: uri_dst
 ;;
@@ -167,7 +168,8 @@ let rec do_flatten ctx ?(path=[]) fullname =
             Smap.singleton "" (uri_fchain, map_in, map_out)
         | _ ->  Smap.empty
       in
-      let _op_map = List.fold_left (add_op ctx path uri_fchain) op_map chn.chn_ops in
+      let op_map = List.fold_left (add_op ctx path uri_fchain) op_map chn.chn_ops in
+      create_data_edges ctx uri_fchain op_map chn;
       uri_fchain
     end
 

@@ -36,6 +36,7 @@ let flatten opts acc s =
       let msg =
         match e with
           Failure s | Sys_error s ->  s
+        | Loc.Problem pb -> Loc.string_of_problem pb
         | e -> Printexc.to_string e
       in
       let msg = Printf.sprintf "flatten %s: %s" s msg in
