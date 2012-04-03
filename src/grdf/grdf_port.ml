@@ -42,10 +42,9 @@ let unset_port_type wld port =
           (`I port, [ `I pred, [`V "seq"] ] );
         ]
       in
-      (Some triples, [])
+      { Rdf_sparql.construct_triples = triples ; construct_where = (triples, None) }
     in
-    let query = Rdf_sparql.Delete_where query in
-    ignore(Rdf_sparql.exec wld.wld_world wld.wld_model query)
+    ignore(Grdfs.delete_from_sparql wld query)
   in
   List.iter f preds
 ;;
@@ -90,9 +89,11 @@ let delete_ports wld uri dir =
         (`V "port", [`I pred, [`V "ftype"] ] );
       ]
     in
-    let query = (Some del_triples, []) in
-    let query = Rdf_sparql.Delete_where query in
-    ignore(Rdf_sparql.exec wld.wld_world wld.wld_model query)
+    let query = { Rdf_sparql.construct_triples = del_triples ;
+                  construct_where = (del_triples, None) ;
+      }
+    in
+    ignore(Grdfs.delete_from_sparql wld query)
   in
   let preds = [ Grdfs.genet_hasfiletype ; Grdfs.genet_hasfiletypelist ] in
   List.iter f preds
