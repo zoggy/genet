@@ -123,6 +123,18 @@ let set_ports wld intf dir ports =
   List.iter (insert_port wld intf dir) ports
 ;;
 
+let copy_ports wld ~src ~dst =
+  let map uri =
+    (port_rank uri, port_type wld uri, Some (port_name wld uri))
+  in
+  let f_dir dir =
+    let ports = ports wld src dir in
+    set_ports wld dst dir (List.map map ports)
+  in
+  f_dir In ;
+  f_dir Out
+;;
+
 let add_port wld intf dir ?(pos=max_int) ?name filetype =
   let ports = ports wld intf dir in
   let ports = List.map

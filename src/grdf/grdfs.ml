@@ -62,6 +62,7 @@ let genet_hasfiletypelist = genet_"hasFiletypeList";;
 let genet_versionid = genet_"versionId";;
 let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
+let genet_containsop = genet_"containsOperation";;
 
 let add_stmt world model ~sub ~pred ~obj =
   Rdf_model.add_statement model
