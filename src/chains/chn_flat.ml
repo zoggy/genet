@@ -50,6 +50,97 @@ let add_intf ctx uri_op loc intf_spec =
   Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op ;
 ;;
 
+let create_ports_from_chn ctx uri chn =
+  let mk_port dir (rank, map, ports) p =
+    let ports = (rank, p.p_ftype, Some p.p_name) :: ports in
+    let map = Smap.add p.p_name rank map in
+    (rank + 1, map, ports)
+  in
+  let set_ports dir t =
+    let (_, map, ports) = Array.fold_left (mk_port dir) (0, Smap.empty, []) t in
+    Grdf_port.set_ports  ctx.ctx_rdf uri dir ports;
+    map
+  in
+  let map_in = set_ports Grdf_port.In chn.chn_inputs in
+  let map_out = set_ports Grdf_port.Out chn.chn_outputs in
+  (map_in, map_out)
+;;
+
+let mk_port_map ctx uri dir =
+  let wld = ctx.ctx_rdf in
+  let ports = Grdf_port.ports wld uri dir in
+  List.fold_left
+  (fun map uri ->
+     let rank = Grdf_port.port_rank uri in
+     let name = Grdf_port.port_name wld uri in
+     Smap.add name rank map
+  )
+  Smap.empty ports
+;;
+
+let find_port map dir edge_part =
+  let (dir, op_name) =
+    match dir, edge_part.ep_op with
+    | Grdf_port.In, None -> (Grdf_port.Out, "")
+    | Grdf_port.Out, None -> (Grdf_port.In, "")
+    | _, Some s -> (dir, s)
+  in
+  let (uri, map_in, map_out) =
+    try Smap.find op_name map
+    with Not_found ->
+        Loc.raise_problem edge_part.ep_loc
+        (Printf.sprintf "No operation %S" op_name)
+  in
+  let rank =
+    match edge_part.ep_port with
+      Pint n -> n
+    | Pname name ->
+        let map =
+          match dir with
+            Grdf_port.In -> map_in
+          | Grdf_port.Out -> map_out
+        in
+        try Smap.find name map
+        with Not_found ->
+            let msg = Printf.sprintf "Unknown port %s%s"
+              (match op_name with "" -> "" | s -> s^".")
+                name
+            in
+            Loc.raise_problem edge_part.ep_loc msg
+  in
+  let f =
+    match dir with
+      Grdf_port.In -> Grdfs.uri_intf_in_port
+    | Grdf_port.Out -> Grdfs.uri_intf_out_port
+  in
+  f uri rank
+;;
+
+let create_data_edge ctx uri map edge =
+  let uri_src = find_port map Grdf_port.Out edge.edge_src in
+  let uri_dst = find_port map Grdf_port.In edge.edge_dst in
+  let type_src = Grdf_port.port_type ctx.ctx_rdf uri_src in
+  let type_dst = Grdf_port.port_type ctx.ctx_rdf uri_dst in
+  let compat =
+    match type_src, type_dst with
+      Grdf_port.One u1, Grdf_port.One u2
+    | Grdf_port.One u1, Grdf_port.List u2
+    | Grdf_port.List u1, Grdf_port.One u2
+    | Grdf_port.List u1, Grdf_port.List u2 -> u1 = u2
+  in
+  if not compat then
+    Loc.raise_problem edge.edge_src.ep_loc
+      (Printf.sprintf "Incompatible types: %s <--> %s"
+        (Grdf_port.string_of_port_type ctx.ctx_rdf type_src)
+        (Grdf_port.string_of_port_type ctx.ctx_rdf type_dst));
+  Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model
+    ~sub: uri_src ~pred: Grdfs.genet_produces ~obj: uri_dst
+;;
+
+let create_data_edges ctx uri map chn =
+  List.iter (create_data_edge ctx uri map) chn.chn_edges
+;;
+
 let rec do_flatten ctx ?(path=[]) fullname =
   let modname = Chn_types.chain_modname fullname in
   let name = Chn_types.chain_basename fullname in
@@ -69,7 +160,14 @@ let rec do_flatten ctx ?(path=[]) fullname =
           None -> failwith (Printf.sprintf "Unbound chain %s" (Chn_types.string_of_chain_name fullname))
         | Some chn -> chn
       in
-      let _op_map = List.fold_left (add_op ctx path uri_fchain) Smap.empty chn.chn_ops in
+      let op_map =
+        match path with
+          [] ->
+            let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
+            Smap.singleton "" (uri_fchain, map_in, map_out)
+        | _ ->  Smap.empty
+      in
+      let _op_map = List.fold_left (add_op ctx path uri_fchain) op_map chn.chn_ops in
       uri_fchain
     end
 
@@ -83,16 +181,19 @@ and add_op ctx path uri_fchain map op =
   let uri_op = Grdfs.uri_fchain_op uri_fchain path in
   let add = Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model in
   add ~sub: uri_parent ~pred: Grdfs.genet_containsop ~obj: uri_op;
-  begin
+  let (map_in, map_out) =
     match op.op_from with
-      Interface s -> add_intf ctx uri_op op.op_from_loc s
+      Interface s ->
+        add_intf ctx uri_op op.op_from_loc s;
+        (mk_port_map ctx uri_op Grdf_port.In,
+         mk_port_map ctx uri_op Grdf_port.Out)
     | Chain fullname ->
         let src = do_flatten ctx ~path fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
         import_flat_op ctx src uri_fchain path;
-        ()
-  end;
-  Smap.add op.op_name uri_op map
+        (Smap.empty, Smap.empty)
+  in
+  Smap.add op.op_name (uri_op, map_in, map_out) map
 ;;
 
 let flatten ctx fullname =
