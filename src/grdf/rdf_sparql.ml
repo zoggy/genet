@@ -229,7 +229,7 @@ let string_of_query = function
 
 let exec world model query =
   let query = string_of_query query in
-  prerr_endline (Printf.sprintf "exec query=%s" query);
+  (*prerr_endline (Printf.sprintf "exec query=%s" query);*)
   try
     Rdf_query.new_query ~name: "sparql" world ~query
   with

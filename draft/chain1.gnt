@@ -18,12 +18,12 @@ chain test1
   operation op2 : "/why/prove2" ;
   operation op3 : Chain1.foo ;
 
-  i1 -> op1.i1 ;(* automatically generated name for 1st input of op1 *)
-  i2 -> op1.i2 ;(* automatically generated name for 2nd input of op1 *)
-  op1.1 -> op2.i1 ;
-  i3 -> op2.i2 ;
-  op2.o1 -> o1 ;
+  i1 -> op1.1 ;(* automatically generated name for 1st input of op1 *)
+  i2 -> op1.2 ;(* automatically generated name for 2nd input of op1 *)
+  op1.1 -> op2.1 ;
+  i3 -> op2.2 ;
+  op2.1 -> o1 ;
 
-  op1.o2 -> op3.i1 ;
-  op3.o1 -> o2 ;
+  op1.2 -> op3.1 ;
+  op3.1 -> o2 ;
 }

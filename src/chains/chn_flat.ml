@@ -52,12 +52,18 @@ let add_intf ctx uri_op loc intf_spec =
 
 let create_ports_from_chn ctx uri chn =
   let mk_port dir (rank, map, ports) p =
-    let ports = (rank, p.p_ftype, Some p.p_name) :: ports in
+    let ftype =
+      let mk_uri = Grdfs.uri_filetype ~prefix: ctx.ctx_cfg.Config.rest_api in
+      match p.p_ftype with
+        Grdf_port.One uri -> Grdf_port.One (mk_uri uri)
+      | Grdf_port.List uri -> Grdf_port.List (mk_uri uri)
+    in
+    let ports = (rank, ftype, Some p.p_name) :: ports in
     let map = Smap.add p.p_name rank map in
     (rank + 1, map, ports)
   in
   let set_ports dir t =
-    let (_, map, ports) = Array.fold_left (mk_port dir) (0, Smap.empty, []) t in
+    let (_, map, ports) = Array.fold_left (mk_port dir) (1, Smap.empty, []) t in
     Grdf_port.set_ports  ctx.ctx_rdf uri dir ports;
     map
   in
@@ -206,6 +212,12 @@ let flatten ctx fullname =
     x
   with
     e ->
+      let s =
+        Misc.string_of_opt
+          (Rdf_model.to_string ctx.ctx_rdf.wld_model
+         ~name: "turtle")
+      in
+      prerr_endline s;
       Rdf_model.transaction_rollback ctx.ctx_rdf.wld_model;
       raise e
 ;;
