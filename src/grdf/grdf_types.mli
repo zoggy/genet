@@ -4,7 +4,7 @@ type uri = Rdf_uri.uri
 
 type world =
   { wld_graph : Rdf_graph.graph ;
-    wld_prefix : string ;
+    wld_prefix : uri ;
   }
 
 type error =

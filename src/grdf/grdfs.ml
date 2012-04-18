@@ -299,6 +299,7 @@ let is_a_tool = is_a_ genet_tool;;
 let is_a_branch = is_a_ genet_branch;;
 let is_a_version = is_a_ genet_version;;
 let is_a_intf = is_a_ genet_intf;;
+let is_a_filetype = is_a_ genet_filetype;;
 
 let is_uri_for_ f_is string wld uri =
   match uri_basename uri with
@@ -336,7 +337,7 @@ let add_desc wld sub desc =
   add_triple wld ~sub ~pred ~obj
 ;;
 
-let target_literals wld sub pred =
+let object_literals wld sub pred =
   let pred = Uri pred in
   let l = wld.wld_graph.objects_of ~sub ~pred in
   let f acc = function
@@ -346,14 +347,14 @@ let target_literals wld sub pred =
   List.fold_left f [] l
 ;;
 
-let target_literal wld source pred =
-  match target_literals wld source pred with
+let object_literal wld source pred =
+  match object_literals wld source pred with
     [] -> None
   | s :: _ -> Some s
 ;;
 
 let name wld source =
-  Misc.string_of_opt (target_literal wld source genet_name)
+  Misc.string_of_opt (object_literal wld source genet_name)
 ;;
 
 let name_of_uri_string wld source =
@@ -362,7 +363,7 @@ let name_of_uri_string wld source =
 ;;
 
 let desc wld source =
-  Misc.string_of_opt (target_literal wld source genet_desc)
+  Misc.string_of_opt (object_literal wld source genet_desc)
 ;;
 
 let subject_uris wld ~pred ~obj =

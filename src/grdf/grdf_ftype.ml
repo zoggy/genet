@@ -1,5 +1,6 @@
 (** *)
 
+open Rdf_node;;
 open Grdf_types;;
 open Rdf_sparql;;
 
@@ -10,85 +11,38 @@ let dbg = Misc.create_log_fun
 
 let filetypes wld =
   dbg ~level: 1 (fun () -> "Grdf_ftype.filetypes");
-  let query =
-    { select_proj = ["uri"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`V "uri",
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_filetype ] ;
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
-    match uri with
-      None -> acc
-    | Some uri ->
-        match Rdf_node.get_uri uri with
-          None -> acc
-        | Some uri -> (Rdf_uri.as_string uri :: acc)
-  in
-  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
+  Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_filetype)
 ;;
 
-let name wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_ftype.name uri="^uri);
-  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Grdfs.name wld source
-;;
+let name wld uri = Grdfs.name wld (Uri uri);;
 
-let desc wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_ftype.desc uri="^uri);
-  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Grdfs.desc wld source
-;;
+let desc wld uri = Grdfs.desc wld (Uri uri);;
 
 let extension wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_ftype.extension uri="^uri);
-  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Misc.string_of_opt (Grdfs.target_literal wld source Grdfs.genet_file_ext)
+  dbg ~level: 1 (fun () -> "Grdf_ftype.extension uri="^(Rdf_uri.string uri));
+  let source = Uri uri in
+  Misc.string_of_opt (Grdfs.object_literal wld source Grdfs.genet_file_ext)
 ;;
 
 let filetype_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_ftype.filetype_exists uri="^uri);
-  let query =
-    { select_proj = ["name"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`I uri,
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_filetype ] ;
-            `I Grdfs.genet_name, [ `V "name" ]
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-    match name with
-      None -> acc
-    | Some name ->
-        match Rdf_node.get_literal_value name with
-          None -> acc
-        | Some name -> name :: acc
-  in
-  match List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f []) with
-    name :: _ -> Some name
-  | [] -> None
+  dbg ~level: 1 (fun () -> "Grdf_ftype.filetype_exists uri="^(Rdf_uri.string uri));
+  if Grdfs.is_a_filetype wld uri then
+    Some (Grdfs.name wld (Uri uri))
+  else
+    None
 ;;
 
 let do_add wld uri ~name ~desc ~extension =
-  dbg ~level: 1 (fun () -> "Grdf_ftype.do_add uri="^uri^" name="^name);
-  let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
-  let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_filetype in
-  Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
+  dbg ~level: 1 (fun () -> "Grdf_ftype.do_add uri="^(Rdf_uri.string uri)^" name="^name);
+  let sub = Uri uri in
+  let obj = Uri Grdfs.genet_filetype in
+  Grdfs.add_type wld ~sub ~obj;
   Grdfs.add_name wld sub name;
   Grdfs.add_desc wld sub desc;
-  let pred = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_file_ext in
-  let obj = Rdf_types.node_of_literal_string wld.wld_world extension in
-  Grdfs.add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
+  let pred = Uri Grdfs.genet_file_ext in
+  let obj = Rdf_node.node_of_literal_string extension in
+  Grdfs.add_triple wld ~sub ~pred ~obj
 ;;
 
 let add wld ~name ~desc ~extension =

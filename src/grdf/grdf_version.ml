@@ -1,5 +1,6 @@
 (** *)
 
+open Rdf_node;;
 open Grdf_types;;
 open Rdf_sparql;;
 
@@ -10,85 +11,41 @@ let dbg = Misc.create_log_fun
 
 let versions wld =
   dbg ~level: 1 (fun () -> "Grdf_version.versions");
-  let query =
-    { select_proj = ["uri"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`V "uri",
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_version ] ;
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
-    match uri with
-      None -> acc
-    | Some uri ->
-        match Rdf_node.get_uri uri with
-          None -> acc
-        | Some uri -> (Rdf_uri.as_string uri :: acc)
-  in
-  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
+  Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_version)
 ;;
 
-let name wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_version.name uri="^uri);
-  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Grdfs.name wld source
-;;
+let name wld uri = Grdfs.name wld (Uri uri);;
 
 let parent wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_version.parent uri="^uri);
-  let target = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Grdfs.source_uri wld Grdfs.genet_hasversion target
+  dbg ~level: 1 (fun () -> "Grdf_version.parent uri="^(Rdf_uri.string uri));
+  let obj = Uri uri in
+  Grdfs.subject_uri wld ~pred: Grdfs.genet_hasversion ~obj
 ;;
 
 let version_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_version.version_exists uri="^uri);
-  let query =
-    { select_proj = ["name"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`I uri,
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_version ] ;
-            `I Grdfs.genet_name, [ `V "name" ]
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-    match name with
-      None -> acc
-    | Some name ->
-        match Rdf_node.get_literal_value name with
-          None -> acc
-        | Some name -> name :: acc
-  in
-  match List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f []) with
-    name :: _ -> Some name
-  | [] -> None
+  dbg ~level: 1 (fun () -> "Grdf_version.version_exists uri="^(Rdf_uri.string uri));
+  if Grdfs.is_a_version wld uri then
+    Some (name wld uri)
+  else
+    None
 ;;
 
 let do_add wld uri name =
-  dbg ~level: 1 (fun () -> "Grdf_version.do_add uri="^uri^" name="^name);
-  let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
-  let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_version in
-  Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
+  dbg ~level: 1 (fun () -> "Grdf_version.do_add uri="^(Rdf_uri.string uri)^" name="^name);
+  let sub = Uri uri in
+  let obj = Uri Grdfs.genet_version in
+  Grdfs.add_type wld ~sub ~obj;
   Grdfs.add_name wld sub name
 ;;
 
 let add wld ~tool ?(parent=tool) name =
-  dbg ~level: 1 (fun () -> "Grdf_version.add parent="^parent^" name="^name);
-  let node_tool = Rdf_types.node_of_uri_string wld.wld_world tool in
-  let node_parent = Rdf_types.node_of_uri_string wld.wld_world parent in
+  dbg ~level: 1 (fun () -> "Grdf_version.add parent="^(Rdf_uri.string parent)^" name="^name);
+  let node_parent = Uri parent in
 
-  let tool_is_tool = Grdfs.is_a_tool wld node_tool in
-  let parent_is_tool = Grdfs.is_a_tool wld node_parent in
-  let parent_is_branch = Grdfs.is_a_branch wld node_parent in
+  let tool_is_tool = Grdfs.is_a_tool wld tool in
+  let parent_is_tool = Grdfs.is_a_tool wld parent in
+  let parent_is_branch = Grdfs.is_a_branch wld parent in
 
   if not tool_is_tool then
     Grdf_types.error (Grdf_types.Not_a_tool tool);
@@ -106,32 +63,32 @@ let add wld ~tool ?(parent=tool) name =
     Some name -> Grdf_types.error (Grdf_types.Version_exists name)
   | None ->
       do_add wld uri name;
-      Grdfs.add_stmt wld.wld_world wld.wld_model
+      Grdfs.add_triple wld
       ~sub: node_parent
-      ~pred: (Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_hasversion)
-      ~obj:  (Rdf_types.node_of_uri_string wld.wld_world uri);
+      ~pred: (Uri Grdfs.genet_hasversion)
+      ~obj:  (Uri uri);
       uri
 ;;
 
 let versions_of wld ?(recur=false) uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.versions_of uri="^uri);
+  dbg ~level: 1 (fun () -> "Grdf_branch.versions_of uri="^(Rdf_uri.string uri));
   if recur then
     begin
-      let add set uri = Sset.add uri set in
+      let add set uri = Uriset.add uri set in
       let rec iter set uri =
-        let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-        let versions = Grdfs.target_uris wld source Grdfs.genet_hasversion in
+        let versions = Grdfs.object_uris wld
+          ~sub: (Uri uri) ~pred: Grdfs.genet_hasversion
+        in
         let set = List.fold_left add set versions in
         let subs = Grdf_branch.subs wld uri in
         List.fold_left iter set subs
       in
-      let set = iter Sset.empty uri in
-      Sset.elements set
+      let set = iter Uriset.empty uri in
+      Uriset.elements set
     end
   else
     (
-     let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-     Grdfs.target_uris wld source Grdfs.genet_hasversion
+     Grdfs.object_uris wld ~sub: (Uri uri) ~pred: Grdfs.genet_hasversion
     )
 ;;
 
