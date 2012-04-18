@@ -8,7 +8,7 @@ type port_name = string
 type port = {
   p_name : port_name ;
   p_loc : Loc.t ;
-  p_ftype : Grdf_port.port_type ;
+  p_ftype : string Grdf_port.port_type ;
 }
 
 
@@ -100,7 +100,7 @@ let compute_deps wld config cmods =
     | Interface s ->
         begin
           try
-            let uri = uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
+            let uri = Chn_types.uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
             match Grdf_intf.intf_exists wld uri with
               Some _ -> { d with dep_intfs = Sset.add s d.dep_intfs }
             | None -> raise Not_found
@@ -226,7 +226,10 @@ module Dot =
       Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BGCOLOR=\"%s\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name bgcolor;
       Printf.bprintf b "%s" (string_of_ports color_in inputs);
       Printf.bprintf b "<TD ALIGN=\"CENTER\" HREF=\"%s\" CELLPADDING=\"4\">%s</TD>"
-      (match prefix with None -> "" | Some prefix -> uri_of_op_origin prefix op.op_from)
+      (match prefix with 
+         None -> ""
+       | Some prefix -> Rdf_uri.string (uri_of_op_origin prefix op.op_from)
+      )
       (string_of_op_origin op.op_from);
       Printf.bprintf b "%s" (string_of_ports color_out outputs);
       Buffer.add_string b "</TR></TABLE>>];\n"
@@ -278,7 +281,7 @@ module Dot_deps =
       in
       let id = chain_id fullname in
       Printf.bprintf b "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-        id label (Chn_types.uri_chain prefix fullname) Dot.color_chain;
+        id label (Rdf_uri.string (Chn_types.uri_chain prefix fullname)) Dot.color_chain;
       Cset.iter (print_dep_chn b id) dep.dep_chains ;
       let intfs = Sset.fold (print_dep_intf b id) dep.dep_intfs intfs in
       intfs
@@ -287,7 +290,7 @@ module Dot_deps =
       let uri = Chn_types.uri_intf_of_interface_spec ~prefix intf in
       Printf.bprintf b
       "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-      (intf_id intf) intf uri Dot.color_interface
+      (intf_id intf) intf (Rdf_uri.string uri) Dot.color_interface
 
     let dot_of_deps prefix ?(fullnames=true) deps =
       let b = Buffer.create 256 in

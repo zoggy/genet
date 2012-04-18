@@ -8,8 +8,8 @@ type t = {
   db_user : string;
   db_passwd : string;
   db_host : string;
-  uri_prefix : string;
-  rest_api : string;
+  uri_prefix : Rdf_uri.uri ;
+  rest_api : Rdf_uri.uri ;
   root_dir : string;
 }
 val read_config : string -> t

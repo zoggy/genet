@@ -3,7 +3,7 @@
 open Rdf_node;;
 open Grdf_types;;
 
-type port_type = One of uri | List of uri;;
+type 'a port_type = One of 'a | List of 'a;;
 type dir = In | Out ;;
 
 let pred_of_dir = function

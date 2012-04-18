@@ -1,5 +1,7 @@
 (** *)
 
+open Rdf_node;;
+open Rdf_graph;;
 open Grdf_types;;
 open Chn_types;;
 open Chn_ast;;
@@ -9,12 +11,8 @@ let fchain_exists ctx orig_fullname uri_fchain =
     ~modname: (Chn_types.string_of_chain_modname (Chn_types.chain_modname orig_fullname))
     (Chn_types.string_of_chain_basename (Chn_types.chain_basename orig_fullname))
   in
-  let world = ctx.ctx_rdf.wld_world in
-  let sub = Rdf_types.node_of_uri_string world uri_chain in
-  let pred = Rdf_types.node_of_uri_string world Grdfs.genet_flattenedto in
-  let obj = Rdf_types.node_of_uri_string world uri_fchain in
-  let stmt = Rdf_statement.new_from_nodes world ~sub ~pred ~obj in
-  Rdf_model.contains_statement ctx.ctx_rdf.wld_model stmt
+  ctx.ctx_rdf.wld_graph.exists ~sub: (Uri uri_chain)
+   ~pred: (Uri Grdfs.genet_flattenedto) ~obj: (Uri uri_fchain) ()
 ;;
 
 let rec import_flat_op ctx uri_src uri_dst path = ()
@@ -45,7 +43,7 @@ let add_intf ctx uri_op loc intf_spec =
   let uri_intf = Chn_types.uri_intf_of_interface_spec
     ~prefix: ctx.ctx_cfg.Config.rest_api intf_spec
   in
-  Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model
+  Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: uri_intf;
   Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op ;
 ;;
@@ -140,7 +138,7 @@ let create_data_edge ctx uri map edge =
         (Grdf_port.string_of_port_type ctx.ctx_rdf type_src)
         (Grdf_port.string_of_port_type ctx.ctx_rdf type_dst));
   (* TODO: check that two edges don't have the same destination *)
-  Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model
+  Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_src ~pred: Grdfs.genet_produces ~obj: uri_dst
 ;;
 
@@ -187,7 +185,7 @@ and add_op ctx path uri_fchain map op =
   in
   let path = path @ [op.op_name] in
   let uri_op = Grdfs.uri_fchain_op uri_fchain path in
-  let add = Grdfs.add_stmt_uris ctx.ctx_rdf.wld_world ctx.ctx_rdf.wld_model in
+  let add = Grdfs.add_triple_uris ctx.ctx_rdf in
   add ~sub: uri_parent ~pred: Grdfs.genet_containsop ~obj: uri_op;
   let (map_in, map_out) =
     match op.op_from with
@@ -205,20 +203,14 @@ and add_op ctx path uri_fchain map op =
 ;;
 
 let flatten ctx fullname =
-  Rdf_model.transaction_start ctx.ctx_rdf.wld_model;
+  ctx.ctx_rdf.wld_graph.transaction_start ();
   try
     let x = do_flatten ctx fullname in
-    Rdf_model.transaction_commit ctx.ctx_rdf.wld_model;
+    ctx.ctx_rdf.wld_graph.transaction_commit();
     x
   with
     e ->
       prerr_endline "flatten: ERROR!";
-      let s =
-        Misc.string_of_opt
-          (Rdf_model.to_string ctx.ctx_rdf.wld_model
-         ~name: "turtle")
-      in
-      prerr_endline s;
-      Rdf_model.transaction_rollback ctx.ctx_rdf.wld_model;
+      ctx.ctx_rdf.wld_graph.transaction_rollback ();
       raise e
 ;;

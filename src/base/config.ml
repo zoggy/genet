@@ -10,8 +10,8 @@ type t =
     db_user : string ;
     db_passwd : string ;
     db_host : string ;
-    uri_prefix : string ;
-    rest_api : string ;
+    uri_prefix : Rdf_uri.uri ;
+    rest_api : Rdf_uri.uri ;
     root_dir : string ;
   }
 
@@ -42,8 +42,8 @@ let read_config file =
     db_user = dbuser_cp#get ;
     db_host = dbhost_cp#get ;
     db_passwd = dbpasswd_cp#get ;
-    uri_prefix = uri_prefix_cp#get ;
-    rest_api = rest_api ;
+    uri_prefix = Rdf_uri.uri uri_prefix_cp#get ;
+    rest_api = Rdf_uri.uri rest_api ;
     root_dir = Filename.dirname (Misc.normalized_path file) ;
   }
 ;;
@@ -57,8 +57,8 @@ let string_of_config c =
   Printf.bprintf b "db_user=%s\n" c.db_user ;
   Printf.bprintf b "db_host=%s\n" c.db_host ;
   Printf.bprintf b "db_passwd=%s\n" c.db_passwd ;
-  Printf.bprintf b "uri_prefix=%s\n" c.uri_prefix ;
-  Printf.bprintf b "rest_api=%s\n" c.rest_api;
+  Printf.bprintf b "uri_prefix=%s\n" (Rdf_uri.string c.uri_prefix) ;
+  Printf.bprintf b "rest_api=%s\n" (Rdf_uri.string c.rest_api);
   Buffer.contents b
 ;;
 

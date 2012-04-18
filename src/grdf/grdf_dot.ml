@@ -2,7 +2,7 @@
 
 let md5 s = Digest.to_hex (Digest.string s);;
 
-let dot_id uri = Printf.sprintf "N%s" (md5 uri);;
+let dot_id uri = Printf.sprintf "N%s" (md5 (Rdf_uri.string uri));;
 
 let tool_bgcolor2 = "#d7d7d9";;
 let tool_bgcolor = "#e7e7e9";;
@@ -24,7 +24,7 @@ let ftype_fgcolor = "#white";;
 let gen_tool b wld uri =
   let name = Grdf_tool.name wld uri in
   Printf.bprintf b "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"box\", href=\"%s\"];\n"
-    (dot_id uri) (String.escaped name) tool_bgcolor tool_fgcolor uri
+    (dot_id uri) (String.escaped name) tool_bgcolor tool_fgcolor (Rdf_uri.string uri)
 ;;
 
 let gen_version b wld uri =
@@ -32,14 +32,14 @@ let gen_version b wld uri =
   let label = Misc.chop_n_char 8 name in
   Printf.bprintf b
   "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"box3d\", tooltip=\"%s\" href=\"%s\"];\n"
-  (dot_id uri) (String.escaped label) version_bgcolor version_fgcolor (String.escaped name) uri
+  (dot_id uri) (String.escaped label) version_bgcolor version_fgcolor (String.escaped name) (Rdf_uri.string uri)
 ;;
 
 let gen_branch b wld uri =
   let name = Grdf_version.name wld uri in
   Printf.bprintf b
   "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"ellipse\", href=\"%s\"];\n"
-  (dot_id uri) (String.escaped name) branch_bgcolor branch_fgcolor uri
+  (dot_id uri) (String.escaped name) branch_bgcolor branch_fgcolor (Rdf_uri.string uri)
 ;;
 
 let gen_intf b wld uri =
@@ -51,7 +51,7 @@ let gen_intf b wld uri =
   in
   Printf.bprintf b
   "%s [ label=\"%s\", style=\"filled\", fillcolor=\"%s\", fontcolor=\"%s\", shape=\"octagon\", tooltip=\"%s\", href=\"%s\"];\n"
-  (dot_id uri) (String.escaped name) intf_bgcolor intf_fgcolor (String.escaped intf) uri
+  (dot_id uri) (String.escaped name) intf_bgcolor intf_fgcolor (String.escaped intf) (Rdf_uri.string uri)
 ;;
 
 let gen_hasbranch b wld ?(label=true) ?pred uri =
@@ -78,8 +78,8 @@ let gen_hasversion b wld ?(label=true) ?pred uri =
 
 let gen_hasintf b wld ?(label=true) ?pred uri =
   let set = Grdf_intf.intfs_of wld uri in
-  let set = match pred with None -> set | Some f -> Sset.filter f set in
-  Sset.iter
+  let set = match pred with None -> set | Some f -> Uriset.filter f set in
+  Uriset.iter
     (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
      (dot_id uri) (dot_id uri2)
      (if label then "label=\"hasIntf\"" else "")
@@ -97,7 +97,7 @@ let dot ?(edge_labels=true) wld =
   List.iter (gen_tool b wld) tools;
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
-  Sset.iter (gen_intf b wld) intfs;
+  Uriset.iter (gen_intf b wld) intfs;
 
   let label = edge_labels in
   List.iter (gen_hasbranch b ~label wld) (tools @ branches);
@@ -117,7 +117,7 @@ let dot_of_tool wld tool =
   gen_tool b wld tool;
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
-  Sset.iter (gen_intf b wld) intfs;
+  Uriset.iter (gen_intf b wld) intfs;
 
   let all = tool :: branches in
   let pred = fun uri -> List.mem uri all in
@@ -127,7 +127,7 @@ let dot_of_tool wld tool =
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasversion b wld ~label: false ~pred) all;
 
-  let all = all @ (Sset.elements intfs) in
+  let all = all @ (Uriset.elements intfs) in
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasintf b wld ~label: false ~pred) all;
 
@@ -141,10 +141,10 @@ let dot_of_branch wld uri =
   let versions = Grdf_version.versions_of wld ~recur: true uri in
   let branches = Grdf_branch.subs wld ~recur:true uri in
   let intfs = Grdf_intf.intfs_of_tool wld uri in
-  prerr_endline (Printf.sprintf "dot_of_branch: branch has %d interfaces" (Sset.cardinal intfs));
+  prerr_endline (Printf.sprintf "dot_of_branch: branch has %d interfaces" (Uriset.cardinal intfs));
   List.iter (gen_version b wld) versions;
   List.iter (gen_branch b wld) branches;
-  Sset.iter (gen_intf b wld) intfs;
+  Uriset.iter (gen_intf b wld) intfs;
 
   let pred = fun uri -> List.mem uri branches in
   List.iter (gen_hasbranch b wld ~label: false ~pred) branches;
@@ -153,7 +153,7 @@ let dot_of_branch wld uri =
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasversion b wld ~label: false ~pred) all;
 
-  let all = all @ (Sset.elements intfs) in
+  let all = all @ (Uriset.elements intfs) in
   let pred = fun uri -> List.mem uri all in
   List.iter (gen_hasintf b wld ~label: false ~pred) all;
 

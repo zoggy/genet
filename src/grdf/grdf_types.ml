@@ -28,10 +28,10 @@ let string_of_error = function
 | Version_exists name -> Printf.sprintf "Version %s already exists." name
 | Intf_exists name -> Printf.sprintf "Interface %s already exists." name
 | Filetype_exists name -> Printf.sprintf "Filetype %s already exists." name
-| Not_tool_or_branch uri -> Printf.sprintf "%s is neither a tool nor a branch." uri
-| Not_a_tool uri -> Printf.sprintf "%s is not a tool." uri
-| Not_a_version uri -> Printf.sprintf "%s is not a version." uri
+| Not_tool_or_branch uri -> Printf.sprintf "%s is neither a tool nor a branch." (Rdf_uri.string uri)
+| Not_a_tool uri -> Printf.sprintf "%s is not a tool." (Rdf_uri.string uri)
+| Not_a_version uri -> Printf.sprintf "%s is not a version." (Rdf_uri.string uri)
 | Tool_of_branch_differs (branch, branch_tool, tool) ->
     Printf.sprintf "The tool of branch %s is %s but %s was expected."
-    branch branch_tool tool
+    (Rdf_uri.string branch) (Rdf_uri.string branch_tool) (Rdf_uri.string tool)
 ;;

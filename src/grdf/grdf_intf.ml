@@ -7,9 +7,12 @@ let dbg = Misc.create_log_fun
     "GENET_GRDF_INTF_DEBUG_LEVEL"
 ;;
 
+let uriset_of_list = List.fold_left (fun set x -> Uriset.add x set) Uriset.empty ;;
+
 let intfs wld =
   dbg ~level: 1 (fun () -> "Grdf_intf.intfs");
-  Grdfs.subject_uris wld ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_intf)
+  let l = Grdfs.subject_uris wld ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_intf) in
+  uriset_of_list l
 ;;
 
 let name wld uri = Grdfs.name wld (Uri uri);;
@@ -57,8 +60,6 @@ let add wld ~parent name =
   ~obj:  (Uri uri);
   uri
 ;;
-
-let uriset_of_list = List.fold_left (fun set x -> Uriset.add x set) Uriset.empty ;;
 
 let explicit_intfs_of wld uri =
   uriset_of_list (Grdfs.object_uris wld ~sub: (Uri uri) ~pred: Grdfs.genet_hasintf)

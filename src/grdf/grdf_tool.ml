@@ -1,5 +1,6 @@
 (** *)
 
+open Rdf_node;;
 open Grdf_types;;
 open Rdf_sparql;;
 
@@ -10,60 +11,20 @@ let dbg = Misc.create_log_fun
 ;;
 
 let tools wld =
-  let query =
-    { select_proj = ["uri"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`V "uri",
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_tool ] ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
-    match uri with
-      None -> acc
-    | Some uri ->
-        match Rdf_node.get_uri uri with
-          None -> acc
-        | Some uri -> (Rdf_uri.as_string uri) :: acc
-  in
-  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
+  Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type
+    ~obj: (Uri Grdfs.genet_tool)
 ;;
 
-let name wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_tool.name uri="^uri);
-  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
-  Grdfs.name wld source
+let name wld uri = Grdfs.name wld (Uri uri)
 ;;
 
 let tool_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_tool.tool_exists uri="^uri);
-  let query =
-    { select_proj = ["name"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`I uri,
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_tool ] ;
-            `I Grdfs.genet_name, [ `V "name" ]
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-    match name with
-      None -> acc
-    | Some name ->
-        match Rdf_node.get_literal_value name with
-          None -> acc
-        | Some name -> name :: acc
-  in
-  match List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f []) with
-    name :: _ -> Some name
-  | [] -> None
+  dbg ~level: 1 (fun () -> "Grdf_tool.tool_exists uri="^(Rdf_uri.string uri));
+  if Grdfs.is_a_tool wld uri then
+    Some (name wld uri)
+  else
+    None
 ;;
 
 let add_tool wld name =
@@ -71,9 +32,8 @@ let add_tool wld name =
   match tool_exists wld uri with
     Some name2 -> Grdf_types.error (Grdf_types.Tool_exists name2)
   | None ->
-      let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
-      let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_tool in
-      Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
+      let sub = Uri uri in
+      Grdfs.add_type wld ~sub ~obj: (Uri Grdfs.genet_tool);
       Grdfs.add_name wld sub name;
       uri
 ;;

@@ -85,7 +85,7 @@ let uri_fchain prefix fullname id =
 ;;
 
 let is_uri_fchain_module prefix uri =
-  prerr_endline (Printf.sprintf "is_uri_fchain_module %s" uri);
+  prerr_endline (Printf.sprintf "is_uri_fchain_module %s" (Rdf_uri.string uri));
   match Grdfs.is_uri_fchain_module prefix uri with
     None -> None
   | Some slashes_modname ->
