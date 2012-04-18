@@ -38,12 +38,12 @@ let genet_filetype = genet_ "Filetype";;
 let genet_chain = genet_ "Chain";;
 
 let string_of_class = function
-  s when s = genet_tool -> "tool"
-| s when s = genet_branch -> "branch"
-| s when s = genet_intf -> "interface"
-| s when s = genet_version -> "version"
-| s when s = genet_filetype -> "filetype"
-| s when s = genet_chain -> "chain"
+  s when Rdf_uri.equal s genet_tool -> "tool"
+| s when Rdf_uri.equal s genet_branch -> "branch"
+| s when Rdf_uri.equal s genet_intf -> "interface"
+| s when Rdf_uri.equal s genet_version -> "version"
+| s when Rdf_uri.equal s genet_filetype -> "filetype"
+| s when Rdf_uri.equal s genet_chain -> "chain"
 | _ -> ""
 ;;
 
