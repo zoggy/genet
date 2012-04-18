@@ -58,14 +58,7 @@ OCAMLCFLAGS= -warn-error FSPUYZ -g -annot -thread -rectypes # -w Ae
 
 LESSC=lessc
 
-GTK_INCLUDES=@GTK_INCLUDES@
-LABLGLADECC=@LABLGLADECC@
-LABLGTK2_INCLUDES=@LABLGTK2_INCLUDES@
-LABLGTKEXTRAS_INCLUDES=@LABLGTKEXTRAS_INCLUDES@
-BOXES_INCLUDES=@BOXES_INCLUDES@
 MENHIR_INCLUDES=@MENHIR_INCLUDES@
-OCAMLRDF_INCLUDES=@OCAMLRDF_INCLUDES@
-XMLM_INCLUDES=@XMLM_INCLUDES@
 
 VERSION=@VERSION@
 
@@ -83,12 +76,6 @@ LIBDIR=$(DESTDIR)@libdir@
 BINDIR=$(DESTDIR)@BINDIR@
 MANDIR=$(DESTDIR)@mandir@
 SHAREDIR=$(DESTDIR)@SHAREDIR@
-TEMPLATESDIR=$(DESTDIR)@TEMPLATESDIR@
-PLUGINSDIR=$(DESTDIR)@PLUGINSDIR@
-PIXMAPSDIR=$(DESTDIR)@PIXMAPSDIR@
-GLADEDIR=$(DESTDIR)@GLADEDIR@
-DTDDIR=$(DESTDIR)@DTDDIR@
-LANGUAGESSPECSDIR=$(DESTDIR)@LANGUAGESSPECSDIR@
 
 GENET_PREFIX=genet
 GENET=$(GENET_PREFIX)
@@ -119,23 +106,23 @@ ROOT=@ROOT@
 	.html .tex .dvi .ps .pdf .png .dot
 
 %.cmi:%.mli
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmo:%.ml
 	if test -f `dirname $<`/`basename $< .ml`.mli && test ! -f `dirname $<`/`basename $< .ml`.cmi ; then \
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmi %.cmo:%.ml
 	if test -f `dirname $<`/`basename $< .ml`.mli && test ! -f `dirname $<`/`basename $< .ml`.cmi ; then \
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
-	$(OCAMLC) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c `dirname $<`/`basename $< .ml`.mli; fi
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.cmx %.o:%.ml
-	$(OCAMLOPT) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) $(OCAMLCFLAGS) $(OCAMLPP) $(COMPFLAGS) -c $<
 
 %.o: %.c
-	$(OCAMLOPT) $(OCAMLCFLAGS) $(COMPFLAGS) -c $< && $(MV) `basename $@` `dirname $@`
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) $(OCAMLCFLAGS) $(COMPFLAGS) -c $< && $(MV) `basename $@` `dirname $@`
 
 %.ml:%.mll
 	$(OCAMLLEX) $<

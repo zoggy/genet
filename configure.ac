@@ -106,12 +106,6 @@ fi
 INSTALLDIR=$prefix
 BINDIR=$bindir
 SHAREDIR=$datadir
-PIXMAPSDIR=$datadir/pixmaps
-TEMPLATESDIR=$datadir/templates
-PLUGINSDIR=$datadir/plugins
-GLADEDIR=$datadir/glade
-DTDDIR=$datadir/dtds
-LANGUAGESSPECSDIR=$datadir/language-specs
 
 ############################
 # Flags
@@ -119,9 +113,6 @@ LANGUAGESSPECSDIR=$datadir/language-specs
 COMPFLAGS=
 
 MENHIR="$MENHIR --table"
-MENHIR_INCLUDES=`$MENHIR --suggest-comp-flags`
-MENHIR_LINK_FLAGS=`$MENHIR --suggest-link-flags-opt`
-MENHIR_LINK_FLAGS_BYTE=`$MENHIR --suggest-link-flags-byte`
 ##########################
 # debugging
 ##########################
@@ -161,14 +152,11 @@ AC_SUBST(OCAMLMKTOP)
 AC_SUBST(OCAMLMKLIB)
 AC_SUBST(CAMMKTOP)
 AC_SUBST(OCAMLBIN)
-AC_SUBST(LABLGLADECC)
+AC_SUBST(OCAMLFIND)
 AC_SUBST(OCAMLDOC)
 AC_SUBST(OCAMLDOC_OPT)
 AC_SUBST(OCAMLDOC_PLUGINSDIR)
 AC_SUBST(MENHIR)
-AC_SUBST(MENHIR_INCLUDES)
-AC_SUBST(MENHIR_LINK_FLAGS)
-AC_SUBST(MENHIR_LINK_FLAGS_BYTE)
 AC_SUBST(HEVEA)
 AC_SUBST(HACHA)
 AC_SUBST(BIBTEX)
@@ -176,22 +164,7 @@ AC_SUBST(EXEC_PREFIX)
 AC_SUBST(INSTALLDIR)
 AC_SUBST(BINDIR)
 AC_SUBST(SHAREDIR)
-AC_SUBST(TEMPLATESDIR)
-AC_SUBST(PLUGINSDIR)
-AC_SUBST(PIXMAPSDIR)
-AC_SUBST(GLADEDIR)
-AC_SUBST(DTDDIR)
-AC_SUBST(LANGUAGESSPECSDIR)
 AC_SUBST(ROOT)
-
-AC_SUBST(GTK_INCLUDES)
-AC_SUBST(LABLGTK2_INCLUDES)
-AC_SUBST(LABLGTKEXTRAS_INCLUDES)
-AC_SUBST(BOXES_INCLUDES)
-AC_SUBST(LABLGTK2DIR)
-AC_SUBST(OCAMLRDF_INCLUDES)
-AC_SUBST(XMLM_INCLUDES)
-
 AC_SUBST(DEBUG_LEVEL)
 
 ACFILES="master.Makefile src/base/version.ml src/base/install.ml"
@@ -207,8 +180,6 @@ echo "
 
 Binaries will be installed in $bindir
 Libraries will be installed in $libdir
-Pixmaps will be installed in $PIXMAPSDIR
-Glade templates will be installed in $GLADEDIR
 
 Debug level is set to $DEBUG_LEVEL
 

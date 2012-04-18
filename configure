@@ -565,20 +565,7 @@ ac_unique_file="master.Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 DEBUG_LEVEL
-XMLM_INCLUDES
-OCAMLRDF_INCLUDES
-LABLGTK2DIR
-BOXES_INCLUDES
-LABLGTKEXTRAS_INCLUDES
-LABLGTK2_INCLUDES
-GTK_INCLUDES
 ROOT
-LANGUAGESSPECSDIR
-DTDDIR
-GLADEDIR
-PIXMAPSDIR
-PLUGINSDIR
-TEMPLATESDIR
 SHAREDIR
 BINDIR
 INSTALLDIR
@@ -586,14 +573,11 @@ EXEC_PREFIX
 BIBTEX
 HACHA
 HEVEA
-MENHIR_LINK_FLAGS_BYTE
-MENHIR_LINK_FLAGS
-MENHIR_INCLUDES
 MENHIR
 OCAMLDOC_PLUGINSDIR
 OCAMLDOC_OPT
 OCAMLDOC
-LABLGLADECC
+OCAMLFIND
 OCAMLBIN
 CAMMKTOP
 OCAMLMKLIB
@@ -1781,12 +1765,6 @@ fi
 INSTALLDIR=$prefix
 BINDIR=$bindir
 SHAREDIR=$datadir
-PIXMAPSDIR=$datadir/pixmaps
-TEMPLATESDIR=$datadir/templates
-PLUGINSDIR=$datadir/plugins
-GLADEDIR=$datadir/glade
-DTDDIR=$datadir/dtds
-LANGUAGESSPECSDIR=$datadir/language-specs
 
 ############################
 # Flags
@@ -1794,9 +1772,6 @@ LANGUAGESSPECSDIR=$datadir/language-specs
 COMPFLAGS=
 
 MENHIR="$MENHIR --table"
-MENHIR_INCLUDES=`$MENHIR --suggest-comp-flags`
-MENHIR_LINK_FLAGS=`$MENHIR --suggest-link-flags-opt`
-MENHIR_LINK_FLAGS_BYTE=`$MENHIR --suggest-link-flags-byte`
 ##########################
 # debugging
 ##########################
@@ -1824,24 +1799,6 @@ fi
 
 #############################
 # substitutions to perform
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3052,8 +3009,6 @@ echo "
 
 Binaries will be installed in $bindir
 Libraries will be installed in $libdir
-Pixmaps will be installed in $PIXMAPSDIR
-Glade templates will be installed in $GLADEDIR
 
 Debug level is set to $DEBUG_LEVEL
 

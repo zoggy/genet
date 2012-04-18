@@ -27,7 +27,7 @@
 
 (* $Id$ *)
 
-(*c==m=[OCaml_conf]=0.4=t==*)
+(*c==m=[OCaml_conf]=0.7=t==*)
 
 
   open Sys
@@ -762,6 +762,79 @@ let ocamlfind_query conf package =
       with
 	_ -> None
 
+let ocamlfind_query_version conf package =
+  match conf.ocamlfind with
+    "" -> None
+  | _ ->
+      try
+        match exec_and_get_first_line conf.ocamlfind
+          [| "query" ; "-format" ; "%v" ; package |]
+        with
+          "" -> None
+        | s -> Some s
+      with
+        _ -> None
+;;
+
+let check_ocamlfind_package ?min_version ?max_version ?(fail=true) ?not_found conf name =
+  !print (Printf.sprintf "checking for %s... " name);
+  let not_found =
+    match not_found with
+      None ->
+        begin
+        function
+          | `Package_not_installed pkg ->
+              let msg = Printf.sprintf "Package %s not found" pkg in
+              if fail then
+                !fatal_error msg
+              else
+                !print msg
+          | `Package_bad_version version ->
+              let msg =
+                (Printf.sprintf "Package %s found with version %s, but wanted %s%s%s"
+                 name version
+                 (match min_version with
+                    None -> ""
+                  | Some v -> Printf.sprintf ">= %s" (string_of_version v)
+                 )
+                 (match min_version, max_version with
+                    Some _, Some _ -> " and "
+                  | _ -> ""
+                 )
+                 (match max_version with
+                    None -> ""
+                  | Some v -> Printf.sprintf "<= %s" (string_of_version v)
+                 )
+                )
+              in
+              if fail then
+                !fatal_error msg
+              else
+                !print msg
+        end
+    | Some f -> f
+  in
+   match ocamlfind_query conf name with
+      None -> not_found (`Package_not_installed name); false
+    | Some s ->
+        match min_version, max_version with
+          None, None -> !print "ok\n"; true
+        | _ ->
+            match ocamlfind_query_version conf name with
+              None -> not_found (`Package_bad_version "<no version>"); false
+            | Some s ->
+                let version = version_of_string s in
+                let min = match min_version with None -> [] | Some v -> v in
+                let max = match max_version with None -> [max_int] | Some v -> v in
+                if version < min or version > max then
+                  (
+                   not_found (`Package_bad_version s);
+                   false
+                  )
+                else
+                  ( !print "ok\n" ; true )
+;;
+
 (** {2:substs Handling substitutions specification} *)
 
 let substs = Hashtbl.create 37
@@ -806,77 +879,7 @@ let add_conf_variables c =
    List.iter (fun (var,v) -> add_subst var v) l
 
 
-(*/c==m=[OCaml_conf]=0.4=t==*)
-
-(*c==v=[OCaml_conf.detect_lablgtk2]=0.3====*)
-let detect_lablgtk2 ?(modes=[`Byte;`Opt]) conf =
-  let includes =
-    ["default install",
-      [Filename.concat (ocaml_libdir conf) "lablgtk2"]]
-  in
-  let includes =
-    match ocamlfind_query conf "lablgtk2" with
-      None -> includes
-    | Some s -> ("with ocamlfind", [s]) :: includes
-  in
-  let libs = ["lablgtk.cma"] in
-  let f (mes, includes) mode =
-    let mes = Printf.sprintf "checking for Lablgtk2 (%s) %s... "
-	(string_of_mode mode) mes
-    in
-    can_link ~mes mode conf ~includes ~libs []
-  in
-  let rec iter = function
-      [] -> ([], [])
-    | incs :: q ->
-	let f = f incs in
-	if List.for_all f modes then
-	  (snd incs, libs)
-	else
-	  iter q
-  in
-  iter includes
-(*/c==v=[OCaml_conf.detect_lablgtk2]=0.3====*)
-
-let detect_lablgtkextras ?(modes=[`Byte;`Opt]) lablgtk_incs conf =
-  let includes =
-    ["default install",
-      (Filename.concat (ocaml_libdir conf) "lablgtk-extras") :: lablgtk_incs
-    ]
-  in
-  let includes =
-    match ocamlfind_query conf "lablgtkextras" with
-      None -> includes
-    | Some s ->
-	match ocamlfind_query conf "lablgtkextras" with
-	  None -> includes
-	| Some s2 -> ("with ocamlfind", [s2;s]) :: includes
-  in
-  let libs =
-    [ "unix.cma" ;
-      "lablgtk.cma" ;
-      "lablgtksourceview2.cma";
-      "config_file.cmo";
-      "xml-light.cma";
-      "lablgtkextras.cma"]
-  in
-  let f (mes, includes) mode =
-    let mes = Printf.sprintf "checking for Lablgtk-extras (%s) %s... "
-	(string_of_mode mode) mes
-    in
-    can_link ~mes mode conf ~includes ~libs []
-  in
-  let rec iter = function
-      [] -> ([], [])
-    | incs :: q ->
-	let f = f incs in
-	if List.for_all f modes then
-	  (snd incs, libs)
-	else
-	  iter q
-  in
-  iter includes
-;;
+(*/c==m=[OCaml_conf]=0.7=t==*)
 
 let detect_boxes ?(modes=[`Byte;`Opt]) lablgtk2_includes conf =
   let includes =
@@ -896,64 +899,6 @@ let detect_boxes ?(modes=[`Byte;`Opt]) lablgtk2_includes conf =
     can_link ~mes mode conf
       ~includes: (lablgtk2_includes @ includes)
       ~libs []
-  in
-  let rec iter = function
-      [] -> ([], [])
-    | incs :: q ->
-      let f = f incs in
-      if List.for_all f modes then
-        (snd incs, libs)
-      else
-        iter q
-  in
-  iter includes
-;;
-
-let detect_ocamlrdf ?(modes=[`Byte;`Opt]) conf =
-  let includes =
-    ["default install",
-      [Filename.concat (ocaml_libdir conf) "ocamlrdf"]]
-  in
-  let includes =
-    match ocamlfind_query conf "ocamlrdf" with
-      None -> includes
-    | Some s -> ("with ocamlfind", [s]) :: includes
-  in
-  let libs = ["unix.cma" ; "ocamlrdf.cma" ] in
-  let f (mes, includes) mode =
-    let mes = Printf.sprintf "checking for OCaml-RDF (%s) %s... "
-      (string_of_mode mode) mes
-    in
-    can_link ~mes mode conf ~includes ~libs []
-  in
-  let rec iter = function
-      [] -> ([], [])
-    | incs :: q ->
-      let f = f incs in
-      if List.for_all f modes then
-        (snd incs, libs)
-      else
-        iter q
-  in
-  iter includes
-;;
-
-let detect_xmlm ?(modes=[`Byte;`Opt]) conf =
-  let includes =
-    ["default install",
-      [Filename.concat (ocaml_libdir conf) "xmlm"]]
-  in
-  let includes =
-    match ocamlfind_query conf "xmlm" with
-      None -> includes
-    | Some s -> ("with ocamlfind", [s]) :: includes
-  in
-  let libs = ["xmlm.cma" ] in
-  let f (mes, includes) mode =
-    let mes = Printf.sprintf "checking for Xmlm (%s) %s... "
-      (string_of_mode mode) mes
-    in
-    can_link ~mes mode conf ~includes ~libs []
   in
   let rec iter = function
       [] -> ([], [])
@@ -994,54 +939,18 @@ let _ = add_subst "HACHA" hacha;;
 let bibtex = ocaml_prog "bibtex";;
 let _ = add_subst "BIBTEX" bibtex;;
 
-
-let lablgtk2_includes =
-  match detect_lablgtk2 ~modes conf with
-    [], [] -> !fatal_error "Could not link with LablGtk2"; []
-  | l, _ ->
-      let include_string = string_of_includes l in
-      add_subst "LABLGTK2_INCLUDES" include_string;
-      add_subst "LABLGTK2DIR" (List.hd l);
-      l
-;;
-let _ =
-  let (incs,b) =
-    match detect_lablgtkextras ~modes lablgtk2_includes conf with
-      [], [] -> !fatal_error "Could not link with LablGtk-extras"; assert false
-    | l, _ -> (string_of_includes l,true)
-  in
-  add_subst "LABLGTKEXTRAS_INCLUDES" incs
-
-let _ =
-  match detect_boxes ~modes lablgtk2_includes conf with
-    [], [] -> prerr_endline "Could not link with Boxes"
-  | l, _ ->
-      let include_string = string_of_includes l in
-      add_subst "BOXES_INCLUDES" include_string
-;;
-
-let _ =
-  match detect_ocamlrdf ~modes conf with
-    [], [] -> prerr_endline "Could not link with ocaml-rdf"
-  | l, _ ->
-      let include_string = string_of_includes l in
-      add_subst "OCAMLRDF_INCLUDES" include_string
-;;
-
-let _ =
-  match detect_xmlm ~modes conf with
-    [], [] -> prerr_endline "Could not link with xmlm"
-  | l, _ ->
-      let include_string = string_of_includes l in
-      add_subst "XMLM_INCLUDES" include_string
-;;
+let _ = check_ocamlfind_package conf "config-file";;
+let _ = check_ocamlfind_package conf "mysql";;
+let _ = check_ocamlfind_package conf "rdf.mysql";;
+let _ = check_ocamlfind_package conf "nethttpd";;
+let _ = check_ocamlfind_package conf "pcre";;
+let _ = check_ocamlfind_package conf "yojson";;
+let _ = check_ocamlfind_package conf "xtmpl";;
 
 
-let _ =
-  match exec_and_get_first_line "pkg-config" [| "--cflags-only-I" ; "gtk+-2.0" |] with
-    "" -> failwith "Could not get includes for gtk+-2.0"
-  | s ->
-      add_subst "GTK_INCLUDES" s
+(*
+let _ = check_ocamlfind_package conf "lalgtk2";;
+let _ = check_ocamlfind_package conf "lalgtk2-extras";;
 
 let _ =
   let lablgladecc =
@@ -1053,11 +962,8 @@ let _ =
 	exit 1
   in
   add_subst "LABLGLADECC" lablgladecc
+*)
 let _ = !print "\n###\n"
-
-let _ =
-  add_subst "OCAMLDOC_PLUGINSDIR"
-    (exec_and_get_first_line conf.ocamldoc [|"-customdir"|])
 
 let _ = add_conf_variables conf
 

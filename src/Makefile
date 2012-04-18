@@ -1,31 +1,21 @@
 include ../master.Makefile
 
+BASE_PACKAGES=unix,str,config-file,rdf.mysql,menhirLib
+NET_PACKAGES=equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix
+REST_PACKAGES=xtmpl,yojson
+
+ALL_PACKAGES=$(BASE_PACKAGES),$(NET_PACKAGES),$(REST_PACKAGES)
+OF_FLAGS=-package $(ALL_PACKAGES)
+
 SYSTEM_INCLUDES= \
-	-I +ocamldoc \
-	$(LABLGTK2_INCLUDES) \
-	$(LABLGTKEXTRAS_INCLUDES) \
-	$(MENHIR_INCLUDES) \
-	$(BOXES_INCLUDES) \
-	$(OCAMLRDF_INCLUDES) \
-	$(XMLM_INCLUDES) \
-	`ocamlfind query -i-format xtmpl` \
-	`ocamlfind query -i-format equeue` \
-	`ocamlfind query -i-format pcre` \
-	`ocamlfind query -i-format netcgi2` \
-	`ocamlfind query -i-format netsys` \
-	`ocamlfind query -i-format netstring` \
-	`ocamlfind query -i-format rpc` \
-	`ocamlfind query -i-format netplex` \
-	`ocamlfind query -i-format nethttpd` \
-	`ocamlfind query -i-format easy-format biniou yojson`
+	-I +ocamldoc
 
 MY_INCLUDES= \
 	-I base \
 	-I grdf \
 	-I chains \
 	-I rest \
-	-I driver \
-	-I ocsigen
+	-I driver
 
 INCLUDES= \
 	$(MY_INCLUDES) \
@@ -41,8 +31,8 @@ TOOLS=$(GENET) $(GENRDFS) $(GENET_QUERY) $(GENET_REST) $(GENET_CHAIN)
 TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE) \
 	$(GENET_REST_BYTE) $(GENET_CHAIN_BYTE)
 
-SYSTEM_LIBS=str.cmxa unix.cmxa $(MENHIR_LINK_FLAGS) config_file.cmx
-SYSTEM_LIBS_BYTE=str.cma unix.cma $(MENHIR_LINK_FLAGS_BYTE) config_file.cmo
+SYSTEM_LIBS=
+SYSTEM_LIBS_BYTE=
 
 LIBS=$(LIB_BASE) $(LIB_GRDF) $(LIB_CHN) $(LIB_REST)
 LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE)
@@ -50,28 +40,22 @@ LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE)
 LIBS_GUI=$(LIB_BASE_GUI) $(LIB_GRDF_GUI)
 LIBS_BYTE=$(LIB_BASE_GUI_BYTE) $(LIB_GRDF_GUI_BYTE)
 
-GTK_LIBS=lablgtk.cmxa lablglade.cmxa lablgnomecanvas.cmxa gmylist.cmx boxes.cmxa
-GTK_LIBS_BYTE=lablgtk.cma lablglade.cma lablgnomecanvas.cma gmylist.cmo boxes.cma
-
 RDF_LIBS=ocamlrdf.cmxa
 RDF_LIBS_BYTE=ocamlrdf.cma
 
-XTMPL_LIBS=xmlm.cmxa xtmpl.cmx
-XTMPL_LIBS_BYTE=xmlm.cma xtmpl.cmo
+#OCAMLNET_LIBS= \
+#	bigarray.cmxa pcre.cmxa \
+#	netsys_oothr_mt.cmxa netsys.cmxa equeue.cmxa \
+#	netstring.cmxa netcgi.cmxa rpc.cmxa \
+#	netplex.cmxa nethttpd.cmxa netsys_oothr_mt_init.cmx
+#OCAMLNET_LIBS_BYTE= \
+#	bigarray.cma pcre.cma \
+#	netsys_oothr_mt.cma netsys.cma equeue.cma \
+#	netstring.cma netcgi.cma rpc.cma \
+#	netplex.cma nethttpd.cma netsys_oothr_mt_init.cmo
 
-OCAMLNET_LIBS= \
-	bigarray.cmxa pcre.cmxa \
-	netsys_oothr_mt.cmxa netsys.cmxa equeue.cmxa \
-	netstring.cmxa netcgi.cmxa rpc.cmxa \
-	netplex.cmxa nethttpd.cmxa netsys_oothr_mt_init.cmx
-OCAMLNET_LIBS_BYTE= \
-	bigarray.cma pcre.cma \
-	netsys_oothr_mt.cma netsys.cma equeue.cma \
-	netstring.cma netcgi.cma rpc.cma \
-	netplex.cma nethttpd.cma netsys_oothr_mt_init.cmo
-
-JSON_LIBS= easy_format.cmx biniou.cmxa yojson.cmx
-JSON_LIBS_BYTE= easy_format.cmo biniou.cma yojson.cmo
+#JSON_LIBS= easy_format.cmx biniou.cmxa yojson.cmx
+#JSON_LIBS_BYTE= easy_format.cmo biniou.cma yojson.cmo
 
 # Compilation
 #############
@@ -249,82 +233,83 @@ tools: libs $(TOOLS)
 tools_byte: libs_byte $(TOOLS_BYTE)
 
 $(GENET): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(GENET_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	$^
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS)-o $@ \
+	$(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(GENET_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) $^
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ \
+	$(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
 $(GENRDFS): $(LIB_BASE)	$(LIB_GRDF) $(GENRDFS_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	$^
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENRDFS_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(GENRDFS_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) $^
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
 $(GENET_QUERY): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(GENET_QUERY_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	$^
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES) \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENET_QUERY_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(GENET_QUERY_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) $^
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
 $(GENET_REST): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(LIB_REST) $(GENET_REST_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	-thread threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES),$(REST_PACKAGES),$(NET_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENET_REST_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE) $(GENET_REST_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES),$(REST_PACKAGES),$(NET_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
 $(GENET_CHAIN): $(LIB_BASE)	$(LIB_GRDF) $(LIB_CHN) $(GENET_CHAIN_CMXFILES)
-	$(OCAMLOPT) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
-	$(RDF_LIBS)	-thread threads.cmxa $(XTMPL_LIBS) $(JSON_LIBS) $(OCAMLNET_LIBS) $^
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENET_CHAIN_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(GENET_CHAIN_CMOFILES)
-	$(OCAMLC) $(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
-	$(RDF_LIBS_BYTE) -thread threads.cma $(XTMPL_LIBS_BYTE) $(JSON_LIBS_BYTE) $(OCAMLNET_LIBS_BYTE) $^
-
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(BASE_CMXFILES)
 $(LIB_BASE_BYTE): $(BASE_CMIFILES) $(BASE_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(BASE_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(BASE_CMOFILES)
 
 $(LIB_BASE_GUI): $(BASE_GUI_CMIFILES) $(BASE_GUI_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(BASE_GUI_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(BASE_GUI_CMXFILES)
 $(LIB_BASE_GUI_BYTE): $(BASE_GUI_CMIFILES) $(BASE_GUI_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(BASE_GUI_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(BASE_GUI_CMOFILES)
 
 
 $(LIB_GRDF): $(GRDF_CMIFILES) $(GRDF_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(GRDF_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(GRDF_CMXFILES)
 $(LIB_GRDF_BYTE): $(GRDF_CMIFILES) $(GRDF_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(GRDF_CMOFILES)
 
 $(LIB_GRDF_GUI): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMXFILES)
 $(LIB_GRDF_GUI_BYTE): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
 
 $(LIB_CHN): $(CHN_CMIFILES) $(CHN_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(CHN_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(CHN_CMXFILES)
 $(LIB_CHN_BYTE): $(CHN_CMIFILES) $(CHN_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(CHN_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(CHN_CMOFILES)
 
 $(LIB_CHN_GUI): $(CHN_GUI_CMIFILES) $(CHN_GUI_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMXFILES)
 $(LIB_CHN_GUI_BYTE): $(CHN_GUI_CMIFILES) $(CHN_GUI_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(CHN_GUI_CMOFILES)
 
 
 $(LIB_REST): $(REST_CMIFILES) $(REST_CMXFILES)
-	$(OCAMLOPT) -a -o $@ $(LINKFLAGS) $(REST_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(REST_CMXFILES)
 $(LIB_REST_BYTE): $(REST_CMIFILES) $(REST_CMOFILES)
-	$(OCAMLC) -a -o $@ $(LINKFLAGS) $(REST_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(REST_CMOFILES)
 
 KO='\033[1;31m'"*KO\033[1m\033[0m"
 OK='\033[1;32m'"OK\033[1m\033[0m"
@@ -337,21 +322,22 @@ dump.odoc: base/*.ml base/*.mli \
 	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
 	driver/*.ml driver/*.mli
-	$(OCAMLDOCOPT) \
+	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
 	-v \
 	-m A \
-	$(INCLUDES) -keep-code $(COMPFLAGS) -rectypes -sort -dump $@ \
+	-keep-code $(COMPFLAGS) -rectypes -sort -dump $@ \
 	`ls $^ | grep  -v -e "_parser.ml$$" `
 
 doc: all dump.odoc
 	$(MKDIR) ocamldoc
 	$(CP) ../doc/ocamldoc_style.css ocamldoc/style.css
-	$(OCAMLDOCOPT) $(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
+	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
+	$(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
 	-t "Genet library reference" -html \
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc
-	$(OCAMLDOCOPT) -dot -load dump.odoc -o syndex.dot
+	$(OCAMLFIND) ocamldoc -dot -load dump.odoc -o syndex.dot
 	dot -Tpng -o syndex.png syndex.dot
 
 
@@ -434,41 +420,6 @@ chains/chn_parser.ml chains/chn_parser.mli: chains/chn_parser.mly
 
 chains/chn_lexer.ml chains/chn_lexer.mli: chains/chn_lexer.mll
 	$(OCAMLLEX) $<
-	$(OCAMLC) -rectypes $(INCLUDES) -i chains/chn_lexer.ml > chains/chn_lexer.mli
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i chains/chn_lexer.ml > chains/chn_lexer.mli
 
 
-
-base/tokens.ml base/tokens.mli: base/tokens.mly
-	$(MENHIR) $<
-
-
-arch/arch_lang_parser.ml arch/arch_lang_parser.mli: base/tokens.mly arch/arch_lang_parser.mly
-	$(MENHIR) --base arch/arch_lang_parser --external-tokens Tokens $^
-
-adeq/adeq_durations_parser.ml adeq/adeq_durations_parser.mli: base/tokens.mly algo/algo_lang_parser.mly adeq/adeq_durations_parser.mly
-	$(MENHIR) --base adeq/adeq_durations_parser --external-tokens Tokens $^
-
-adeq/adeq_constraints_parser.ml adeq/adeq_constraints_parser.mli: base/tokens.mly adeq/adeq_constraints_parser.mly
-	$(MENHIR) --base adeq/adeq_constraints_parser --external-tokens Tokens $^
-
-driver/app_parser.ml driver/app_parser.mli: \
-	base/tokens.mly \
-	algo/algo_lang_parser.mly \
-	arch/arch_lang_parser.mly \
-	adeq/adeq_durations_parser.mly \
-	adeq/adeq_constraints_parser.mly \
-	driver/app_parser.mly
-	$(MENHIR) --base driver/app_parser --external-tokens Tokens $^
-
-driver/test_parser.ml driver/test_parser.mli: \
-	base/tokens.mly \
-	algo/algo_lang_parser.mly \
-	arch/arch_lang_parser.mly \
-	adeq/adeq_durations_parser.mly \
-	adeq/adeq_constraints_parser.mly \
-	driver/test_parser.mly
-	$(MENHIR) --base driver/test_parser --external-tokens Tokens $^
-
-sdxparser/sdx_parser.cmo sdxparser/sdx_parser.cmx: sdxparser/sdx_parser.cmi
-sdxparser/sdx_parser.ml sdxparser/sdx_parser.mli: sdxparser/sdx_parser.mly
-	$(MENHIR) $^

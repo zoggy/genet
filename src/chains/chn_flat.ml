@@ -212,6 +212,7 @@ let flatten ctx fullname =
     x
   with
     e ->
+      prerr_endline "flatten: ERROR!";
       let s =
         Misc.string_of_opt
           (Rdf_model.to_string ctx.ctx_rdf.wld_model

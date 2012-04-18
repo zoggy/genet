@@ -168,7 +168,7 @@ let compute_intfs_of wld uri =
       prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";
       (* FIXME: when librdf_new_node_from_node will make a deep copy,
         remove the following line and use the previously defined node *)
-      let node = Rdf_node.new_from_uri_string wld.wld_world uri in
+      (*let node = Rdf_node.new_from_uri_string wld.wld_world uri in*)
       let parent =
         if Grdfs.is_a_version wld node then
           (

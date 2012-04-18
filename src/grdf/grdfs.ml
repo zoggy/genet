@@ -392,7 +392,7 @@ let target_uris wld source pred =
     in
     Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
   in
-  Gc.major();
+  (* FIXME: test if Gc.major(); is needed here. *)
   l
 ;;
 
