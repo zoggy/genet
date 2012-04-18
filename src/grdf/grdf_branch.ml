@@ -1,5 +1,6 @@
 (** *)
 
+open Rdf_node;;
 open Grdf_types;;
 open Rdf_sparql;;
 
@@ -8,83 +9,49 @@ let dbg = Misc.create_log_fun
     "GENET_GRDF_BRANCH_DEBUG_LEVEL"
 ;;
 
-type t = { bch_name : string ; bch_uri : string ; }
+type t = { bch_name : string ; bch_uri : uri ; }
 
 let branches wld =
   dbg ~level: 1 (fun () -> "Grdf_branch.branches");
-  let query =
-    { select_proj = ["name" ; "uri"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`V "uri",
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_branch ] ;
-            `I Grdfs.genet_name, [ `V "name" ]
-          ]
-         )
-       ], None)
-    }
+  let uris = Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type
+    ~obj: (Uri Grdfs.genet_branch)
   in
-  let f acc qr =
-    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-    let uri = Rdf_query_results.get_binding_value_by_name qr "uri" in
-    match name, uri with
-      None, _ | _, None -> acc
-    | Some name, Some uri ->
-        match Rdf_node.get_literal_value name, Rdf_node.get_uri uri with
-          None, _ | _, None -> acc
-        | Some name, Some uri ->
-            { bch_name = name ; bch_uri = Rdf_uri.as_string uri} :: acc
+  let f acc uri =
+    let name = Grdfs.name wld (Uri uri) in
+    { bch_name = name ; bch_uri = uri} :: acc
   in
-  List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f [])
+  List.fold_left f [] uris
 ;;
 
-let name wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.name uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-  Grdfs.name wld source
-;;
+let name wld uri = Grdfs.name wld (Uri uri);;
 
 let parent wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.parent uri="^uri);
-  let target = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch in
-  let iterator = Rdf_model.get_sources wld.wld_model ~target ~arc in
-  if Rdf_iterator.is_at_end iterator then
-    None
-  else
-    match Rdf_iterator.get_object iterator Rdf_node.copy_node with
-      None -> None
-    | Some node ->
-        match Rdf_node.get_uri node with
-          None -> None
-        | Some uri ->
-            let s_uri = Rdf_uri.as_string uri in
-            Some (s_uri, Grdfs.is_a_tool wld node)
+  dbg ~level: 1 (fun () -> "Grdf_branch.parent uri="^(Rdf_uri.string uri));
+  let obj = Uri uri in
+  let pred = Grdfs.genet_hasbranch in
+  match Grdfs.subject_uri wld ~pred ~obj with
+    None -> None
+  | Some parent ->
+    Some (parent, Grdfs.is_a_tool wld parent)
 ;;
 
 let subs_aux wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.subs uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let arc = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch in
-  let iterator = Rdf_model.get_targets wld.wld_model ~source ~arc in
-  let f acc node =
-    match Rdf_node.get_uri node with
-      None -> acc
-    | Some uri -> (Rdf_uri.as_string uri) :: acc
-  in
-  Rdf_iterator.fold_objects iterator Rdf_node.copy_node f
+  dbg ~level: 1 (fun () -> "Grdf_branch.subs uri="^(Rdf_uri.string uri));
+  Grdfs.object_uris wld
+    ~sub: (Uri uri) ~pred: Grdfs.genet_hasbranch
 ;;
 
 let subs wld ?(recur=false) uri =
   if recur then
     begin
-      let add set uri = Sset.add uri set in
+      let add set uri = Uriset.add uri set in
       let rec f acc uri =
         let l = subs_aux wld uri in
         let acc = List.fold_left add acc l in
         List.fold_left f acc l
       in
-      Sset.elements (f Sset.empty uri)
+      Uriset.elements (f Uriset.empty uri)
     end
   else
     subs_aux wld uri
@@ -92,46 +59,25 @@ let subs wld ?(recur=false) uri =
 
 
 let branch_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.branch_exists uri="^uri);
-  let query =
-    { select_proj = ["name"] ;
-      select_distinct = None ;
-      select_where = (
-       [ (`I uri,
-          [ `I Grdfs.rdf_type, [ `I Grdfs.genet_branch ] ;
-            `I Grdfs.genet_name, [ `V "name" ]
-          ]
-         )
-       ], None)
-    }
-  in
-  let f acc qr =
-    let name = Rdf_query_results.get_binding_value_by_name qr "name" in
-    match name with
-      None -> acc
-    | Some name ->
-        match Rdf_node.get_literal_value name with
-          None -> acc
-        | Some name -> name :: acc
-  in
-  match List.rev (Rdf_sparql.select_and_fold wld.wld_world wld.wld_model query f []) with
-    name :: _ -> Some name
-  | [] -> None
+  dbg ~level: 1 (fun () -> "Grdf_branch.branch_exists uri="^(Rdf_uri.string uri));
+  if Grdfs.is_a_branch wld uri then
+    Some (Grdfs.name wld (Uri uri))
+  else
+    None
 ;;
 
 let do_add wld uri name =
-  dbg ~level: 1 (fun () -> "Grdf_branch.do_add uri="^uri^" name="^name);
-  let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_branch in
-  Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
+  dbg ~level: 1 (fun () -> "Grdf_branch.do_add uri="^(Rdf_uri.string uri)^" name="^name);
+  let sub = Uri uri in
+  let obj = Uri Grdfs.genet_branch in
+  Grdfs.add_type wld ~sub ~obj;
   Grdfs.add_name wld sub name
 ;;
 
 let add wld ~parent name =
-  dbg ~level: 1 (fun () -> "Grdf_branch.add parent="^parent^" name="^name);
-  let node_parent = Rdf_node.new_from_uri_string wld.wld_world parent in
-  let parent_is_tool = Grdfs.is_a_tool wld node_parent in
-  let parent_is_branch = Grdfs.is_a_branch wld node_parent in
+  dbg ~level: 1 (fun () -> "Grdf_branch.add parent="^(Rdf_uri.string parent)^" name="^name);
+  let parent_is_tool = Grdfs.is_a_tool wld parent in
+  let parent_is_branch = Grdfs.is_a_branch wld parent in
   if not (parent_is_tool || parent_is_branch) then
     Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
@@ -146,16 +92,16 @@ let add wld ~parent name =
     Some name -> Grdf_types.error (Grdf_types.Branch_exists name)
   | None ->
       do_add wld uri name;
-      Grdfs.add_stmt wld.wld_world wld.wld_model
-      ~sub: node_parent
-      ~pred: (Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasbranch)
-      ~obj:  (Rdf_node.new_from_uri_string wld.wld_world uri);
+      Grdfs.add_triple wld
+      ~sub: (Uri parent)
+      ~pred: (Uri Grdfs.genet_hasbranch)
+      ~obj:  (Uri uri);
       uri
 ;;
 
 let rec tool wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_branch.tool uri="^uri);
-  if Grdfs.is_a_tool wld (Rdf_node.new_from_uri_string wld.wld_world uri)
+  dbg ~level: 1 (fun () -> "Grdf_branch.tool uri="^(Rdf_uri.string uri));
+  if Grdfs.is_a_tool wld uri
   then uri
   else
     match parent wld uri with

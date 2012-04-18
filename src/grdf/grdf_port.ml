@@ -13,7 +13,7 @@ let port_name wld port = Grdfs.name_of_uri_string wld port;;
 let port_rank = Grdfs.port_rank ;;
 
 let port_type wld port =
-  let node = Rdf_node.new_from_uri_string wld.wld_world port in
+  let node = Rdf_types.node_of_uri_string wld.wld_world port in
   match Grdfs.target_uri wld node Grdfs.genet_hasfiletype with
     Some uri -> One uri
   | None ->
@@ -24,7 +24,7 @@ let port_type wld port =
 
 let ports wld intf dir =
   let pred = pred_of_dir dir in
-  let intf = Rdf_node.new_from_uri_string wld.wld_world intf in
+  let intf = Rdf_types.node_of_uri_string wld.wld_world intf in
   Grdfs.target_uris wld intf pred
 ;;
 
@@ -59,9 +59,9 @@ let set_port_type wld port typ =
   let world = wld.wld_world in
   let model = wld.wld_model in
   Grdfs.add_stmt world model
-     ~sub: (Rdf_node.new_from_uri_string world port)
-     ~pred: (Rdf_node.new_from_uri_string world pred)
-     ~obj: (Rdf_node.new_from_uri_string world ftype_uri)
+     ~sub: (Rdf_types.node_of_uri_string world port)
+     ~pred: (Rdf_types.node_of_uri_string world pred)
+     ~obj: (Rdf_types.node_of_uri_string world ftype_uri)
 ;;
 
 let uri_intf_port_of_dir = function
@@ -73,9 +73,9 @@ let insert_port wld intf dir (n, typ, name) =
   let pred = pred_of_dir dir in
   let world = wld.wld_world in
   let uri = (uri_intf_port_of_dir dir) intf n in
-  let sub = Rdf_node.new_from_uri_string world intf in
-  let pred = Rdf_node.new_from_uri_string world pred in
-  let obj = Rdf_node.new_from_uri_string world uri in
+  let sub = Rdf_types.node_of_uri_string world intf in
+  let pred = Rdf_types.node_of_uri_string world pred in
+  let obj = Rdf_types.node_of_uri_string world uri in
   Grdfs.add_stmt world wld.wld_model ~sub ~pred ~obj;
   set_port_type wld uri typ;
   match name with None -> () | Some name -> Grdfs.add_name wld sub name

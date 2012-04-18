@@ -35,19 +35,19 @@ let filetypes wld =
 
 let name wld uri =
   dbg ~level: 1 (fun () -> "Grdf_ftype.name uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.name wld source
 ;;
 
 let desc wld uri =
   dbg ~level: 1 (fun () -> "Grdf_ftype.desc uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.desc wld source
 ;;
 
 let extension wld uri =
   dbg ~level: 1 (fun () -> "Grdf_ftype.extension uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Misc.string_of_opt (Grdfs.target_literal wld source Grdfs.genet_file_ext)
 ;;
 
@@ -81,13 +81,13 @@ let filetype_exists wld uri =
 
 let do_add wld uri ~name ~desc ~extension =
   dbg ~level: 1 (fun () -> "Grdf_ftype.do_add uri="^uri^" name="^name);
-  let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_filetype in
+  let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
+  let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_filetype in
   Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
   Grdfs.add_name wld sub name;
   Grdfs.add_desc wld sub desc;
-  let pred = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_file_ext in
-  let obj = Rdf_node.new_from_literal wld.wld_world extension in
+  let pred = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_file_ext in
+  let obj = Rdf_types.node_of_literal_string wld.wld_world extension in
   Grdfs.add_stmt wld.wld_world wld.wld_model ~sub ~pred ~obj
 ;;
 

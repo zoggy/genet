@@ -34,7 +34,7 @@ let tools wld =
 
 let name wld uri =
   dbg ~level: 1 (fun () -> "Grdf_tool.name uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.name wld source
 ;;
 
@@ -71,8 +71,8 @@ let add_tool wld name =
   match tool_exists wld uri with
     Some name2 -> Grdf_types.error (Grdf_types.Tool_exists name2)
   | None ->
-      let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
-      let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_tool in
+      let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
+      let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_tool in
       Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
       Grdfs.add_name wld sub name;
       uri

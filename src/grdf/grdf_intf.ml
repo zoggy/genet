@@ -33,12 +33,12 @@ let intfs wld =
 
 let name wld uri =
   dbg ~level: 1 (fun () -> "Grdf_intf.name uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.name wld source
 ;;
 
 let command_path wld uri =
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   let pred = Grdfs.genet_haspath in
   Grdfs.target_literal wld source pred
 ;;
@@ -73,22 +73,22 @@ let intf_exists wld uri =
 
 let do_add wld uri name =
   dbg ~level: 1 (fun () -> "Grdf_intf.do_add uri="^uri^" name="^name);
-  let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_intf in
+  let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
+  let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_intf in
   Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
   Grdfs.add_name wld sub name
 ;;
 
 let add wld ~parent name =
   dbg ~level: 1 (fun () -> "Grdf_intf.add parent="^parent^" name="^name);
-  let node_parent = Rdf_node.new_from_uri_string wld.wld_world parent in
+  let node_parent = Rdf_types.node_of_uri_string wld.wld_world parent in
   let parent_is_tool = Grdfs.is_a_tool wld node_parent in
   let parent_is_branch = Grdfs.is_a_branch wld node_parent in
   if not (parent_is_tool || parent_is_branch) then
     Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
   let tool = Grdf_branch.tool wld parent in
-  let node_tool = Rdf_node.new_from_uri_string wld.wld_world tool in
+  let node_tool = Rdf_types.node_of_uri_string wld.wld_world tool in
   if not (Grdfs.is_a_tool wld node_tool) then
     Grdf_types.error (Grdf_types.Not_a_tool tool);
   let uri = Grdfs.uri_intf ~tool ~intf: name in
@@ -100,20 +100,20 @@ let add wld ~parent name =
   end;
   Grdfs.add_stmt wld.wld_world wld.wld_model
   ~sub: node_parent
-  ~pred: (Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasintf)
-  ~obj:  (Rdf_node.new_from_uri_string wld.wld_world uri);
+  ~pred: (Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_hasintf)
+  ~obj:  (Rdf_types.node_of_uri_string wld.wld_world uri);
   uri
 ;;
 
 let sset_of_list = List.fold_left (fun set x -> Sset.add x set) Sset.empty ;;
 
 let explicit_intfs_of wld uri =
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   sset_of_list (Grdfs.target_uris wld source Grdfs.genet_hasintf)
 ;;
 
 let explicit_no_intfs_of wld uri =
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   sset_of_list (Grdfs.target_uris wld source Grdfs.genet_nointf)
 ;;
 
@@ -151,7 +151,7 @@ let compute_intfs_of wld uri =
       let explicit_no = explicit_no_intfs_of wld uri in
       Sset.union (Sset.diff set explicit_no) explicit
   in
-  let node = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let node = Rdf_types.node_of_uri_string wld.wld_world uri in
   prerr_endline ("Grdf_intf.compute_intfs_of: node ok, uri="^uri);
   if Grdfs.is_a_tool wld node then
     (* show all interfaces *)
@@ -168,7 +168,7 @@ let compute_intfs_of wld uri =
       prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";
       (* FIXME: when librdf_new_node_from_node will make a deep copy,
         remove the following line and use the previously defined node *)
-      (*let node = Rdf_node.new_from_uri_string wld.wld_world uri in*)
+      (*let node = Rdf_types.node_of_uri_string wld.wld_world uri in*)
       let parent =
         if Grdfs.is_a_version wld node then
           (
@@ -190,13 +190,13 @@ let compute_intfs_of wld uri =
 
 let implementors wld uri =
   let world = wld.wld_world in
-  let obj = Rdf_node.new_from_uri_string world uri in
+  let obj = Rdf_types.node_of_uri_string world uri in
   Grdfs.source_uris wld Grdfs.genet_hasintf obj
 ;;
 
 let not_implementors wld uri =
   let world = wld.wld_world in
-  let obj = Rdf_node.new_from_uri_string world uri in
+  let obj = Rdf_types.node_of_uri_string world uri in
   Grdfs.source_uris wld Grdfs.genet_nointf obj
 ;;
 

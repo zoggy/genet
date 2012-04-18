@@ -35,13 +35,13 @@ let versions wld =
 
 let name wld uri =
   dbg ~level: 1 (fun () -> "Grdf_version.name uri="^uri);
-  let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let source = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.name wld source
 ;;
 
 let parent wld uri =
   dbg ~level: 1 (fun () -> "Grdf_version.parent uri="^uri);
-  let target = Rdf_node.new_from_uri_string wld.wld_world uri in
+  let target = Rdf_types.node_of_uri_string wld.wld_world uri in
   Grdfs.source_uri wld Grdfs.genet_hasversion target
 ;;
 
@@ -75,16 +75,16 @@ let version_exists wld uri =
 
 let do_add wld uri name =
   dbg ~level: 1 (fun () -> "Grdf_version.do_add uri="^uri^" name="^name);
-  let sub = Rdf_node.new_from_uri_string wld.wld_world uri in
-  let cl = Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_version in
+  let sub = Rdf_types.node_of_uri_string wld.wld_world uri in
+  let cl = Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_version in
   Grdfs.add_type wld.wld_world wld.wld_model ~sub ~obj: cl;
   Grdfs.add_name wld sub name
 ;;
 
 let add wld ~tool ?(parent=tool) name =
   dbg ~level: 1 (fun () -> "Grdf_version.add parent="^parent^" name="^name);
-  let node_tool = Rdf_node.new_from_uri_string wld.wld_world tool in
-  let node_parent = Rdf_node.new_from_uri_string wld.wld_world parent in
+  let node_tool = Rdf_types.node_of_uri_string wld.wld_world tool in
+  let node_parent = Rdf_types.node_of_uri_string wld.wld_world parent in
 
   let tool_is_tool = Grdfs.is_a_tool wld node_tool in
   let parent_is_tool = Grdfs.is_a_tool wld node_parent in
@@ -108,8 +108,8 @@ let add wld ~tool ?(parent=tool) name =
       do_add wld uri name;
       Grdfs.add_stmt wld.wld_world wld.wld_model
       ~sub: node_parent
-      ~pred: (Rdf_node.new_from_uri_string wld.wld_world Grdfs.genet_hasversion)
-      ~obj:  (Rdf_node.new_from_uri_string wld.wld_world uri);
+      ~pred: (Rdf_types.node_of_uri_string wld.wld_world Grdfs.genet_hasversion)
+      ~obj:  (Rdf_types.node_of_uri_string wld.wld_world uri);
       uri
 ;;
 
@@ -119,7 +119,7 @@ let versions_of wld ?(recur=false) uri =
     begin
       let add set uri = Sset.add uri set in
       let rec iter set uri =
-        let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+        let source = Rdf_types.node_of_uri_string wld.wld_world uri in
         let versions = Grdfs.target_uris wld source Grdfs.genet_hasversion in
         let set = List.fold_left add set versions in
         let subs = Grdf_branch.subs wld uri in
@@ -130,7 +130,7 @@ let versions_of wld ?(recur=false) uri =
     end
   else
     (
-     let source = Rdf_node.new_from_uri_string wld.wld_world uri in
+     let source = Rdf_types.node_of_uri_string wld.wld_world uri in
      Grdfs.target_uris wld source Grdfs.genet_hasversion
     )
 ;;

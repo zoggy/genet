@@ -10,9 +10,9 @@ let fchain_exists ctx orig_fullname uri_fchain =
     (Chn_types.string_of_chain_basename (Chn_types.chain_basename orig_fullname))
   in
   let world = ctx.ctx_rdf.wld_world in
-  let sub = Rdf_node.new_from_uri_string world uri_chain in
-  let pred = Rdf_node.new_from_uri_string world Grdfs.genet_flattenedto in
-  let obj = Rdf_node.new_from_uri_string world uri_fchain in
+  let sub = Rdf_types.node_of_uri_string world uri_chain in
+  let pred = Rdf_types.node_of_uri_string world Grdfs.genet_flattenedto in
+  let obj = Rdf_types.node_of_uri_string world uri_fchain in
   let stmt = Rdf_statement.new_from_nodes world ~sub ~pred ~obj in
   Rdf_model.contains_statement ctx.ctx_rdf.wld_model stmt
 ;;

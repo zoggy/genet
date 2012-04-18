@@ -105,7 +105,7 @@ let rec thing_of_path ctx path =
   let static_files = allowed_files ctx.ctx_cfg in
   prerr_endline "allowed files:";
   List.iter (fun (f,_) -> prerr_endline f) static_files;
-  let sub = Rdf_node.new_from_uri_string wld.Grdf_types.wld_world uri in
+  let sub = Rdf_types.node_of_uri_string wld.Grdf_types.wld_world uri in
   match Grdfs.class_of wld sub with
   | None when uri = Grdfs.uri_tools ctx.ctx_rdf.Grdf_types.wld_prefix -> Tools
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes

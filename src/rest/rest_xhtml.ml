@@ -210,7 +210,7 @@ let xhtml_navpath_of_intf ctx uri =
 ;;
 
 let xhtml_navpath_of_intfs ctx uri =
-  let node = Rdf_node.new_from_uri_string ctx.ctx_rdf.Grdf_types.wld_world uri in
+  let node = Rdf_types.node_of_uri_string ctx.ctx_rdf.Grdf_types.wld_world uri in
   if Grdfs.is_a_version ctx.ctx_rdf node then
     xhtml_navpath_of_version ctx ~inc_uri: true uri
   else

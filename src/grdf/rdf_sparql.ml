@@ -230,16 +230,15 @@ let string_of_query = function
 let exec world model query =
   let query = string_of_query query in
   (*prerr_endline (Printf.sprintf "exec query=%s" query);*)
-  try
-    Rdf_query.new_query ~name: "sparql" world ~query
-  with
-    Rdf_query_results.Query_results_creation_failed _ ->
-      failwith ("Query failed: "^query)
+  (*Rdf_query.new_query ~name: "sparql" world ~query*)
+  failwith ("Query not implemented: "^query)
 ;;
 
 let select_and_fold world model query f acc =
   let query = string_of_select query in
   (*prerr_endline query;*)
+  failwith ("query not implemented: "^query)
+  (*
   let q = Rdf_query.new_query ~name: "sparql" world ~query in
   try
     let qr = Rdf_model.query_execute model q in
@@ -258,12 +257,13 @@ let select_and_fold world model query f acc =
     iter acc
   with
     Rdf_query_results.Query_results_creation_failed _ ->
-      failwith ("Query failed: "^query)
+      failwith ("Query failed: "^query)*)
 ;;
 
 let exec_construct world model query =
   let query = string_of_construct query in
-  let q = Rdf_query.new_query ~name: "sparql" world ~query in
+  failwith ("query not implemented: "^query)
+  (*let q = Rdf_query.new_query ~name: "sparql" world ~query in
   try
     let qr = Rdf_model.query_execute model q in
     if Rdf_query_results.is_graph qr then
@@ -273,4 +273,5 @@ let exec_construct world model query =
   with
     Rdf_query_results.Query_results_creation_failed _ ->
       failwith ("Query failed: "^query)
+      *)
 ;;
