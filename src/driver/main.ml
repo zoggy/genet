@@ -8,7 +8,7 @@ let add_tool config wld options =
   | [name] ->
       begin
         let uri = Grdf_tool.add_tool wld name in
-        print_endline uri
+        print_endline (Rdf_uri.string uri)
       end
   | _ -> failwith "Please give one tool name"
 ;;
@@ -16,27 +16,31 @@ let add_tool config wld options =
 let add_branch config wld options =
   match options.args with
   | [parent ; name] ->
-      let uri = Grdf_branch.add wld parent name in
-      print_endline uri
+      let uri = Grdf_branch.add wld (Rdf_uri.uri parent) name in
+      print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give parent uri and name of the new branch"
 ;;
 
 let add_version config wld options =
   match options.args with
   | [tool ; name] ->
+      let tool = Rdf_uri.uri tool in
       let uri = Grdf_version.add wld ~tool name in
-      print_endline uri
+      print_endline (Rdf_uri.string uri)
   | [tool ; parent ; name] ->
+      let tool = Rdf_uri.uri tool in
+      let parent = Rdf_uri.uri parent in
       let uri = Grdf_version.add wld ~tool ~parent name in
-      print_endline uri
+      print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give tool uri, optional branch uri and name of the new version"
 ;;
 
 let add_intf config wld options =
   match options.args with
   | [parent ; name] ->
+      let parent = Rdf_uri.uri parent in
       let uri = Grdf_intf.add wld ~parent name in
-      print_endline uri
+      print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give tool or branch uri and name of the new interface"
 ;;
 
@@ -55,7 +59,7 @@ let add_filetype config wld options =
         | _ -> extension
       in
       let uri = Grdf_ftype.add wld ~name ~desc ~extension in
-      print_endline uri
+      print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give the name, file extension and description of the new filetype"
 ;;
 
@@ -214,12 +218,13 @@ let main () =
   | Some mode ->
       let config = Config.read_config opts.Options.config_file in
       (*prerr_endline (Config.string_of_config config);*)
-      let rdf_wld = Grdf_init.open_storage config in
+      let rdf_wld = Grdf_init.open_graph config in
       begin
         try
           match mode with
-          | Init_db -> Grdf_init.init rdf_wld
-          | Serialize_rdf ->
+          | Init_db -> ()
+          | Serialize_rdf -> failwith "Serialization not implemented"
+(*
               begin
                 match Rdf_model.to_string rdf_wld.Grdf_types.wld_model
                   ~name: opts.Options.rdf_output_format
@@ -227,6 +232,7 @@ let main () =
                   None -> failwith "Failed to serialize model"
                 | Some string -> print_string string
               end
+*)
           | Add_tool -> add_tool config rdf_wld opts
           | Add_branch -> add_branch config rdf_wld opts
           | Add_version -> add_version config rdf_wld opts
@@ -237,8 +243,7 @@ let main () =
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);
             exit 1
-      end;
-      Grdf_init.close rdf_wld
+      end
 ;;
 
 let () = Misc.safe_main main;;

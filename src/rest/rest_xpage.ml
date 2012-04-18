@@ -138,7 +138,7 @@ let fun_if env args subs =
   | false, [_] -> []
 ;;
 
-let fun_site_url config _ _ _ = [ Xtmpl.D config.Config.rest_api ];;
+let fun_site_url config _ _ _ = [ Xtmpl.D (Rdf_uri.string config.Config.rest_api) ];;
 let fun_site_title config _ _ _ = [ Xtmpl.D config.Config.project_name ];;
 
 let tmpl_dir config =
@@ -188,7 +188,7 @@ class xhtml_ast_printer prefix =
       let link ftype =
         let href = Grdfs.uri_filetype ~prefix ftype in
         Xtmpl.string_of_xml
-        (Xtmpl.T ("a", ["href", href], [Xtmpl.D ftype]))
+        (Xtmpl.T ("a", ["href", Rdf_uri.string href], [Xtmpl.D ftype]))
       in
       let ft =
         match p.p_ftype with
@@ -201,11 +201,13 @@ class xhtml_ast_printer prefix =
       Chain fullname ->
         Xtmpl.string_of_xml
         (Xtmpl.T
-         ("a", ["href", Chn_types.uri_chain prefix fullname],
+         ("a", ["href", Rdf_uri.string (Chn_types.uri_chain prefix fullname)],
           [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
     | Interface s ->
         try
-          let href = Chn_types.uri_intf_of_interface_spec ~prefix s in
+          let href = Rdf_uri.string
+            (Chn_types.uri_intf_of_interface_spec ~prefix s)
+          in
           Xtmpl.string_of_xml
           (Xtmpl.T
            ("a", ["href", href], [Xtmpl.D (Printf.sprintf "%S" s)]))

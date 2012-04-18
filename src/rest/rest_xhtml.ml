@@ -1,5 +1,6 @@
 (** Replying to xhtml queries. *)
 
+open Rdf_node;;
 open Rest_types;;
 
 let svg_width = 700;;
@@ -59,12 +60,12 @@ let ul l =
 
 let a ~href contents =
   Xtmpl.string_of_xml
-  (Xtmpl.T ("a", ["href", href], [Xtmpl.xml_of_string contents]))
+  (Xtmpl.T ("a", ["href", (Rdf_uri.string href)], [Xtmpl.xml_of_string contents]))
 ;;
 
 let a_by_class ctx uri =
   let cl =
-    match Grdfs.class_of_uri_string ctx.ctx_rdf uri with
+    match Grdfs.class_of ctx.ctx_rdf (Uri uri) with
       None -> ""
     | Some cl -> Grdfs.string_of_class cl
   in
@@ -159,7 +160,7 @@ let xhtml_navpath_of_filetype ctx uri =
 ;;
 
 let navpath_of_branch ctx ?(inc_uri=false) uri =
-  let link uri = a ~href: uri (Grdfs.name_of_uri_string ctx.ctx_rdf uri) in
+  let link uri = a ~href: uri (Grdfs.name ctx.ctx_rdf (Uri uri)) in
   let rec iter acc = function
     None -> acc
   | Some (uri, is_tool) ->
@@ -210,8 +211,7 @@ let xhtml_navpath_of_intf ctx uri =
 ;;
 
 let xhtml_navpath_of_intfs ctx uri =
-  let node = Rdf_types.node_of_uri_string ctx.ctx_rdf.Grdf_types.wld_world uri in
-  if Grdfs.is_a_version ctx.ctx_rdf node then
+  if Grdfs.is_a_version ctx.ctx_rdf uri then
     xhtml_navpath_of_version ctx ~inc_uri: true uri
   else
     xhtml_navpath_of_branch ctx ~inc_uri: true uri
@@ -295,18 +295,18 @@ let xhtml_of_intfs_of ctx uri =
   prerr_endline "xhtml_of_intfs: start";
   let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
   prerr_endline "xhtml_of_intfs: explicit,inherited ok";
-  let intfs = intf_list ctx (Sset.elements explicit) in
+  let intfs = intf_list ctx (Uriset.elements explicit) in
   prerr_endline "xhtml_of_intfs: intfs ok";
-  let inherited_intfs = intf_list ctx (Sset.elements inherited) in
+  let inherited_intfs = intf_list ctx (Uriset.elements inherited) in
   prerr_endline "xhtml_of_intfs: inherited ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
   let env = List.fold_left
     (fun e (name, v) -> Xtmpl.env_add_att name v e)
     Xtmpl.env_empty
     [
-      "has_intfs", (if Sset.is_empty explicit then "" else "true") ;
+      "has_intfs", (if Uriset.is_empty explicit then "" else "true") ;
       "intfs", intfs ;
-      "has_inherited_intfs", (if Sset.is_empty inherited then "" else "true") ;
+      "has_inherited_intfs", (if Uriset.is_empty inherited then "" else "true") ;
       "inherited_intfs", inherited_intfs ;
     ]
   in
@@ -365,7 +365,7 @@ let get_tools ctx =
     let n_branches = List.length (Grdf_branch.subs wld ~recur: false uri) in
     let href_branches = Grdfs.uri_branches uri in
 
-    let n_intfs = Sset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
+    let n_intfs = Uriset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
     let href_intfs = Grdfs.uri_intfs uri in
 
     [ a ~href: uri (Grdf_tool.name wld uri) ;

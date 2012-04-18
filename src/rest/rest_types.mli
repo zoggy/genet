@@ -26,7 +26,7 @@ type thing =
   | Intfs of uri (** uri of tool or branch *)
   | Filetypes
   | Static_file of string * string
-  | Other of string
+  | Other of Rdf_uri.uri
   | Chains
   | Chain_module of Chn_types.chain_modname
   | Chain of Chn_types.chain_name

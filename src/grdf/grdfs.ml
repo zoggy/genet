@@ -256,6 +256,8 @@ let uri_branch_from_parent_tool parent name =
   Rdf_uri.concat (Rdf_uri.concat parent suffix_branches) name;;
 
 let remove_prefix prefix uri =
+  let prefix = Rdf_uri.string prefix in
+  let uri = Rdf_uri.string uri in
   if Misc.is_prefix prefix uri then
     begin
       let len_uri = String.length uri in

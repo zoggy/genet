@@ -1,13 +1,13 @@
 (** *)
 
+open Rdf_node;;
 open Rest_types;;
 
 exception Not_implemented of string;;
 let not_implemented msg = raise (Not_implemented msg);;
 
 let rest_api_path config =
-  let url = Neturl.parse_url config.Config.rest_api in
-  let path = Neturl.join_path (Neturl.url_path url) in
+  let path = Neturl.join_path (Rdf_uri.path config.Config.rest_api) in
   let path =
     let len = String.length path in
     if len <= 0 || path.[len-1] <> '/' then
@@ -20,7 +20,8 @@ let rest_api_path config =
 
 let allowed_files config =
   List.map
-  (fun (f, t) ->  (config.Config.rest_api ^ f, (f, t)))
+  (fun (f, t) ->
+     (Rdf_uri.concat config.Config.rest_api f, (f, t)))
   ["style.css", "text/css" ; "genet-logo.svg", "image/svg+xml"]
 ;;
 
@@ -41,12 +42,12 @@ let json_handlers =
 
 
 let uri_of_query_path ctx path =
-  let url = Neturl.parse_url ctx.ctx_cfg.Config.rest_api in
+  let url = Rdf_uri.neturl ctx.ctx_cfg.Config.rest_api in
   let url = Neturl.modify_url ~path: [] url in
   let s = Neturl.string_of_url url in
   let uri = s ^ path in
   (*prerr_endline (Printf.sprintf "uri_of_query_path: path=%s => uri=%s" path uri);*)
-  uri
+  Rdf_uri.uri uri
 ;;
 
 let try_is_uri_of ctx uri =
@@ -104,9 +105,8 @@ let rec thing_of_path ctx path =
   let wld = ctx.ctx_rdf in
   let static_files = allowed_files ctx.ctx_cfg in
   prerr_endline "allowed files:";
-  List.iter (fun (f,_) -> prerr_endline f) static_files;
-  let sub = Rdf_types.node_of_uri_string wld.Grdf_types.wld_world uri in
-  match Grdfs.class_of wld sub with
+  List.iter (fun (f,_) -> prerr_endline (Rdf_uri.string f)) static_files;
+  match Grdfs.class_of wld (Uri uri) with
   | None when uri = Grdfs.uri_tools ctx.ctx_rdf.Grdf_types.wld_prefix -> Tools
   | None when uri = Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None when uri = Grdfs.uri_chains ctx.ctx_rdf.Grdf_types.wld_prefix -> Chains
@@ -117,7 +117,7 @@ let rec thing_of_path ctx path =
           Some res -> res
         | None ->
             try
-              prerr_endline ("not a special uri: "^uri);
+              prerr_endline ("not a special uri: "^(Rdf_uri.string uri));
               let (f, t) = List.assoc uri static_files in
               let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
                 ["in" ; "web" ; f]
@@ -131,7 +131,7 @@ let rec thing_of_path ctx path =
   | Some c when c = Grdfs.genet_version -> Version uri
   | Some c when c = Grdfs.genet_intf -> Intf uri
   | Some c when c = Grdfs.genet_filetype -> Filetype uri
-  | Some c -> prerr_endline c; Other uri
+  | Some c -> prerr_endline (Rdf_uri.string c); Other uri
 ;;
 
 let handler_by_method h ctx = function

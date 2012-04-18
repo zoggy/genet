@@ -1,110 +1,111 @@
 (** Main module of the program generating the RDFschema of genet. *)
 
+open Rdf_node;;
 
-let add_stmt = Grdfs.add_stmt;;
+let add_triple = Grdfs.add_triple;;
 
-let add_isdefined_by_genet world model sub =
-  let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"isDefinedBy") in
-  let obj = Rdf_types.node_of_uri_string world Grdfs.genet in
-  add_stmt world model ~sub ~pred ~obj
+let add_isdefined_by_genet wld sub =
+  let pred = Uri (Grdfs.rdfs_"isDefinedBy") in
+  let obj = Uri Grdfs.genet in
+  add_triple wld ~sub ~pred ~obj
 ;;
 
-let add_label world model sub label =
-  let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"label") in
-  let obj = Rdf_types.node_of_literal_string world label in
-  add_stmt world model ~sub ~pred ~obj
+let add_label wld sub label =
+  let pred = Uri (Grdfs.rdfs_"label") in
+  let obj = Rdf_node.node_of_literal_string label in
+  add_triple wld ~sub ~pred ~obj
 ;;
 
-let add_comment world model sub label =
-  let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"comment") in
-  let obj = Rdf_types.node_of_literal_string world label in
-  add_stmt world model ~sub ~pred ~obj
+let add_comment wld sub label =
+  let pred = Uri (Grdfs.rdfs_"comment") in
+  let obj = Rdf_node.node_of_literal_string label in
+  add_triple wld ~sub ~pred ~obj
 ;;
 
 let add_type = Grdfs.add_type;;
 
-let add_istype_class world model sub =
-  let obj = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"Class") in
-  add_type world model ~sub ~obj
+let add_istype_class wld sub =
+  let obj = Uri (Grdfs.rdfs_"Class") in
+  add_type wld ~sub ~obj
 ;;
 
-let add_istype_property world model sub =
-  let obj = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"Property") in
-  add_type world model ~sub ~obj
+let add_istype_property wld sub =
+  let obj = Uri (Grdfs.rdfs_"Property") in
+  add_type wld ~sub ~obj
 ;;
 
-let add_property world model
+let add_property wld
   ~label ~comment ~definedby ?domain ?range sub =
-  add_istype_property world model sub;
-  add_label world model sub label;
-  add_comment world model sub comment;
+  add_istype_property wld sub;
+  add_label wld sub label;
+  add_comment wld sub comment;
 
-  let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"isDefinedBy") in
-  add_stmt world model ~sub ~pred ~obj: definedby;
+  let pred = Uri (Grdfs.rdfs_"isDefinedBy") in
+  add_triple wld ~sub ~pred ~obj: definedby;
 
   (match domain with
      None -> ()
    | Some obj ->
-       let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"domain") in
-       add_stmt world model ~sub ~pred ~obj
+       let pred = Uri (Grdfs.rdfs_"domain") in
+       add_triple wld ~sub ~pred ~obj
   );
 
   (match range with
      None -> ()
    | Some obj ->
-       let pred = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"range") in
-       add_stmt world model ~sub ~pred ~obj
+       let pred = Uri (Grdfs.rdfs_"range") in
+       add_triple wld ~sub ~pred ~obj
   )
 ;;
 
-let add_tool_class world model =
-  let uri_tool = Rdf_types.node_of_uri_string world Grdfs.genet_tool in
-  add_istype_class world model uri_tool;
-  add_isdefined_by_genet world model uri_tool;
-  add_label world model uri_tool "Tool"
+let add_tool_class wld =
+  let uri_tool = Uri Grdfs.genet_tool in
+  add_istype_class wld uri_tool;
+  add_isdefined_by_genet wld uri_tool;
+  add_label wld uri_tool "Tool"
 ;;
 
-let add_branch_class world model =
-  let uri_branch = Rdf_types.node_of_uri_string world Grdfs.genet_branch in
-  add_istype_class world model uri_branch;
-  add_isdefined_by_genet world model uri_branch;
-  add_label world model uri_branch "Branch"
+let add_branch_class wld =
+  let uri_branch = Uri Grdfs.genet_branch in
+  add_istype_class wld uri_branch;
+  add_isdefined_by_genet wld uri_branch;
+  add_label wld uri_branch "Branch"
 ;;
 
-let add_intf_class world model =
-  let uri_intf = Rdf_types.node_of_uri_string world Grdfs.genet_intf in
-  add_istype_class world model uri_intf;
-  add_isdefined_by_genet world model uri_intf;
-  add_label world model uri_intf "Interface"
+let add_intf_class wld =
+  let uri_intf = Uri Grdfs.genet_intf in
+  add_istype_class wld uri_intf;
+  add_isdefined_by_genet wld uri_intf;
+  add_label wld uri_intf "Interface"
 ;;
 
-let add_version_class world model =
-  let uri_version = Rdf_types.node_of_uri_string world Grdfs.genet_version in
-  add_istype_class world model uri_version;
-  add_isdefined_by_genet world model uri_version;
-  add_label world model uri_version "Version"
+let add_version_class wld =
+  let uri_version = Uri Grdfs.genet_version in
+  add_istype_class wld uri_version;
+  add_isdefined_by_genet wld uri_version;
+  add_label wld uri_version "Version"
 ;;
 
-let add_filetype_class world model =
-  let uri_ft = Rdf_types.node_of_uri_string world Grdfs.genet_filetype in
-  add_istype_class world model uri_ft;
-  add_isdefined_by_genet world model uri_ft;
-  add_label world model uri_ft "Filetype"
+let add_filetype_class wld =
+  let uri_ft = Uri Grdfs.genet_filetype in
+  add_istype_class wld uri_ft;
+  add_isdefined_by_genet wld uri_ft;
+  add_label wld uri_ft "Filetype"
 ;;
 
-let add_vocabulary world model =
-  add_tool_class world model;
-  add_branch_class world model;
-  add_intf_class world model;
-  add_version_class world model;
-  add_filetype_class world model;
+let add_vocabulary wld =
+  add_tool_class wld;
+  add_branch_class wld;
+  add_intf_class wld;
+  add_version_class wld;
+  add_filetype_class wld;
 
-  let node_literal = Rdf_types.node_of_uri_string world (Grdfs.rdfs_"Literal") in
-  let node_branch = Rdf_types.node_of_uri_string world Grdfs.genet_branch in
-  let node_intf = Rdf_types.node_of_uri_string world Grdfs.genet_intf in
-  let node_version = Rdf_types.node_of_uri_string world Grdfs.genet_version in
-  let node_filetype = Rdf_types.node_of_uri_string world Grdfs.genet_filetype in
-  let node_seq = Rdf_types.node_of_uri_string world (Grdfs.rdf_"Seq") in
+  let node_literal = Uri (Grdfs.rdfs_"Literal") in
+  let node_branch = Uri Grdfs.genet_branch in
+  let node_intf = Uri Grdfs.genet_intf in
+  let node_version = Uri Grdfs.genet_version in
+  let node_filetype = Uri Grdfs.genet_filetype in
+  let node_seq = Uri (Grdfs.rdf_"Seq") in
   let props = [
       (Grdfs.genet_name, "has name", "Name", None, Some node_literal) ;
       (Grdfs.genet_hasbranch, "has branch", "Has a branch", None, Some node_branch) ;
@@ -118,12 +119,12 @@ let add_vocabulary world model =
       (Grdfs.genet_produces, "produces", "Filetypes produced, ordered", Some node_intf, Some node_seq);
     ]
   in
-  let definedby = Rdf_types.node_of_uri_string world Grdfs.genet in
+  let definedby = Uri Grdfs.genet in
   List.iter
   (fun (uri, label, comment, domain, range) ->
-     add_property world model
+     add_property wld
      ~label ~comment ~definedby ?domain ?range
-     (Rdf_types.node_of_uri_string world uri)
+     (Uri uri)
   )
   props
 ;;
@@ -139,15 +140,15 @@ let options =
 
 let main () =
   let _options = Options.parse options in
-  let world = Rdf_init.new_world () in
-
-  Rdf_init.open_world world;
+  failwith "not implemented yet"
+(*
   let storage = Rdf_storage.new_storage world ~factory: "memory" ~name: "test" in
   let model = Rdf_model.new_model world storage in
-  add_vocabulary world model;
+  add_vocabulary wld;
   match Rdf_model.to_string model ~name: !output_format with
     None -> failwith "Failed to serialize model"
   | Some string -> print_string string
+  *)
 ;;
 
 let _ = Misc.safe_main main;;
