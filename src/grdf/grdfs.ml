@@ -337,7 +337,7 @@ let add_desc wld sub desc =
   add_triple wld ~sub ~pred ~obj
 ;;
 
-let object_literals wld sub pred =
+let object_literals wld ~sub ~pred =
   let pred = Uri pred in
   let l = wld.wld_graph.objects_of ~sub ~pred in
   let f acc = function
@@ -347,8 +347,8 @@ let object_literals wld sub pred =
   List.fold_left f [] l
 ;;
 
-let object_literal wld source pred =
-  match object_literals wld source pred with
+let object_literal wld ~sub ~pred =
+  match object_literals wld ~sub ~pred with
     [] -> None
   | s :: _ -> Some s
 ;;
