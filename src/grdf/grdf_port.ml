@@ -1,4 +1,6 @@
 (** *)
+
+open Rdf_node;;
 open Grdf_types;;
 
 type port_type = One of uri | List of uri;;
@@ -9,23 +11,21 @@ let pred_of_dir = function
 | Out -> Grdfs.genet_produces
 ;;
 
-let port_name wld port = Grdfs.name_of_uri_string wld port;;
+let port_name wld port = Grdfs.name wld (Uri port);;
 let port_rank = Grdfs.port_rank ;;
 
 let port_type wld port =
-  let node = Rdf_types.node_of_uri_string wld.wld_world port in
-  match Grdfs.target_uri wld node Grdfs.genet_hasfiletype with
+  match Grdfs.object_uri wld ~sub: (Uri port) ~pred: Grdfs.genet_hasfiletype with
     Some uri -> One uri
   | None ->
-      match Grdfs.target_uri wld node Grdfs.genet_hasfiletypelist with
+      match Grdfs.object_uri wld ~sub: (Uri port) ~pred: Grdfs.genet_hasfiletypelist with
         Some uri -> List uri
-      | None -> failwith (Printf.sprintf "No type for port %s" port)
+      | None -> failwith (Printf.sprintf "No type for port %s" (Rdf_uri.string port))
 ;;
 
 let ports wld intf dir =
   let pred = pred_of_dir dir in
-  let intf = Rdf_types.node_of_uri_string wld.wld_world intf in
-  Grdfs.target_uris wld intf pred
+  Grdfs.object_uris wld ~sub: (Uri intf) ~pred
 ;;
 
 let sort_ports l =
@@ -36,15 +36,11 @@ let sort_ports l =
 
 let unset_port_type wld port =
   let preds = [ Grdfs.genet_hasfiletype ; Grdfs.genet_hasfiletypelist ] in
+  let sub = Uri port in
   let f pred =
-    let query =
-      let triples = [
-          (`I port, [ `I pred, [`V "seq"] ] );
-        ]
-      in
-      { Rdf_sparql.construct_triples = triples ; construct_where = (triples, None) }
-    in
-    ignore(Grdfs.delete_from_sparql wld query)
+    List.iter
+    (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri pred) ~obj: (Uri obj))
+      (Grdfs.object_uris wld ~sub ~pred)
   in
   List.iter f preds
 ;;
@@ -56,12 +52,10 @@ let set_port_type wld port typ =
     | List uri -> (Grdfs.genet_hasfiletypelist, uri)
   in
   unset_port_type wld port;
-  let world = wld.wld_world in
-  let model = wld.wld_model in
-  Grdfs.add_stmt world model
-     ~sub: (Rdf_types.node_of_uri_string world port)
-     ~pred: (Rdf_types.node_of_uri_string world pred)
-     ~obj: (Rdf_types.node_of_uri_string world ftype_uri)
+  Grdfs.add_triple wld
+     ~sub: (Uri port)
+     ~pred: (Uri pred)
+     ~obj: (Uri ftype_uri)
 ;;
 
 let uri_intf_port_of_dir = function
@@ -71,29 +65,29 @@ let uri_intf_port_of_dir = function
 
 let insert_port wld intf dir (n, typ, name) =
   let pred = pred_of_dir dir in
-  let world = wld.wld_world in
   let uri = (uri_intf_port_of_dir dir) intf n in
-  let sub = Rdf_types.node_of_uri_string world intf in
-  let pred = Rdf_types.node_of_uri_string world pred in
-  let obj = Rdf_types.node_of_uri_string world uri in
-  Grdfs.add_stmt world wld.wld_model ~sub ~pred ~obj;
+  let sub = Uri intf in
+  let pred = Uri pred in
+  let obj = Uri uri in
+  Grdfs.add_triple wld ~sub ~pred ~obj;
   set_port_type wld uri typ;
   match name with None -> () | Some name -> Grdfs.add_name wld sub name
 ;;
 
 let delete_ports wld uri dir =
   let dir_pred = pred_of_dir dir in
+  let sub = Uri uri in
   let f pred =
-    let del_triples = [
-        (`I uri, [ `I dir_pred, [`V "port"] ] );
-        (`V "port", [`I pred, [`V "ftype"] ] );
-      ]
+    let ports = Grdfs.object_uris wld ~sub ~pred: dir_pred in
+    List.iter
+      (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri dir_pred) ~obj: (Uri obj))
+      ports;
+    let f port =
+      List.iter
+        (fun obj -> Grdfs.rem_triple wld ~sub: (Uri port) ~pred: (Uri pred) ~obj: (Uri obj))
+        (Grdfs.object_uris wld ~sub: (Uri port) ~pred: pred)
     in
-    let query = { Rdf_sparql.construct_triples = del_triples ;
-                  construct_where = (del_triples, None) ;
-      }
-    in
-    ignore(Grdfs.delete_from_sparql wld query)
+    List.iter f ports
   in
   let preds = [ Grdfs.genet_hasfiletype ; Grdfs.genet_hasfiletypelist ] in
   List.iter f preds
