@@ -8,10 +8,23 @@ let svg_height = 200;;
 let svg_dpi = 96. ;;
 
 let dot_to_svg dot =
-  let w = (float svg_width) /. svg_dpi in
-  let h = (float svg_height) /. svg_dpi in
-  let options = Printf.sprintf "-Gfontsize=8. -Gdpi=%.2f -Gsize=\"%.0f,%.0f!\"" svg_dpi w h in
-  Grdf_dot.dot_to_svg ~options ~size: (svg_width,svg_height) dot
+  let size = String.length dot in
+  if size > 50_000 then
+    Xtmpl.string_of_xml
+    (Xtmpl.T ("div", ["class", "alert alert-warning"],
+      [Xtmpl.D "Dot graph would have been too big; it was not generated"]))
+  else
+    begin
+      let w = (float svg_width) /. svg_dpi in
+      let h = (float svg_height) /. svg_dpi in
+      let options = Printf.sprintf "-Gfontsize=8. -Gdpi=%.2f -Gsize=\"%.0f,%.0f!\"" svg_dpi w h in
+      try
+        Grdf_dot.dot_to_svg ~options ~size: (svg_width,svg_height) dot
+      with
+        Failure msg ->
+          Xtmpl.string_of_xml
+            (Xtmpl.T ("div", ["class", "alert alert-error"], [Xtmpl.D msg]))
+    end
 ;;
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
