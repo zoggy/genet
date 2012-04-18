@@ -54,7 +54,7 @@ let add wld ~tool ?(parent=tool) name =
     Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
   let root_tool = Grdf_branch.tool wld parent in
-  if root_tool <> tool then
+  if Rdf_uri.compare root_tool tool <> 0 then
     Grdf_types.error (Grdf_types.Tool_of_branch_differs (parent, root_tool, tool));
 
   let uri = Grdfs.uri_version tool name in

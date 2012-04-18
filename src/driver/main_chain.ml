@@ -26,7 +26,7 @@ let test_file ?(dot=false) file =
 let flatten opts acc s =
   try
     let config = Config.read_config opts.Options.config_file in
-    let rdf_wld = Grdf_init.open_storage config in
+    let rdf_wld = Grdf_init.open_graph config in
     let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
     let fullname = Chn_types.chain_name_of_string s in
     ignore(Chn_flat.flatten ctx fullname);

@@ -8,7 +8,8 @@ let open_graph config =
     [ "host", config.db_host ;
       "database", config.db_name ;
       "user", config.db_user ;
-      "password", config.db_passwd
+      "password", config.db_passwd ;
+      "storage", config.db_engine ;
     ]
   in
   let prefix = config.rest_api in

@@ -321,15 +321,17 @@ let xhtml_of_branches_of ctx uri =
   | _ ->
       let heads = ["Branch"] in
       let f br = [a_branch ctx br] in
-      let rows = List.sort Pervasives.compare (List.map f branches) in
+      let branches = List.sort Rdf_uri.compare branches in
+      let rows = List.map f branches in
       table ~heads rows
 ;;
 
 let xhtml_of_versions_of ctx uri =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true uri in
+  let versions = List.sort Rdf_uri.compare versions in
   let heads = ["Active" ; "Version" ; "Date"] in
   let f version = ["" ; a_version ctx version ; ""] in
-  let rows = List.sort Pervasives.compare (List.map f versions) in
+  let rows = List.map f versions in
   table ~heads rows
 ;;
 
@@ -375,7 +377,8 @@ let get_tools ctx =
     ]
   in
   let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
-  let rows = List.sort Pervasives.compare (List.map f_tool tools) in
+  let tools = List.sort Rdf_uri.compare tools in
+  let rows = List.map f_tool tools in
   let contents = table ~heads rows in
   ([ctype ()], tool_page ctx ~title: "Tools" contents)
 ;;
