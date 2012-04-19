@@ -11,6 +11,21 @@ let dbg = Misc.create_log_fun
     "GENET_CHN_FLAT_DEBUG_LEVEL"
 ;;
 
+let merge_port_maps =
+  let merge key a b =
+    match a, b with
+      Some uri1, Some uri2 ->
+        let msg = Printf.sprintf "port %s is mapped to %s and %s"
+          (Rdf_uri.string key) (Rdf_uri.string uri1) (Rdf_uri.string uri2)
+        in
+        failwith msg
+    | None, Some v
+    | Some v, None -> Some v
+    | None, None -> None
+  in
+  Urimap.merge merge
+;;
+
 let fchain_exists ctx orig_fullname uri_fchain =
   let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api orig_fullname in
   ctx.ctx_rdf.wld_graph.exists ~sub: (Uri uri_chain)
@@ -40,7 +55,13 @@ let get_op_name uri =
 ;;
 
 let port_consumers ctx uri =
-  Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_produces
+  let uris = Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_produces in
+  List.filter Grdfs.is_a_port uris
+;;
+
+let port_producers ctx uri =
+  let uris = Grdfs.subject_uris ctx.ctx_rdf ~pred: Grdfs.genet_produces ~obj: (Uri uri) in
+  List.filter Grdfs.is_a_port uris
 ;;
 
 let get_op_origin ctx uri =
@@ -50,7 +71,7 @@ let get_op_origin ctx uri =
   | Some uri -> uri
 ;;
 
-let rec import_flat_op ctx uri_src uri_dst path =
+let rec import_flat_op ctx uri_src uri_dst path (map_in, map_out) =
   assert (path <> []);
   let dbg = dbg ~loc: "import_flat_op" in
   let uri_op = Grdfs.uri_fchain_op uri_dst path in
@@ -60,23 +81,24 @@ let rec import_flat_op ctx uri_src uri_dst path =
 
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: uri_src;
+
   dbg ~level: 3
     (fun() -> Printf.sprintf "%s -opfrom-> %s"
       (Rdf_uri.string uri_op)(Rdf_uri.string uri_src));
+
   (* copy ports of the src flat chain to our target operation *)
-(*
-  let in_ports = Grdf_port.ports ctx.ctx_rdf uri_src Grdf_port.In in
-  let out_ports = Grdf_port.ports ctx.ctx_rdf uri_src Grdf_port.Out in
-  Grdf_port.set_ports ctx.ctx_rdf uri_op Grdf_port.In in_ports ;
-  Grdf_port.set_ports ctx.ctx_rdf uri_op Grdf_port.Out out_ports ;
-*)
-  Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_src ~dst: uri_op;
+  let (map_in2, map_out2) =
+    Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_src ~dst: uri_op
+  in
+  let map_in = merge_port_maps map_in map_in2 in
+  let map_out = merge_port_maps map_out map_out2 in
+
   (* copy sub operations *)
   let sub_ops = get_ops ctx uri_src in
-  List.iter (import_flat_sub_op ctx uri_dst path) sub_ops
-  (* TODO: copy edges *)
+  List.fold_left (import_flat_sub_op ctx uri_dst path)
+  (map_in, map_out) sub_ops
 
-and import_flat_sub_op ctx uri_dst path uri_sub_op =
+and import_flat_sub_op ctx uri_dst path (map_in, map_out) uri_sub_op =
   dbg ~loc: "import_flat_sub_op" ~level: 3
     (fun () ->
        Printf.sprintf "* uri_dst = %s\n \
@@ -87,7 +109,7 @@ and import_flat_sub_op ctx uri_dst path uri_sub_op =
      );
   let name = get_op_name uri_sub_op in
   let path = path @ [name] in
-  import_flat_op ctx uri_sub_op uri_dst path
+  import_flat_op ctx uri_sub_op uri_dst path (map_in, map_out)
 ;;
 
 let add_intf ctx uri_op loc intf_spec =
@@ -103,7 +125,7 @@ let add_intf ctx uri_op loc intf_spec =
     (fun () -> Printf.sprintf "uri_intf=%s" (Rdf_uri.string uri_intf));
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: uri_intf;
-  Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op
+  ignore(Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op)
 ;;
 
 let create_ports_from_chn ctx uri chn =
@@ -210,6 +232,35 @@ let create_data_edges ctx uri map chn =
   List.iter (create_data_edge ctx uri map) chn.chn_edges
 ;;
 
+let add_edges_from_maps ctx map_in map_out =
+  let map = merge_port_maps map_in map_out in
+  let find p =
+    try Urimap.find p map
+    with Not_found ->
+        failwith (Printf.sprintf "port %s could not be mapped" (Rdf_uri.string p))
+  in
+  let map_ports dir new_port ports =
+    let ports = List.map find ports in
+    let f =
+      match dir with
+        Grdf_port.In ->
+          (fun sub -> Grdfs.add_triple_uris ctx.ctx_rdf
+             ~sub ~pred: Grdfs.genet_produces ~obj: new_port)
+      | Grdf_port.Out ->
+          (fun obj -> Grdfs.add_triple_uris ctx.ctx_rdf
+             ~sub: new_port ~pred: Grdfs.genet_produces ~obj)
+    in
+    List.iter f ports
+  in
+  let f_orig_port orig_port new_port =
+    let producers = port_producers ctx orig_port in
+    let consumers = port_consumers ctx orig_port in
+    map_ports Grdf_port.In new_port producers;
+    map_ports Grdf_port.Out new_port consumers
+  in
+  Urimap.iter f_orig_port map
+;;
+
 let rec do_flatten ctx ?(path=[]) fullname =
   let dbg = dbg ~loc: "do_flatten" in
   dbg ~level: 2
@@ -276,7 +327,10 @@ and add_op ctx path uri_fchain map op =
     | Chain fullname ->
         let src = do_flatten ctx ~path: [] fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
-        import_flat_op ctx src uri_fchain path;
+        let (map_in, map_out) =
+          import_flat_op ctx src uri_fchain path (Urimap.empty, Urimap.empty)
+        in
+        add_edges_from_maps ctx map_in map_out;
         (Smap.empty, Smap.empty)
   in
   Smap.add op.op_name (uri_op, map_in, map_out) map

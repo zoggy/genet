@@ -248,6 +248,10 @@ let port_dir_string uri =
     [] -> failwith ("Bad port uri; "^(Rdf_uri.string uri))
   | s :: _ -> s
 ;;
+let is_a_port uri =
+  try ignore(port_rank uri) ; ignore(port_dir_string uri) ; true
+  with _ -> false
+;;
 
 (** {3 Filetypes} *)
 

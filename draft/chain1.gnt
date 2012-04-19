@@ -12,11 +12,14 @@ chain test2
 (* Just the description here. *)
 {
   in: coq i1;
-  out: coq o1;
+  out: coq o1, coq o2;
 
   operation foo : Chain1.foo ;
+  operation gee : Chain1.foo ;
   i1 -> foo.1 ;
+  i1 -> gee.1 ;
   foo.1 -> o1 ;
+  gee.1 -> o2 ;
 }
 
 chain test1
