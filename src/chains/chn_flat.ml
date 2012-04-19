@@ -379,8 +379,8 @@ class fchain_dot_printer =
                             href=\"%s\" label=\"%s:%s\"];\n"
         id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
 
-    method print_op ctx ?(root=false) b acc uri =
-      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
+    method do_print_op ctx b ~maxdepth ~depth acc uri =
+      let root = depth <= 0 in
       if not root then
         begin
           let (color, label) =
@@ -395,11 +395,10 @@ class fchain_dot_printer =
                 ("red", get_op_name uri)
           in
           Printf.bprintf b "subgraph cluster_%s {\n\
-            label=%S;\n color=\"black\" fillcolor=%S;\n style=\"filled\";\n"
+             label=%S;\n color=\"black\" fillcolor=%S;\n style=\"filled\";\n"
           (self#uri_id uri) label color
 
         end;
-
       let f acc dir =
         if root then
           Printf.bprintf b "subgraph cluster_%s {\n"
@@ -410,14 +409,24 @@ class fchain_dot_printer =
         List.fold_right Uriset.add ports acc
       in
       let acc = List.fold_left f acc [ Grdf_port.In ; Grdf_port.Out ] in
-      let acc = List.fold_left (self#print_op ctx b) acc (get_ops ctx uri) in
+      let acc = List.fold_left
+        (self#print_op ctx b ~maxdepth ~depth: (depth+1))
+        acc (get_ops ctx uri)
+      in
       if not root then Buffer.add_string b "}\n";
       acc
 
-    method dot_of_fchain ctx uri =
+    method print_op ctx b ?(maxdepth=max_int) ~depth acc uri =
+      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
+      if depth > maxdepth then
+        acc
+      else
+        self#do_print_op ctx b ~maxdepth ~depth acc uri
+
+    method dot_of_fchain ctx ?maxdepth uri =
       let b = Buffer.create 256 in
       Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
-      let ports = self#print_op ctx ~root: true b Uriset.empty uri in
+      let ports = self#print_op ctx b ?maxdepth ~depth: 0 Uriset.empty uri in
       Uriset.iter (self#print_port_edges ctx b) ports;
       Buffer.add_string b "}\n";
       Buffer.contents b
