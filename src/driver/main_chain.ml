@@ -83,7 +83,7 @@ let options =
 
 let main () =
   let opts = Options.parse options in
-  let n = List.fold_left (do_action opts) 0 !actions in
+  let n = List.fold_left (do_action opts) 0 (List.rev !actions) in
   flush stdout;
   if n > 0 then
     prerr_endline (Printf.sprintf "%d problem(s) encountered" n);
