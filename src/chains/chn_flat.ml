@@ -31,6 +31,13 @@ let port_consumers ctx uri =
   Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_produces
 ;;
 
+let get_op_origin ctx uri =
+  match Grdfs.object_uri ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_opfrom with
+    None ->
+      failwith (Printf.sprintf "Operation %s has no 'from' link." (Rdf_uri.string uri))
+  | Some uri -> uri
+;;
+
 let rec import_flat_op ctx uri_src uri_dst path =
 
   assert (path <> []);
@@ -291,13 +298,25 @@ class fchain_dot_printer =
           "" -> string_of_int (Grdf_port.port_rank uri)
         | s -> s
       in
-      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
+                            style=\"filled\" shape=\"box\" \
+                            href=\"%s\" label=\"%s:%s\"];\n"
         id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
 
     method print_op ctx ?(root=false) b acc uri =
       if not root then
-        Printf.bprintf b "subgraph cluster_%s {\n  label=%S;\n"
-           (self#uri_id uri) (get_op_name uri);
+        begin
+          let (color, label) =
+            let uri_from = get_op_origin ctx uri in
+            match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+              None -> dotp#color_chain, get_op_name uri
+            | Some name -> dotp#color_interface, name
+          in
+          Printf.bprintf b "subgraph cluster_%s {\n\
+            label=%S;\n color=%S;\n style=\"filled\";\n"
+          (self#uri_id uri) label color
+
+        end;
 
       let f acc dir =
         if root then

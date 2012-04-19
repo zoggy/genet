@@ -268,7 +268,8 @@ class xhtml_chain_dot_printer prefix =
           Grdf_port.One ftype -> (link ftype, ftype)
         | Grdf_port.List ftype -> (link ftype, Printf.sprintf "%s list" ftype)
       in
-      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" \
+                            shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
         p.p_name color link p.p_name ft
 
   end;;
