@@ -376,39 +376,52 @@ class fchain_dot_printer =
       in
       Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
                             style=\"filled\" shape=\"box\" \
-                            href=\"%s\" label=\"%s:%s\"];\n"
+                            href=\"%s\" label=\"%s:%s\" rank=%S];\n"
         id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
+        (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max")
 
     method do_print_op ctx b ~maxdepth ~depth acc uri =
       let root = depth <= 0 in
       if not root then
         begin
-          let (color, label) =
-            try
-              let uri_from = get_op_origin ctx uri in
-              match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-                None -> dotp#color_chain, get_op_name uri
-              | Some name -> dotp#color_interface, name
-            with
-              Failure msg ->
-                prerr_endline msg ;
-                ("red", get_op_name uri)
+          let (color, label, href) =
+            let uri_from = get_op_origin ctx uri in
+            match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+              None -> dotp#color_chain, get_op_name uri, uri
+            | Some name ->
+              let tool = Grdf_intf.tool_of_intf uri_from in
+              let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.ctx_rdf tool) name in
+              dotp#color_interface, name, uri_from
           in
           Printf.bprintf b "subgraph cluster_%s {\n\
-             label=%S;\n color=\"black\" fillcolor=%S;\n style=\"filled\";\n"
+             label=%S;\n color=\"black\" fillcolor=%S;\n\
+             style=\"filled\"; href=%S;\n"
           (self#uri_id uri) label color
+          (Rdf_uri.string href)
 
         end;
-      let f acc dir =
+      let f (acc, node) dir =
         if root then
           Printf.bprintf b "subgraph cluster_%s {\n"
           (Grdf_port.string_of_dir dir);
         let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
         List.iter (self#print_port ctx b) ports;
+        begin
+          match node with
+            None -> ()
+          | Some in_p ->
+              List.iter
+              (fun out_p ->
+                 Printf.bprintf b "%s -> %s [style=\"invis\"];\n"
+                 (self#uri_id in_p) (self#uri_id out_p)
+              )
+              ports
+        end;
+        let node = match ports with [] -> None | h :: _ -> Some h in
         if root then Buffer.add_string b "}\n";
-        List.fold_right Uriset.add ports acc
+        (List.fold_right Uriset.add ports acc, node)
       in
-      let acc = List.fold_left f acc [ Grdf_port.In ; Grdf_port.Out ] in
+      let (acc, _) = List.fold_left f (acc, None) [ Grdf_port.In ; Grdf_port.Out ] in
       let acc = List.fold_left
         (self#print_op ctx b ~maxdepth ~depth: (depth+1))
         acc (get_ops ctx uri)
@@ -425,7 +438,7 @@ class fchain_dot_printer =
 
     method dot_of_fchain ctx ?maxdepth uri =
       let b = Buffer.create 256 in
-      Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
+      Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
       let ports = self#print_op ctx b ?maxdepth ~depth: 0 Uriset.empty uri in
       Uriset.iter (self#print_port_edges ctx b) ports;
       Buffer.add_string b "}\n";
