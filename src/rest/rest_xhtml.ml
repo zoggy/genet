@@ -260,8 +260,8 @@ let xhtml_navpath_of_fchain_module ctx =
   xhtml_navpath_join_path path
 ;;
 
-let xhtml_navpath_of_fchain ctx fullname id =
-  let modname = Chn_types.chain_modname fullname in
+let xhtml_navpath_of_fchain ctx fchain_name =
+  let modname = Chn_types.fchain_modname fchain_name in
   let path =
     (navpath_of_fchain_module ctx) @
     [
@@ -289,7 +289,7 @@ let xhtml_navpath ctx = function
 | Chain_module modname -> xhtml_navpath_of_chain_module ctx
 | Chain fullname -> xhtml_navpath_of_chain ctx fullname
 | Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
-| Flat_chain (fullname, id) -> xhtml_navpath_of_fchain ctx fullname id
+| Flat_chain fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
 ;;
 
 let intf_list ctx intfs =
@@ -714,9 +714,13 @@ let get_fchain_module ctx modname =
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
-let get_fchain ctx fullname id =
-  let title = Printf.sprintf "%s (%s)" (Chn_types.string_of_chain_name fullname) id in
-  let navpath = xhtml_navpath ctx (Flat_chain (fullname, id)) in
+let get_fchain ctx fchain_name =
+  let id = Chn_types.fchain_id fchain_name in
+  let title = Printf.sprintf "%s%s"
+    (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
+    (match id with None -> "" | Some id -> Printf.sprintf " (%s)" id)
+  in
+  let navpath = xhtml_navpath ctx (Flat_chain fchain_name) in
   let contents = "" in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
@@ -740,7 +744,7 @@ let get ctx thing args =
   | Chain fullname -> handle_chain_error get_chain ctx fullname
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname
-  | Flat_chain (fullname, id) -> get_fchain ctx fullname id
+  | Flat_chain fchain_name -> get_fchain ctx fchain_name
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

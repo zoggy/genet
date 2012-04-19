@@ -167,19 +167,29 @@ let uri_fchain_module ~prefix modname =
 
 let split_fchain_name s =
   prerr_endline ("SPLIT: "^s);
-  match List.rev (Misc.split_string s ['/']) with
+  match Misc.split_string s ['/'] with
     [] -> failwith ("Invalid name "^s)
-  | id :: rest ->
-      if Misc.is_capitalized id then
-        `Modname s
-      else
-        match rest with
-          [] -> failwith ("Invalid name "^s)
-        | [name] -> `Chainname (name, id)
-        | name :: rest -> `Fullname ((String.concat "/" (List.rev rest), name), id)
+  | l ->
+      let rec iter acc = function
+        [] -> (List.rev acc, [])
+      | s :: q ->
+          if Misc.is_capitalized s then
+            iter (s :: acc) q
+          else
+            (List.rev acc, s :: q)
+      in
+      let (modname, rest) = iter [] l in
+      match rest with
+        [] -> `Modname s
+      | [name] -> `Fullname ((modname, name), "")
+      | [name ; id] -> `Fullname ((modname, name), id)
+      | name :: id :: path ->
+          `Fchain_op ((modname, name), id, path)
 ;;
-let uri_fchain ~prefix ~modname ~name ~id  =
-  Rdf_uri.concat (Rdf_uri.concat (uri_fchain_module ~prefix modname) name) id;;
+let uri_fchain ~prefix ~modname ?id ~name  =
+  let uri = Rdf_uri.concat (uri_fchain_module ~prefix modname) name in
+  match id with None -> uri | Some id -> Rdf_uri.concat uri id
+;;
 
 let  uri_fchain_op fchain path =
   List.fold_left Rdf_uri.concat fchain path

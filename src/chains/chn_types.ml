@@ -1,6 +1,7 @@
 (** *)
 
 type user = string
+type version_id = string
 
 type context =
   { ctx_rdf: Grdf_types.world ;
@@ -72,16 +73,23 @@ let uri_intf_of_interface_spec ~prefix s  =
       failwith (Printf.sprintf "invalid interface name: %S" s)
 ;;
 
+
+type fchain_name = chain_name * version_id option
+let fchain_id (_,id) = id;;
+let fchain_chainname (name,_) = name;;
+let fchain_modname (name,_) = chain_modname name;;
+let fchain_basename (name,_) = chain_basename name;;
+let mk_fchain_name name id = (name, Misc.opt_of_string id);;
+
 let uri_fchain_module prefix modname =
   let s = String.concat "/" modname in
   Grdfs.uri_fchain_module prefix s
 ;;
 
-
-let uri_fchain prefix fullname id =
+let uri_fchain prefix (fullname, id) =
   let modname = String.concat "/" (chain_modname fullname) in
   let name = chain_basename fullname in
-  Grdfs.uri_fchain ~prefix ~modname ~name ~id
+  Grdfs.uri_fchain ~prefix ~modname ?id ~name
 ;;
 
 let is_uri_fchain_module prefix uri =
@@ -96,7 +104,6 @@ let is_uri_fchain_module prefix uri =
 let is_uri_fchain prefix uri =
   match Grdfs.is_uri_fchain prefix uri with
     None -> None
-  | Some ((slashes_modname, name), id) ->
-      let s = Misc.split_string slashes_modname ['/'] in
-      Some ((s, name), id)
+  | Some ((modname, name), id) ->
+      Some ((modname, name), Misc.opt_of_string id)
 ;;    

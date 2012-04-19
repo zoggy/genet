@@ -85,7 +85,7 @@ let try_is_uri_of ctx uri =
       (fun uri ->
         match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
            None -> None
-         | Some (fullname, id) -> Some (Flat_chain (fullname, id))) ;
+         | Some fchain_name -> Some (Flat_chain fchain_name))
     ]
   in
   let rec iter = function

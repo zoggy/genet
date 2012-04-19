@@ -1,6 +1,7 @@
 (** Basic types for chains. *)
 
 type user = string
+type version_id = string
 
 type context =
   { ctx_rdf: Grdf_types.world ;
@@ -32,9 +33,16 @@ val is_uri_chain_module : Grdf_types.uri -> Grdf_types.uri -> string option
 val is_uri_chain : Grdf_types.uri -> Grdf_types.uri -> string option
 val uri_intf_of_interface_spec : prefix: Grdf_types.uri -> string -> Grdf_types.uri
 
+type fchain_name
+val fchain_id : fchain_name -> version_id option
+val fchain_chainname : fchain_name -> chain_name
+val fchain_modname : fchain_name -> chain_modname
+val fchain_basename : fchain_name -> chain_basename
+val mk_fchain_name : chain_name -> version_id -> fchain_name
+
 val uri_fchain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
-val uri_fchain : Grdf_types.uri -> chain_name -> string -> Grdf_types.uri
+val uri_fchain : Grdf_types.uri -> fchain_name -> Grdf_types.uri
 
 val is_uri_fchain_module : Grdf_types.uri -> Grdf_types.uri -> chain_modname option
-val is_uri_fchain : Grdf_types.uri -> Grdf_types.uri -> (chain_name * string) option
+val is_uri_fchain : Grdf_types.uri -> Grdf_types.uri -> fchain_name option
 

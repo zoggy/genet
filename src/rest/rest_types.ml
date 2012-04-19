@@ -31,7 +31,7 @@ type thing =
   | Chain of Chn_types.chain_name
   | Flat_chains
   | Flat_chain_module of Chn_types.chain_modname
-  | Flat_chain of Chn_types.chain_name * string
+  | Flat_chain of Chn_types.fchain_name
 ;;
 
 type response = arg list * string
