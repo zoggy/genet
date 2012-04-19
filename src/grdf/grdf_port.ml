@@ -15,8 +15,18 @@ let pred_of_dir = function
 | Out -> Grdfs.genet_produces
 ;;
 
+let dir_of_string = function
+  "in" -> In | "out" -> Out
+| s -> failwith (Printf.sprintf "Invalid direction %S" s)
+;;
+
 let port_name wld port = Grdfs.name wld (Uri port);;
 let port_rank = Grdfs.port_rank ;;
+
+let port_dir port =
+  let s = Grdfs.port_dir_string port in
+  dir_of_string s
+;;
 
 let port_type wld port =
   match Grdfs.object_uri wld ~sub: (Uri port) ~pred: Grdfs.genet_hasfiletype with
@@ -122,6 +132,26 @@ let set_ports wld intf dir ports =
   List.iter (insert_port wld intf dir) ports
 ;;
 
+let delete_port wld uri =
+  let dir = port_dir uri in
+  let pred = pred_of_dir dir in
+  match Grdfs.subject_uri wld ~pred ~obj: (Uri uri) with
+    None -> ()
+  | Some sub ->
+      let ports = ports wld sub dir in
+      let ports = List.filter (fun p -> not (Rdf_uri.equal p uri)) ports in
+      let rec iter m acc = function
+        [] -> List.rev acc
+      | p :: q ->
+          let ftype = port_type wld p in
+          let name = port_name wld p in
+          iter (m+1) ((m,ftype,Some name)::acc) q
+      in
+      let ports = iter 1 [] ports in
+      set_ports wld sub dir ports
+;;
+
+
 let copy_ports wld ~src ~dst =
   dbg ~level:2 ~loc:"copy_ports"
     (fun () ->
@@ -179,12 +209,6 @@ let string_type_of_ports wld ~sep = function
     String.concat sep
     (List.map (fun p -> string_of_port_type wld (port_type wld p)) l)
 ;;
-
-let dir_of_string = function
-  "in" -> In | "out" -> Out
-| s -> failwith (Printf.sprintf "Invalid direction %S" s)
-;;
-
 
 
   

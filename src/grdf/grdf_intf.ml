@@ -158,10 +158,7 @@ let string_of_intf wld ?(with_uri=true) uri =
 let get_port wld uri ?(pos=max_int) dir =
   let n = List.length (Grdf_port.ports wld uri dir) in
   let p = max 1 (min n pos) in
-  let f = match dir with
-      Grdf_port.In -> Grdfs.uri_intf_in_port
-    | Grdf_port.Out -> Grdfs.uri_intf_out_port
-  in
+  let f = Grdf_port.uri_intf_port_of_dir dir in
   f uri p
 ;;
 

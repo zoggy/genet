@@ -86,7 +86,12 @@ let add_port config wld ?pos ?(list=false) options =
       failwith msg
 ;;
 
-let rem_port config wld options =()
+let rem_port config wld options =
+  match options.args with
+    [] -> failwith "Please give at least one port uri"
+  | ports ->
+      List.iter (fun s -> Grdf_port.delete_port wld (Rdf_uri.uri s)) ports
+;;
 
 
 
@@ -139,7 +144,7 @@ let com_add_filetype = {
 ;;
 
 let com_rem_port = {
-  com_options = [] ; com_usage = "<port uri>" ;
+  com_options = [] ; com_usage = "<port uris>" ;
   com_kind = Final (set_mode Rem_port) ;
   }
 ;;

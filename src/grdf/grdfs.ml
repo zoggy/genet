@@ -82,6 +82,10 @@ let add_triple_uris wld ~sub ~pred ~obj =
   add_triple wld ~sub: (Uri sub) ~pred: (Uri pred) ~obj: (Uri obj)
 ;;
 
+let rem_triple_uris wld ~sub ~pred ~obj =
+  rem_triple wld ~sub: (Uri sub) ~pred: (Uri pred) ~obj: (Uri obj)
+;;
+
 (** {2 Uris of manipulated elements} *)
 
 (** {3 Tools} *)
@@ -238,6 +242,11 @@ let port_rank uri =
   | n :: _ ->
       try int_of_string n
       with _ -> failwith ("Invalid port number in uri: "^(Rdf_uri.string uri))
+;;
+let port_dir_string uri =
+  match List.rev (Rdf_uri.path (Rdf_uri.parent uri)) with
+    [] -> failwith ("Bad port uri; "^(Rdf_uri.string uri))
+  | s :: _ -> s
 ;;
 
 (** {3 Filetypes} *)
