@@ -12,38 +12,36 @@ let dbg = Misc.create_log_fun
 ;;
 
 let fchain_exists ctx orig_fullname uri_fchain =
-  let uri_chain = Grdfs.uri_chain ~prefix: ctx.ctx_cfg.Config.rest_api
-    ~modname: (Chn_types.string_of_chain_modname (Chn_types.chain_modname orig_fullname))
-    (Chn_types.string_of_chain_basename (Chn_types.chain_basename orig_fullname))
-  in
+  let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api orig_fullname in
   ctx.ctx_rdf.wld_graph.exists ~sub: (Uri uri_chain)
    ~pred: (Uri Grdfs.genet_flattenedto) ~obj: (Uri uri_fchain) ()
 ;;
 
-let rec import_flat_op ctx uri_src uri_dst path = ()
-(*
+let rec import_flat_op ctx uri_src uri_dst path =
+
   assert (path <> []);
   let uri_op = Grdfs.uri_fchain_op uri_dst path in
   (* copy ports of the src flat chain to our target operation *)
+(*
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_src Grdf_port.In in
   let out_ports = Grdf_port.ports ctx.ctx_rdf uri_src Grdf_port.Out in
   Grdf_port.set_ports ctx.ctx_rdf uri_op Grdf_port.In in_ports ;
   Grdf_port.set_ports ctx.ctx_rdf uri_op Grdf_port.Out out_ports ;
-
+*)
+  Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_src ~dst: uri_op;
   (* copy sub operations *)
-  let sub_ops = Grdfs.target_uris ctx.ctx_rdf uri_src Grdfs.genet_containsop in
-  List.iter (import_flat_sub_op ctx uri_dst path) sub_ops;
+  let sub_ops = Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri_src) ~pred: Grdfs.genet_containsop in
+  List.iter (import_flat_sub_op ctx uri_dst path) sub_ops
   (* TODO: copy edges *)
 
 and import_flat_sub_op ctx uri_dst path uri_sub_op =
-  match List.rev (Misc.split_string uri_sub_op ['/']) with
+  match List.rev (Rdf_uri.path uri_sub_op) with
     [] -> assert false
   | name :: _ ->
       let path = path @ [name] in
-      import_flat_op ctx uri_sub_op
-
+      import_flat_op ctx uri_sub_op (Rdf_uri.concat uri_dst name) path
 ;;
-*)
+
 let add_intf ctx uri_op loc intf_spec =
   let dbg = dbg ~loc: "add_intf" in
   dbg ~level: 2
@@ -61,7 +59,13 @@ let add_intf ctx uri_op loc intf_spec =
 ;;
 
 let create_ports_from_chn ctx uri chn =
+  let dbg = dbg ~loc: "create_port_from_chn" in
+  dbg ~level: 2
+    (fun () -> Printf.sprintf "uri=%s chn=%s"
+      (Rdf_uri.string uri) (Chn_types.string_of_chain_basename chn.chn_name));
   let mk_port dir (rank, map, ports) p =
+    dbg ~level: 3
+      (fun () -> Printf.sprintf "mk_port rank=%d p=%s" rank p.p_name);
     let ftype =
       let mk_uri = Grdfs.uri_filetype ~prefix: ctx.ctx_cfg.Config.rest_api in
       match p.p_ftype with
@@ -73,8 +77,8 @@ let create_ports_from_chn ctx uri chn =
     (rank + 1, map, ports)
   in
   let set_ports dir t =
-    let (_, map, ports) = Array.fold_left (mk_port dir) (1, Smap.empty, []) t in
-    Grdf_port.set_ports  ctx.ctx_rdf uri dir ports;
+    let (n, map, ports) = Array.fold_left (mk_port dir) (1, Smap.empty, []) t in
+    Grdf_port.set_ports ctx.ctx_rdf uri dir ports;
     map
   in
   let map_in = set_ports Grdf_port.In chn.chn_inputs in
@@ -142,7 +146,7 @@ let create_data_edge ctx uri map edge =
       Grdf_port.One u1, Grdf_port.One u2
     | Grdf_port.One u1, Grdf_port.List u2
     | Grdf_port.List u1, Grdf_port.One u2
-    | Grdf_port.List u1, Grdf_port.List u2 -> u1 = u2
+    | Grdf_port.List u1, Grdf_port.List u2 -> Rdf_uri.equal u1 u2
   in
   if not compat then
     Loc.raise_problem edge.edge_src.ep_loc
@@ -159,6 +163,10 @@ let create_data_edges ctx uri map chn =
 ;;
 
 let rec do_flatten ctx ?(path=[]) fullname =
+  let dbg = dbg ~loc: "do_flatten" in
+  dbg ~level: 2
+    (fun () -> Printf.sprintf "path=%s fullname=%s"
+      (String.concat "/" path) (Chn_types.string_of_chain_name fullname));
   let modname = Chn_types.chain_modname fullname in
   let name = Chn_types.chain_basename fullname in
   let file = Chn_io.file_of_modname ctx.ctx_cfg modname in
@@ -167,6 +175,8 @@ let rec do_flatten ctx ?(path=[]) fullname =
     ~modname: (Chn_types.string_of_chain_modname modname)
     ~name: (Chn_types.string_of_chain_basename name) ~id
   in
+  dbg ~level:3
+    (fun () -> Printf.sprintf "uri_fchain=%s" (Rdf_uri.string uri_fchain));
   if fchain_exists ctx fullname uri_fchain then
     uri_fchain
   else
@@ -178,14 +188,14 @@ let rec do_flatten ctx ?(path=[]) fullname =
         | Some chn -> chn
       in
       let op_map =
-        match path with
-          [] ->
-            let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
-            Smap.singleton "" (uri_fchain, map_in, map_out)
-        | _ ->  Smap.empty
+        let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
+        Smap.singleton "" (uri_fchain, map_in, map_out)
       in
       let op_map = List.fold_left (add_op ctx path uri_fchain) op_map chn.chn_ops in
       create_data_edges ctx uri_fchain op_map chn;
+      let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
+      Grdfs.add_triple_uris ctx.ctx_rdf
+        ~sub ~pred: Grdfs.genet_flattenedto ~obj: uri_fchain;
       uri_fchain
     end
 

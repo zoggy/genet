@@ -4,7 +4,7 @@ chain foo
   (* ... *)
 {
   in: ocamlimpl i1 ;
-  out: ocamlintf o1 ;
+  out: coq o1 ;
 
 }
 
