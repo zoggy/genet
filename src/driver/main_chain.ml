@@ -2,20 +2,36 @@
 
 open Chn_ast;;
 
-let gen_dot file chain =
-  let outfile = Printf.sprintf "%s.%s.dot"
-    (String.capitalize (Filename.basename file))
-    (Chn_types.string_of_chain_basename chain.chn_name)
-  in
+let gen_chain_dot file chain =
   let dot = (new Chn_ast.chain_dot_printer)#dot_of_chain chain in
-  Misc.file_of_string ~file: outfile dot
+  Misc.file_of_string ~file: file dot
 ;;
 
-let test_file ?(dot=false) file =
+let gen_fchain_dot file fchain =
+  let dot = (new Chn_flat.fchain_dot_printer)#dot_of_fchain fchain in
+  Misc.file_of_string ~file: file dot
+;;
+
+
+
+let test_file ?dot file =
   try
     let cmod = Chn_io.chn_module_of_file file in
     Chn_io.print_chn_module stdout cmod;
-    if dot then List.iter (gen_dot file) cmod.cmod_chains;
+    begin
+      match dot with
+        None -> ()
+      | Some prefix ->
+          let f chn =
+            let outfile = Printf.sprintf "%s%s.%s.dot"
+              prefix
+              (String.capitalize (Filename.basename file))
+              (Chn_types.string_of_chain_basename chn.chn_name)
+            in
+            gen_chain_dot outfile chn
+          in
+          List.iter f cmod.cmod_chains
+    end;
     true
   with
     Loc.Problem pb ->
@@ -23,13 +39,15 @@ let test_file ?(dot=false) file =
       false
 ;;
 
-let flatten opts acc s =
+let flatten opts ?dot acc s =
   try
     let config = Config.read_config opts.Options.config_file in
     let rdf_wld = Grdf_init.open_graph config in
     let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
     let fullname = Chn_types.chain_name_of_string s in
-    ignore(Chn_flat.flatten ctx fullname);
+    let uri = Chn_flat.flatten ctx fullname in
+    print_endline (Printf.sprintf "%s => %s" s (Rdf_uri.string uri));
+    begin match dot with None -> () | Some file -> gen_fchain_dot file uri end;
     acc
   with
     e ->
@@ -44,19 +62,19 @@ let flatten opts acc s =
       acc + 1
 ;;
 
-let dot = ref false;;
+let dot = ref None;;
 type action = Test of string | Flatten of string;;
 let actions = ref [];;
 
 let do_action opts acc = function
-  Test file -> if test_file ~dot: !dot file then acc else acc + 1
-| Flatten s -> flatten opts acc s
+  Test file -> if test_file ?dot: !dot file then acc else acc + 1
+| Flatten s -> flatten opts ?dot: !dot acc s
 ;;
 
 let options =
   Options.option_config ::
   [
-    "--dot", Arg.Set dot, " generate dot files when testing a file" ;
+    "--dot", Arg.String (fun file -> dot := Some file), " generate dot files" ;
     "-t", Arg.String (fun s -> actions := Test s :: !actions), "<file> test the given file" ;
     "-f", Arg.String (fun s -> actions := Flatten s :: !actions), "<Mod.chain> flatten the given chain" ;
   ]

@@ -245,3 +245,10 @@ let flatten ctx fullname =
       ctx.ctx_rdf.wld_graph.transaction_rollback ();
       raise e
 ;;
+
+
+class fchain_dot_printer =
+  object(self)
+
+    method dot_of_fchain uri = Rdf_uri.string uri
+  end
