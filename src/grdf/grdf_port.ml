@@ -19,6 +19,9 @@ let dir_of_string = function
   "in" -> In | "out" -> Out
 | s -> failwith (Printf.sprintf "Invalid direction %S" s)
 ;;
+let string_of_dir = function
+| In -> "in"
+| Out -> "out"
 
 let port_name wld port = Grdfs.name wld (Uri port);;
 let port_rank = Grdfs.port_rank ;;

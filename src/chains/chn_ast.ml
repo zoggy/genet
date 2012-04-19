@@ -191,7 +191,7 @@ class chain_dot_printer =
           string_of_int n
         else
           Printf.sprintf "%s_p%d"
-          (match dir with Grdf_port.In -> "in" | Grdf_port.Out -> "out")
+          (Grdf_port.string_of_dir dir)
           n
     | Pname s -> s
 

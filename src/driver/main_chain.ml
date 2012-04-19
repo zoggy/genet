@@ -7,8 +7,8 @@ let gen_chain_dot file chain =
   Misc.file_of_string ~file: file dot
 ;;
 
-let gen_fchain_dot file fchain =
-  let dot = (new Chn_flat.fchain_dot_printer)#dot_of_fchain fchain in
+let gen_fchain_dot ctx file fchain =
+  let dot = (new Chn_flat.fchain_dot_printer)#dot_of_fchain ctx fchain in
   Misc.file_of_string ~file: file dot
 ;;
 
@@ -47,7 +47,7 @@ let flatten opts ?dot acc s =
     let fullname = Chn_types.chain_name_of_string s in
     let uri = Chn_flat.flatten ctx fullname in
     print_endline (Printf.sprintf "%s => %s" s (Rdf_uri.string uri));
-    begin match dot with None -> () | Some file -> gen_fchain_dot file uri end;
+    begin match dot with None -> () | Some file -> gen_fchain_dot ctx file uri end;
     acc
   with
     e ->

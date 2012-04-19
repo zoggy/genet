@@ -17,6 +17,20 @@ let fchain_exists ctx orig_fullname uri_fchain =
    ~pred: (Uri Grdfs.genet_flattenedto) ~obj: (Uri uri_fchain) ()
 ;;
 
+let get_ops ctx uri =
+  Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_containsop
+;;
+
+let get_op_name uri =
+  match List.rev (Rdf_uri.path uri) with
+    [] -> failwith "Not a flat chain operation uri: "^(Rdf_uri.string uri)
+  | name :: _ -> name
+;;
+
+let port_consumers ctx uri =
+  Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_produces
+;;
+
 let rec import_flat_op ctx uri_src uri_dst path =
 
   assert (path <> []);
@@ -30,16 +44,14 @@ let rec import_flat_op ctx uri_src uri_dst path =
 *)
   Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_src ~dst: uri_op;
   (* copy sub operations *)
-  let sub_ops = Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri_src) ~pred: Grdfs.genet_containsop in
+  let sub_ops = get_ops ctx uri_src in
   List.iter (import_flat_sub_op ctx uri_dst path) sub_ops
   (* TODO: copy edges *)
 
 and import_flat_sub_op ctx uri_dst path uri_sub_op =
-  match List.rev (Rdf_uri.path uri_sub_op) with
-    [] -> assert false
-  | name :: _ ->
-      let path = path @ [name] in
-      import_flat_op ctx uri_sub_op (Rdf_uri.concat uri_dst name) path
+  let name = get_op_name uri_sub_op in
+  let path = path @ [name] in
+  import_flat_op ctx uri_sub_op (Rdf_uri.concat uri_dst name) path
 ;;
 
 let add_intf ctx uri_op loc intf_spec =
@@ -248,7 +260,64 @@ let flatten ctx fullname =
 
 
 class fchain_dot_printer =
+  let dotp = new Chn_ast.chain_dot_printer in
   object(self)
+    method id s = "n"^(Digest.to_hex (Digest.string s))
+    method uri_id uri = self#id (Rdf_uri.string uri)
 
-    method dot_of_fchain uri = Rdf_uri.string uri
+    method color_of_port_dir = function
+    | Grdf_port.In -> dotp#color_in
+    | Grdf_port.Out -> dotp#color_out
+
+    method print_port_edges ctx b uri =
+      let ports = port_consumers ctx uri in
+      let src = self#uri_id uri in
+      let f p =
+        Printf.bprintf b "%s -> %s ;\n" src (self#uri_id p)
+      in
+      List.iter f ports
+
+    method print_port ctx b uri =
+      let dir = Grdf_port.port_dir uri in
+      let ft_name ftype = Grdf_ftype.name ctx.ctx_rdf ftype in
+      let (link, ft) =
+        match Grdf_port.port_type ctx.ctx_rdf uri with
+          Grdf_port.One ftype -> (ftype, ft_name ftype)
+        | Grdf_port.List ftype -> (ftype, Printf.sprintf "%s list" (ft_name ftype))
+      in
+      let id = self#uri_id uri in
+      let label =
+        match Grdf_port.port_name ctx.ctx_rdf uri with
+          "" -> string_of_int (Grdf_port.port_rank uri)
+        | s -> s
+      in
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
+        id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
+
+    method print_op ctx ?(root=false) b acc uri =
+      if not root then
+        Printf.bprintf b "subgraph cluster_%s {\n  label=%S;\n"
+           (self#uri_id uri) (get_op_name uri);
+
+      let f acc dir =
+        if root then
+          Printf.bprintf b "subgraph cluster_%s {\n"
+          (Grdf_port.string_of_dir dir);
+        let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
+        List.iter (self#print_port ctx b) ports;
+        if root then Buffer.add_string b "}\n";
+        List.fold_right Uriset.add ports acc
+      in
+      let acc = List.fold_left f acc [ Grdf_port.In ; Grdf_port.Out ] in
+      let acc = List.fold_left (self#print_op ctx b) acc (get_ops ctx uri) in
+      if not root then Buffer.add_string b "}\n";
+      acc
+
+    method dot_of_fchain ctx uri =
+      let b = Buffer.create 256 in
+      Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
+      let ports = self#print_op ctx ~root: true b Uriset.empty uri in
+      Uriset.iter (self#print_port_edges ctx b) ports;
+      Buffer.add_string b "}\n";
+      Buffer.contents b
   end
