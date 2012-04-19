@@ -3,20 +3,31 @@
 chain foo
   (* ... *)
 {
-  in: ocamlimpl i1 ;
+  in: coq i1 ;
   out: coq o1 ;
 
+}
+
+chain test2
+(* Just the description here. *)
+{
+  in: coq i1;
+  out: coq o1;
+
+  operation foo : Chain1.foo ;
+  i1 -> foo.1 ;
+  foo.1 -> o1 ;
 }
 
 chain test1
 (*  This is the description of the chain *)
 {
   in: coq i1, coqo list i2, ocamlimpl i3;
-  out: ocamlimpl o1, coq o2 ; (* bar = /filetypes/bar *)
+  out: coq o1, coq o2 ; (* bar = /filetypes/bar *)
 
   operation op1 : "/why/prove" ;
   operation op2 : "/why/prove2" ;
-  operation op3 : Chain1.foo ;
+  operation op3 : Chain1.test2 ;
 
   i1 -> op1.1 ;(* automatically generated name for 1st input of op1 *)
   i2 -> op1.2 ;(* automatically generated name for 2nd input of op1 *)

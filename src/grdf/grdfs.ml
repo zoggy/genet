@@ -182,7 +182,7 @@ let uri_fchain ~prefix ~modname ~name ~id  =
   Rdf_uri.concat (Rdf_uri.concat (uri_fchain_module ~prefix modname) name) id;;
 
 let  uri_fchain_op fchain path =
-  List.fold_left Rdf_uri.concat fchain (List.rev path)
+  List.fold_left Rdf_uri.concat fchain path
 ;;
 
 let is_in_fchains prefix uri =

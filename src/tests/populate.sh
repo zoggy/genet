@@ -17,10 +17,10 @@ PROVE2=`./genet add interface ${WHY}/branches/1.x prove2`
 ./genet add port ${PROVE} in coq
 ./genet add port ${PROVE} in coqo
 ./genet add port ${PROVE} out ocamlimpl
-./genet add port ${PROVE} out ocamlimpl
+./genet add port ${PROVE} out coq
 ./genet add port ${PROVE2} in ocamlimpl
 ./genet add port ${PROVE2} in ocamlimpl
-./genet add port ${PROVE2} out ocamlimpl
+./genet add port ${PROVE2} out coq
 
 
 ALTERGO=`./genet add tool altergo`

@@ -18,7 +18,19 @@ let fchain_exists ctx orig_fullname uri_fchain =
 ;;
 
 let get_ops ctx uri =
-  Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_containsop
+  let l = Grdfs.object_uris ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_containsop in
+  dbg ~level: 3
+  (fun() -> Printf.sprintf
+     "length(get_ops(%s)) =%n" (Rdf_uri.string uri) (List.length l));
+  l
+;;
+
+let add_containsop ctx ~src ~dst =
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: src ~pred: Grdfs.genet_containsop ~obj: dst;
+  dbg ~level: 3
+    (fun() -> Printf.sprintf "%s -containsop-> %s"
+      (Rdf_uri.string src)(Rdf_uri.string dst));
 ;;
 
 let get_op_name uri =
@@ -39,9 +51,18 @@ let get_op_origin ctx uri =
 ;;
 
 let rec import_flat_op ctx uri_src uri_dst path =
-
   assert (path <> []);
+  let dbg = dbg ~loc: "import_flat_op" in
   let uri_op = Grdfs.uri_fchain_op uri_dst path in
+  let uri_parent = Rdf_uri.parent uri_op in
+
+  add_containsop ctx ~src: uri_parent ~dst: uri_op;
+
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: uri_src;
+  dbg ~level: 3
+    (fun() -> Printf.sprintf "%s -opfrom-> %s"
+      (Rdf_uri.string uri_op)(Rdf_uri.string uri_src));
   (* copy ports of the src flat chain to our target operation *)
 (*
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_src Grdf_port.In in
@@ -56,9 +77,17 @@ let rec import_flat_op ctx uri_src uri_dst path =
   (* TODO: copy edges *)
 
 and import_flat_sub_op ctx uri_dst path uri_sub_op =
+  dbg ~loc: "import_flat_sub_op" ~level: 3
+    (fun () ->
+       Printf.sprintf "* uri_dst = %s\n \
+                       * path = %s\n \
+                       * uri_sub_op = %s"
+     (Rdf_uri.string uri_dst) (String.concat "/" path)
+     (Rdf_uri.string uri_sub_op)
+     );
   let name = get_op_name uri_sub_op in
   let path = path @ [name] in
-  import_flat_op ctx uri_sub_op (Rdf_uri.concat uri_dst name) path
+  import_flat_op ctx uri_sub_op uri_dst path
 ;;
 
 let add_intf ctx uri_op loc intf_spec =
@@ -237,7 +266,7 @@ and add_op ctx path uri_fchain map op =
   dbg ~level: 3
      (fun () -> Printf.sprintf "uri_op=%s" (Rdf_uri.string uri_op));
   let add = Grdfs.add_triple_uris ctx.ctx_rdf in
-  add ~sub: uri_parent ~pred: Grdfs.genet_containsop ~obj: uri_op;
+  add_containsop ctx ~src: uri_parent ~dst: uri_op;
   let (map_in, map_out) =
     match op.op_from with
       Interface s ->
@@ -245,7 +274,7 @@ and add_op ctx path uri_fchain map op =
         (mk_port_map ctx uri_op Grdf_port.In,
          mk_port_map ctx uri_op Grdf_port.Out)
     | Chain fullname ->
-        let src = do_flatten ctx ~path fullname in
+        let src = do_flatten ctx ~path: [] fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
         import_flat_op ctx src uri_fchain path;
         (Smap.empty, Smap.empty)
@@ -304,16 +333,22 @@ class fchain_dot_printer =
         id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
 
     method print_op ctx ?(root=false) b acc uri =
+      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
       if not root then
         begin
           let (color, label) =
-            let uri_from = get_op_origin ctx uri in
-            match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-              None -> dotp#color_chain, get_op_name uri
-            | Some name -> dotp#color_interface, name
+            try
+              let uri_from = get_op_origin ctx uri in
+              match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+                None -> dotp#color_chain, get_op_name uri
+              | Some name -> dotp#color_interface, name
+            with
+              Failure msg ->
+                prerr_endline msg ;
+                ("red", get_op_name uri)
           in
           Printf.bprintf b "subgraph cluster_%s {\n\
-            label=%S;\n color=%S;\n style=\"filled\";\n"
+            label=%S;\n color=\"black\" fillcolor=%S;\n style=\"filled\";\n"
           (self#uri_id uri) label color
 
         end;
