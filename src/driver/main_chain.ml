@@ -7,7 +7,7 @@ let gen_dot file chain =
     (String.capitalize (Filename.basename file))
     (Chn_types.string_of_chain_basename chain.chn_name)
   in
-  let dot = Chn_ast.Dot.dot_of_chain chain in
+  let dot = (new Chn_ast.chain_dot_printer)#dot_of_chain chain in
   Misc.file_of_string ~file: outfile dot
 ;;
 

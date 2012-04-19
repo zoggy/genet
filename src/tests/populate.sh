@@ -8,11 +8,20 @@ WHY=`./genet add tool why`
 ./genet add version ${WHY} ${WHY}/branches/2.x 2.1
 ./genet add version ${WHY} ${WHY}/branches/2.x 07a10043b2f4ee1d9edae560b1c567029e59dd21
 ./genet add version ${WHY} ${WHY}/branches/2.x ff51ebabd5953c54607fdd3a2251fb8095806cfe
-./genet add interface ${WHY}/branches/1.x prove
-./genet add interface ${WHY}/branches/1.x prove2
+PROVE=`./genet add interface ${WHY}/branches/1.x prove`
+PROVE2=`./genet add interface ${WHY}/branches/1.x prove2`
 ./genet add filetype "coq" v "coq file"
+./genet add filetype "coqo" vo "coq object file"
 ./genet add filetype "ocamlimpl" ml "ocaml implementation"
 ./genet add filetype "ocamlintf" mli "ocaml interface"
+./genet add port ${PROVE} in coq
+./genet add port ${PROVE} in coqo
+./genet add port ${PROVE} out ocamlimpl
+./genet add port ${PROVE} out ocamlimpl
+./genet add port ${PROVE2} in ocamlimpl
+./genet add port ${PROVE2} in ocamlimpl
+./genet add port ${PROVE2} out ocamlimpl
+
 
 ALTERGO=`./genet add tool altergo`
 ./genet add branch ${ALTERGO} 1.x

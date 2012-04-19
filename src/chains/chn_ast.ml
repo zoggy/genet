@@ -178,30 +178,40 @@ class ast_printer =
 
 let printer () = new ast_printer ;;
 
-module Dot =
-  struct
-    let color_in = "palegreen"
-    let color_out = "paleturquoise"
-    let color_chain = "grey75"
-    let color_interface = "lightsalmon"
+class chain_dot_printer =
+  object(self)
+    method color_in = "palegreen"
+    method color_out = "paleturquoise"
+    method color_chain = "grey75"
+    method color_interface = "lightsalmon"
 
-    let string_of_port_ref ?(label=false) = function
-      Pint n -> if label then string_of_int n else Printf.sprintf "p%d" n
+    method string_of_port_ref dir ?(label=false) = function
+      Pint n ->
+        if label then
+          string_of_int n
+        else
+          Printf.sprintf "%s_p%d"
+          (match dir with Grdf_port.In -> "in" | Grdf_port.Out -> "out")
+          n
     | Pname s -> s
 
-    let string_of_op_origin = function
+    method string_of_op_origin = function
       Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
 
-    let uri_of_op_origin prefix = function
+    method uri_of_op_origin prefix = function
       Chain s -> Chn_types.uri_chain prefix s
     | Interface uri -> Chn_types.uri_intf_of_interface_spec ~prefix uri
 
-    let color_of_op_origin = function
-      Chain _ -> color_chain
-    | Interface _ -> color_interface
+    method color_of_op_origin = function
+      Chain _ -> self#color_chain
+    | Interface _ -> self#color_interface
 
-    let print_operation ?prefix b chn op =
+    method string_of_port dir color p =
+      Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
+      color (self#string_of_port_ref dir p) (self#string_of_port_ref dir ~label: true p)
+
+    method print_operation ?prefix b chn op =
       let f map acc edge =
         let ep = map edge in
         match ep.ep_op with
@@ -213,90 +223,87 @@ module Dot =
       let get_ports map = List.fold_left (f map) [] chn.chn_edges in
       let inputs = get_ports (fun edge -> edge.edge_dst) in
       let outputs = get_ports (fun edge -> edge.edge_src) in
-      let string_of_port color p =
-        Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
-        color (string_of_port_ref p) (string_of_port_ref ~label: true p)
-      in
-      let bgcolor = color_of_op_origin op.op_from in
+      let bgcolor = self#color_of_op_origin op.op_from in
 
-      let string_of_ports color ports =
+      let string_of_ports dir color ports =
         Printf.sprintf  "<TD><TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"3\" CELLPADDING=\"4\">%s</TABLE></TD>"
-        (String.concat "" (List.map (string_of_port color) ports))
+        (String.concat "" (List.map (self#string_of_port dir color) ports))
       in
       Printf.bprintf b "%s [ shape=plaintext label=<<TABLE BGCOLOR=\"%s\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"3\"><TR>" op.op_name bgcolor;
-      Printf.bprintf b "%s" (string_of_ports color_in inputs);
+      Printf.bprintf b "%s" (string_of_ports Grdf_port.In self#color_in inputs);
       Printf.bprintf b "<TD ALIGN=\"CENTER\" HREF=\"%s\" CELLPADDING=\"4\">%s</TD>"
-      (match prefix with 
+      (match prefix with
          None -> ""
-       | Some prefix -> Rdf_uri.string (uri_of_op_origin prefix op.op_from)
+       | Some prefix -> Rdf_uri.string (self#uri_of_op_origin prefix op.op_from)
       )
-      (string_of_op_origin op.op_from);
-      Printf.bprintf b "%s" (string_of_ports color_out outputs);
+      (self#string_of_op_origin op.op_from);
+      Printf.bprintf b "%s" (string_of_ports Grdf_port.Out self#color_out outputs);
       Buffer.add_string b "</TR></TABLE>>];\n"
-    let string_of_edge_part ep =
+
+    method string_of_edge_part dir ep =
       match ep.ep_op with
-        None -> string_of_port_ref ep.ep_port
-      | Some op_name -> Printf.sprintf "%s:%s" op_name (string_of_port_ref ep.ep_port)
+        None -> self#string_of_port_ref dir ep.ep_port
+      | Some op_name -> Printf.sprintf "%s:%s" op_name (self#string_of_port_ref dir ep.ep_port)
 
-    let print_edge b edge =
+    method print_edge b edge =
       Printf.bprintf b "%s -> %s ;\n"
-      (string_of_edge_part edge.edge_src)
-      (string_of_edge_part edge.edge_dst)
+      (self#string_of_edge_part Grdf_port.Out edge.edge_src)
+      (self#string_of_edge_part Grdf_port.In edge.edge_dst)
 
-    let print_port b color p =
+    method print_port b color p =
       Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" label=\"%s\"];\n"
         p.p_name color p.p_name
 
-    let dot_of_chain ?prefix chain =
+    method dot_of_chain ?prefix chain =
       let b = Buffer.create 256 in
       Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
-      List.iter (print_operation ?prefix b chain) chain.chn_ops;
-      List.iter (print_edge b) chain.chn_edges;
-      Array.iter (print_port b color_in) chain.chn_inputs;
-      Array.iter (print_port b color_out) chain.chn_outputs;
+      List.iter (self#print_operation ?prefix b chain) chain.chn_ops;
+      List.iter (self#print_edge b) chain.chn_edges;
+      Array.iter (self#print_port b self#color_in) chain.chn_inputs;
+      Array.iter (self#print_port b self#color_out) chain.chn_outputs;
       Buffer.add_string b "}\n";
       Buffer.contents b
 
   end;;
 
-module Dot_deps =
-  struct
-    let id s = Printf.sprintf "%S" s
-    let chain_id n = id (Chn_types.string_of_chain_name n)
-    let intf_id s = id (String.concat "___" (Misc.split_string s ['/']))
+class chain_dot_deps ?(chain_dot=new chain_dot_printer) () =
+  object(self)
+    method id s = Printf.sprintf "%S" s
+    method chain_id n = self#id (Chn_types.string_of_chain_name n)
+    method intf_id s = self#id (String.concat "___" (Misc.split_string s ['/']))
 
-    let print_dep_chn b id fullname =
-      Printf.bprintf b "%s -> %s;\n" id (chain_id fullname)
+    method print_dep_chn b id fullname =
+      Printf.bprintf b "%s -> %s;\n" id (self#chain_id fullname)
 
-    let print_dep_intf b id s intfs =
-      Printf.bprintf b "%s -> %s;\n" id (intf_id s);
+    method print_dep_intf b id s intfs =
+      Printf.bprintf b "%s -> %s;\n" id (self#intf_id s);
       Sset.add s intfs
 
-    let print_chn b ~prefix ~fullnames fullname dep intfs =
+    method print_chn b ~prefix ~fullnames fullname dep intfs =
       let label =
         if fullnames then
           Chn_types.string_of_chain_name fullname
         else
           Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname)
       in
-      let id = chain_id fullname in
+      let id = self#chain_id fullname in
       Printf.bprintf b "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-        id label (Rdf_uri.string (Chn_types.uri_chain prefix fullname)) Dot.color_chain;
-      Cset.iter (print_dep_chn b id) dep.dep_chains ;
-      let intfs = Sset.fold (print_dep_intf b id) dep.dep_intfs intfs in
+        id label (Rdf_uri.string (Chn_types.uri_chain prefix fullname)) chain_dot#color_chain;
+      Cset.iter (self#print_dep_chn b id) dep.dep_chains ;
+      let intfs = Sset.fold (self#print_dep_intf b id) dep.dep_intfs intfs in
       intfs
 
-    let print_intf b ~prefix intf =
+    method print_intf b ~prefix intf =
       let uri = Chn_types.uri_intf_of_interface_spec ~prefix intf in
       Printf.bprintf b
       "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-      (intf_id intf) intf (Rdf_uri.string uri) Dot.color_interface
+      (self#intf_id intf) intf (Rdf_uri.string uri) chain_dot#color_interface
 
-    let dot_of_deps prefix ?(fullnames=true) deps =
+    method dot_of_deps prefix ?(fullnames=true) deps =
       let b = Buffer.create 256 in
       Buffer.add_string b "digraph g {\nrankdir=TB;\nfontsize=10;\n";
-      let intfs = Cmap.fold (print_chn b ~prefix ~fullnames) deps Sset.empty in
-      Sset.iter (print_intf b ~prefix) intfs;
+      let intfs = Cmap.fold (self#print_chn b ~prefix ~fullnames) deps Sset.empty in
+      Sset.iter (self#print_intf b ~prefix) intfs;
       Buffer.add_string b "}\n";
       Buffer.contents b
   end;;

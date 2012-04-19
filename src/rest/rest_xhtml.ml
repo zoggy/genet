@@ -546,7 +546,7 @@ let get_chains ctx =
     let config = ctx.ctx_cfg in
     let (cmods, errors) = Chn_io.load_chain_files config in
     let deps = Chn_ast.compute_deps ctx.ctx_rdf config cmods in
-    let dot = Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api deps in
+    let dot = Rest_xpage.dot_of_deps config.Config.rest_api deps in
     let svg = dot_to_svg dot in
     let error =
       match errors with
@@ -586,7 +586,7 @@ let get_chain_module ctx modname =
   let deps =
     let deps = Chn_ast.compute_deps ctx.ctx_rdf config [cmod] in
     let dot =
-      Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api
+      Rest_xpage.dot_of_deps config.Config.rest_api
       ~fullnames: false deps
     in
     dot_to_svg dot
@@ -614,7 +614,7 @@ let get_chain ctx fullname =
         let prefix = config.Config.rest_api in
         let code = Rest_xpage.xhtml_of_chain prefix chn in
         let svg =
-          let dot = Chn_ast.Dot.dot_of_chain ~prefix chn in
+          let dot = Rest_xpage.dot_of_chain prefix chn in
           dot_to_svg dot
         in
         (code, svg)

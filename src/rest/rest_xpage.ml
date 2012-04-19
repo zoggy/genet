@@ -257,3 +257,35 @@ let xhtml_of_chain prefix chain =
   printer#string_of_chain chain
 ;;
 
+class xhtml_chain_dot_printer prefix =
+  object(self)
+    inherit Chn_ast.chain_dot_printer as super
+
+    method print_port b color p =
+      let link ftype = Rdf_uri.string (Grdfs.uri_filetype ~prefix ftype) in
+      let (link, ft) =
+        match p.p_ftype with
+          Grdf_port.One ftype -> (link ftype, ftype)
+        | Grdf_port.List ftype -> (link ftype, Printf.sprintf "%s list" ftype)
+      in
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
+        p.p_name color link p.p_name ft
+
+  end;;
+
+let dot_of_chain prefix chain =
+  let o = new xhtml_chain_dot_printer prefix in
+  o#dot_of_chain ~prefix chain
+;;
+
+class xhtml_chain_dot_deps prefix =
+  let printer = new xhtml_chain_dot_printer prefix in
+  object(self)
+    inherit Chn_ast.chain_dot_deps ~chain_dot: printer ()as super
+  end
+;;
+
+let dot_of_deps prefix ?fullnames deps =
+  let printer = new xhtml_chain_dot_deps prefix in
+  printer#dot_of_deps prefix ?fullnames deps
+;;
