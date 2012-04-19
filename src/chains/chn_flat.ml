@@ -261,11 +261,11 @@ let add_edges_from_maps ctx map_in map_out =
   Urimap.iter f_orig_port map
 ;;
 
-let rec do_flatten ctx ?(path=[]) fullname =
+let rec do_flatten ctx fullname =
   let dbg = dbg ~loc: "do_flatten" in
   dbg ~level: 2
-    (fun () -> Printf.sprintf "path=%s fullname=%s"
-      (String.concat "/" path) (Chn_types.string_of_chain_name fullname));
+    (fun () -> Printf.sprintf "fullname=%s"
+      (Chn_types.string_of_chain_name fullname));
   let modname = Chn_types.chain_modname fullname in
   let name = Chn_types.chain_basename fullname in
   let file = Chn_io.file_of_modname ctx.ctx_cfg modname in
@@ -290,7 +290,7 @@ let rec do_flatten ctx ?(path=[]) fullname =
         let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
         Smap.singleton "" (uri_fchain, map_in, map_out)
       in
-      let op_map = List.fold_left (add_op ctx path uri_fchain) op_map chn.chn_ops in
+      let op_map = List.fold_left (add_op ctx uri_fchain) op_map chn.chn_ops in
       create_data_edges ctx uri_fchain op_map chn;
       let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
       Grdfs.add_triple_uris ctx.ctx_rdf
@@ -298,26 +298,19 @@ let rec do_flatten ctx ?(path=[]) fullname =
       uri_fchain
     end
 
-and add_op ctx path uri_fchain map op =
+and add_op ctx uri_fchain map op =
   let dbg = dbg ~loc: "add_op" in
   dbg ~level: 2
   (fun () ->
-    Printf.sprintf "path=%s uri_fchain=%s op=%s"
-      (String.concat "/" path) (Rdf_uri.string uri_fchain) op.op_name
+    Printf.sprintf "uri_fchain=%s op=%s"
+      (Rdf_uri.string uri_fchain) op.op_name
   );
-  let uri_parent =
-    match path with
-      [] -> uri_fchain
-    | _ -> Grdfs.uri_fchain_op uri_fchain path
-  in
-  dbg ~level: 3
-     (fun () -> Printf.sprintf "parent=%s" (Rdf_uri.string uri_parent));
-  let path = path @ [op.op_name] in
+  let path = [op.op_name] in
   let uri_op = Grdfs.uri_fchain_op uri_fchain path in
   dbg ~level: 3
      (fun () -> Printf.sprintf "uri_op=%s" (Rdf_uri.string uri_op));
   let add = Grdfs.add_triple_uris ctx.ctx_rdf in
-  add_containsop ctx ~src: uri_parent ~dst: uri_op;
+  add_containsop ctx ~src: uri_fchain ~dst: uri_op;
   let (map_in, map_out) =
     match op.op_from with
       Interface s ->
@@ -325,7 +318,7 @@ and add_op ctx path uri_fchain map op =
         (mk_port_map ctx uri_op Grdf_port.In,
          mk_port_map ctx uri_op Grdf_port.Out)
     | Chain fullname ->
-        let src = do_flatten ctx ~path: [] fullname in
+        let src = do_flatten ctx fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
         let (map_in, map_out) =
           import_flat_op ctx src uri_fchain path (Urimap.empty, Urimap.empty)
