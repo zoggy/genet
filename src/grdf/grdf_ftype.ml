@@ -57,3 +57,4 @@ let string_of_filetype wld uri =
   let name = name wld uri in
   let ext = extension wld uri in
   Printf.sprintf "%s (.%s)" name ext
+;;

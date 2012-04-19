@@ -63,6 +63,33 @@ let add_filetype config wld options =
   | _ -> failwith "Please give the name, file extension and description of the new filetype"
 ;;
 
+let add_port config wld ?pos ?(list=false) options =
+  match options.args with
+    s_intf :: s_dir :: ftype_name :: q ->
+      let uri_intf = Rdf_uri.uri s_intf in
+      let dir = Grdf_port.dir_of_string s_dir in
+      let uri_ftype = Grdfs.uri_filetype ~prefix: config.Config.rest_api ftype_name in
+      let name = match q with [] -> None | s :: _ -> Some s in
+      let typ = if list then Grdf_port.List uri_ftype else Grdf_port.One uri_ftype in
+      if Grdf_intf.intf_exists wld uri_intf = None then
+        failwith (Printf.sprintf "Unknown interface %S" (Rdf_uri.string uri_intf));
+      if Grdf_ftype.filetype_exists wld uri_ftype = None then
+        failwith (Printf.sprintf "Unknown filetype %S" (Rdf_uri.string uri_ftype));
+
+      Grdf_port.add_port wld uri_intf dir ?pos ?name typ;
+      let uri_port = Grdf_intf.get_port wld uri_intf ?pos dir in
+      print_endline (Rdf_uri.string uri_port)
+  | _ ->
+      let msg =
+      "Please give at least the interface uri, the direction (in|out) and the filetype name"
+      in
+      failwith msg
+;;
+
+let rem_port config wld options =()
+
+
+
 (** {2 Command-line specification} *)
 
 type mode =
@@ -74,6 +101,8 @@ type mode =
   | Add_version
   | Add_intf
   | Add_filetype
+  | Add_port
+  | Rem_port
 
 let mode = ref None;;
 
@@ -109,18 +138,52 @@ let com_add_filetype = {
   }
 ;;
 
+let com_rem_port = {
+  com_options = [] ; com_usage = "<port uri>" ;
+  com_kind = Final (set_mode Rem_port) ;
+  }
+;;
+
+let port_position = ref None;;
+let port_type_list = ref false;;
+let com_add_port = {
+    com_options = [
+      "-p", Arg.Int (fun n -> port_position := Some n),
+      "<n> 1-based position to insert port at; default is to append" ;
+
+      "-l", Arg.Set port_type_list,
+      "port type is a list of the specified filetype";
+    ] ;
+    com_usage = "<interface uri> <in|out> <filetype-name> [port name]" ;
+    com_kind = Final (set_mode Add_port) ;
+  }
+;;
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
     "version", com_add_version, "add new version" ;
     "interface", com_add_intf, "add new interface" ;
     "filetype", com_add_filetype, "add new filetype" ;
+    "port", com_add_port, "add new port" ;
   ]
 ;;
 
 let com_add = {
   com_options = [] ; com_usage = "" ;
   com_kind = Commands add_commands ;
+  }
+;;
+
+
+let remove_commands = [
+    "port", com_rem_port, "remove port" ;
+  ]
+;;
+
+let com_remove = {
+  com_options = [] ; com_usage = "" ;
+  com_kind = Commands remove_commands ;
   }
 ;;
 
@@ -137,7 +200,7 @@ let com_init_dir = {
       "<repo> will create the 'in' directory by cloning the repository" ;
     ] ;
     com_usage = "[<directory>]" ;
-  com_kind = Final (set_mode Init_dir) ;
+    com_kind = Final (set_mode Init_dir) ;
   }
 ;;
 
@@ -159,6 +222,7 @@ let commands = [
     "init-db", com_init_db, "init database" ;
     "serialize-rdf", com_serialize, "print rdf model" ;
     "add", com_add, "add elements to rdf model" ;
+    "remove", com_remove, "remove elements from rdf model" ;
   ];;
 
 let command = {
@@ -238,6 +302,10 @@ let main () =
           | Add_version -> add_version config rdf_wld opts
           | Add_intf -> add_intf config rdf_wld opts
           | Add_filetype -> add_filetype config rdf_wld opts
+          | Add_port ->
+              add_port config rdf_wld
+              ~list: !port_type_list ?pos: !port_position opts
+          | Rem_port -> rem_port config rdf_wld opts
           | Init_dir -> assert false
         with
           Grdf_types.Error e ->

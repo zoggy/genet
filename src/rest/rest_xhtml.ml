@@ -136,7 +136,6 @@ let a_fchain_module ctx modname =
 
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
-  let ports = Grdf_port.sort_ports ports in
   let of_port p =
     let ftype = Grdf_port.port_type ctx.ctx_rdf p in
     match ftype with

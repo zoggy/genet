@@ -6,6 +6,11 @@ open Grdf_types;;
 open Chn_types;;
 open Chn_ast;;
 
+let dbg = Misc.create_log_fun
+  ~prefix: "Chn_flat"
+    "GENET_CHN_FLAT_DEBUG_LEVEL"
+;;
+
 let fchain_exists ctx orig_fullname uri_fchain =
   let uri_chain = Grdfs.uri_chain ~prefix: ctx.ctx_cfg.Config.rest_api
     ~modname: (Chn_types.string_of_chain_modname (Chn_types.chain_modname orig_fullname))
@@ -40,12 +45,19 @@ and import_flat_sub_op ctx uri_dst path uri_sub_op =
 ;;
 *)
 let add_intf ctx uri_op loc intf_spec =
+  let dbg = dbg ~loc: "add_intf" in
+  dbg ~level: 2
+    (fun () ->
+      Printf.sprintf "uri_op=%s intf_spec=%s" (Rdf_uri.string uri_op) intf_spec
+    );
   let uri_intf = Chn_types.uri_intf_of_interface_spec
     ~prefix: ctx.ctx_cfg.Config.rest_api intf_spec
   in
+  dbg ~level: 3
+    (fun () -> Printf.sprintf "uri_intf=%s" (Rdf_uri.string uri_intf));
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: uri_intf;
-  Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op ;
+  Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op
 ;;
 
 let create_ports_from_chn ctx uri chn =
@@ -178,13 +190,23 @@ let rec do_flatten ctx ?(path=[]) fullname =
     end
 
 and add_op ctx path uri_fchain map op =
+  let dbg = dbg ~loc: "add_op" in
+  dbg ~level: 2
+  (fun () ->
+    Printf.sprintf "path=%s uri_fchain=%s op=%s"
+      (String.concat "/" path) (Rdf_uri.string uri_fchain) op.op_name
+  );
   let uri_parent =
     match path with
       [] -> uri_fchain
     | _ -> Grdfs.uri_fchain_op uri_fchain path
   in
+  dbg ~level: 3
+     (fun () -> Printf.sprintf "parent=%s" (Rdf_uri.string uri_parent));
   let path = path @ [op.op_name] in
   let uri_op = Grdfs.uri_fchain_op uri_fchain path in
+  dbg ~level: 3
+     (fun () -> Printf.sprintf "uri_op=%s" (Rdf_uri.string uri_op));
   let add = Grdfs.add_triple_uris ctx.ctx_rdf in
   add ~sub: uri_parent ~pred: Grdfs.genet_containsop ~obj: uri_op;
   let (map_in, map_out) =
@@ -210,7 +232,6 @@ let flatten ctx fullname =
     x
   with
     e ->
-      prerr_endline "flatten: ERROR!";
       ctx.ctx_rdf.wld_graph.transaction_rollback ();
       raise e
 ;;
