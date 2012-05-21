@@ -290,3 +290,18 @@ let dot_of_deps prefix ?fullnames deps =
   let printer = new xhtml_chain_dot_deps prefix in
   printer#dot_of_deps prefix ?fullnames deps
 ;;
+
+class xhtml_fchain_dot_printer =
+  object(self)
+    inherit Chn_flat.fchain_dot_printer as super
+
+  end;;
+
+let dot_of_fchain ctx fchain_name =
+  let fchain = Chn_types.uri_fchain
+    ctx.Chn_types.ctx_cfg.Config.rest_api fchain_name
+  in
+  let o = new xhtml_fchain_dot_printer in
+  o#dot_of_fchain ctx fchain
+;;
+

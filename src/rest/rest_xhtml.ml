@@ -7,7 +7,7 @@ let svg_width = 700;;
 let svg_height = 200;;
 let svg_dpi = 96. ;;
 
-let dot_to_svg dot =
+let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
   let size = String.length dot in
   if size > 50_000 then
     Xtmpl.string_of_xml
@@ -15,11 +15,11 @@ let dot_to_svg dot =
       [Xtmpl.D "Dot graph would have been too big; it was not generated"]))
   else
     begin
-      let w = (float svg_width) /. svg_dpi in
-      let h = (float svg_height) /. svg_dpi in
+      let w = (float svg_w) /. svg_dpi in
+      let h = (float svg_h) /. svg_dpi in
       let options = Printf.sprintf "-Gfontsize=8. -Gdpi=%.2f -Gsize=\"%.0f,%.0f!\"" svg_dpi w h in
       try
-        Grdf_dot.dot_to_svg ~options ~size: (svg_width,svg_height) dot
+        Grdf_dot.dot_to_svg ~options ~size: (svg_w,svg_h) dot
       with
         Failure msg ->
           Xtmpl.string_of_xml
@@ -721,7 +721,11 @@ let get_fchain ctx fchain_name =
     (match id with None -> "" | Some id -> Printf.sprintf " (%s)" id)
   in
   let navpath = xhtml_navpath ctx (Flat_chain fchain_name) in
-  let contents = "" in
+  let svg =
+    let dot = Rest_xpage.dot_of_fchain ctx fchain_name in
+    dot_to_svg ~svg_h: 600 dot
+  in
+  let contents = svg in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
