@@ -589,21 +589,27 @@ let get_chains ctx =
   ([ctype ()], chain_page ctx ~title ~error contents)
 ;;
 
-let get_chain_module ctx modname =
+let get_chain_module ctx ?nav modname =
   let config = ctx.ctx_cfg in
   let file = Chn_io.file_of_modname config modname in
   let title = Printf.sprintf "Module %s"
     (Chn_types.string_of_chain_modname modname)
   in
   let cmod = Chn_io.chn_module_of_file file in
-  let heads = ["Chain"] in
+  let heads = ["Chain" ; "Number of flat chains"] in
   let rows = List.map
     (fun chain ->
        let name = Chn_types.mk_chain_name modname
          chain.Chn_ast.chn_name
        in
-         [a_chain ctx name]
-    ) cmod.Chn_ast.cmod_chains
+       let flats = Chn_flat.flat_chains_of_chain ctx name in
+       let href = Chn_types.uri_fchain config.Config.rest_api
+         (Chn_types.mk_fchain_name name "")
+       in
+       let text = string_of_int (List.length flats) in
+       [a_chain ctx name ; a ~href text]
+    )
+    (List.sort Pervasives.compare cmod.Chn_ast.cmod_chains)
   in
   let deps =
     let deps = Chn_ast.compute_deps ctx.ctx_rdf config [cmod] in
@@ -619,7 +625,14 @@ let get_chain_module ctx modname =
     (table ~heads rows)
     deps
   in
-  let navpath = xhtml_navpath ctx (Chain_module modname) in
+  let navpath =
+    let spec =
+      match nav with
+        None -> Chain_module modname
+      | Some x -> x
+    in
+    xhtml_navpath ctx spec
+  in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
@@ -698,44 +711,8 @@ let get_fchains ctx =
   ([ctype ()], chain_page ctx ~title ~error contents)
 ;;
 let get_fchain_module ctx modname =
-(*
-  let config = ctx.ctx_cfg in
-  let file = Chn_io.file_of_modname config modname in
-*)
-  let title = Printf.sprintf "Module %s"
-    (Chn_types.string_of_chain_modname modname)
-  in
-(*
-  let heads = ["Chain"] in
-  let rows = List.map
-    (fun chain ->
-       let name = Chn_types.mk_chain_name modname
-         chain.Chn_ast.chn_name
-       in
-         [a_chain ctx name]
-    ) cmod.Chn_ast.cmod_chains
-  in
-  let deps =
-    let deps = Chn_ast.compute_deps ctx.ctx_rdf config [cmod] in
-    let dot =
-      Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api
-      ~fullnames: false deps
-    in
-    dot_to_svg dot
-  in
-  let contents =
-    Printf.sprintf
-    "<section>%s</section><section title=\"Dependencies\">%s</section>"
-    (table ~heads rows)
-    deps
-  in
-  let navpath = xhtml_navpath ctx (Chain_module modname) in
-*)
-  let navpath = "" in
-  let contents = "Not implemented" in
-  ([ctype ()], chain_page ctx ~title ~navpath contents)
+  get_chain_module ctx ~nav: (Flat_chain_module modname) modname
 ;;
-
 
 let get_fchain_list ctx fchain_name =
   let chain_name = Chn_types.fchain_chainname fchain_name in
@@ -743,7 +720,7 @@ let get_fchain_list ctx fchain_name =
   let wtitle = Printf.sprintf "Flat chains from %s" s_chain_name in
   let title = Printf.sprintf "Flat chains from %s" (a_chain ctx chain_name) in
   let navpath = xhtml_navpath ctx (Flat_chain_list fchain_name) in
-  let flats = Chn_flat.flat_chains_of_chain ctx fchain_name in
+  let flats = Chn_flat.flat_chains_of_chain ctx chain_name in
   let heads = [ "Commit id" ; "Flatten date" ] in
   let rows = List.map
     (fun uri ->
@@ -818,7 +795,7 @@ let get ctx thing args =
   | Versions uri -> get_versions ctx uri
   | Branches uri -> get_branches ctx uri
   | Chains -> get_chains ctx
-  | Chain_module modname -> handle_chain_error get_chain_module ctx modname
+  | Chain_module modname -> handle_chain_error (get_chain_module ?nav: None) ctx modname
   | Chain fullname -> handle_chain_error get_chain ctx fullname
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname

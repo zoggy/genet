@@ -515,10 +515,8 @@ class fchain_dot_printer =
       Buffer.contents b
   end
 
-let flat_chains_of_chain ctx fchain_name =
-  let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api
-    (Chn_types.fchain_chainname fchain_name)
-  in
+let flat_chains_of_chain ctx chain_name =
+  let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api chain_name in
   Grdfs.object_uris ctx.ctx_rdf
     ~sub: (Uri uri_chain) ~pred: Grdfs.genet_flattenedto
 ;;
