@@ -5,6 +5,7 @@ module type GMap = sig
     type key
     type 'a t
     val create : unit -> 'a t
+    val compare : key -> key -> int
     val get : 'a t -> key -> 'a
     val set : 'a t -> key -> 'a -> 'a t
     val remove : 'a t -> key -> 'a t
@@ -138,14 +139,14 @@ module Make (M: GMap) (Edge: Map.OrderedType) = struct
       let g = { succ = new_succ; pred = new_pred } in
       let succ =
         let succs = succ g i in
-        if not (List.exists (fun (k,d) -> k = j && Edge.compare d data = 0) succs) then
+        if not (List.exists (fun (k,d) -> M.compare k j = 0 && Edge.compare d data = 0) succs) then
           M.set g.succ i ((j, data) :: succs)
         else
           g.succ
       in
       let pred =
         let preds = pred g j in
-        if not (List.exists (fun (k,d) -> k = i && Edge.compare d data = 0) preds) then
+        if not (List.exists (fun (k,d) -> M.compare k i = 0 && Edge.compare d data = 0) preds) then
           M.set g.pred j ((i, data) :: preds)
         else
           g.pred
@@ -327,7 +328,7 @@ module Make (M: GMap) (Edge: Map.OrderedType) = struct
     let shortest_path g cost (s,d) =
       let p = M.fold
         (fun i _ p ->
-           M.set p i (if i = s then 0.0 else infinity))
+           M.set p i (if M.compare i s = 0 then 0.0 else infinity))
           g.succ
           (M.create())
       in
@@ -407,6 +408,7 @@ module Make_with_map (P:Map.OrderedType) (Edge:Map.OrderedType) =
        type key = M.key
        type 'a t = 'a M.t
        let create () = M.empty
+       let compare = P.compare
        let get t k = M.find k t
        let set t k v = M.add k v t
        let remove t k = M.remove k t

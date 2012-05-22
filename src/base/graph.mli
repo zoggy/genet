@@ -5,6 +5,7 @@ module type GMap =
     type key
     type 'a t
     val create : unit -> 'a t
+    val compare : key -> key -> int
     val get : 'a t -> key -> 'a
     val set : 'a t -> key -> 'a -> 'a t
     val remove : 'a t -> key -> 'a t

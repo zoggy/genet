@@ -107,18 +107,23 @@ let create_graph ctx uri_fchain =
   in
   let new_file map ports =
     let file = file_sym () in
-    List.fold_left 
+    List.fold_left
     (fun map uri_port -> Urimap.add uri_port file map)
     map ports
   in
   let f_consumer uri_src p_src (g, set) p_dst =
     let uri_dst = Grdfs.port_container p_dst in
     let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
-    let set = 
-      let uri_from = Chn_flat.get_op_origin ctx uri_dst in
-      match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-        None -> set
-      | Some _ -> Uriset.add uri_dst set
+    let set =
+      if Rdf_uri.equal uri_dst uri_fchain then
+        set
+      else
+        begin
+          let uri_from = Chn_flat.get_op_origin ctx uri_dst in
+          match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+            None -> set
+          | Some _ -> Uriset.add uri_dst set
+        end
     in
     (g, set)
   in
@@ -135,7 +140,7 @@ let create_graph ctx uri_fchain =
         (g, map, set)
   in
   let rec fill uri (g, map) =
-    let dir = if Rdf_uri.equal uri uri_fchain 
+    let dir = if Rdf_uri.equal uri uri_fchain
       then Grdf_port.In
       else Grdf_port.Out
     in
@@ -147,6 +152,32 @@ let create_graph ctx uri_fchain =
   in
   let (g, map) = fill uri_fchain (g, Urimap.empty) in
   (g, map)
+;;
+
+let dot_of_graph ctx g =
+  let f_edge (p1, p2) =
+    let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
+    let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
+    let f p = Grdf_port.string_of_port_type ctx.ctx_rdf p in
+    let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
+    (label, [])
+  in
+  let f_node uri =
+    let label =
+      try
+        let uri_from = Chn_flat.get_op_origin ctx uri in
+        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+          None -> Filename.basename (Rdf_uri.string uri)
+        | Some name -> name
+      with
+        _ ->
+          Filename.basename (Rdf_uri.string uri)
+    in
+    let href = Rdf_uri.string uri in
+    let id = "n"^(Digest.to_hex (Digest.string href)) in
+    (id, label, [ "href", href ])
+  in
+  Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
 
@@ -170,6 +201,9 @@ let do_instanciate ctx uri_fchain comb =
         comb;
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
       let (g, port_to_file) = create_graph ctx uri_fchain in
+      prerr_endline "generating dot";
+      Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
+      ignore(g, port_to_file);
       failwith "instanciate: not implemented!"
 ;;
 

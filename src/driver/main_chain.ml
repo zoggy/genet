@@ -89,6 +89,7 @@ let show_combinations opts acc s =
     print_endline line
   in
   List.iter f_comb combs;
+  ignore(Chn_inst.instanciate ctx uri (List.hd combs));
   acc
 ;;
 
