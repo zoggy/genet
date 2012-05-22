@@ -32,6 +32,7 @@ type thing =
   | Flat_chains
   | Flat_chain_module of Chn_types.chain_modname
   | Flat_chain of Chn_types.fchain_name
+  | Flat_chain_list of Chn_types.fchain_name
 ;;
 
 type response = arg list * string

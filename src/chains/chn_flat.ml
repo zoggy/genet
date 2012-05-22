@@ -331,9 +331,10 @@ let rec do_flatten ctx fullname =
       let op_map = List.fold_left (add_op ctx uri_fchain) op_map chn.chn_ops in
       create_data_edges ctx uri_fchain op_map chn;
       let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
+      remove_useless_ports ctx uri_fchain;
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub ~pred: Grdfs.genet_flattenedto ~obj: uri_fchain;
-      remove_useless_ports ctx uri_fchain;
+      Grdfs.set_creation_date_uri ctx.ctx_rdf uri_fchain ();
       uri_fchain
     end
 
@@ -513,3 +514,17 @@ class fchain_dot_printer =
       Buffer.add_string b "}\n";
       Buffer.contents b
   end
+
+let flat_chains_of_chain ctx fchain_name =
+  let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api
+    (Chn_types.fchain_chainname fchain_name)
+  in
+  Grdfs.object_uris ctx.ctx_rdf
+    ~sub: (Uri uri_chain) ~pred: Grdfs.genet_flattenedto
+;;
+
+let fchain_creation_date ctx uri =
+  match Grdfs.creation_date_uri ctx.ctx_rdf uri with
+    None -> None
+  | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
+;;

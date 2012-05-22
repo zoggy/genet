@@ -23,6 +23,8 @@ let opt_of_string = function
 | s -> Some s
 (*/c==v=[String.opt_of_string]=1.0====*)
 
+let map_opt f = function None -> None | Some x -> Some (f x);;
+
 let create_log_fun_with_set ?prefix ?(print=prerr_endline) env_var =
   let log_level =
     ref

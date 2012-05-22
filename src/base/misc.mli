@@ -26,6 +26,8 @@ val string_of_opt : string option -> string
 val opt_of_string : string -> string option
 (*/i==v=[String.opt_of_string]=1.0====*)
 
+val map_opt : ('a -> 'b) -> 'a option -> 'b option
+
 (** Creating a log function.
   [create_log_fun env_var] get the log level (an integer) from the given
   environment variable, and returns a function to print messages.

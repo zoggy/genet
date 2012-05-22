@@ -134,6 +134,12 @@ let a_fchain_module ctx modname =
   a ~href (Chn_types.string_of_chain_modname modname)
 ;;
 
+let a_fchain ctx fullname =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let href = Chn_types.uri_fchain prefix fullname in
+  a ~href (Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname))
+;;
+
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
   let of_port p =
@@ -260,12 +266,27 @@ let xhtml_navpath_of_fchain_module ctx =
   xhtml_navpath_join_path path
 ;;
 
-let xhtml_navpath_of_fchain ctx fchain_name =
+let xhtml_navpath_of_fchain_list ctx fchain_name =
   let modname = Chn_types.fchain_modname fchain_name in
   let path =
     (navpath_of_fchain_module ctx) @
     [
       a_fchain_module ctx modname;
+    ]
+  in
+  xhtml_navpath_join_path path
+;;
+
+let xhtml_navpath_of_fchain ctx fchain_name =
+  let modname = Chn_types.fchain_modname fchain_name in
+  let name = Chn_types.mk_fchain_name
+    (Chn_types.fchain_chainname fchain_name) ""
+  in
+  let path =
+    (navpath_of_fchain_module ctx) @
+    [
+      a_fchain_module ctx modname;
+      a_fchain ctx name ;
     ]
   in
   xhtml_navpath_join_path path
@@ -290,6 +311,7 @@ let xhtml_navpath ctx = function
 | Chain fullname -> xhtml_navpath_of_chain ctx fullname
 | Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
 | Flat_chain fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
+| Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
 ;;
 
 let intf_list ctx intfs =
@@ -714,19 +736,70 @@ let get_fchain_module ctx modname =
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
+
+let get_fchain_list ctx fchain_name =
+  let title = Printf.sprintf "Flat chains of %s"
+    (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
+  in
+  let navpath = xhtml_navpath ctx (Flat_chain_list fchain_name) in
+  let flats = Chn_flat.flat_chains_of_chain ctx fchain_name in
+  let heads = [ "Commit id" ; "Flatten date" ] in
+  let rows = List.map
+    (fun uri ->
+       let id =
+         match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
+           None -> ""
+         | Some name -> 
+             match Chn_types.fchain_id name with
+               None -> ""
+             | Some id -> a ~href: uri id
+       in
+       let date = Misc.map_opt Netdate.since_epoch (Grdfs.creation_date_uri ctx.ctx_rdf uri) in
+       (id, date)
+    )
+    flats
+  in
+  let comp (_,d1) (_,d2) =
+    match d1, d2 with
+      None, None -> 0
+    | Some _, None -> -1
+    | None, Some _ -> 1
+    | Some d1, Some d2 -> Pervasives.compare d2 d1
+  in
+  let rows = List.sort comp rows in
+  let rows = List.map
+    (fun (id, d) ->
+       let d = match d with None -> "" | Some d -> Netdate.mk_mail_date d in
+       [ id ; d]
+    )
+    rows
+  in
+  let contents = table ~heads rows in
+  ([ctype ()], chain_page ctx ~title ~navpath contents)
+;;
+
 let get_fchain ctx fchain_name =
   let id = Chn_types.fchain_id fchain_name in
-  let title = Printf.sprintf "%s%s"
+  let title = "" in
+  let wtitle = Printf.sprintf "%s (%s)"
     (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
-    (match id with None -> "" | Some id -> Printf.sprintf " (%s)" id)
+    (Misc.string_of_opt id)
   in
   let navpath = xhtml_navpath ctx (Flat_chain fchain_name) in
   let svg =
     let dot = Rest_xpage.dot_of_fchain ctx fchain_name in
     dot_to_svg ~svg_h: 600 dot
   in
-  let contents = svg in
-  ([ctype ()], chain_page ctx ~title ~navpath contents)
+  let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
+  let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri_fchain) in
+  let contents =
+    Printf.sprintf
+       "<p><strong>Commit id:</strong> %s</p><p><strong>Creation date:</strong> %s</p>%s\n"
+       (Misc.string_of_opt id)
+       date
+       svg
+  in
+  ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get ctx thing args =
@@ -749,6 +822,7 @@ let get ctx thing args =
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname
   | Flat_chain fchain_name -> get_fchain ctx fchain_name
+  | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

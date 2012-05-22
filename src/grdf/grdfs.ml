@@ -64,6 +64,7 @@ let genet_versionid = genet_"versionId";;
 let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
 let genet_containsop = genet_"containsOperation";;
+let genet_createdon = genet_"createdOn";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj
@@ -85,6 +86,7 @@ let add_triple_uris wld ~sub ~pred ~obj =
 let rem_triple_uris wld ~sub ~pred ~obj =
   rem_triple wld ~sub: (Uri sub) ~pred: (Uri pred) ~obj: (Uri obj)
 ;;
+
 
 (** {2 Uris of manipulated elements} *)
 
@@ -421,6 +423,30 @@ let object_uri wld ~sub ~pred =
   match object_uris wld ~sub ~pred with
     [] -> None
   | uri :: _ -> Some uri
+;;
+
+let remove_creation_date_uri wld sub =
+  let sub = Uri sub in
+  let pred = Uri genet_createdon in
+  let l = wld.wld_graph.objects_of ~sub ~pred in
+  let f obj = rem_triple wld ~sub ~pred ~obj in
+  List.iter f l
+;;
+
+let set_creation_date_uri wld sub ?d () =
+  remove_creation_date_uri wld sub;
+  add_triple wld
+    ~sub: (Uri sub) ~pred: (Uri genet_createdon)
+    ~obj: (Rdf_node.node_of_datetime ?d ())
+;;
+
+let creation_date_uri wld sub =
+  let pred = Uri genet_createdon in
+  match wld.wld_graph.objects_of ~sub:(Uri sub) ~pred with
+    [] -> None
+  | [Literal lit] ->
+      Some (Rdf_node.datetime_of_literal lit)
+  | _ -> failwith "Invalid createdon object"
 ;;
 
 (*
