@@ -738,9 +738,10 @@ let get_fchain_module ctx modname =
 
 
 let get_fchain_list ctx fchain_name =
-  let title = Printf.sprintf "Flat chains of %s"
-    (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
-  in
+  let chain_name = Chn_types.fchain_chainname fchain_name in
+  let s_chain_name = Chn_types.string_of_chain_name chain_name in
+  let wtitle = Printf.sprintf "Flat chains from %s" s_chain_name in
+  let title = Printf.sprintf "Flat chains from %s" (a_chain ctx chain_name) in
   let navpath = xhtml_navpath ctx (Flat_chain_list fchain_name) in
   let flats = Chn_flat.flat_chains_of_chain ctx fchain_name in
   let heads = [ "Commit id" ; "Flatten date" ] in
@@ -749,7 +750,7 @@ let get_fchain_list ctx fchain_name =
        let id =
          match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
            None -> ""
-         | Some name -> 
+         | Some name ->
              match Chn_types.fchain_id name with
                None -> ""
              | Some id -> a ~href: uri id
@@ -775,7 +776,7 @@ let get_fchain_list ctx fchain_name =
     rows
   in
   let contents = table ~heads rows in
-  ([ctype ()], chain_page ctx ~title ~navpath contents)
+  ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get_fchain ctx fchain_name =
