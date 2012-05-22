@@ -64,11 +64,14 @@ let port_producers ctx uri =
   List.filter Grdfs.is_a_port uris
 ;;
 
-let get_op_origin ctx uri =
+let rec get_op_origin ctx ?current uri =
   match Grdfs.object_uri ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_opfrom with
-    None ->
-      failwith (Printf.sprintf "Operation %s has no 'from' link." (Rdf_uri.string uri))
-  | Some uri -> uri
+  | Some uri -> get_op_origin ctx ~current: uri uri
+  | None ->
+      match current with
+        None ->
+          failwith (Printf.sprintf "Operation %s has no 'from' link." (Rdf_uri.string uri))
+      | Some x -> x
 ;;
 
 let rec import_flat_op ctx uri_src uri_dst path (map_in, map_out) =
@@ -350,10 +353,16 @@ and add_op ctx uri_fchain map op =
   let (map_in, map_out) =
     match op.op_from with
       Interface s ->
+        dbg ~level: 2
+          (fun () -> Printf.sprintf "add_op: Interface %s" s);
         add_intf ctx uri_op op.op_from_loc s;
         (mk_port_map ctx uri_op Grdf_port.In,
          mk_port_map ctx uri_op Grdf_port.Out)
     | Chain fullname ->
+        dbg ~level: 2
+          (fun () -> Printf.sprintf "add_op: Chain %s"
+             (Chn_types.string_of_chain_name fullname)
+          );
         let src = do_flatten ctx fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
         let (map_in, map_out) =
@@ -473,7 +482,7 @@ class fchain_dot_printer =
       acc
 
     method print_op ctx b ?(maxdepth=max_int) ~depth ~cluster acc uri =
-      prerr_endline (Printf.sprintf "print_op_dbg uri=%s" (Rdf_uri.string uri));
+      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
       if depth > maxdepth then
         acc
       else
