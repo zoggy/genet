@@ -676,40 +676,8 @@ let handle_chain_error f ctx p =
       ([ctype ()], chain_page ctx ~title ~error "")
 ;;
 
-let get_fchains ctx =
-(*
-  let chain_files = Chn_io.chain_files ctx.ctx_cfg in
-  let modules = List.map Chn_io.modname_of_file chain_files in
-  let modules = List.sort Chn_types.compare_chain_modname modules in
-  let rows = List.map (fun m -> [a_chain_module ctx m]) modules in
-  let heads = ["Chain module"] in
-  let (deps, error) =
-    let config = ctx.ctx_cfg in
-    let (cmods, errors) = Chn_io.load_chain_files config in
-    let deps = Chn_ast.compute_deps ctx.ctx_rdf config cmods in
-    let dot = Chn_ast.Dot_deps.dot_of_deps config.Config.rest_api deps in
-    let svg = dot_to_svg dot in
-    let error =
-      match errors with
-        [] -> ""
-      | _ ->
-          Printf.sprintf "<pre><![CDATA[%s]]></pre>"
-          (String.concat "\n" errors)
-    in
-    (svg, error)
-  in
-  let contents =
-    Printf.sprintf
-      "<section>%s</section><section title=\"Dependencies\">%s</section>"
-      (table ~heads rows)
-      deps
-  in
-*)
-  let title = "Modules" in
-  let contents = "" in
-  let error = "not implemented" in
-  ([ctype ()], chain_page ctx ~title ~error contents)
-;;
+let get_fchains ctx = get_chains ctx;;
+
 let get_fchain_module ctx modname =
   get_chain_module ctx ~nav: (Flat_chain_module modname) modname
 ;;
