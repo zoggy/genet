@@ -234,6 +234,23 @@ let is_uri_fchain prefix uri =
       | _ -> None
 ;;
 
+(** {3 Instanciated chains} *)
+
+let suffix_ichains = "inst-chains";;
+let uri_ichains prefix = Rdf_uri.concat prefix suffix_ichains;;
+
+let uri_ichain_module ~prefix modname =
+  Rdf_uri.concat (uri_ichains prefix) modname;;
+
+let uri_ichain ~prefix ~modname ~name ~id  =
+  let uri = Rdf_uri.concat (uri_ichain_module ~prefix modname) name in
+  Rdf_uri.concat uri id
+;;
+
+let uri_ichain_file inst_uri file =
+  List.fold_left Rdf_uri.concat inst_uri [ "files" ; file ]
+;;
+
 (** {3 Versions} *)
 
 let suffix_versions = "versions";;
@@ -269,6 +286,11 @@ let port_dir_string uri =
 let is_a_port uri =
   try ignore(port_rank uri) ; ignore(port_dir_string uri) ; true
   with _ -> false
+;;
+let port_container uri =
+  if not (is_a_port uri) then
+    failwith (Printf.sprintf "%s is not a port" (Rdf_uri.string uri));
+  Rdf_uri.parent (Rdf_uri.parent uri)
 ;;
 
 (** {3 Filetypes} *)

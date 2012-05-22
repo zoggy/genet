@@ -76,7 +76,8 @@ BASE_CMXFILES=base/version.cmx \
 	base/config.cmx \
 	base/checks.cmx \
 	base/loc.cmx \
-	base/cmdline.cmx
+	base/cmdline.cmx \
+	base/graph.cmx
 
 #	base/constant.cmx \
 #	base/base_types.cmx \

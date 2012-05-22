@@ -106,4 +106,40 @@ let is_uri_fchain prefix uri =
     None -> None
   | Some ((modname, name), id) ->
       Some ((modname, name), Misc.opt_of_string id)
-;;    
+;;
+
+type ichain_name = chain_name * string
+let ichain_id (_,id) = id;;
+let ichain_chainname (name,_) = name;;
+let ichain_modname (name,_) = chain_modname name;;
+let ichain_basename (name,_) = chain_basename name;;
+let mk_ichain_name name id = (name, id);;
+
+let uri_ichain_module prefix modname =
+  let s = String.concat "/" modname in
+  Grdfs.uri_ichain_module prefix s
+;;
+
+let uri_ichain prefix (fullname, id) =
+  let modname = String.concat "/" (chain_modname fullname) in
+  let name = chain_basename fullname in
+  Grdfs.uri_ichain ~prefix ~modname ~name ~id
+;;
+
+(*
+let is_uri_ichain_module prefix uri =
+  prerr_endline (Printf.sprintf "is_uri_ichain_module %s" (Rdf_uri.string uri));
+  match Grdfs.is_uri_ichain_module prefix uri with
+    None -> None
+  | Some slashes_modname ->
+      let modname = Misc.split_string slashes_modname ['/'] in
+      Some (modname)
+;;
+
+let is_uri_ichain prefix uri =
+  match Grdfs.is_uri_ichain prefix uri with
+    None -> None
+  | Some ((modname, name), id) ->
+      Some ((modname, name), Misc.opt_of_string id)
+;;
+*)

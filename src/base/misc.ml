@@ -245,3 +245,12 @@ let get_git_id file =
       let msg = Printf.sprintf "Command failed with code %d: %s" n com in
       failwith msg
 ;;
+
+let unique_id () =
+  Random.self_init();
+  Printf.sprintf "%04x-%04x-%04x-%04x"
+    (Random.int 0xffff) (Random.int 0xffff)
+    (Random.int 0xffff) (Random.int 0xffff)
+;;
+
+

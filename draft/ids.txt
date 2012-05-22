@@ -51,14 +51,16 @@ Algorithme d'instanciation/exécution:
 
 - pour une chaine plate donnée f-uri
 - pour une combinaison de versions données v1, v2, .., vn
+    Test cette instance existe déjà.
     Création d'un id unique => uri unique: i-uri = http://<prefix>/inst-chains/Mod1/chain1/<unique id>
     Ajout d'un lien: i-uri -instanciate-> f-uri
     Ajout de liens: i-uri -hasVersion-> { v1, v2, .., vn }
-    Ajout d'un lien: i-uri -start-> <date>
+    Ajout d'un lien: i-uri -createdon-> <date>
     Création d'un graphe reprenant la chaine instanciée, avec création
       de noms fichiers uniques pour chaque donnée:
         file-uri = i-uri/files/file-id
     Utilisation de ce graphe pour calculer un scénario d'exécution
+    Ajout d'un lien: i-uri -start-> <date>
     Exécution du scénario
       (avec ajout de liens file-uri -md5-> valeur, conservation d'un fichier
        si n'existe pas encore;

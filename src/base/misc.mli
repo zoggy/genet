@@ -135,3 +135,5 @@ val is_capitalized : string -> bool
 
 (** Get the git last commit id of the given file, or raise [Failure]. *)
 val get_git_id : string -> string
+
+val unique_id : unit -> string
