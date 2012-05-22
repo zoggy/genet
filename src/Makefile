@@ -13,6 +13,7 @@ SYSTEM_INCLUDES= \
 MY_INCLUDES= \
 	-I base \
 	-I grdf \
+	-I indata \
 	-I chains \
 	-I rest \
 	-I driver
@@ -34,8 +35,8 @@ TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) $(GENET_QUERY_BYTE) \
 SYSTEM_LIBS=
 SYSTEM_LIBS_BYTE=
 
-LIBS=$(LIB_BASE) $(LIB_GRDF) $(LIB_CHN) $(LIB_REST)
-LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE)
+LIBS=$(LIB_BASE) $(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(LIB_REST)
+LIBS_BYTE=$(LIB_BASE_BYTE) $(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(LIB_REST_BYTE)
 
 LIBS_GUI=$(LIB_BASE_GUI) $(LIB_GRDF_GUI)
 LIBS_BYTE=$(LIB_BASE_GUI_BYTE) $(LIB_GRDF_GUI_BYTE)
@@ -146,6 +147,34 @@ LIB_GRDF_GUI_CMI=$(LIB_GRDF_GUI:.cmxa=.cmi)
 LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
 
 GRDF_GUI_LIBS=$(LIB_GRDF_GUI) $(LIB_GRDF_GUI_BYTE) $(LIB_GRDF_GUI_CMI) $(LIB_GRDF_GUI_A)
+
+# Indata library
+LIB_IND=indata/indata.cmxa
+LIB_IND_BYTE=$(LIB_IND:.cmxa=.cma)
+LIB_IND_CMI=$(LIB_IND:.cmxa=.cmi)
+LIB_IND_A=$(LIB_IND:.cmxa=.a)
+
+IND_CMXFILES=indata/ind_types.cmx \
+	indata/ind_ast.cmx \
+	indata/ind_parser.cmx \
+	indata/ind_lexer.cmx \
+	indata/ind_io.cmx \
+
+IND_CMOFILES=$(IND_CMXFILES:.cmx=.cmo)
+IND_CMIFILES=$(IND_CMXFILES:.cmx=.cmi)
+
+IND_LIBS=$(LIB_IND) $(LIB_IND_BYTE) $(LIB_IND_CMI) $(LIB_IND_A)
+
+IND_GUI_CMXFILES=
+IND_GUI_CMIFILES=$(IND_GUI_CMXFILES:.cmx=.cmi)
+IND_GUI_CMOFILES=$(IND_GUI_CMXFILES:.cmx=.cmo)
+
+LIB_IND_GUI=grdf/grdfgui.cmxa
+LIB_IND_GUI_BYTE=$(LIB_IND_GUI:.cmxa=.cma)
+LIB_IND_GUI_CMI=$(LIB_IND_GUI:.cmxa=.cmi)
+LIB_IND_GUI_A=$(LIB_IND_GUI:.cmxa=.a)
+
+IND_GUI_LIBS=$(LIB_IND_GUI) $(LIB_IND_GUI_BYTE) $(LIB_IND_GUI_CMI) $(LIB_IND_GUI_A)
 
 # Chains library
 LIB_CHN=chains/chains.cmxa
@@ -299,6 +328,16 @@ $(LIB_GRDF_GUI): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMXFILES)
 $(LIB_GRDF_GUI_BYTE): $(GRDF_GUI_CMIFILES) $(GRDF_GUI_CMOFILES)
 	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(GRDF_GUI_CMOFILES)
 
+$(LIB_IND): $(IND_CMIFILES) $(IND_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(IND_CMXFILES)
+$(LIB_IND_BYTE): $(IND_CMIFILES) $(IND_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(IND_CMOFILES)
+
+$(LIB_IND_GUI): $(IND_GUI_CMIFILES) $(IND_GUI_CMXFILES)
+	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(IND_GUI_CMXFILES)
+$(LIB_IND_GUI_BYTE): $(IND_GUI_CMIFILES) $(IND_GUI_CMOFILES)
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(IND_GUI_CMOFILES)
+
 $(LIB_CHN): $(CHN_CMIFILES) $(CHN_CMXFILES)
 	$(OCAMLFIND) ocamlopt $(OF_FLAGS) -a -o $@ $(LINKFLAGS) $(CHN_CMXFILES)
 $(LIB_CHN_BYTE): $(CHN_CMIFILES) $(CHN_CMOFILES)
@@ -323,6 +362,7 @@ OK='\033[1;32m'"OK\033[1m\033[0m"
 #################
 dump.odoc: base/*.ml base/*.mli \
 	grdf/*.ml grdf/*.mli \
+	indata/*.ml indata/*.mli \
 	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
 	driver/*.ml driver/*.mli
@@ -341,8 +381,6 @@ doc: all dump.odoc
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc
-	$(OCAMLFIND) ocamldoc -dot -load dump.odoc -o syndex.dot
-	dot -Tpng -o syndex.png syndex.dot
 
 
 # backup, clean and depend :
@@ -367,6 +405,7 @@ clean: dummy
 	(cd base && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd driver && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd grdf && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
+	(cd indata && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd chains && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd rest && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 
@@ -377,6 +416,7 @@ clean: dummy
 	base/*.ml base/*.mli \
 	driver/*.ml driver/*.mli \
 	grdf/*.ml grdf/*.mli \
+	indata/*.ml indata/*.mli \
 	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
 	  > .depend
@@ -425,5 +465,12 @@ chains/chn_parser.ml chains/chn_parser.mli: chains/chn_parser.mly
 chains/chn_lexer.ml chains/chn_lexer.mli: chains/chn_lexer.mll
 	$(OCAMLLEX) $<
 	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i chains/chn_lexer.ml > chains/chn_lexer.mli
+
+indata/ind_parser.ml indata/ind_parser.mli: indata/ind_parser.mly
+	$(MENHIR) --explain --base indata/ind_parser $^
+
+indata/ind_lexer.ml indata/ind_lexer.mli: indata/ind_lexer.mll
+	$(OCAMLLEX) $<
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i indata/ind_lexer.ml > indata/ind_lexer.mli
 
 

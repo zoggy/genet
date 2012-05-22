@@ -113,19 +113,19 @@ let create_graph ctx uri_fchain =
   in
   let f_consumer uri_src p_src (g, set) p_dst =
     let uri_dst = Grdfs.port_container p_dst in
-    let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
-    let set =
-      if Rdf_uri.equal uri_dst uri_fchain then
-        set
-      else
-        begin
+    if Rdf_uri.equal uri_dst uri_fchain then
+      (g, set)
+    else
+      begin
+        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let set =
           let uri_from = Chn_flat.get_op_origin ctx uri_dst in
           match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
             None -> set
           | Some _ -> Uriset.add uri_dst set
-        end
-    in
-    (g, set)
+        in
+        (g, set)
+      end
   in
   let f_producer uri (g, map, set) p =
     try
@@ -205,6 +205,26 @@ let do_instanciate ctx uri_fchain comb =
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
       ignore(g, port_to_file);
       failwith "instanciate: not implemented!"
+;;
+
+type command = {
+  com_command : string ; (* command path instanciated by tool version *)
+  com_in_files : string list ;
+  com_out_files : string list ;
+}
+
+type scenario = {
+   exec_inst : Rdf_uri.uri ;
+   exec_commands : command list ;
+   }
+
+let scenario_of_graph ctx g port_to_file uri_inst =
+  let commands = [] in
+
+  {
+    exec_inst = uri_inst ;
+    exec_commands = commands ;
+  }
 ;;
 
 let instanciate ctx uri_fchain comb =
