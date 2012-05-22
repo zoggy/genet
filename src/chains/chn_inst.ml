@@ -38,9 +38,9 @@ let version_combinations ctx fchain =
         then
           match combs with
             [] ->
-              [tool, version] :: acc
+              (Urimap.singleton tool version) :: acc
           | _ ->
-              (List.map (fun comb -> (tool, version) :: comb) combs) @ acc
+              (List.map (fun comb -> Urimap.add tool version comb) combs) @ acc
         else
           acc
       in
@@ -48,3 +48,4 @@ let version_combinations ctx fchain =
   in
   f intf_tools
 ;;
+

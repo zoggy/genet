@@ -63,12 +63,14 @@ let flatten opts ?dot acc s =
 ;;
 
 let string_of_comb ctx comb =
-  let f_version (tool, version) =
-    Printf.sprintf "%s %s"
+  let f_version tool version acc =
+    let s = Printf.sprintf "%s %s"
       (Grdf_tool.name ctx.Chn_types.ctx_rdf tool)
       (Grdf_version.name ctx.Chn_types.ctx_rdf version)
+    in
+    s :: acc
   in
-  String.concat ", " (List.map f_version comb)
+  String.concat ", " (Urimap.fold f_version comb [])
 ;;
 
 let show_combinations opts acc s =
