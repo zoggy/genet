@@ -335,6 +335,9 @@ let rec do_flatten ctx fullname =
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub ~pred: Grdfs.genet_flattenedto ~obj: uri_fchain;
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_fchain ();
+      Grdfs.add_type ctx.ctx_rdf
+         ~sub: (Rdf_node.Uri uri_fchain)
+         ~obj:(Rdf_node.Uri Grdfs.genet_flatchain);
       uri_fchain
     end
 

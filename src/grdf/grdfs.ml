@@ -36,6 +36,8 @@ let genet_intf = genet_ "Interface";;
 let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
 let genet_chain = genet_ "Chain";;
+let genet_flatchain = genet_ "Flatchain";;
+let genet_instchain = genet_ "Instchain";;
 
 let string_of_class = function
   s when Rdf_uri.equal s genet_tool -> "tool"
@@ -44,6 +46,8 @@ let string_of_class = function
 | s when Rdf_uri.equal s genet_version -> "version"
 | s when Rdf_uri.equal s genet_filetype -> "filetype"
 | s when Rdf_uri.equal s genet_chain -> "chain"
+| s when Rdf_uri.equal s genet_flatchain -> "flatchain"
+| s when Rdf_uri.equal s genet_instchain -> "instchain"
 | _ -> ""
 ;;
 
@@ -66,6 +70,7 @@ let genet_opfrom = genet_"operationFrom";;
 let genet_containsop = genet_"containsOperation";;
 let genet_createdon = genet_"createdOn";;
 let genet_isactive = genet_"isActive";;
+let genet_instanciate = genet_"instanciate";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj

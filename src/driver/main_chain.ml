@@ -80,7 +80,15 @@ let show_combinations opts acc s =
   let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
   let combs = Chn_inst.version_combinations ctx uri in
   print_endline (Printf.sprintf "combinations for %s:" (Rdf_uri.string uri));
-  List.iter (fun c -> print_endline (string_of_comb ctx c)) combs;
+  let f_comb comb =
+    let line = Printf.sprintf "%s (exists: %s)"
+      (string_of_comb ctx comb)
+      (match Chn_inst.inst_chain_exists ctx uri comb with
+        None -> "no" | Some uri -> Rdf_uri.string uri)
+    in
+    print_endline line
+  in
+  List.iter f_comb combs;
   acc
 ;;
 

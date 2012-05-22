@@ -49,3 +49,46 @@ let version_combinations ctx fchain =
   f intf_tools
 ;;
 
+let equal_tool_versions = Urimap.equal Rdf_uri.equal;;
+
+let instances ctx uri_fchain =
+  let insts = Grdfs.subject_uris ctx.ctx_rdf
+     ~pred: Grdfs.genet_instanciate ~obj: (Rdf_node.Uri uri_fchain)
+  in
+  let f acc uri_i =
+    let versions = Grdfs.object_uris ctx.ctx_rdf 
+      ~sub: (Rdf_node.Uri uri_i) ~pred: Grdfs.genet_hasversion
+    in
+    let versions = 
+      List.fold_left
+      (fun acc v -> Urimap.add
+         (Grdf_version.tool_of_version v)
+         v
+         acc)
+      Urimap.empty
+      versions
+    in
+    (uri_i, versions) :: acc
+  in
+  List.fold_left f [] insts
+;;
+
+(** @todo[3] This could be rewritten when a OCaml-RDF offers a
+    Sparql implementation *)
+let inst_chain_exists ctx uri_fchain comb =
+  let insts = instances ctx uri_fchain in
+  let pred (_, versions) = equal_tool_versions comb versions in
+  try
+    Some (fst (List.find pred insts))
+  with
+    Not_found ->
+      None
+;;
+
+let instanciate ctx uri_fchain combs =
+  match inst_chain_exists ctx uri_fchain combs with
+    Some uri -> uri
+  | None -> failwith "instanciate: not implemented!"
+;;
+
+
