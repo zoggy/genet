@@ -67,6 +67,7 @@ let add wld ~tool ?(parent=tool) name =
       ~sub: node_parent
       ~pred: (Uri Grdfs.genet_hasversion)
       ~obj:  (Uri uri);
+      Grdfs.set_is_active_uri wld uri true;
       uri
 ;;
 
@@ -90,6 +91,12 @@ let versions_of wld ?(recur=false) uri =
     (
      Grdfs.object_uris wld ~sub: (Uri uri) ~pred: Grdfs.genet_hasversion
     )
+;;
+
+let active_versions_of wld ?recur uri =
+  let versions = versions_of wld ?recur uri in
+  let pred = Grdfs.is_active_uri wld in
+  List.filter pred versions
 ;;
 
 let tool_of_version uri = Grdfs.uri_tool_of_version uri;;

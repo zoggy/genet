@@ -29,7 +29,14 @@ ALTERGO=`./genet add tool altergo`
 ./genet add branch ${ALTERGO} 3.x
 ./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.1
 ./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.2
-./genet add version ${ALTERGO} ${ALTERGO}/branches/1.x 1.3
 ./genet add version ${ALTERGO} ${ALTERGO}/branches/2.x 2.1
-./genet add interface ${ALTERGO}/branches/1.x ae-prove
-./genet add interface ${ALTERGO}/branches/1.x ae-prove2
+./genet add version ${ALTERGO} ${ALTERGO}/branches/2.x 2.2
+AE_PROVE=`./genet add interface ${ALTERGO}/branches/1.x ae-prove`
+AE_PROVE2=`./genet add interface ${ALTERGO}/branches/2.x ae-prove2`
+./genet add port ${AE_PROVE} in coq
+./genet add port ${AE_PROVE} in coqo
+./genet add port ${AE_PROVE} out ocamlimpl
+./genet add port ${AE_PROVE} out coq
+./genet add port ${AE_PROVE2} in ocamlimpl
+./genet add port ${AE_PROVE2} in ocamlimpl
+./genet add port ${AE_PROVE2} out coq

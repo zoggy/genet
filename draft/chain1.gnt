@@ -40,7 +40,7 @@ chain test1
   in: coq i1, coqo list i2, ocamlimpl i3;
   out: coq o1, coq o2, ocamlimpl o3 ; (* bar = /filetypes/bar *)
 
-  operation op1 : "/why/prove" ;
+  operation op1 : "/altergo/ae-prove" ;
   operation op2 : "/why/prove2" ;
   operation op3 : Chain1.test2 ;
 

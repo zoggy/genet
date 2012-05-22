@@ -62,13 +62,38 @@ let flatten opts ?dot acc s =
       acc + 1
 ;;
 
+let string_of_comb ctx comb =
+  let f_version (tool, version) =
+    Printf.sprintf "%s %s"
+      (Grdf_tool.name ctx.Chn_types.ctx_rdf tool)
+      (Grdf_version.name ctx.Chn_types.ctx_rdf version)
+  in
+  String.concat ", " (List.map f_version comb)
+;;
+
+let show_combinations opts acc s =
+  let uri = Rdf_uri.uri s in
+  let config = Config.read_config opts.Options.config_file in
+  let rdf_wld = Grdf_init.open_graph config in
+  let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
+  let combs = Chn_inst.version_combinations ctx uri in
+  print_endline (Printf.sprintf "combinations for %s:" (Rdf_uri.string uri));
+  List.iter (fun c -> print_endline (string_of_comb ctx c)) combs;
+  acc
+;;
+
 let dot = ref None;;
-type action = Test of string | Flatten of string;;
+type action =
+  | Test of string
+  | Flatten of string
+  | Show_combs of string
+;;
 let actions = ref [];;
 
 let do_action opts acc = function
   Test file -> if test_file ?dot: !dot file then acc else acc + 1
 | Flatten s -> flatten opts ?dot: !dot acc s
+| Show_combs s -> show_combinations opts acc s
 ;;
 
 let options =
@@ -77,6 +102,9 @@ let options =
     "--dot", Arg.String (fun file -> dot := Some file), " generate dot files" ;
     "-t", Arg.String (fun s -> actions := Test s :: !actions), "<file> test the given file" ;
     "-f", Arg.String (fun s -> actions := Flatten s :: !actions), "<Mod.chain> flatten the given chain" ;
+
+    "--show-combs", Arg.String (fun s -> actions := Show_combs s :: !actions),
+    "<flat chain uri> show tool combinations usable to instanciate this chain";
   ]
 ;;
 

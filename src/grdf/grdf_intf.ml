@@ -146,6 +146,13 @@ let not_implementors wld uri =
 
 let tool_of_intf uri = Grdfs.uri_tool_of_intf uri
 
+let tools_of_intfs set =
+  let f uri_intf acc =
+    Uriset.add (tool_of_intf uri_intf) acc
+  in
+  Uriset.fold f set Uriset.empty
+;;
+
 let string_of_intf wld ?(with_uri=true) uri =
   let ports_in = Grdf_port.ports wld uri Grdf_port.In in
   let ports_out = Grdf_port.ports wld uri Grdf_port.Out in

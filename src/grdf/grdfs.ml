@@ -65,6 +65,7 @@ let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
 let genet_containsop = genet_"containsOperation";;
 let genet_createdon = genet_"createdOn";;
+let genet_isactive = genet_"isActive";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj
@@ -447,6 +448,29 @@ let creation_date_uri wld sub =
   | [Literal lit] ->
       Some (Rdf_node.datetime_of_literal lit)
   | _ -> failwith "Invalid createdon object"
+;;
+
+let remove_is_active_uri wld sub =
+  let sub = Uri sub in
+  let pred = Uri genet_isactive in
+  let l = wld.wld_graph.objects_of ~sub ~pred in
+  let f obj = rem_triple wld ~sub ~pred ~obj in
+  List.iter f l
+;;
+
+let set_is_active_uri wld sub b =
+  remove_is_active_uri wld sub;
+  add_triple wld
+    ~sub: (Uri sub) ~pred: (Uri genet_isactive)
+    ~obj: (Rdf_node.node_of_bool b)
+;;
+
+let is_active_uri wld sub =
+  let pred = Uri genet_isactive in
+  match wld.wld_graph.objects_of ~sub:(Uri sub) ~pred with
+    [] -> false
+  | [Literal lit] -> Rdf_node.bool_of_literal lit
+  | _ -> failwith "Invalid isactive object"
 ;;
 
 (*

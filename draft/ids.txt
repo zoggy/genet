@@ -24,24 +24,51 @@ http://<prefix>/chains/Chain1/op/in/1 : premier port d'entrée (avec propriété
 http://<prefix>/chains/Chain1/op/out/2 : deuxième port de sortie (avec propriété name et filetype)
 
 Chaîne mise à plat
-http://<prefix>/fchains/Mod1/chain1/git-id/op/in/1  : 1er port d'entrée de la chaine Mod1.chain1
-http://<prefix>/fchains/Mod1/chain1/git-id/op/out/2  : 2ème port de sortie de la chaine Mod1.chain1
-http://<prefix>/fchains/Mod1/chain1/git-id/op/op.o1  : port o1 de l'opération op
-http://<prefix>/fchains/Mod1/chain1/git-id/op/op2/opN/in/2 :
+http://<prefix>/flat-chains/Mod1/chain1/git-id/op/in/1  : 1er port d'entrée de la chaine Mod1.chain1
+http://<prefix>/flat-chains/Mod1/chain1/git-id/op/out/2  : 2ème port de sortie de la chaine Mod1.chain1
+http://<prefix>/flat-chains/Mod1/chain1/git-id/op/op.o1  : port o1 de l'opération op
+http://<prefix>/flat-chains/Mod1/chain1/git-id/op/op2/opN/in/2 :
    2ème port d'entrée de l'opération opN contenue dans la chaine référencée par op2
    avec des liens entre les ports, et des arcs
    des opérations feuilles vers les interfaces des outils
 
 Chaîne à plat instanciée:
-http://<prefix>/ichains/<unique generated id>/.... (comme ci-dessus, pour les urls)
+http://<prefix>/ichains/Mod1/chain1/.... (comme ci-dessus, pour les urls)
     lien vers la chaine à plat originale
-  + liens vers les versions utilisées
+  + liens vers les versions utilisées (uri)
+  + date de début d'exécution
+  + date de fin d'exécution
   Pour chaque fichier généré,
-    lien vers le port de la chaine aplatie originale
-    + lien la chaine instancieé
-     => sous forme de triplet, pour qu'un même fichier (MD5) puisse être lié
-     à plusieurs exécutions de chaines
+    liens vers les ports de la chaine aplatie originale
+  + liens vers une propriété md5 pour partage de plusieurs fichiers entre chaînes
+    [Plusieurs fichiers d'une même ichain peuvent pointer vers le même port,
+     quand le port est de type 'list']
 
 1 chaine instanciée = 1 flot d'exécution pour une combinaison de versions des outils
 utilisés par la chaine
 
+Algorithme d'instanciation/exécution:
+
+- pour une chaine plate donnée f-uri
+- pour une combinaison de versions données v1, v2, .., vn
+    Création d'un id unique => uri unique: i-uri = http://<prefix>/inst-chains/Mod1/chain1/<unique id>
+    Ajout d'un lien: i-uri -instanciate-> f-uri
+    Ajout de liens: i-uri -hasVersion-> { v1, v2, .., vn }
+    Ajout d'un lien: i-uri -start-> <date>
+    Création d'un graphe reprenant la chaine instanciée, avec création
+      de noms fichiers uniques pour chaque donnée:
+        file-uri = i-uri/files/file-id
+    Utilisation de ce graphe pour calculer un scénario d'exécution
+    Exécution du scénario
+      (avec ajout de liens file-uri -md5-> valeur, conservation d'un fichier
+       si n'existe pas encore;
+       ajout des liens file-uri -instanciate-> ports de f-uri
+      )
+    Ajout d'un lien: i-uri -stop-> <date>
+
+    En cas d'erreur: ajout d'un lien: i-uri -error-> md5 : md5 du fichier de trace
+
+
+
+
+      

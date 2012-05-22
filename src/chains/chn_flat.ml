@@ -526,3 +526,18 @@ let fchain_creation_date ctx uri =
     None -> None
   | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
 ;;
+
+let intfs_of_flat_chain ctx uri =
+  let rec f acc uri =
+    let uri_from = get_op_origin ctx uri in
+    match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+      None ->
+        let ops = get_ops ctx uri in
+        List.fold_left f acc ops
+    | Some _ ->
+        Uriset.add uri_from acc
+  in
+  let ops = get_ops ctx uri in
+  List.fold_left f Uriset.empty ops
+;;
+
