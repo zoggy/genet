@@ -261,6 +261,41 @@ let add_edges_from_maps ctx map_in map_out =
   Urimap.iter f_orig_port map
 ;;
 
+let remove_useless_ports ctx uri_fchain =
+  let f_port uri_op p =
+    let producers = port_producers ctx p in
+    let consumers = port_consumers ctx p in
+    match producers, consumers with
+      [], []
+    | _, []
+    | [], _ -> ()
+    | _ :: _ :: _, _ ->
+        let msg = Printf.sprintf "Port %s has more than one producer!"
+          (Rdf_uri.string p)
+        in
+        failwith msg
+    | [producer], _ ->
+        let f_succ p_succ =
+          Grdfs.rem_triple_uris ctx.ctx_rdf
+          ~sub: p ~pred: Grdfs.genet_produces ~obj: p_succ;
+          Grdfs.rem_triple_uris ctx.ctx_rdf
+          ~sub: producer ~pred: Grdfs.genet_produces ~obj: p;
+          Grdfs.add_triple_uris ctx.ctx_rdf
+          ~sub: producer ~pred: Grdfs.genet_produces ~obj: p_succ
+        in
+        List.iter f_succ consumers
+  in
+  let f_dir uri_op dir =
+    let ports = Grdf_port.ports ctx.ctx_rdf uri_op dir in
+    List.iter (f_port uri_op) ports
+  in
+  let f_op uri_op =
+    f_dir uri_op Grdf_port.In;
+    f_dir uri_op Grdf_port.Out;
+  in
+  List.iter f_op (get_ops ctx uri_fchain)
+;;
+
 let rec do_flatten ctx fullname =
   let dbg = dbg ~loc: "do_flatten" in
   dbg ~level: 2
@@ -295,6 +330,7 @@ let rec do_flatten ctx fullname =
       let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub ~pred: Grdfs.genet_flattenedto ~obj: uri_fchain;
+      remove_useless_ports ctx uri_fchain;
       uri_fchain
     end
 
@@ -329,12 +365,13 @@ and add_op ctx uri_fchain map op =
   Smap.add op.op_name (uri_op, map_in, map_out) map
 ;;
 
+
 let flatten ctx fullname =
   ctx.ctx_rdf.wld_graph.transaction_start ();
   try
-    let x = do_flatten ctx fullname in
+    let uri = do_flatten ctx fullname in
     ctx.ctx_rdf.wld_graph.transaction_commit();
-    x
+    uri
   with
     e ->
       ctx.ctx_rdf.wld_graph.transaction_rollback ();
@@ -360,29 +397,34 @@ class fchain_dot_printer =
       in
       List.iter f ports
 
-    method print_port ctx b uri =
-      let dir = Grdf_port.port_dir uri in
-      let ft_name ftype = Grdf_ftype.name ctx.ctx_rdf ftype in
-      let (link, ft) =
-        match Grdf_port.port_type ctx.ctx_rdf uri with
-          Grdf_port.One ftype -> (ftype, ft_name ftype)
-        | Grdf_port.List ftype -> (ftype, Printf.sprintf "%s list" (ft_name ftype))
-      in
-      let id = self#uri_id uri in
-      let label =
-        match Grdf_port.port_name ctx.ctx_rdf uri with
-          "" -> string_of_int (Grdf_port.port_rank uri)
-        | s -> s
-      in
-      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
+    method print_port ctx b ?(all=false) uri =
+      match port_producers ctx uri, port_consumers ctx uri with
+        [], [] when not all -> false
+      | _ ->
+          let dir = Grdf_port.port_dir uri in
+          let ft_name ftype = Grdf_ftype.name ctx.ctx_rdf ftype in
+          let (link, ft) =
+            match Grdf_port.port_type ctx.ctx_rdf uri with
+              Grdf_port.One ftype -> (ftype, ft_name ftype)
+            | Grdf_port.List ftype -> (ftype, Printf.sprintf "%s list" (ft_name ftype))
+          in
+          let id = self#uri_id uri in
+          let label =
+            match Grdf_port.port_name ctx.ctx_rdf uri with
+              "" -> string_of_int (Grdf_port.port_rank uri)
+            | s -> s
+          in
+          Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
                             style=\"filled\" shape=\"box\" \
                             href=\"%s\" label=\"%s:%s\" rank=%S];\n"
-        id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
-        (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max")
+          id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
+          (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max");
+          true
 
-    method do_print_op ctx b ~maxdepth ~depth acc uri =
+    method do_print_op ctx b ~maxdepth ~depth ~cluster acc uri =
       let root = depth <= 0 in
-      if not root then
+      let clustering = cluster uri in
+      if not root && clustering then
         begin
           let (color, label, href) =
             let uri_from = get_op_origin ctx uri in
@@ -398,14 +440,15 @@ class fchain_dot_printer =
              style=\"filled\"; href=%S;\n"
           (self#uri_id uri) label color
           (Rdf_uri.string href)
-
         end;
       let f (acc, node) dir =
         if root then
           Printf.bprintf b "subgraph cluster_%s {\n"
           (Grdf_port.string_of_dir dir);
         let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
-        List.iter (self#print_port ctx b) ports;
+        let printed_ports = List.filter
+          (self#print_port ~all: (root || clustering) ctx b) ports
+        in
         begin
           match node with
             None -> ()
@@ -415,7 +458,7 @@ class fchain_dot_printer =
                  Printf.bprintf b "%s -> %s [style=\"invis\"];\n"
                  (self#uri_id in_p) (self#uri_id out_p)
               )
-              ports
+              printed_ports
         end;
         let node = match ports with [] -> None | h :: _ -> Some h in
         if root then Buffer.add_string b "}\n";
@@ -423,23 +466,40 @@ class fchain_dot_printer =
       in
       let (acc, _) = List.fold_left f (acc, None) [ Grdf_port.In ; Grdf_port.Out ] in
       let acc = List.fold_left
-        (self#print_op ctx b ~maxdepth ~depth: (depth+1))
+        (self#print_op ctx b ~maxdepth ~depth: (depth+1) ~cluster)
         acc (get_ops ctx uri)
       in
-      if not root then Buffer.add_string b "}\n";
+      if (not root) && clustering then Buffer.add_string b "}\n";
       acc
 
-    method print_op ctx b ?(maxdepth=max_int) ~depth acc uri =
-      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
+    method print_op ctx b ?(maxdepth=max_int) ~depth ~cluster acc uri =
+      prerr_endline (Printf.sprintf "print_op_dbg uri=%s" (Rdf_uri.string uri));
       if depth > maxdepth then
         acc
       else
-        self#do_print_op ctx b ~maxdepth ~depth acc uri
+        self#do_print_op ctx b ~maxdepth ~depth ~cluster acc uri
 
-    method dot_of_fchain ctx ?maxdepth uri =
+    method dot_of_fchain ctx ?debug uri =
       let b = Buffer.create 256 in
       Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
-      let ports = self#print_op ctx b ?maxdepth ~depth: 0 Uriset.empty uri in
+      let ports =
+        let maxdepth, cluster =
+          match debug with
+            None ->
+              let cluster uri =
+                List.exists
+                (fun dir ->
+                   List.exists
+                   (fun p -> (port_consumers ctx p <> []) || (port_producers ctx p <> []))
+                    (Grdf_port.ports ctx.ctx_rdf uri dir)
+                )
+                [ Grdf_port.In ; Grdf_port.Out ]
+              in
+              (None, cluster)
+          | Some _ -> debug, (fun _ -> true)
+        in
+        self#print_op ctx b ?maxdepth ~depth: 0 ~cluster Uriset.empty uri
+      in
       Uriset.iter (self#print_port_edges ctx b) ports;
       Buffer.add_string b "}\n";
       Buffer.contents b

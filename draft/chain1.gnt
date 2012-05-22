@@ -8,6 +8,14 @@ chain foo
 
 }
 
+chain identity
+  (* ... *)
+{
+  in: coq i1 ;
+  out: coq o1 ;
+  i1 -> o1 ;
+}
+
 chain test2
 (* Just the description here. *)
 {
@@ -15,18 +23,18 @@ chain test2
   out: coq o1, coq o2;
 
   operation foo : Chain1.foo ;
-  operation gee : Chain1.foo ;
+  operation id : Chain1.identity ;
   i1 -> foo.1 ;
-  i1 -> gee.1 ;
+  i1 -> id.1 ;
   foo.1 -> o1 ;
-  gee.1 -> o2 ;
+  id.1 -> o2 ;
 }
 
 chain test1
 (*  This is the description of the chain *)
 {
   in: coq i1, coqo list i2, ocamlimpl i3;
-  out: coq o1, coq o2 ; (* bar = /filetypes/bar *)
+  out: coq o1, coq o2, coq o3 ; (* bar = /filetypes/bar *)
 
   operation op1 : "/why/prove" ;
   operation op2 : "/why/prove2" ;
@@ -40,4 +48,5 @@ chain test1
 
   op1.2 -> op3.1 ;
   op3.1 -> o2 ;
+  op3.2 -> o3 ;
 }

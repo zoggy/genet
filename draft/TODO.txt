@@ -24,7 +24,10 @@ In ids: forbid '-' (as in filetype ids): else can't match between ids in
 
 Chains:
 - after parsing: check all operations refer to known operations
-- after parsing: checkk all orphan ports refer to a port of the chain
+- after parsing: check all orphan ports refer to a port of the chain
+- after parsing: check all out ports are connected
+- after parsing: warning for unused (=not connected) input ports
 
 Flattening:
 - remove useless ports and operations
+
