@@ -10,7 +10,7 @@ let add_tool config wld options =
         let uri = Grdf_tool.add_tool wld name in
         print_endline (Rdf_uri.string uri)
       end
-  | _ -> failwith "Please give one tool name"
+  | _ -> failwith "Please give one and only one tool name"
 ;;
 
 let add_branch config wld options =
@@ -93,7 +93,21 @@ let rem_port config wld options =
       List.iter (fun s -> Grdf_port.delete_port wld (Rdf_uri.uri s)) ports
 ;;
 
-
+let add_input config options =
+  match options.args with
+    [dir] ->
+      begin
+        try
+          let data_dir = Config.data_dir config in
+          let fulldir = Filename.concat data_dir dir in
+          Misc.mkdir ~verbose: (options.verb_level > 0) fulldir;
+          Ind_io.write fulldir
+        with
+          Ind_io.Error e ->
+            failwith (Ind_io.string_of_error e)
+      end
+  | _ -> failwith "Please give one and only one input name"
+;;
 
 (** {2 Command-line specification} *)
 
@@ -108,6 +122,8 @@ type mode =
   | Add_filetype
   | Add_port
   | Rem_port
+  | Add_input
+;;
 
 let mode = ref None;;
 
@@ -164,6 +180,11 @@ let com_add_port = {
   }
 ;;
 
+let com_add_input = {
+  com_options = [] ; com_usage = "<name>" ;
+  com_kind = Final (set_mode Add_input) ;
+  }
+;;
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
@@ -171,6 +192,7 @@ let add_commands = [
     "interface", com_add_intf, "add new interface" ;
     "filetype", com_add_filetype, "add new filetype" ;
     "port", com_add_port, "add new port" ;
+    "input", com_add_input, "add new input";
   ]
 ;;
 
@@ -284,6 +306,9 @@ let main () =
   match !mode with
     None -> ()
   | Some Init_dir -> init_dir ?git_repo: !git_repo opts
+  | Some Add_input ->
+      let config = Config.read_config opts.Options.config_file in
+      add_input config opts
   | Some mode ->
       let config = Config.read_config opts.Options.config_file in
       (*prerr_endline (Config.string_of_config config);*)
@@ -311,7 +336,8 @@ let main () =
               add_port config rdf_wld
               ~list: !port_type_list ?pos: !port_position opts
           | Rem_port -> rem_port config rdf_wld opts
-          | Init_dir -> assert false
+          | Init_dir
+          | Add_input -> assert false
         with
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);

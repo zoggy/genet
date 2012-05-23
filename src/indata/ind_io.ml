@@ -5,9 +5,14 @@ open Ind_types;;
 
 let input_basename = "spec.in";;
 
-exception Error of string * string (** file * msg *)
+type error = (string * string) (** file * msg *)
+exception Error of error
 
 let error ~file msg = raise (Error (file, msg));;
+
+let string_of_error (file, msg) =
+  Printf.sprintf "File %s: %s" file msg
+;;
 
 type input =
 { group : CF.group ;
@@ -30,17 +35,19 @@ let mk_spec_group () =
   { group ; in_cp ; out_cp ; chains_cp }
 ;;
 
+let on_type_error file cp _ _ _ =
+  let msg = Printf.sprintf "Bad value type for field %s"
+    (String.concat "." cp#get_name)
+  in
+  error ~file msg
+;;
+
 let load dir =
   let file = Filename.concat dir input_basename in
   let g = mk_spec_group () in
-  let on_type_error cp _ _ _ =
-     let msg = Printf.sprintf "Bad value type for field %s" 
-       (String.concat "." cp#get_name)
-    in
-     error ~file msg
-  in
   try
-    g.group#read ~no_default: true ~on_type_error file;
+    g.group#read ~no_default: true
+    ~on_type_error: (on_type_error file) file;
     { dir = dir ;
       in_files = g.in_cp#get ;
       out_files = g.out_cp#get ;
@@ -54,5 +61,9 @@ let load dir =
       error ~file msg
 ;;
 
-
-  
+let write dir =
+  let file = Filename.concat dir input_basename in
+  let g = mk_spec_group () in
+  g.group#read ~on_type_error: (on_type_error file) file;
+  g.group#write file
+;;
