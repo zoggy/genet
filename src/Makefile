@@ -155,10 +155,7 @@ LIB_IND_CMI=$(LIB_IND:.cmxa=.cmi)
 LIB_IND_A=$(LIB_IND:.cmxa=.a)
 
 IND_CMXFILES=indata/ind_types.cmx \
-	indata/ind_ast.cmx \
-	indata/ind_parser.cmx \
-	indata/ind_lexer.cmx \
-	indata/ind_io.cmx \
+	indata/ind_io.cmx
 
 IND_CMOFILES=$(IND_CMXFILES:.cmx=.cmo)
 IND_CMIFILES=$(IND_CMXFILES:.cmx=.cmi)
@@ -465,12 +462,5 @@ chains/chn_parser.ml chains/chn_parser.mli: chains/chn_parser.mly
 chains/chn_lexer.ml chains/chn_lexer.mli: chains/chn_lexer.mll
 	$(OCAMLLEX) $<
 	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i chains/chn_lexer.ml > chains/chn_lexer.mli
-
-indata/ind_parser.ml indata/ind_parser.mli: indata/ind_parser.mly
-	$(MENHIR) --explain --base indata/ind_parser $^
-
-indata/ind_lexer.ml indata/ind_lexer.mli: indata/ind_lexer.mll
-	$(OCAMLLEX) $<
-	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i indata/ind_lexer.ml > indata/ind_lexer.mli
 
 
