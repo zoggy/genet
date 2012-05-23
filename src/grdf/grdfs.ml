@@ -71,6 +71,7 @@ let genet_containsop = genet_"containsOperation";;
 let genet_createdon = genet_"createdOn";;
 let genet_isactive = genet_"isActive";;
 let genet_instanciate = genet_"instanciate";;
+let genet_hascommitid = genet_"hasCommitId";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj
@@ -249,6 +250,20 @@ let uri_ichain ~prefix ~modname ~name ~id  =
 
 let uri_ichain_file inst_uri file =
   List.fold_left Rdf_uri.concat inst_uri [ "files" ; file ]
+;;
+
+let ichain_in_file_rank uri =
+  match List.rev (Rdf_uri.path uri) with
+    [] -> failwith "inchain_in_file: empty uri"
+  | n :: _ ->
+      try int_of_string n
+      with _ ->
+          let msg = Printf.sprintf "Bad in_file uri: %s" (Rdf_uri.string uri) in
+          failwith msg
+;;
+
+let uri_ichain_in_file uri rank =
+  Rdf_uri.concat (Rdf_uri.concat uri "input") (string_of_int rank)
 ;;
 
 (** {3 Versions} *)

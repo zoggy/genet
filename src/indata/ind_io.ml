@@ -48,8 +48,12 @@ let load dir =
   try
     g.group#read ~no_default: true
     ~on_type_error: (on_type_error file) file;
+    let in_files = List.map
+      (fun file -> (file, Misc.get_git_id (Filename.concat dir file)))
+      g.in_cp#get
+    in
     { dir = dir ;
-      in_files = g.in_cp#get ;
+      in_files = in_files ;
       out_files = g.out_cp#get ;
       chains = g.chains_cp#get ;
     }

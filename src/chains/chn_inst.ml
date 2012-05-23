@@ -51,6 +51,24 @@ let version_combinations ctx fchain =
   f intf_tools
 ;;
 
+let inst_input_files ctx uri_inst =
+  let uris = Grdfs.object_uris ctx.ctx_rdf
+     ~sub: (Rdf_node.Uri uri_inst) ~pred: Grdfs.genet_consumes
+  in
+  List.sort
+    (fun uri1 uri2 ->
+      Pervasives.compare
+       (Grdfs.ichain_in_file_rank uri1)  (Grdfs.ichain_in_file_rank uri2))
+  uris
+;;
+
+let input_file_info_of_uri ctx uri =
+  let sub = Rdf_node.Uri uri in
+  (Grdfs.name ctx.ctx_rdf sub,
+   Misc.string_of_opt (Grdfs.object_literal ctx.ctx_rdf ~sub ~pred: Grdfs.genet_hascommitid)
+  )
+;;
+
 let equal_tool_versions = Urimap.equal Rdf_uri.equal;;
 
 let instances ctx uri_fchain =
@@ -70,17 +88,24 @@ let instances ctx uri_fchain =
       Urimap.empty
       versions
     in
-    (uri_i, versions) :: acc
+    let in_files = inst_input_files ctx uri_i in
+    let in_files = List.map (input_file_info_of_uri ctx) in_files in
+    (uri_i, versions, in_files) :: acc
   in
   List.fold_left f [] insts
 ;;
 
 (** @todo[3] This could be rewritten when OCaml-RDF offers a
     Sparql implementation. *)
-let inst_chain_exists ctx uri_fchain comb =
+let inst_chain_exists ctx uri_fchain input comb =
   let insts = instances ctx uri_fchain in
-  let pred (_, versions) = equal_tool_versions comb versions in
-  try Some (fst (List.find pred insts))
+  let pred (_, versions, in_files) =
+    equal_tool_versions comb versions &&
+    in_files = input.Ind_types.in_files
+  in
+  try
+    let (uri_i, _, _) = List.find pred insts in
+    Some uri_i
   with Not_found -> None
 ;;
 
@@ -99,7 +124,7 @@ module Graph = Graph.Make_with_map
    end)
 ;;
 
-let create_graph ctx uri_fchain =
+let create_graph ctx uri_fchain input =
   let g = Graph.create () in
   let file_sym =
     let cpt = ref 0 in
@@ -180,8 +205,23 @@ let dot_of_graph ctx g =
   Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
+let add_input_file ctx uri_inst rank (filename, commit_id) =
+  let uri_file = Grdfs.uri_ichain_in_file uri_inst rank in
+  let sub = Rdf_node.Uri uri_file in
+  Grdfs.add_name ctx.ctx_rdf sub filename;
+  let obj = Rdf_node.node_of_literal_string commit_id in
+  let pred = Rdf_node.Uri Grdfs.genet_hascommitid in
+  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: uri_inst ~pred: Grdfs.genet_consumes ~obj: uri_file;
+  rank + 1
+;;
 
-let do_instanciate ctx uri_fchain comb =
+let add_input_files ctx uri_inst in_files =
+  ignore(List.fold_left (add_input_file ctx uri_inst) 1 in_files)
+;;
+
+let do_instanciate ctx uri_fchain input comb =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   match Chn_types.is_uri_fchain prefix uri_fchain with
     None -> assert false
@@ -193,16 +233,22 @@ let do_instanciate ctx uri_fchain comb =
       let uri_inst = Chn_types.uri_ichain prefix inst_name in
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub: uri_inst ~pred: Grdfs.genet_instanciate ~obj: uri_fchain;
+      (* associate tool versions *)
       Urimap.iter
         (fun _ version ->
           Grdfs.add_triple_uris ctx.ctx_rdf
             ~sub: uri_inst ~pred: Grdfs.genet_hasversion ~obj: version
         )
         comb;
+      (* associate input files (with commit ids); they're supposed to be ordered by rank *)
+      add_input_files ctx uri_inst input.Ind_types.in_files;
+
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
-      let (g, port_to_file) = create_graph ctx uri_fchain in
+      let (g, port_to_file) = create_graph ctx uri_fchain input in
+
       prerr_endline "generating dot";
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
+
       ignore(g, port_to_file);
       failwith "instanciate: not implemented!"
 ;;
@@ -227,13 +273,13 @@ let scenario_of_graph ctx g port_to_file uri_inst =
   }
 ;;
 
-let instanciate ctx uri_fchain comb =
-  match inst_chain_exists ctx uri_fchain comb with
+let instanciate ctx uri_fchain input comb =
+  match inst_chain_exists ctx uri_fchain input comb with
     Some uri -> uri
   | None ->
       ctx.ctx_rdf.wld_graph.transaction_start ();
       try
-        let uri = do_instanciate ctx uri_fchain comb in
+        let uri = do_instanciate ctx uri_fchain input comb in
         ctx.ctx_rdf.wld_graph.transaction_commit();
         uri
       with
