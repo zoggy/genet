@@ -2,6 +2,8 @@ include ../master.Makefile
 
 all: genet.rdf
 
+install:
+
 genet.rdf: genet.ttl
 	@$(RM) test
 	@rdfproc -s file test parse $< turtle

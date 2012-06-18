@@ -133,7 +133,7 @@ codecount:
 # installation
 #################
 
-install: dummy installimages
+install: dummy #installimages
 	cd src && $(MAKE) install
 #	$(MAKE) installspecsfiles
 	$(MAKE) installdoc
