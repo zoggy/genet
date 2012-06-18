@@ -156,10 +156,11 @@ let tools_of_intfs set =
 let string_of_intf wld ?(with_uri=true) uri =
   let ports_in = Grdf_port.ports wld uri Grdf_port.In in
   let ports_out = Grdf_port.ports wld uri Grdf_port.Out in
+  let f = Grdf_port.string_of_port_type (fun x -> x) in
   Printf.sprintf "%s%s -> %s"
   (if with_uri then Printf.sprintf "%s : " (Rdf_uri.string uri) else "")
-  (Grdf_port.string_type_of_ports wld ~sep: " -> " ports_in)
-  (Grdf_port.string_type_of_ports wld ~sep: " * " ports_out)
+  (Grdf_port.string_type_of_ports wld f ~sep: " -> " ports_in)
+  (Grdf_port.string_type_of_ports wld f ~sep: " * " ports_out)
 ;;
 
 let get_port wld uri ?(pos=max_int) dir =

@@ -63,20 +63,31 @@ let add_filetype config wld options =
   | _ -> failwith "Please give the name, file extension and description of the new filetype"
 ;;
 
-let add_port config wld ?pos ?(list=false) options =
+let add_port config wld ?pos options =
   match options.args with
-    s_intf :: s_dir :: ftype_name :: q ->
+    s_intf :: s_dir :: ptype :: q ->
       let uri_intf = Rdf_uri.uri s_intf in
       let dir = Grdf_port.dir_of_string s_dir in
-      let uri_ftype = Grdfs.uri_filetype ~prefix: config.Config.rest_api ftype_name in
+      let ptype =
+        try Grdf_port.parse_port_type ptype
+        with
+        | Grdf_port.Invalid_type s ->
+            failwith (Printf.sprintf "Invalid type: %s" s)
+        | Grdf_port.Invalid_type_id s ->
+            failwith (Printf.sprintf "Invalid type id: %s" s)
+      in
       let name = match q with [] -> None | s :: _ -> Some s in
-      let typ = if list then Grdf_port.List uri_ftype else Grdf_port.One uri_ftype in
       if Grdf_intf.intf_exists wld uri_intf = None then
         failwith (Printf.sprintf "Unknown interface %S" (Rdf_uri.string uri_intf));
-      if Grdf_ftype.filetype_exists wld uri_ftype = None then
-        failwith (Printf.sprintf "Unknown filetype %S" (Rdf_uri.string uri_ftype));
+      begin
+        match Grdf_port.port_file_type_uri config.Config.rest_api ptype with
+          None -> ()
+        | Some uri_ftype ->
+            if Grdf_ftype.filetype_exists wld uri_ftype = None then
+              failwith (Printf.sprintf "Unknown filetype %S" (Rdf_uri.string uri_ftype))
+      end;
 
-      Grdf_port.add_port wld uri_intf dir ?pos ?name typ;
+      Grdf_port.add_port wld uri_intf dir ?pos ?name ptype;
       let uri_port = Grdf_intf.get_port wld uri_intf ?pos dir in
       print_endline (Rdf_uri.string uri_port)
   | _ ->
@@ -166,15 +177,11 @@ let com_rem_port = {
 ;;
 
 let port_position = ref None;;
-let port_type_list = ref false;;
 let com_add_port = {
     com_options = [
       "-p", Arg.Int (fun n -> port_position := Some n),
       "<n> 1-based position to insert port at; default is to append" ;
-
-      "-l", Arg.Set port_type_list,
-      "port type is a list of the specified filetype";
-    ] ;
+    ];
     com_usage = "<interface uri> <in|out> <filetype-name> [port name]" ;
     com_kind = Final (set_mode Add_port) ;
   }
@@ -332,9 +339,7 @@ let main () =
           | Add_version -> add_version config rdf_wld opts
           | Add_intf -> add_intf config rdf_wld opts
           | Add_filetype -> add_filetype config rdf_wld opts
-          | Add_port ->
-              add_port config rdf_wld
-              ~list: !port_type_list ?pos: !port_position opts
+          | Add_port -> add_port config rdf_wld ?pos: !port_position opts
           | Rem_port -> rem_port config rdf_wld opts
           | Init_dir
           | Add_input -> assert false

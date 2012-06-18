@@ -139,13 +139,7 @@ let create_ports_from_chn ctx uri chn =
   let mk_port dir (rank, map, ports) p =
     dbg ~level: 3
       (fun () -> Printf.sprintf "mk_port rank=%d p=%s" rank p.p_name);
-    let ftype =
-      let mk_uri = Grdfs.uri_filetype ~prefix: ctx.ctx_cfg.Config.rest_api in
-      match p.p_ftype with
-        Grdf_port.One uri -> Grdf_port.One (mk_uri uri)
-      | Grdf_port.List uri -> Grdf_port.List (mk_uri uri)
-    in
-    let ports = (rank, ftype, Some p.p_name) :: ports in
+    let ports = (rank, p.p_ftype, Some p.p_name) :: ports in
     let map = Smap.add p.p_name rank map in
     (rank + 1, map, ports)
   in
@@ -209,23 +203,28 @@ let find_port map dir edge_part =
   f uri rank
 ;;
 
+let types_are_compatible =
+  let rec comp t1 t2 =
+    match t1, t2 with
+      Grdf_port.Var _, Grdf_port.Var _ -> true
+    | Grdf_port.T u1, Grdf_port.T u2 -> String.compare u1 u2 = 0
+    | Grdf_port.Set t1, Grdf_port.Set t2 -> comp t1 t2
+    | _ -> false
+  in
+  comp
+;;
+
 let create_data_edge ctx uri map edge =
   let uri_src = find_port map Grdf_port.Out edge.edge_src in
   let uri_dst = find_port map Grdf_port.In edge.edge_dst in
   let type_src = Grdf_port.port_type ctx.ctx_rdf uri_src in
   let type_dst = Grdf_port.port_type ctx.ctx_rdf uri_dst in
-  let compat =
-    match type_src, type_dst with
-      Grdf_port.One u1, Grdf_port.One u2
-    | Grdf_port.One u1, Grdf_port.List u2
-    | Grdf_port.List u1, Grdf_port.One u2
-    | Grdf_port.List u1, Grdf_port.List u2 -> Rdf_uri.equal u1 u2
-  in
+  let compat = types_are_compatible type_src type_dst in
   if not compat then
     Loc.raise_problem edge.edge_src.ep_loc
       (Printf.sprintf "Incompatible types: %s <--> %s"
-        (Grdf_port.string_of_port_type ctx.ctx_rdf type_src)
-        (Grdf_port.string_of_port_type ctx.ctx_rdf type_dst));
+        (Grdf_port.string_of_port_type (fun x -> x) type_src)
+        (Grdf_port.string_of_port_type (fun x -> x) type_dst));
   (* TODO: check that two edges don't have the same destination *)
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: uri_src ~pred: Grdfs.genet_produces ~obj: uri_dst
@@ -410,17 +409,17 @@ class fchain_dot_printer =
       in
       List.iter f ports
 
+    method get_port_type_uri ctx t =
+      Grdf_port.port_file_type_uri ctx.ctx_cfg.Config.rest_api t
+
     method print_port ctx b ?(all=false) uri =
       match port_producers ctx uri, port_consumers ctx uri with
         [], [] when not all -> false
       | _ ->
           let dir = Grdf_port.port_dir uri in
-          let ft_name ftype = Grdf_ftype.name ctx.ctx_rdf ftype in
-          let (link, ft) =
-            match Grdf_port.port_type ctx.ctx_rdf uri with
-              Grdf_port.One ftype -> (ftype, ft_name ftype)
-            | Grdf_port.List ftype -> (ftype, Printf.sprintf "%s list" (ft_name ftype))
-          in
+          let ptype = Grdf_port.port_type ctx.ctx_rdf uri in
+          let link = self#get_port_type_uri ctx ptype in
+          let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
           let id = self#uri_id uri in
           let label =
             match Grdf_port.port_name ctx.ctx_rdf uri with
@@ -430,7 +429,9 @@ class fchain_dot_printer =
           Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
                             style=\"filled\" shape=\"box\" \
                             href=\"%s\" label=\"%s:%s\" rank=%S];\n"
-          id (self#color_of_port_dir dir) (Rdf_uri.string link) label ft
+          id (self#color_of_port_dir dir)
+            (match link with None -> "" | Some uri -> Rdf_uri.string uri)
+             label name
           (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max");
           true
 

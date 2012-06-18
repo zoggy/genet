@@ -121,9 +121,9 @@ let test wld config n =
 
             Random.self_init();
             let dir = if Random.int 2 = 0 then Grdf_port.In else Grdf_port.Out in
-            let ftype = filetypes.(Random.int n) in
+            let ftype = Grdf_ftype.name wld filetypes.(Random.int n) in
             let port =
-              if Random.int 1 = 0 then Grdf_port.List ftype else Grdf_port.One ftype
+              if Random.int 1 = 0 then Grdf_port.Set (Grdf_port.T ftype) else Grdf_port.T ftype
             in
             let _intfs = Uriset.elements intfs in
 

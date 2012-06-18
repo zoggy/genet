@@ -7,7 +7,7 @@ let dbg = Misc.create_log_fun
   ~prefix: "Chn_flat"
     "GENET_GRDF_PORT_DEBUG_LEVEL"
 ;;
-type 'a port_type = One of 'a | List of 'a;;
+type 'a port_type = Var of string | T of 'a | Set of 'a port_type ;;
 type dir = In | Out ;;
 
 let pred_of_dir = function
@@ -31,15 +31,60 @@ let port_dir port =
   dir_of_string s
 ;;
 
-let port_type wld port =
-  match Grdfs.object_uri wld ~sub: (Uri port) ~pred: Grdfs.genet_hasfiletype with
-    Some uri -> One uri
-  | None ->
-      match Grdfs.object_uri wld ~sub: (Uri port) ~pred: Grdfs.genet_hasfiletypelist with
-        Some uri -> List uri
-      | None -> failwith (Printf.sprintf "No type for port %s" (Rdf_uri.string port))
+let rec map_port_type f = function
+| Var s -> Var s
+| T a -> T (f a)
+| Set s -> Set (map_port_type f s)
 ;;
 
+exception Invalid_type of string
+exception Invalid_type_id of string
+
+let parse_port_type =
+  let re = Str.regexp "'?[a-zA-Z][a-zA-Z_0-9]*$" in
+  let get_leaf s =
+    if Str.string_match re s 0 then
+      if s.[0] = '\'' then
+        Var (String.sub s 1 (String.length s - 1))
+      else
+        T s
+    else
+      raise (Invalid_type_id s)
+  in
+  fun str ->
+    let l = Misc.split_string str [' ' ; '\n' ; '\t' ; '\r' ] in
+    let rec iter = function
+      [] -> raise (Invalid_type str)
+    | [s] -> get_leaf s
+    | "set" :: q -> Set (iter q)
+    | _ :: _ -> raise (Invalid_type str)
+    in
+    iter (List.rev l)
+;;
+
+let string_of_port_type =
+  let rec iter f = function
+    Var s -> Printf.sprintf "'%s" s
+  | T s -> f s
+  | Set t -> Printf.sprintf "%s set" (iter f t)
+  in
+  iter
+;;
+
+let port_type wld port =
+  match Grdfs.object_literal wld ~sub: (Uri port) ~pred: Grdfs.genet_hastype with
+    Some s_type -> parse_port_type s_type
+  | None -> failwith (Printf.sprintf "No type for port %s" (Rdf_uri.string port))
+;;
+
+let port_file_type_uri =
+  let rec iter prefix = function
+    Var _ -> None
+  | T s -> Some (Grdfs.uri_filetype prefix s)
+  | Set t -> iter prefix t
+  in
+  iter
+;;
 let sort_ports l =
   List.sort (fun p1 p2 ->
     Pervasives.compare (port_rank p1) (port_rank p2))
@@ -52,27 +97,21 @@ let ports wld intf dir =
 
 
 let unset_port_type wld port =
-  let preds = [ Grdfs.genet_hasfiletype ; Grdfs.genet_hasfiletypelist ] in
   let sub = Uri port in
-  let f pred =
-    List.iter
-    (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri pred) ~obj: (Uri obj))
-      (Grdfs.object_uris wld ~sub ~pred)
-  in
-  List.iter f preds
+  let pred = Uri Grdfs.genet_hastype in
+  List.iter
+  (fun obj -> Grdfs.rem_triple wld ~sub ~pred ~obj)
+  (Grdfs.objects wld ~sub ~pred)
 ;;
 
 let set_port_type wld port typ =
-  let (pred, ftype_uri) =
-    match typ with
-      One uri -> (Grdfs.genet_hasfiletype, uri)
-    | List uri -> (Grdfs.genet_hasfiletypelist, uri)
-  in
+  let str = string_of_port_type (fun x -> x) typ in
+  let pred = Grdfs.genet_hastype in
   unset_port_type wld port;
   Grdfs.add_triple wld
      ~sub: (Uri port)
      ~pred: (Uri pred)
-     ~obj: (Uri ftype_uri)
+     ~obj: (Rdf_node.node_of_literal_string str)
 ;;
 
 let uri_intf_port_of_dir = function
@@ -94,20 +133,17 @@ let insert_port wld intf dir (n, typ, name) =
 let delete_ports wld uri dir =
   let dir_pred = pred_of_dir dir in
   let sub = Uri uri in
-  let f pred =
-    let ports = Grdfs.object_uris wld ~sub ~pred: dir_pred in
+  let pred = Uri Grdfs.genet_hastype in
+  let ports = Grdfs.object_uris wld ~sub ~pred: dir_pred in
+  List.iter
+  (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri dir_pred) ~obj: (Uri obj))
+  ports;
+  let f port =
     List.iter
-      (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri dir_pred) ~obj: (Uri obj))
-      ports;
-    let f port =
-      List.iter
-        (fun obj -> Grdfs.rem_triple wld ~sub: (Uri port) ~pred: (Uri pred) ~obj: (Uri obj))
-        (Grdfs.object_uris wld ~sub: (Uri port) ~pred: pred)
-    in
-    List.iter f ports
+    (fun obj -> Grdfs.rem_triple wld ~sub: (Uri port) ~pred ~obj)
+    (Grdfs.objects wld ~sub: (Uri port) ~pred: pred)
   in
-  let preds = [ Grdfs.genet_hasfiletype ; Grdfs.genet_hasfiletypelist ] in
-  List.iter f preds
+  List.iter f ports
 ;;
 (*
 let delete_ports wld dir uri =
@@ -205,16 +241,16 @@ let add_port wld intf dir ?(pos=max_int) ?name filetype =
   set_ports wld intf dir new_ports
 ;;
 
-let string_of_port_type wld = function
-  One uri -> Grdf_ftype.extension wld uri
-| List uri -> Printf.sprintf "%s list" (Grdf_ftype.extension wld uri)
+let string_of_uri_port_type wld t =
+  let f = Grdf_ftype.extension wld in
+  string_of_port_type f t
 ;;
 
-let string_type_of_ports wld ~sep = function
+let string_type_of_ports wld f ~sep = function
   [] -> "()"
 | l ->
     String.concat sep
-    (List.map (fun p -> string_of_port_type wld (port_type wld p)) l)
+    (List.map (fun p -> f (port_type wld p)) l)
 ;;
 
 

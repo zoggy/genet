@@ -183,7 +183,7 @@ let dot_of_graph ctx g =
   let f_edge (p1, p2) =
     let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
     let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
-    let f p = Grdf_port.string_of_port_type ctx.ctx_rdf p in
+    let f p = Grdf_port.string_of_port_type (fun x -> x) p in
     let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
     (label, [])
   in

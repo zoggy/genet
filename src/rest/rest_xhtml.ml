@@ -142,17 +142,15 @@ let a_fchain ctx fullname =
 
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
-  let of_port p =
-    let ftype = Grdf_port.port_type ctx.ctx_rdf p in
-    match ftype with
-      Grdf_port.One uri -> a_filetype ctx uri
-    | Grdf_port.List uri -> Printf.sprintf "%s list" (a_filetype ctx uri)
+  let sep = match dir with Grdf_port.In -> " -&gt; " | Grdf_port.Out -> " * " in
+  let f s =
+    let uri_ftype = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
+    Printf.sprintf "<a href=%S>%s</a>" (Rdf_uri.string uri_ftype) s
   in
-  match ports with
-    [] -> "()"
-  | _ ->
-      let sep = match dir with Grdf_port.In -> " -&gt; " | Grdf_port.Out -> " * " in
-      String.concat sep (List.map of_port ports)
+  Grdf_port.string_type_of_ports ctx.ctx_rdf
+    (Grdf_port.string_of_port_type f)
+    ~sep
+    ports
 ;;
 
 let xhtml_of_intf_type ctx uri =

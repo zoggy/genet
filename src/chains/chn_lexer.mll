@@ -13,8 +13,8 @@ let keywords = [
     "chain", CHAIN ;
     "operation", OPERATION ;
     "in", IN ;
-    "list", LIST ;
     "out", OUT ;
+    "set", SET ;
   ]
 
 let string_buffer = Buffer.create 256 ;;
@@ -46,6 +46,11 @@ rule main = parse
       main lexbuf
     }
 | ' ' { main lexbuf }
+| '\''ident {
+    let lexeme = Lexing.lexeme lexbuf in
+    let var = String.sub lexeme 1 (String.length lexeme - 1) in
+    Var var
+  }
 | ident {
     let lexeme = Lexing.lexeme lexbuf in
     try List.assoc (String.lowercase lexeme) keywords

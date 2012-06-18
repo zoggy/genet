@@ -37,7 +37,7 @@ chain test2
 chain test1
 (*  This is the description of the chain *)
 {
-  in: coq i1, coqo list i2, ocamlimpl i3;
+  in: coq i1, coqo set i2, ocamlimpl i3;
   out: coq o1, coq o2, ocamlimpl o3 ; (* bar = /filetypes/bar *)
 
   operation op1 : "/altergo/ae-prove" ;

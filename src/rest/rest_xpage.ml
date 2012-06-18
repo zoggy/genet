@@ -190,11 +190,7 @@ class xhtml_ast_printer prefix =
         Xtmpl.string_of_xml
         (Xtmpl.T ("a", ["href", Rdf_uri.string href], [Xtmpl.D ftype]))
       in
-      let ft =
-        match p.p_ftype with
-          Grdf_port.One ftype -> link ftype
-        | Grdf_port.List ftype -> Printf.sprintf "%s list" (link ftype)
-      in
+      let ft = Grdf_port.string_of_port_type link p.p_ftype in
       Printf.sprintf "%s %s" ft p.p_name
 
     method string_of_op_origin = function
@@ -261,16 +257,17 @@ class xhtml_chain_dot_printer prefix =
   object(self)
     inherit Chn_ast.chain_dot_printer as super
 
+    method private get_port_type_uri t =
+      Grdf_port.port_file_type_uri prefix t
+      
     method print_port b color p =
-      let link ftype = Rdf_uri.string (Grdfs.uri_filetype ~prefix ftype) in
-      let (link, ft) =
-        match p.p_ftype with
-          Grdf_port.One ftype -> (link ftype, ftype)
-        | Grdf_port.List ftype -> (link ftype, Printf.sprintf "%s list" ftype)
-      in
+      let link = self#get_port_type_uri p.p_ftype in
+      let ft = Grdf_port.string_of_port_type (fun x -> x) p.p_ftype in
       Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" \
                             shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
-        p.p_name color link p.p_name ft
+        p.p_name color 
+        (match link with None -> "" | Some uri -> Rdf_uri.string uri)
+         p.p_name ft
 
   end;;
 

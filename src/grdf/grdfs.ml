@@ -62,8 +62,7 @@ let genet_consumes = genet_"consumes";;
 let genet_produces = genet_"produces";;
 let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
-let genet_hasfiletype = genet_"hasFiletype";;
-let genet_hasfiletypelist = genet_"hasFiletypeList";;
+let genet_hastype = genet_"hasFiletype";;
 let genet_versionid = genet_"versionId";;
 let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
@@ -437,6 +436,9 @@ let name_of_uri_string wld source =
 let desc wld source =
   Misc.string_of_opt (object_literal wld source genet_desc)
 ;;
+
+let subjects wld ~pred ~obj = wld.wld_graph.subjects_of ~pred ~obj;;
+let objects wld ~sub ~pred = wld.wld_graph.objects_of ~sub ~pred;;
 
 let subject_uris wld ~pred ~obj =
   let pred = Uri pred in
