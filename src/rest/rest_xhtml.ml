@@ -293,25 +293,23 @@ let xhtml_navpath_of_fchain ctx fchain_name =
 ;;
 
 let xhtml_navpath ctx = function
-| Other _
-| Static_file _
-| Chains
-| Flat_chains
-| Tools -> ""
-| Tool uri -> xhtml_navpath_of_tool ctx
-| Branch uri -> xhtml_navpath_of_branch ctx uri
-| Version uri -> xhtml_navpath_of_version ctx uri
-| Intf uri -> xhtml_navpath_of_intf ctx uri
-| Intfs uri -> xhtml_navpath_of_intfs ctx uri
-| Filetype uri -> xhtml_navpath_of_filetype ctx uri
-| Filetypes -> ""
-| Versions uri -> xhtml_navpath_of_versions ctx uri
-| Branches uri -> xhtml_navpath_of_branches ctx uri
-| Chain_module modname -> xhtml_navpath_of_chain_module ctx
-| Chain fullname -> xhtml_navpath_of_chain ctx fullname
-| Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
-| Flat_chain fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
-| Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
+| `Chains
+| `Flat_chains
+| `Tools -> ""
+| `Tool uri -> xhtml_navpath_of_tool ctx
+| `Branch uri -> xhtml_navpath_of_branch ctx uri
+| `Version uri -> xhtml_navpath_of_version ctx uri
+| `Intf uri -> xhtml_navpath_of_intf ctx uri
+| `Intfs uri -> xhtml_navpath_of_intfs ctx uri
+| `Filetype uri -> xhtml_navpath_of_filetype ctx uri
+| `Filetypes -> ""
+| `Versions uri -> xhtml_navpath_of_versions ctx uri
+| `Branches uri -> xhtml_navpath_of_branches ctx uri
+| `Chain_module modname -> xhtml_navpath_of_chain_module ctx
+| `Chain fullname -> xhtml_navpath_of_chain ctx fullname
+| `Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
+| `Flat_chain uri -> xhtml_navpath_of_fchain ctx uri
+| `Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
 ;;
 
 let intf_list ctx intfs =
@@ -387,7 +385,7 @@ let get_tool ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
-  let navpath = xhtml_navpath ctx (Tool uri) in
+  let navpath = xhtml_navpath ctx (`Tool uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
 
@@ -458,7 +456,7 @@ let get_intf ctx uri =
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let navpath = xhtml_navpath ctx (Intf uri) in
+  let navpath = xhtml_navpath ctx (`Intf uri) in
   let contents = Xtmpl.apply_from_file env tmpl in
   ([ctype ()], tool_page ctx ~title: name ~wtitle ~navpath contents)
 ;;
@@ -469,14 +467,14 @@ let get_intfs ctx uri =
   let wtitle = Printf.sprintf "%s %s" pre name in
   let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
   let contents = xhtml_of_intfs_of ctx uri in
-  let navpath = xhtml_navpath ctx (Intfs uri) in
+  let navpath = xhtml_navpath ctx (`Intfs uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
   let contents = name in
-  let navpath = xhtml_navpath ctx (Filetype uri) in
+  let navpath = xhtml_navpath ctx (`Filetype uri) in
   ([ctype ()], filetype_page ctx ~title: name ~navpath contents)
 ;;
 
@@ -500,14 +498,14 @@ let get_version ctx uri =
   let name = Grdf_version.name ctx.ctx_rdf uri in
   let title = a ~href: uri name in
   let contents = xhtml_of_intfs_of ctx uri in
-  let navpath = xhtml_navpath ctx (Version uri) in
+  let navpath = xhtml_navpath ctx (`Version uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get_versions ctx tool =
   let contents = xhtml_of_versions_of ctx tool in
   let title = Printf.sprintf "Versions of %s" (Grdf_tool.name ctx.ctx_rdf tool) in
-  let navpath = xhtml_navpath ctx (Versions tool) in
+  let navpath = xhtml_navpath ctx (`Versions tool) in
   ([ctype ()], tool_page ctx ~title ~navpath contents)
 ;;
 
@@ -537,7 +535,7 @@ let get_branch ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let contents = Xtmpl.apply_from_file env tmpl in
-  let navpath = xhtml_navpath ctx (Branch uri) in
+  let navpath = xhtml_navpath ctx (`Branch uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
 
@@ -547,7 +545,7 @@ let get_branches ctx uri =
   let wtitle = Printf.sprintf "%s %s" pre name in
   let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
   let contents = xhtml_of_branches_of ctx uri in
-  let navpath = xhtml_navpath ctx (Branches uri) in
+  let navpath = xhtml_navpath ctx (`Branches uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
@@ -628,7 +626,7 @@ let get_chain_module ctx ?nav modname =
   let navpath =
     let spec =
       match nav with
-        None -> Chain_module modname
+        None -> `Chain_module modname
       | Some x -> x
     in
     xhtml_navpath ctx spec
@@ -654,7 +652,7 @@ let get_chain ctx fullname =
         in
         (code, svg)
   in
-  let navpath = xhtml_navpath ctx (Chain fullname) in
+  let navpath = xhtml_navpath ctx (`Chain fullname) in
   let contents =
     Printf.sprintf "<section>%s</section><section title=\"Source from %s\">%s</section>"
       svg (Filename.quote file) code
@@ -679,7 +677,7 @@ let handle_chain_error f ctx p =
 let get_fchains ctx = get_chains ctx;;
 
 let get_fchain_module ctx modname =
-  get_chain_module ctx ~nav: (Flat_chain_module modname) modname
+  get_chain_module ctx ~nav: (`Flat_chain_module modname) modname
 ;;
 
 let get_fchain_list ctx fchain_name =
@@ -687,7 +685,7 @@ let get_fchain_list ctx fchain_name =
   let s_chain_name = Chn_types.string_of_chain_name chain_name in
   let wtitle = Printf.sprintf "Flat chains from %s" s_chain_name in
   let title = Printf.sprintf "Flat chains from %s" (a_chain ctx chain_name) in
-  let navpath = xhtml_navpath ctx (Flat_chain_list fchain_name) in
+  let navpath = xhtml_navpath ctx (`Flat_chain_list fchain_name) in
   let flats = Chn_flat.flat_chains_of_chain ctx chain_name in
   let heads = [ "Commit id" ; "Flatten date" ] in
   let rows = List.map
@@ -724,14 +722,19 @@ let get_fchain_list ctx fchain_name =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
-let get_fchain ctx fchain_name =
+let get_fchain ctx uri =
+  let fchain_name =
+    match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
+      None -> assert false
+    | Some n -> n
+  in
   let id = Chn_types.fchain_id fchain_name in
   let title = "" in
   let wtitle = Printf.sprintf "%s (%s)"
     (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
     (Misc.string_of_opt id)
   in
-  let navpath = xhtml_navpath ctx (Flat_chain fchain_name) in
+  let navpath = xhtml_navpath ctx (`Flat_chain fchain_name) in
   let svg =
     let dot = Rest_xpage.dot_of_fchain ctx fchain_name in
     dot_to_svg ~svg_h: 600 dot
@@ -767,7 +770,7 @@ let get ctx thing args =
   | Chain fullname -> handle_chain_error get_chain ctx fullname
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname
-  | Flat_chain fchain_name -> get_fchain ctx fchain_name
+  | Flat_chain uri -> get_fchain ctx uri
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)

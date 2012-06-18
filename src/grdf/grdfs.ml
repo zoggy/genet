@@ -227,9 +227,11 @@ let is_uri_fchain_module prefix uri =
 ;;
 
 let is_uri_fchain prefix uri =
+  prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));
   match is_in_fchains prefix uri with
     None -> None
   | Some base ->
+      prerr_endline (Printf.sprintf "base=%s" base);
       match split_fchain_name base with
         `Fullname (fullname, id) -> Some (fullname, id)
       | _ -> None

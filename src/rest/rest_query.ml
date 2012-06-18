@@ -77,29 +77,31 @@ let try_is_uri_of ctx uri =
          (fun _ uri -> Chn_types.is_uri_chain ctx.ctx_cfg.Config.rest_api uri)
          (fun fullname -> Chain (Chn_types.chain_name_of_string fullname))) ;
 
+      (fun uri ->
+        match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
+           None -> None
+         | Some fchain_name ->
+            let t =
+              match Chn_types.fchain_id fchain_name with
+                 None -> Flat_chain_list fchain_name
+               | Some id -> Flat_chain uri
+             in
+             Some t
+      );
 
       (embed1
          (fun _ uri -> Chn_types.is_uri_fchain_module ctx.ctx_cfg.Config.rest_api uri)
          (fun modname -> Flat_chain_module modname)) ;
 
-      (fun uri ->
-        match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
-           None -> None
-         | Some fchain_name ->
-            let t = 
-              match Chn_types.fchain_id fchain_name with
-                 None -> Flat_chain_list fchain_name
-               | Some id -> Flat_chain fchain_name
-             in
-             Some t
-      )
     ]
   in
   let rec iter = function
     [] -> None
   | f :: q ->
       match f uri with
-        None -> iter q
+        None ->
+          prerr_endline (Printf.sprintf "f %S fail" (Rdf_uri.string uri));
+           iter q
       | x -> x
   in
   iter l
@@ -139,6 +141,7 @@ let rec thing_of_path ctx path =
   | Some c when c =@= Grdfs.genet_version -> Version uri
   | Some c when c =@= Grdfs.genet_intf -> Intf uri
   | Some c when c =@= Grdfs.genet_filetype -> Filetype uri
+  | Some c when c =@= Grdfs.genet_flatchain -> Flat_chain uri
   | Some c -> prerr_endline (Rdf_uri.string c); Other uri
 ;;
 
