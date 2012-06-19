@@ -1,0 +1,6 @@
+(* Input files and directories; order matters *)
+in = ["same_fringe-SameFringe-WP_parameter_enum.why" ]
+(* Output files and directories; order matters *)
+out = [ "result" ]
+(* The chains to apply *)
+chains = ["Altergo.prove"]

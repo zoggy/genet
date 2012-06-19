@@ -13,6 +13,7 @@ ${GENET} add port ${SPLIT} in mlw
 ${GENET} add port ${SPLIT} out "why set"
 
 ALTERGO=`${GENET} add tool altergo`
+cp -f alt-ergo_prove.sh /opt/alt-ergo-0.94/bin/
 ${GENET} add branch ${ALTERGO} 0.x
 ${GENET} add version ${ALTERGO} ${ALTERGO}/branches/0.x 0.94
 AE_PROVE=`${GENET} add interface -p "/opt/alt-ergo-%v/bin/alt-ergo_prove.sh" ${ALTERGO}/branches/0.x ae-prove`

@@ -19,7 +19,7 @@ module Graph = Graph.Make_with_map
 
 let replace_version ctx str version =
   let name = Grdf_version.name ctx.ctx_rdf version in
-  Str.global_replace (Str.regexp "%v") str name
+  Str.global_replace (Str.regexp "%v") name str
 ;;
 
 let extract_git_file config ~file ~id ~target =

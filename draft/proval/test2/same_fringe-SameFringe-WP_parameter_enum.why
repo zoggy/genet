@@ -1,0 +1,247 @@
+(* this is a prelude for Alt-Ergo*)
+(* this is a prelude for Alt-Ergo integer arithmetic *)
+type tuple0 = Tuple0
+
+type unit1
+
+type qtmark
+
+logic at : 'a, qtmark -> 'a
+
+logic old : 'a -> 'a
+
+type bool1 = True | False
+
+logic match_bool : bool, 'a, 'a -> 'a
+
+axiom match_bool_True :
+  (forall z:'a. forall z1:'a. (match_bool(true, z, z1) = z))
+
+axiom match_bool_False :
+  (forall z:'a. forall z1:'a. (match_bool(false, z, z1) = z1))
+
+function andb(x: bool, y: bool) : bool = match_bool(y, match_bool(x, true,
+  false), false)
+
+function orb(x: bool, y: bool) : bool = match_bool(y, true, match_bool(x,
+  true, false))
+
+function xorb(x: bool, y: bool) : bool = match_bool(y, match_bool(x, false,
+  true), match_bool(x, true, false))
+
+function notb(x: bool) : bool = match_bool(x, false, true)
+
+function implb(x: bool, y: bool) : bool = match_bool(y, true, match_bool(x,
+  false, true))
+
+axiom CompatOrderMult :
+  (forall x:int. forall y:int. forall z:int. ((x <= y) -> ((0 <= z) ->
+  ((x * z) <= (y * z)))))
+
+type 'a list
+
+logic Nil : 'a list
+
+logic Cons : 'a, 'a list -> 'a list
+
+logic match_list : 'a list, 'a1, 'a1 -> 'a1
+
+axiom match_list_Nil :
+  (forall z:'a. forall z1:'a. (match_list(Nil, z, z1) = z))
+
+axiom match_list_Cons :
+  (forall z:'a. forall z1:'a. forall u:'a1. forall u1:'a1 list.
+  (match_list(Cons(u, u1), z, z1) = z1))
+
+logic index_list : 'a list -> int
+
+axiom index_list_Nil : (index_list(Nil) = 0)
+
+axiom index_list_Cons :
+  (forall u:'a. forall u1:'a list [Cons(u, u1)]. (index_list(Cons(u,
+  u1)) = 1))
+
+logic Cons_proj_1 : 'a list -> 'a
+
+axiom Cons_proj_1_def :
+  (forall u:'a. forall u1:'a list. (Cons_proj_1(Cons(u, u1)) = u))
+
+logic Cons_proj_2 : 'a list -> 'a list
+
+axiom Cons_proj_2_def :
+  (forall u:'a. forall u1:'a list. (Cons_proj_2(Cons(u, u1)) = u1))
+
+axiom list_inversion :
+  (forall u:'a list. ((u = Nil) or (u = Cons(Cons_proj_1(u),
+  Cons_proj_2(u)))))
+
+logic length : 'a list -> int
+
+axiom length_def : (length(Nil) = 0)
+
+axiom length_def1 :
+  (forall x:'a. forall x1:'a list. (length(Cons(x, x1)) = (1 + length(x1))))
+
+axiom Length_nonnegative : (forall l:'a list. (0 <= length(l)))
+
+axiom Length_nil : (forall l:'a list. ((length(l) = 0) -> (l = Nil)))
+
+axiom Length_nil1 : (forall l:'a list. ((l = Nil) -> (length(l) = 0)))
+
+logic infix_plpl : 'a list, 'a list -> 'a list
+
+axiom infix_plpl_def : (forall l2:'a list. (infix_plpl(Nil, l2) = l2))
+
+axiom infix_plpl_def1 :
+  (forall l2:'a list.
+  (forall x:'a. forall x1:'a list. (infix_plpl(Cons(x, x1), l2) = Cons(x,
+  infix_plpl(x1, l2)))))
+
+axiom Append_assoc :
+  (forall l1:'a list. forall l2:'a list. forall l3:'a list. (infix_plpl(l1,
+  infix_plpl(l2, l3)) = infix_plpl(infix_plpl(l1, l2), l3)))
+
+axiom Append_l_nil : (forall l:'a list. (infix_plpl(l, Nil) = l))
+
+axiom Append_length :
+  (forall l1:'a list. forall l2:'a list. (length(infix_plpl(l1,
+  l2)) = (length(l1) + length(l2))))
+
+logic mem : 'a, 'a list -> prop
+
+axiom mem_def : (forall x:'a. (not mem(x, Nil)))
+
+axiom mem_def1 :
+  (forall x:'a.
+  (forall x1:'a. forall x2:'a list. (mem(x, Cons(x1, x2)) -> ((x = x1) or
+  mem(x, x2)))))
+
+axiom mem_def2 :
+  (forall x:'a.
+  (forall x1:'a. forall x2:'a list. (((x = x1) or mem(x, x2)) -> mem(x,
+  Cons(x1, x2)))))
+
+axiom mem_append :
+  (forall x:'a. forall l1:'a list. forall l2:'a list. (mem(x, infix_plpl(l1,
+  l2)) -> (mem(x, l1) or mem(x, l2))))
+
+axiom mem_append1 :
+  (forall x:'a. forall l1:'a list. forall l2:'a list. ((mem(x, l1) or mem(x,
+  l2)) -> mem(x, infix_plpl(l1, l2))))
+
+axiom mem_decomp :
+  (forall x:'a. forall l:'a list. (mem(x, l) ->
+  (exists l1:'a list. exists l2:'a list. (l = infix_plpl(l1, Cons(x, l2))))))
+
+type elt
+
+type tree
+
+logic Empty : tree
+
+logic Node : tree, elt, tree -> tree
+
+logic match_tree : tree, 'a, 'a -> 'a
+
+axiom match_tree_Empty :
+  (forall z:'a. forall z1:'a. (match_tree(Empty, z, z1) = z))
+
+axiom match_tree_Node :
+  (forall z:'a. forall z1:'a. forall u:tree. forall u1:elt. forall u2:tree.
+  (match_tree(Node(u, u1, u2), z, z1) = z1))
+
+logic index_tree : tree -> int
+
+axiom index_tree_Empty : (index_tree(Empty) = 0)
+
+axiom index_tree_Node :
+  (forall u:tree. forall u1:elt. forall u2:tree [Node(u, u1, u2)].
+  (index_tree(Node(u, u1, u2)) = 1))
+
+logic Node_proj_1 : tree -> tree
+
+axiom Node_proj_1_def :
+  (forall u:tree. forall u1:elt. forall u2:tree. (Node_proj_1(Node(u, u1,
+  u2)) = u))
+
+logic Node_proj_2 : tree -> elt
+
+axiom Node_proj_2_def :
+  (forall u:tree. forall u1:elt. forall u2:tree. (Node_proj_2(Node(u, u1,
+  u2)) = u1))
+
+logic Node_proj_3 : tree -> tree
+
+axiom Node_proj_3_def :
+  (forall u:tree. forall u1:elt. forall u2:tree. (Node_proj_3(Node(u, u1,
+  u2)) = u2))
+
+axiom tree_inversion :
+  (forall u:tree. ((u = Empty) or (u = Node(Node_proj_1(u), Node_proj_2(u),
+  Node_proj_3(u)))))
+
+logic elements : tree -> elt list
+
+axiom elements_def : (elements(Empty) = Nil)
+
+axiom elements_def1 :
+  (forall x:tree. forall x1:elt. forall x2:tree. (elements(Node(x, x1,
+  x2)) = infix_plpl(elements(x), Cons(x1, elements(x2)))))
+
+type enum
+
+logic Done : enum
+
+logic Next : elt, tree, enum -> enum
+
+logic match_enum : enum, 'a, 'a -> 'a
+
+axiom match_enum_Done :
+  (forall z:'a. forall z1:'a. (match_enum(Done, z, z1) = z))
+
+axiom match_enum_Next :
+  (forall z:'a. forall z1:'a. forall u:elt. forall u1:tree. forall u2:enum.
+  (match_enum(Next(u, u1, u2), z, z1) = z1))
+
+logic index_enum : enum -> int
+
+axiom index_enum_Done : (index_enum(Done) = 0)
+
+axiom index_enum_Next :
+  (forall u:elt. forall u1:tree. forall u2:enum [Next(u, u1, u2)].
+  (index_enum(Next(u, u1, u2)) = 1))
+
+logic Next_proj_1 : enum -> elt
+
+axiom Next_proj_1_def :
+  (forall u:elt. forall u1:tree. forall u2:enum. (Next_proj_1(Next(u, u1,
+  u2)) = u))
+
+logic Next_proj_2 : enum -> tree
+
+axiom Next_proj_2_def :
+  (forall u:elt. forall u1:tree. forall u2:enum. (Next_proj_2(Next(u, u1,
+  u2)) = u1))
+
+logic Next_proj_3 : enum -> enum
+
+axiom Next_proj_3_def :
+  (forall u:elt. forall u1:tree. forall u2:enum. (Next_proj_3(Next(u, u1,
+  u2)) = u2))
+
+axiom enum_inversion :
+  (forall u:enum. ((u = Done) or (u = Next(Next_proj_1(u), Next_proj_2(u),
+  Next_proj_3(u)))))
+
+logic enum_elements : enum -> elt list
+
+axiom enum_elements_def : (enum_elements(Done) = Nil)
+
+axiom enum_elements_def1 :
+  (forall x:elt. forall x1:tree. forall x2:enum. (enum_elements(Next(x, x1,
+  x2)) = Cons(x, infix_plpl(elements(x1), enum_elements(x2)))))
+
+goal WP_parameter_enum :
+  (forall e:enum. (enum_elements(e) = infix_plpl(elements(Empty),
+  enum_elements(e))))
+

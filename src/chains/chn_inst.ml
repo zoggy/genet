@@ -127,7 +127,19 @@ let create_graph ctx uri_fchain input =
     fun () -> incr cpt; Printf.sprintf "file%d" !cpt
   in
   let new_file map ports =
-    let file = file_sym () in
+    let file =
+      let name = file_sym () in
+      let ext =
+        match ports with
+          [] -> ""
+        | p :: _ ->
+            let typ = Grdf_port.port_type ctx.ctx_rdf p in
+            match Grdf_port.port_file_type_uri ctx.ctx_cfg.Config.rest_api typ with
+              None -> ""
+            | Some uri -> (Grdf_ftype.extension ctx.ctx_rdf uri)
+      in
+      Printf.sprintf "%s.%s" name ext
+    in
     List.fold_left
     (fun map uri_port -> Urimap.add uri_port file map)
     map ports

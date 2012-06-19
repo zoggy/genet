@@ -23,7 +23,7 @@ let command_path wld uri =
 ;;
 
 let set_command_path wld uri path =
-  let pred = Rdf_node.Uri Grdfs.genet_hasbranch in
+  let pred = Rdf_node.Uri Grdfs.genet_haspath in
   Grdfs.add_triple wld ~sub: (Rdf_node.Uri uri) ~pred
     ~obj: (Rdf_node.node_of_literal_string path)
 ;;
