@@ -93,6 +93,9 @@ GENET_REST_BYTE=$(GENET_PREFIX)-rest.byte
 GENET_CHAIN=$(GENET_PREFIX)-chain
 GENET_CHAIN_BYTE=$(GENET_PREFIX)-chain.byte
 
+GENET_EXEC=$(GENET_PREFIX)-exec
+GENET_EXEC_BYTE=$(GENET_PREFIX)-exec.byte
+
 #shut up autconf @datarootdir@
 
 # Compilation
