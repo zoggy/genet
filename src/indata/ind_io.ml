@@ -63,6 +63,8 @@ let load dir =
         (String.concat "." cp#get_name)
       in
       error ~file msg
+  | Stream.Error _ ->
+      error ~file "Syntax error"
 ;;
 
 let write dir =
