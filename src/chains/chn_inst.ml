@@ -89,7 +89,7 @@ let instances ctx uri_fchain =
   in
   let f acc uri_i =
     let versions = Grdfs.object_uris ctx.ctx_rdf
-      ~sub: (Rdf_node.Uri uri_i) ~pred: Grdfs.genet_hasversion
+      ~sub: (Rdf_node.Uri uri_i) ~pred: Grdfs.genet_useversion
     in
     let versions =
       List.fold_left
@@ -249,7 +249,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Urimap.iter
         (fun _ version ->
           Grdfs.add_triple_uris ctx.ctx_rdf
-            ~sub: uri_inst ~pred: Grdfs.genet_hasversion ~obj: version
+            ~sub: uri_inst ~pred: Grdfs.genet_useversion ~obj: version
         )
         comb;
       (* associate input files (with commit ids); they're supposed to be ordered by rank *)
