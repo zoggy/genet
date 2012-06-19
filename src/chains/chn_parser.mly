@@ -76,7 +76,7 @@ port: ftype=port_type name=Ident {
 port_type:
   s=Ident { Grdf_port.T s }
 | s=Var { Grdf_port.Var s }
-| SET t=port_type { Grdf_port.Set t }
+| t=port_type SET { Grdf_port.Set t }
 
 operation: OPERATION ident=Ident COLON from=op_origin SEMICOLON option(Comment)
   {

@@ -15,7 +15,7 @@ PROVE2=`./genet add interface ${WHY}/branches/1.x prove2`
 ./genet add filetype "ocamlimpl" ml "ocaml implementation"
 ./genet add filetype "ocamlintf" mli "ocaml interface"
 ./genet add port ${PROVE} in coq
-./genet add port ${PROVE} in coqo
+./genet add port ${PROVE} in "coqo set"
 ./genet add port ${PROVE} out ocamlimpl
 ./genet add port ${PROVE} out coq
 ./genet add port ${PROVE2} in ocamlimpl
@@ -34,7 +34,7 @@ ALTERGO=`./genet add tool altergo`
 AE_PROVE=`./genet add interface ${ALTERGO}/branches/1.x ae-prove`
 AE_PROVE2=`./genet add interface ${ALTERGO}/branches/2.x ae-prove2`
 ./genet add port ${AE_PROVE} in coq
-./genet add port ${AE_PROVE} in coqo
+./genet add port ${AE_PROVE} in "coqo set"
 ./genet add port ${AE_PROVE} out ocamlimpl
 ./genet add port ${AE_PROVE} out coq
 ./genet add port ${AE_PROVE2} in ocamlimpl
