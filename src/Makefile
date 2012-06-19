@@ -74,6 +74,7 @@ BASE_CMXFILES=base/version.cmx \
 	base/smap.cmx \
 	base/find.cmx \
 	base/misc.cmx \
+	base/reporter.cmx \
 	base/config.cmx \
 	base/checks.cmx \
 	base/loc.cmx \

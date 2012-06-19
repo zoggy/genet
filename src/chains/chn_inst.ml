@@ -4,6 +4,10 @@ open Rdf_graph;;
 open Grdf_types;;
 open Chn_types;;
 
+let run_graph ctx reporter uri_fchain g port_to_file =
+  print_endline "run_graph"
+;;
+
 let version_combinations ctx fchain =
   let intfs = Chn_flat.intfs_of_flat_chain ctx fchain in
   let intfs_by_tool = Uriset.fold
@@ -23,10 +27,15 @@ let version_combinations ctx fchain =
   in
   let rec f = function
     [] -> []
-  | (tool, intfs) :: q ->
+  | (tool, required_intfs) :: q ->
+      prerr_endline (Printf.sprintf
+              "required intfs for tool %s:" (Rdf_uri.string tool));
+      Uriset.iter (fun uri -> prerr_endline (Rdf_uri.string uri)) required_intfs;
       let active_versions = Grdf_version.active_versions_of
         ctx.ctx_rdf ~recur: true tool
       in
+      prerr_endline (Printf.sprintf "active_versions_of %s: %d"
+        (Rdf_uri.string tool) (List.length active_versions));
       let combs = f q in
       let f_version acc version =
         (* keep only versions implementing all the required interfaces *)
@@ -34,9 +43,12 @@ let version_combinations ctx fchain =
           let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf version in
           Uriset.union explicit inherited
         in
+        prerr_endline "*** implemented =";
+        Uriset.iter
+          (fun uri -> prerr_endline (Rdf_uri.string uri)) implemented;
         if Uriset.for_all
           (fun intf -> Uriset.exists (Rdf_uri.equal intf) implemented)
-          intfs
+          required_intfs
         then
           match combs with
             [] ->
@@ -221,7 +233,7 @@ let add_input_files ctx uri_inst in_files =
   ignore(List.fold_left (add_input_file ctx uri_inst) 1 in_files)
 ;;
 
-let do_instanciate ctx uri_fchain input comb =
+let do_instanciate ctx reporter uri_fchain input comb =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   match Chn_types.is_uri_fchain prefix uri_fchain with
     None -> assert false
@@ -250,7 +262,8 @@ let do_instanciate ctx uri_fchain input comb =
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
 
       ignore(g, port_to_file);
-      failwith "instanciate: not implemented!"
+      run_graph ctx reporter uri_fchain g port_to_file;
+      uri_inst
 ;;
 
 type command = {
@@ -273,13 +286,13 @@ let scenario_of_graph ctx g port_to_file uri_inst =
   }
 ;;
 
-let instanciate ctx uri_fchain input comb =
+let instanciate ctx reporter uri_fchain input comb =
   match inst_chain_exists ctx uri_fchain input comb with
     Some uri -> uri
   | None ->
       ctx.ctx_rdf.wld_graph.transaction_start ();
       try
-        let uri = do_instanciate ctx uri_fchain input comb in
+        let uri = do_instanciate ctx reporter uri_fchain input comb in
         ctx.ctx_rdf.wld_graph.transaction_commit();
         uri
       with

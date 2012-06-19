@@ -94,7 +94,7 @@ let intfs_of_tool wld uri =
 ;;
 
 let compute_intfs_of wld uri =
-  prerr_endline "Grdf_intf.compute_intfs_of: start";
+  (*prerr_endline "Grdf_intf.compute_intfs_of: start";*)
   let rec inher = function
     None -> Uriset.empty
   | Some (uri, _) ->
@@ -103,35 +103,35 @@ let compute_intfs_of wld uri =
       let explicit_no = explicit_no_intfs_of wld uri in
       Uriset.union (Uriset.diff set explicit_no) explicit
   in
-  prerr_endline ("Grdf_intf.compute_intfs_of: node ok, uri="^(Rdf_uri.string uri));
+  (*prerr_endline ("Grdf_intf.compute_intfs_of: node ok, uri="^(Rdf_uri.string uri));*)
   if Grdfs.is_a_tool wld uri then
     (* show all interfaces *)
     (
-     prerr_endline "Grdf_intf.compute_intfs_of: then";
+     (*prerr_endline "Grdf_intf.compute_intfs_of: then";*)
      let ret = (intfs_of_tool wld uri, Uriset.empty) in
-     prerr_endline "Grdf_intf.compute_intfs_of: ok";
+     (*prerr_endline "Grdf_intf.compute_intfs_of: ok";*)
      ret
     )
   else
     begin
-      prerr_endline "Grdf_intf.compute_intfs_of: else";
+      (*prerr_endline "Grdf_intf.compute_intfs_of: else";*)
       let explicit = explicit_intfs_of wld uri in
-      prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";
+      (*prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";*)
       let parent =
         if Grdfs.is_a_version wld uri then
           (
-           prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: true";
+           (*prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: true";*)
            match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false)
           )
         else
           (
-           prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: false";
+           (*prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: false";*)
            Grdf_branch.parent wld uri
           )
       in
-      prerr_endline "Grdf_intf.compute_intfs_of: parent ok";
+      (*prerr_endline "Grdf_intf.compute_intfs_of: parent ok";*)
       let inherited = inher parent in
-      prerr_endline "Grdf_intf.compute_intfs_of: inherited ok";
+      (*prerr_endline "Grdf_intf.compute_intfs_of: inherited ok";*)
       (explicit, inherited)
     end
 ;;
