@@ -135,7 +135,10 @@ let create_graph ctx uri_fchain input =
   let f_consumer uri_src p_src (g, set) p_dst =
     let uri_dst = Grdfs.port_container p_dst in
     if Rdf_uri.equal uri_dst uri_fchain then
-      (g, set)
+      begin
+        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        (g, set)
+      end
     else
       begin
         let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
@@ -175,12 +178,14 @@ let create_graph ctx uri_fchain input =
   (g, map)
 ;;
 
-let dot_of_graph ctx g =
+let dot_of_graph ctx g port_to_file =
   let f_edge (p1, p2) =
     let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
     let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
     let f p = Grdf_port.string_of_port_type (fun x -> x) p in
-    let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
+    let label = Printf.sprintf "%s:%s\\n%s:%s" (f type1) (f type2)
+       (Urimap.find p1 port_to_file) (Urimap.find p2 port_to_file)
+    in
     (label, [])
   in
   let f_node uri =
@@ -243,10 +248,9 @@ let do_instanciate ctx reporter uri_fchain input comb =
       let (g, port_to_file) = create_graph ctx uri_fchain input in
 
       prerr_endline "generating dot";
-      Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
+      Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g port_to_file);
 
-      ignore(g, port_to_file);
-      Chn_run.run_graph ctx reporter uri_fchain g port_to_file;
+      Chn_run.run_graph ctx reporter uri_fchain input g port_to_file;
       uri_inst
 ;;
 

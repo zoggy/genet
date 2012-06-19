@@ -266,6 +266,7 @@ let dir_md5sum dir =
       Sys.remove temp_file;
       s
   | n ->
+      (try Sys.remove temp_file with _ -> ());
       failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 ;;
 

@@ -68,6 +68,6 @@ let rec string_of_msg pad label = function
     string_of_msg_list ~pad: (pad^"  ") ~label l
 
 and string_of_msg_list ?(pad="") ?(label="") l =
-  let l = List.map (string_of_msg pad label) l in
+  let l = List.rev_map (string_of_msg pad label) l in
   String.concat "\n" l
 ;;
