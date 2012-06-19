@@ -137,3 +137,5 @@ val is_capitalized : string -> bool
 val get_git_id : string -> string
 
 val unique_id : unit -> string
+
+val dir_md5sum : string -> string

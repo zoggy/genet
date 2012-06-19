@@ -254,3 +254,20 @@ let unique_id () =
 ;;
 
 
+let dir_md5sum dir =
+  let temp_file = Filename.temp_file "dir_md5sum" ".txt" in
+  let com = Printf.sprintf
+    "cd %s && find . -type f  -exec md5sum {} + | awk '{print $2, $1}' | sort | cut -b 3-1000 | md5sum > %s"
+    (Filename.quote dir) (Filename.quote temp_file)
+  in
+  match Sys.command com with
+    0 ->
+      let s = string_of_file temp_file in
+      Sys.remove temp_file;
+      s
+  | n ->
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+;;
+
+
+  
