@@ -1,6 +1,6 @@
 (* Input files and directories; order matters *)
-in = [file1.v ; file2.ml]
+in = ["file1.v" ; "file2.ml"]
 (* Output files and directories; order matters *)
-out = [ out1.v ]
+out = [ "out1.v" ]
 (* The chains to apply *)
-chains = []
+chains = ["Chain1.test1"]

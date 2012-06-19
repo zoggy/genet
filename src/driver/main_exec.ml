@@ -9,10 +9,12 @@ let exec_one opts errors input =
   verbose opts (Printf.sprintf "Handling input %S" input);
   try
     let config = Config.read_config opts.Options.config_file in
+    let rdf_wld = Grdf_init.open_graph config in
+    let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
     let spec_dir = Filename.concat (Config.data_dir config) input in
-    let _spec = Ind_io.load spec_dir in
+    let spec = Ind_io.load spec_dir in
+    Chn_exec.exec ctx spec;
     errors
-    (*ignore(Chn_inst.instanciate ctx uri spec c)*)
   with
     exc ->
       begin
