@@ -65,6 +65,7 @@ let load dir =
       error ~file msg
   | Stream.Error _ ->
       error ~file "Syntax error"
+  | Sys_error s -> error ~file s
 ;;
 
 let write dir =

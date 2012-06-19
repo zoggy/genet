@@ -1,10 +1,18 @@
 (** *)
 
+let verbose opts ?(level=1) msg =
+  if opts.Options.verb_level >= level then
+    prerr_endline msg
+;;
+
 let exec_one opts errors input =
+  verbose opts (Printf.sprintf "Handling input %S" input);
   try
+    let config = Config.read_config opts.Options.config_file in
     let spec_dir = Filename.concat (Config.data_dir config) input in
-    let spec = Ind_io.load spec_dir in
-    ignore(Chn_inst.instanciate ctx uri spec c)
+    let _spec = Ind_io.load spec_dir in
+    errors
+    (*ignore(Chn_inst.instanciate ctx uri spec c)*)
   with
     exc ->
       begin
@@ -36,6 +44,7 @@ let main () =
       if errors > 0 then
         prerr_endline
         (Printf.sprintf "%d error%s" errors (if errors > 1 then "s" else ""));
+      exit errors
 ;;
 
 let () = Misc.safe_main main;;
