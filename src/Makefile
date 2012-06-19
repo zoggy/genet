@@ -186,6 +186,7 @@ CHN_CMXFILES=chains/chn_types.cmx \
 	chains/chn_lexer.cmx \
 	chains/chn_io.cmx \
 	chains/chn_flat.cmx \
+	chains/chn_run.cmx \
 	chains/chn_inst.cmx \
 	chains/chn_exec.cmx
 

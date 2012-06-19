@@ -4,9 +4,6 @@ open Rdf_graph;;
 open Grdf_types;;
 open Chn_types;;
 
-let run_graph ctx reporter uri_fchain g port_to_file =
-  print_endline "run_graph"
-;;
 
 let version_combinations ctx fchain =
   let intfs = Chn_flat.intfs_of_flat_chain ctx fchain in
@@ -121,20 +118,7 @@ let inst_chain_exists ctx uri_fchain input comb =
   with Not_found -> None
 ;;
 
-module Graph = Graph.Make_with_map
-  (struct
-     type t = Rdf_uri.uri
-     let compare = Rdf_uri.compare
-   end
-  )
-  (struct
-     type t = Rdf_uri.uri * Rdf_uri.uri
-     let compare (p1, p2) (p3, p4) =
-       match Rdf_uri.compare p1 p3 with
-         0 -> Rdf_uri.compare p2 p4
-       | n -> n
-   end)
-;;
+module Graph = Chn_run.Graph;;
 
 let create_graph ctx uri_fchain input =
   let g = Graph.create () in
@@ -262,7 +246,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g);
 
       ignore(g, port_to_file);
-      run_graph ctx reporter uri_fchain g port_to_file;
+      Chn_run.run_graph ctx reporter uri_fchain g port_to_file;
       uri_inst
 ;;
 
