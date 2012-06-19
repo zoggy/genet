@@ -1,6 +1,6 @@
 (* Input files and directories; order matters *)
-in = ["file1.v" ; "file2.ml" ; "foo" ]
+in = ["same_fringe.mlw" ]
 (* Output files and directories; order matters *)
-out = [ "out1.v" ]
+out = [ "out1.ae_result" ]
 (* The chains to apply *)
-chains = ["Chain1.test1"]
+chains = ["Why3.split_altergo"]

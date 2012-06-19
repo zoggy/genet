@@ -35,11 +35,15 @@ let add_version config wld options =
   | _ -> failwith "Please give tool uri, optional branch uri and name of the new version"
 ;;
 
-let add_intf config wld options =
+let add_intf config wld ?path options =
   match options.args with
   | [parent ; name] ->
       let parent = Rdf_uri.uri parent in
       let uri = Grdf_intf.add wld ~parent name in
+      (match path with
+         None -> ()
+       | Some p -> Grdf_intf.set_command_path wld uri p
+      );
       print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give tool or branch uri and name of the new interface"
 ;;
@@ -158,8 +162,13 @@ let com_add_version = {
   }
 ;;
 
+let intf_path = ref None;;
 let com_add_intf = {
-  com_options = [] ; com_usage = "<tool|branch uri> <name>" ;
+  com_options = [
+      "-p", Arg.String (fun s -> intf_path := Some s),
+      "<path> path to command (when used, %v will be replaced by version)" ;
+    ];
+  com_usage = "<tool|branch uri> <name>" ;
   com_kind = Final (set_mode Add_intf) ;
   }
 ;;
@@ -337,7 +346,7 @@ let main () =
           | Add_tool -> add_tool config rdf_wld opts
           | Add_branch -> add_branch config rdf_wld opts
           | Add_version -> add_version config rdf_wld opts
-          | Add_intf -> add_intf config rdf_wld opts
+          | Add_intf -> add_intf config rdf_wld ?path: !intf_path opts
           | Add_filetype -> add_filetype config rdf_wld opts
           | Add_port -> add_port config rdf_wld ?pos: !port_position opts
           | Rem_port -> rem_port config rdf_wld opts

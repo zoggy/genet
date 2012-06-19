@@ -250,7 +250,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       prerr_endline "generating dot";
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g port_to_file);
 
-      Chn_run.run_graph ctx reporter uri_fchain input g port_to_file;
+      ignore(Chn_run.run_graph ctx reporter uri_fchain comb input g port_to_file);
       uri_inst
 ;;
 

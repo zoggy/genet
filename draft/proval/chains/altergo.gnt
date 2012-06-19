@@ -1,0 +1,13 @@
+(* Example of genet chain description *)
+
+chain prove
+(*  This is the description of the chain *)
+{
+  in: why i1 ;
+  out: ae_result o1 ;
+
+  operation op1 : "/altergo/ae-prove";
+
+  i1 -> op1.1 ;
+  op1.1 -> o1 ;
+}

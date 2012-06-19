@@ -22,6 +22,12 @@ let command_path wld uri =
   Grdfs.object_literal wld ~sub: (Uri uri) ~pred
 ;;
 
+let set_command_path wld uri path =
+  let pred = Rdf_node.Uri Grdfs.genet_hasbranch in
+  Grdfs.add_triple wld ~sub: (Rdf_node.Uri uri) ~pred
+    ~obj: (Rdf_node.node_of_literal_string path)
+;;
+
 let intf_exists wld uri =
   dbg ~level: 1 (fun () -> "Grdf_intf.intf_exists uri="^(Rdf_uri.string uri));
   if Grdfs.is_a_intf wld uri then

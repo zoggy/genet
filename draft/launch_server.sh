@@ -11,5 +11,7 @@ cp ~/devel/genet/draft/*.gnt in/chains/ ; \
 (cd in/ ; \
   git init . ; (cd chains ; git add *.gnt ; git commit -am"test" ) ; \
   for i in "data/test1/file1.v data/test1/file2.ml" ; do touch $i; git add $i; git commit -am"add" ; done; \
+  mkdir -p data/test1/foo/bar ; touch data/test1/foo/bar/toto.txt ; git add data/test1/foo/bar/toto.txt; \
+  git commit -am"add dir"; \
   ); \
 ~/devel/genet/src/genet-rest )

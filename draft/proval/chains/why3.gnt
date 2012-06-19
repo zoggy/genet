@@ -1,0 +1,28 @@
+(* Example of genet chain description *)
+
+chain split_altergo
+(*  This is the description of the chain *)
+{
+  in: mlw i1 ;
+  out: why set o1 ;
+
+  operation op1 : "/why3/split-2-altergo" ;
+
+  i1 -> op1.1 ;(* automatically generated name for 1st input of op1 *)
+  op1.1 -> o1 ;
+}
+
+chain prove_with_ae
+(* split and prove splitted goals with alt-ergo *)
+{
+
+  in: mlw i1 ;
+  out: ae_result set o1;
+
+  operation split : Why3.split_altergo ;
+  operation prove : Altergo.prove ;
+
+  i1 -> split.1 ;
+  split.1 -> prove.1 ;
+  prove.1 -> o1;
+}
