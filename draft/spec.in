@@ -1,0 +1,6 @@
+(* Input files and directories; order matters *)
+in = [file1.v ; file2.ml]
+(* Output files and directories; order matters *)
+out = [ out1.v ]
+(* The chains to apply *)
+chains = []
