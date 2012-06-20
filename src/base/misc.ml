@@ -270,5 +270,12 @@ let dir_md5sum dir =
       failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 ;;
 
-
-  
+let path_under ~parent file =
+  if is_prefix parent file then
+    begin
+      let len = String.length parent + 1 in
+      String.sub file len (String.length file - len)
+    end
+  else
+    failwith (Printf.sprintf "%s is not under %s" file parent)
+;;

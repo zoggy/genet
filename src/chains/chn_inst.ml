@@ -60,22 +60,16 @@ let version_combinations ctx fchain =
   f intf_tools
 ;;
 
-let inst_input_files ctx uri_inst =
-  let uris = Grdfs.object_uris ctx.ctx_rdf
-     ~sub: (Rdf_node.Uri uri_inst) ~pred: Grdfs.genet_consumes
+let inst_input ctx uri_inst =
+  let input = Grdfs.object_literal ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri uri_inst) ~pred: Grdfs.genet_useinput
   in
-  List.sort
-    (fun uri1 uri2 ->
-      Pervasives.compare
-       (Grdfs.ichain_in_file_rank uri1)  (Grdfs.ichain_in_file_rank uri2))
-  uris
-;;
-
-let input_file_info_of_uri ctx uri =
-  let sub = Rdf_node.Uri uri in
-  (Grdfs.name ctx.ctx_rdf sub,
-   Misc.string_of_opt (Grdfs.object_literal ctx.ctx_rdf ~sub ~pred: Grdfs.genet_hascommitid)
-  )
+  let input_id = Grdfs.object_literal ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri uri_inst) ~pred: Grdfs.genet_useinputcommitid
+  in
+  match input, input_id with
+    None, _ | _, None -> None
+  | Some s, Some id -> Some (s, id)
 ;;
 
 let equal_tool_versions = Urimap.equal Rdf_uri.equal;;
@@ -97,9 +91,8 @@ let instances ctx uri_fchain =
       Urimap.empty
       versions
     in
-    let in_files = inst_input_files ctx uri_i in
-    let in_files = List.map (input_file_info_of_uri ctx) in_files in
-    (uri_i, versions, in_files) :: acc
+    let input = inst_input ctx uri_i in
+    (uri_i, versions, input) :: acc
   in
   List.fold_left f [] insts
 ;;
@@ -108,9 +101,13 @@ let instances ctx uri_fchain =
     Sparql implementation. *)
 let inst_chain_exists ctx uri_fchain input comb =
   let insts = instances ctx uri_fchain in
-  let pred (_, versions, in_files) =
+  let input =
+    (input.Ind_types.from_in_data,
+     Misc.get_git_id input.Ind_types.dir)
+  in
+  let pred (_, versions, input_info) =
     equal_tool_versions comb versions &&
-    in_files = input.Ind_types.in_files
+    (match input_info with None -> false | Some i -> i = input)
   in
   try
     let (uri_i, _, _) = List.find pred insts in
@@ -218,20 +215,19 @@ let dot_of_graph ctx g port_to_file =
   Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
-let add_input_file ctx uri_inst rank (filename, commit_id) =
-  let uri_file = Grdfs.uri_ichain_in_file uri_inst rank in
-  let sub = Rdf_node.Uri uri_file in
-  Grdfs.add_name ctx.ctx_rdf sub filename;
-  let obj = Rdf_node.node_of_literal_string commit_id in
-  let pred = Rdf_node.Uri Grdfs.genet_hascommitid in
-  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
-  Grdfs.add_triple_uris ctx.ctx_rdf
-    ~sub: uri_inst ~pred: Grdfs.genet_consumes ~obj: uri_file;
-  rank + 1
-;;
+let set_input_info ctx uri_inst input =
+  let input_name = input.Ind_types.from_in_data in
+  let input_id = Misc.get_git_id input.Ind_types.dir in
 
-let add_input_files ctx uri_inst in_files =
-  ignore(List.fold_left (add_input_file ctx uri_inst) 1 in_files)
+  let sub = Rdf_node.Uri uri_inst in
+
+  let pred = Rdf_node.Uri Grdfs.genet_useinput in
+  let obj = Rdf_node.node_of_literal_string input_name in
+  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
+
+  let pred = Rdf_node.Uri Grdfs.genet_useinputcommitid in
+  let obj = Rdf_node.node_of_literal_string input_id in
+  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
 ;;
 
 let do_instanciate ctx reporter uri_fchain input comb =
@@ -253,8 +249,13 @@ let do_instanciate ctx reporter uri_fchain input comb =
             ~sub: uri_inst ~pred: Grdfs.genet_useversion ~obj: version
         )
         comb;
+
+      let obj = Rdf_node.node_of_literal_string input.Ind_types.from_in_data in
+      let pred = Rdf_node.Uri Grdfs.genet_useinput in
+      Grdfs.add_triple ctx.ctx_rdf ~sub: (Rdf_node.Uri uri_inst) ~pred ~obj;
+
       (* associate input files (with commit ids); they're supposed to be ordered by rank *)
-      add_input_files ctx uri_inst input.Ind_types.in_files;
+      set_input_info ctx uri_inst input;
 
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
       let (g, port_to_file) = create_graph ctx uri_fchain input in
@@ -264,26 +265,6 @@ let do_instanciate ctx reporter uri_fchain input comb =
 
       ignore(Chn_run.run_graph ctx reporter uri_fchain comb input g port_to_file);
       uri_inst
-;;
-
-type command = {
-  com_command : string ; (* command path instanciated by tool version *)
-  com_in_files : string list ;
-  com_out_files : string list ;
-}
-
-type scenario = {
-   exec_inst : Rdf_uri.uri ;
-   exec_commands : command list ;
-   }
-
-let scenario_of_graph ctx g port_to_file uri_inst =
-  let commands = [] in
-
-  {
-    exec_inst = uri_inst ;
-    exec_commands = commands ;
-  }
 ;;
 
 let instanciate ctx reporter uri_fchain input comb =

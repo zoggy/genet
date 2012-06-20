@@ -23,16 +23,8 @@ let replace_version ctx str version =
 ;;
 
 let extract_git_file config ~file ~id ~target =
-  let in_dir = Config.in_dir config in
-  let base_dir =
-    if Misc.is_prefix in_dir file then
-      begin
-        let len = String.length in_dir + 1 in
-        String.sub file len (String.length file - len)
-      end
-    else
-      failwith (Printf.sprintf "%s is not under %s" file in_dir)
-  in
+  let data_dir = Config.data_dir config in
+  let base_dir = Misc.path_under ~parent: data_dir file in
   let target_dir = Filename.quote (Filename.dirname target) in
   let target_base = Filename.quote (Filename.basename target) in
   let com = Printf.sprintf
@@ -41,7 +33,7 @@ let extract_git_file config ~file ~id ~target =
     mv %s/.tmp/%s %s/%s ; \
     rm -fr %s/.tmp/"
     target_dir
-    (Filename.quote in_dir) id (Filename.quote base_dir) target_dir
+    (Filename.quote data_dir) id (Filename.quote base_dir) target_dir
     target_dir (Filename.quote base_dir) target_dir target_base
     target_dir
   in
@@ -51,6 +43,10 @@ let extract_git_file config ~file ~id ~target =
   | n ->
      let msg = Printf.sprintf "Command failed [%d]: %s" n com in
      failwith msg
+;;
+
+let record_file ctx reporter file port =
+  ()
 ;;
 
 let rec run_node ctx reporter uri_fchain comb g port_to_file tmp_dir uri_node =
@@ -131,7 +127,28 @@ let run_graph ctx reporter uri_fchain comb input g port_to_file =
   init_run ctx reporter uri_fchain input g port_to_file tmp_dir;
   let g = Graph.remove_node g uri_fchain in
 (*  try*)
-  run_nodes ctx reporter uri_fchain comb g port_to_file tmp_dir (Graph.pred_roots g)
+  let g = run_nodes ctx reporter uri_fchain comb g port_to_file tmp_dir (Graph.pred_roots g) in
+
+  (* copy out files ? *)
+  let _out_files = input.Ind_types.out_files in
+  let _port_files =
+    let ports = Grdf_port.ports ctx.ctx_rdf uri_fchain Grdf_port.Out in
+    List.map (fun uri -> Urimap.find uri port_to_file) ports
+  in
+
+  (* graph should be empty now *)
+  begin
+    match Graph.fold_succ g (fun k _ acc -> k :: acc) [] with
+    [] -> ()
+  | l ->
+      let l = List.map Rdf_uri.string l in
+      let msg = Printf.sprintf "The following nodes were not executed:\n%s"
+        (String.concat "\n" l)
+      in
+      failwith msg
+  end;
+
+
 (*  with
     Failure s | Sys_error s ->
       reporter#error s ;

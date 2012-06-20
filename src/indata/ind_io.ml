@@ -42,7 +42,11 @@ let on_type_error file cp _ _ _ =
   error ~file msg
 ;;
 
-let load dir =
+let load config dir =
+  let from_in_data =
+    let data_dir = Config.data_dir config in
+    Misc.path_under ~parent: data_dir dir
+  in
   let file = Filename.concat dir input_basename in
   let g = mk_spec_group () in
   try
@@ -53,6 +57,7 @@ let load dir =
       g.in_cp#get
     in
     { dir = dir ;
+      from_in_data = from_in_data ;
       in_files = in_files ;
       out_files = g.out_cp#get ;
       chains = g.chains_cp#get ;

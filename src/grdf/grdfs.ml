@@ -71,6 +71,8 @@ let genet_createdon = genet_"createdOn";;
 let genet_isactive = genet_"isActive";;
 let genet_instanciate = genet_"instanciate";;
 let genet_hascommitid = genet_"hasCommitId";;
+let genet_useinput = genet_"^useInput";;
+let genet_useinputcommitid = genet_"^useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
 
 let add_triple wld ~sub ~pred ~obj =

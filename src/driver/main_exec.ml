@@ -11,7 +11,7 @@ let exec_one opts reporter input =
     let rdf_wld = Grdf_init.open_graph config in
     let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
     let spec_dir = Filename.concat (Config.data_dir config) input in
-    let spec = Ind_io.load spec_dir in
+    let spec = Ind_io.load config spec_dir in
     Chn_exec.exec ctx reporter spec
   with
     exc ->
