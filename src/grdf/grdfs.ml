@@ -38,6 +38,7 @@ let genet_filetype = genet_ "Filetype";;
 let genet_chain = genet_ "Chain";;
 let genet_flatchain = genet_ "Flatchain";;
 let genet_instchain = genet_ "Instchain";;
+let genet_instopn = genet_ "InstOperation";;
 
 let string_of_class = function
   s when Rdf_uri.equal s genet_tool -> "tool"
@@ -48,6 +49,7 @@ let string_of_class = function
 | s when Rdf_uri.equal s genet_chain -> "chain"
 | s when Rdf_uri.equal s genet_flatchain -> "flatchain"
 | s when Rdf_uri.equal s genet_instchain -> "instchain"
+| s when Rdf_uri.equal s genet_instopn -> "instopn"
 | _ -> ""
 ;;
 

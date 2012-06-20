@@ -17,7 +17,7 @@ class reporter ?(context="") verb_level =
     method error s =
       let (label, errors, l) = Stack.pop contexts in
       let l = (Error s) :: l in
-      Stack.push (label, errors, l) contexts
+      Stack.push (label, errors, l) contexts;
 
     method msg ?(level=0) s =
       if level <= verb_level then

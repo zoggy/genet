@@ -126,6 +126,38 @@ let uri_ichain prefix (fullname, id) =
   Grdfs.uri_ichain ~prefix ~modname ~name ~id
 ;;
 
+let uri_inst_opn_of_flat_opn ~prefix ~inst ~flat =
+  match Grdfs.is_in_fchains prefix flat with
+    None ->
+      failwith
+      (Printf.sprintf "%S is not a flat chain uri" (Rdf_uri.string flat))
+  | Some base ->
+      match Grdfs.split_fchain_name base with
+        `Fchain_op (_,_,path) -> List.fold_left Rdf_uri.concat inst path
+      | `Fullname _ -> inst
+      | _ ->
+          let msg = Printf.sprintf
+            "%S is not a flat chain uri" (Rdf_uri.string flat)
+          in
+          failwith msg
+;;
+
+let uri_inst_port_of_flat_port ctx ~inst ~flat =
+  let flat_opn = Grdfs.port_container flat in
+  let inst_opn = uri_inst_opn_of_flat_opn
+    ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_opn in
+  let dir = Grdf_port.port_dir flat in
+  let rank = Grdf_port.port_rank flat in
+  let inst_port =
+    let f = match dir with
+        Grdf_port.In -> Grdfs.uri_intf_in_port
+      | Grdf_port.Out -> Grdfs.uri_intf_out_port
+    in
+    f inst_opn rank
+  in
+  inst_port
+;;
+
 (*
 let is_uri_ichain_module prefix uri =
   prerr_endline (Printf.sprintf "is_uri_ichain_module %s" (Rdf_uri.string uri));

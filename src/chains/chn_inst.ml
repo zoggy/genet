@@ -117,7 +117,7 @@ let inst_chain_exists ctx uri_fchain input comb =
 
 module Graph = Chn_run.Graph;;
 
-let create_graph ctx uri_fchain input =
+let create_graph ctx ~inst ~fchain input =
   let g = Graph.create () in
   let file_sym =
     let cpt = ref 0 in
@@ -141,49 +141,94 @@ let create_graph ctx uri_fchain input =
     (fun map uri_port -> Urimap.add uri_port file map)
     map ports
   in
-  let f_consumer uri_src p_src (g, set) p_dst =
-    let uri_dst = Grdfs.port_container p_dst in
-    if Rdf_uri.equal uri_dst uri_fchain then
+  let f_consumer inst_uri_src flat_uri_src inst_p_src (g, set) p_dst =
+    let flat_uri_dst = Grdfs.port_container p_dst in
+    let inst_uri_dst =
+      Chn_types.uri_inst_opn_of_flat_opn
+      ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_uri_dst
+    in
+    let inst_p_dst = Chn_types.uri_inst_port_of_flat_port
+      ctx ~inst ~flat: p_dst
+    in
+    let ptype = Grdf_port.port_type ctx.ctx_rdf p_dst in
+    Grdf_port.set_port_type ctx.ctx_rdf inst_p_dst ptype;
+
+    Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: inst_p_dst ~pred: Grdfs.genet_instanciate ~obj: p_dst;
+
+    if Rdf_uri.equal flat_uri_dst fchain then
       begin
-        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let g = Graph.add g (inst_uri_src, inst_uri_dst, (inst_p_src, inst_p_dst)) in
         (g, set)
       end
     else
       begin
-        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let g = Graph.add g
+          (inst_uri_src, inst_uri_dst, (inst_p_src, inst_p_dst))
+        in
         let set =
-          let uri_from = Chn_flat.get_op_origin ctx uri_dst in
+          let uri_from = Chn_flat.get_op_origin ctx flat_uri_dst in
           match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
             None -> set
-          | Some _ -> Uriset.add uri_dst set
+          | Some _ -> Uriset.add flat_uri_dst set
         in
         (g, set)
       end
   in
-  let f_producer uri (g, map, set) p =
+  let f_producer inst_uri flat_uri (g, map, set) p =
     try
       ignore(Urimap.find p map);
       (* port already handled; do nothing more *)
       (g, map, set)
     with
       Not_found ->
+        let inst_p = Chn_types.uri_inst_port_of_flat_port ctx ~inst ~flat: p in
+        Grdfs.add_triple_uris ctx.ctx_rdf
+        ~sub: inst_p ~pred: Grdfs.genet_instanciate ~obj: p;
+        let ptype = Grdf_port.port_type ctx.ctx_rdf p in
+        Grdf_port.set_port_type ctx.ctx_rdf inst_p ptype;
+
         let consumers = Chn_flat.port_consumers ctx p in
-        let map = new_file map (p :: consumers) in
-        let (g, set) = List.fold_left (f_consumer uri p) (g, set) consumers in
+        let inst_consumers = List.map
+          (fun flat -> Chn_types.uri_inst_port_of_flat_port ctx ~inst ~flat)
+          consumers
+        in
+        let map = new_file map (inst_p :: inst_consumers) in
+        let (g, set) = List.fold_left
+          (f_consumer inst_uri flat_uri inst_p) (g, set) consumers
+        in
         (g, map, set)
   in
-  let rec fill uri (g, map) =
-    let dir = if Rdf_uri.equal uri uri_fchain
+  let rec fill flat_uri (g, map) =
+    let dir =
+      if Rdf_uri.equal flat_uri fchain
       then Grdf_port.In
       else Grdf_port.Out
     in
-    let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
-    let (g,map, set) = List.fold_left (f_producer uri)
+    let inst_uri =
+      if Rdf_uri.equal flat_uri fchain then
+        inst
+      else
+        (
+         let sub = Chn_types.uri_inst_opn_of_flat_opn
+           ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_uri
+         in
+         Grdfs.add_triple_uris ctx.ctx_rdf
+         ~sub ~pred: Grdfs.genet_instanciate ~obj: flat_uri;
+
+         Grdfs.add_type ctx.ctx_rdf
+         ~sub: (Rdf_node.Uri sub) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
+
+         sub
+        )
+    in
+    let ports = Grdf_port.ports ctx.ctx_rdf flat_uri dir in
+    let (g,map, set) = List.fold_left (f_producer inst_uri flat_uri)
       (g, map, Uriset.empty) ports
     in
     Uriset.fold fill set (g, map)
   in
-  let (g, map) = fill uri_fchain (g, Urimap.empty) in
+  let (g, map) = fill fchain (g, Urimap.empty) in
   (g, map)
 ;;
 
@@ -242,6 +287,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       let uri_inst = Chn_types.uri_ichain prefix inst_name in
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub: uri_inst ~pred: Grdfs.genet_instanciate ~obj: uri_fchain;
+
       (* associate tool versions *)
       Urimap.iter
         (fun _ version ->
@@ -258,7 +304,9 @@ let do_instanciate ctx reporter uri_fchain input comb =
       set_input_info ctx uri_inst input;
 
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
-      let (g, port_to_file) = create_graph ctx uri_fchain input in
+      let (g, port_to_file) = create_graph ctx
+        ~inst: uri_inst ~fchain: uri_fchain input
+      in
 
       prerr_endline "generating dot";
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g port_to_file);

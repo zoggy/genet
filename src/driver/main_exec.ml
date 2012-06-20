@@ -14,7 +14,8 @@ let exec_one opts reporter input =
     let spec = Ind_io.load config spec_dir in
     Chn_exec.exec ctx reporter spec
   with
-    exc ->
+    Assert_failure _ | Not_found as exc -> raise exc
+  | exc ->
       let msg =
         match exc with
           Ind_io.Error e ->

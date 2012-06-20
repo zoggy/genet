@@ -55,3 +55,10 @@ val mk_ichain_name : chain_name -> string -> ichain_name
 
 val uri_ichain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
 val uri_ichain : Grdf_types.uri -> ichain_name -> Grdf_types.uri
+
+val uri_inst_opn_of_flat_opn :
+  prefix: Grdf_types.uri -> inst: Grdf_types.uri -> flat: Grdf_types.uri
+  -> Grdf_types.uri
+
+val uri_inst_port_of_flat_port :
+  context -> inst: Grdf_types.uri -> flat: Grdf_types.uri -> Grdf_types.uri

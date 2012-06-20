@@ -34,7 +34,8 @@ let exec_chain_comb ctx reporter spec uri_fchain comb =
   try
     ignore(Chn_inst.instanciate ctx reporter uri_fchain spec comb)
   with
-    exc ->
+    Not_found as e -> raise e
+  | exc ->
       let msg =
         match exc with
           Failure s | Sys_error s -> s
