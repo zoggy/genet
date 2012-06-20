@@ -124,7 +124,7 @@ let copy_flat_port ctx ~inst ~parent ~flat_port =
   let ptype = Grdf_port.port_type ctx.ctx_rdf flat_port in
   Grdf_port.set_port_type ctx.ctx_rdf inst_port ptype;
   Grdfs.add_triple_uris ctx.ctx_rdf
-    ~sub: inst_port ~pred: Grdfs.genet_instanciate ~obj: flat_port;
+    ~sub: inst_port ~pred: Grdfs.genet_opfrom ~obj: flat_port;
 
   let pred = Grdf_port.pred_of_dir (Grdf_port.port_dir flat_port) in
   Grdfs.add_triple_uris ctx.ctx_rdf ~sub: parent ~pred ~obj: inst_port;
@@ -218,7 +218,7 @@ let create_graph ctx ~inst ~fchain input =
            ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_uri
          in
          Grdfs.add_triple_uris ctx.ctx_rdf
-         ~sub ~pred: Grdfs.genet_instanciate ~obj: flat_uri;
+         ~sub ~pred: Grdfs.genet_opfrom ~obj: flat_uri;
 
          Grdfs.add_type ctx.ctx_rdf
          ~sub: (Rdf_node.Uri sub) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
