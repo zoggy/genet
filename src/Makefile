@@ -167,7 +167,7 @@ IND_GUI_CMXFILES=
 IND_GUI_CMIFILES=$(IND_GUI_CMXFILES:.cmx=.cmi)
 IND_GUI_CMOFILES=$(IND_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_IND_GUI=grdf/grdfgui.cmxa
+LIB_IND_GUI=indata/indatagui.cmxa
 LIB_IND_GUI_BYTE=$(LIB_IND_GUI:.cmxa=.cma)
 LIB_IND_GUI_CMI=$(LIB_IND_GUI:.cmxa=.cmi)
 LIB_IND_GUI_A=$(LIB_IND_GUI:.cmxa=.a)
@@ -199,7 +199,7 @@ CHN_GUI_CMXFILES=
 CHN_GUI_CMIFILES=$(CHN_GUI_CMXFILES:.cmx=.cmi)
 CHN_GUI_CMOFILES=$(CHN_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_CHN_GUI=grdf/grdfgui.cmxa
+LIB_CHN_GUI=chains/chainsgui.cmxa
 LIB_CHN_GUI_BYTE=$(LIB_CHN_GUI:.cmxa=.cma)
 LIB_CHN_GUI_CMI=$(LIB_CHN_GUI:.cmxa=.cmi)
 LIB_CHN_GUI_A=$(LIB_CHN_GUI:.cmxa=.a)
