@@ -285,6 +285,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
         (Chn_types.fchain_chainname fchain_name) id
       in
       let uri_inst = Chn_types.uri_ichain prefix inst_name in
+      prerr_endline (Printf.sprintf "do_instanciate: uri_inst = %S" (Rdf_uri.string uri_inst));
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub: uri_inst ~pred: Grdfs.genet_instanciate ~obj: uri_fchain;
 
@@ -311,7 +312,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       prerr_endline "generating dot";
       Misc.file_of_string ~file: "/tmp/inst.dot" (dot_of_graph ctx g port_to_file);
 
-      ignore(Chn_run.run_graph ctx reporter uri_fchain comb input g port_to_file);
+      ignore(Chn_run.run_graph ctx reporter uri_inst comb input g port_to_file);
       uri_inst
 ;;
 

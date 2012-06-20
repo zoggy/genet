@@ -49,7 +49,7 @@ let record_file ctx reporter file port =
   ()
 ;;
 
-let rec run_node ctx reporter uri_fchain comb g port_to_file tmp_dir uri_node =
+let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_node Grdf_port.In in
   let in_files = List.map (fun uri -> Urimap.find uri port_to_file) in_ports in
   let test file =
@@ -85,25 +85,32 @@ let rec run_node ctx reporter uri_fchain comb g port_to_file tmp_dir uri_node =
           match Sys.command com with
             0 ->
               let g = Graph.remove_node g uri_node in
-              run_nodes ctx reporter uri_fchain comb g port_to_file tmp_dir
+              run_nodes ctx reporter comb g port_to_file tmp_dir
               (Graph.pred_roots g)
           | n ->
               failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 
-and run_nodes ctx reporter uri_fchain comb g port_to_file tmp_dir uri_nodes =
+and run_nodes ctx reporter comb g port_to_file tmp_dir uri_nodes =
   List.fold_left
-  (fun g uri -> run_node ctx reporter uri_fchain comb g port_to_file tmp_dir uri)
+  (fun g uri -> run_node ctx reporter comb g port_to_file tmp_dir uri)
   g uri_nodes
 ;;
 
-let init_run ctx reporter uri_fchain input g port_to_file tmp_dir =
+let init_run ctx reporter uri_inst input g port_to_file tmp_dir =
   let in_files = input.Ind_types.in_files in
+  prerr_endline (Printf.sprintf "uri_inst = %S" (Rdf_uri.string uri_inst));
   let port_files =
-    let ports = Grdf_port.ports ctx.ctx_rdf uri_fchain Grdf_port.In in
-    List.map (fun uri -> Urimap.find uri port_to_file) ports
+    let ports = Grdf_port.ports ctx.ctx_rdf uri_inst Grdf_port.In in
+    List.map (fun uri ->
+       prerr_endline (Printf.sprintf "port uri = %S" (Rdf_uri.string uri));
+       Urimap.find uri port_to_file) ports
   in
-  if List.length in_files <> List.length port_files then
-    failwith "Numbers of input files and ports differ.";
+  let nb_in_files = List.length in_files in
+  let nb_port_files = List.length port_files in
+  if nb_in_files <> nb_port_files then
+    failwith
+    (Printf.sprintf "Numbers of input files (%d) and ports (%d) differ."
+      nb_in_files nb_port_files);
 
   let f (in_file, id) port_file =
     let target = Filename.concat tmp_dir port_file in
@@ -113,26 +120,31 @@ let init_run ctx reporter uri_fchain input g port_to_file tmp_dir =
   List.iter2 f in_files port_files
 ;;
 
-let run_graph ctx reporter uri_fchain comb input g port_to_file =
+let run_graph ctx reporter uri_inst comb input g port_to_file =
   print_endline "run_graph";
   (* break cycles due to having only one node for the flat chain
     in the graph, with input ports and output ports associated to it. *)
-  let preds = Graph.pred g uri_fchain in
+  let preds = Graph.pred g uri_inst in
   let g = List.fold_left
-    (fun g (k,_) -> Graph.rem_all g (k, uri_fchain)) g preds
+    (fun g (k,_) -> Graph.rem_all g (k, uri_inst)) g preds
   in
   let tmp_dir = Filename.temp_file "genet-run" ".dir" in
   Sys.remove tmp_dir;
   Misc.mkdir tmp_dir ;
-  init_run ctx reporter uri_fchain input g port_to_file tmp_dir;
-  let g = Graph.remove_node g uri_fchain in
+
+  Urimap.iter
+    (fun uri file -> prerr_endline (Printf.sprintf "%s => %s" (Rdf_uri.string uri) file))
+    port_to_file;
+
+  init_run ctx reporter uri_inst input g port_to_file tmp_dir;
+  let g = Graph.remove_node g uri_inst in
 (*  try*)
-  let g = run_nodes ctx reporter uri_fchain comb g port_to_file tmp_dir (Graph.pred_roots g) in
+  let g = run_nodes ctx reporter comb g port_to_file tmp_dir (Graph.pred_roots g) in
 
   (* copy out files ? *)
   let _out_files = input.Ind_types.out_files in
   let _port_files =
-    let ports = Grdf_port.ports ctx.ctx_rdf uri_fchain Grdf_port.Out in
+    let ports = Grdf_port.ports ctx.ctx_rdf uri_inst Grdf_port.Out in
     List.map (fun uri -> Urimap.find uri port_to_file) ports
   in
 
