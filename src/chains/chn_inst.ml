@@ -223,6 +223,9 @@ let create_graph ctx ~inst ~fchain input =
          Grdfs.add_type ctx.ctx_rdf
          ~sub: (Rdf_node.Uri sub) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
 
+         Grdfs.add_triple_uris ctx.ctx_rdf
+           ~sub: inst ~pred: Grdfs.genet_containsop ~obj: sub;
+
          sub
         )
     in
