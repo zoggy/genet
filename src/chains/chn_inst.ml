@@ -292,6 +292,9 @@ let do_instanciate ctx reporter uri_fchain input comb =
         (Chn_types.fchain_chainname fchain_name) id
       in
       let uri_inst = Chn_types.uri_ichain prefix inst_name in
+      Grdfs.add_type ctx.ctx_rdf
+        ~sub: (Rdf_node.Uri uri_inst)
+        ~obj: (Rdf_node.Uri Grdfs.genet_instchain);
       prerr_endline (Printf.sprintf "do_instanciate: uri_inst = %S" (Rdf_uri.string uri_inst));
       Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub: uri_inst ~pred: Grdfs.genet_instanciate ~obj: uri_fchain;
