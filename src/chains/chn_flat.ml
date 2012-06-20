@@ -401,8 +401,11 @@ class fchain_dot_printer =
     | Grdf_port.In -> dotp#color_in
     | Grdf_port.Out -> dotp#color_out
 
+    method port_producers = port_producers
+    method port_consumers = port_consumers
+
     method print_port_edges ctx b uri =
-      let ports = port_consumers ctx uri in
+      let ports = self#port_consumers ctx uri in
       let src = self#uri_id uri in
       let f p =
         Printf.bprintf b "%s -> %s ;\n" src (self#uri_id p)
@@ -412,15 +415,20 @@ class fchain_dot_printer =
     method get_port_type_uri ctx t =
       Grdf_port.port_file_type_uri ctx.ctx_cfg.Config.rest_api t
 
+
+    method port_link_and_name ctx uri =
+      let ptype = Grdf_port.port_type ctx.ctx_rdf uri in
+      let link =self#get_port_type_uri ctx ptype in
+      let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
+      (link, name)
+
     method print_port ctx b ?(all=false) uri =
-      match port_producers ctx uri, port_consumers ctx uri with
+      match self#port_producers ctx uri, self#port_consumers ctx uri with
         [], [] when not all -> false
       | _ ->
           let dir = Grdf_port.port_dir uri in
-          let ptype = Grdf_port.port_type ctx.ctx_rdf uri in
-          let link = self#get_port_type_uri ctx ptype in
-          let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
           let id = self#uri_id uri in
+          let (link, name) = self#port_link_and_name ctx uri in
           let label =
             match Grdf_port.port_name ctx.ctx_rdf uri with
               "" -> string_of_int (Grdf_port.port_rank uri)
@@ -436,6 +444,7 @@ class fchain_dot_printer =
           true
 
     method do_print_op ctx b ~maxdepth ~depth ~cluster acc uri =
+      dbg ~level: 3 (fun () -> Printf.sprintf "#do_print_op uri = %S" (Rdf_uri.string uri));
       let root = depth <= 0 in
       let clustering = cluster uri in
       if not root && clustering then
@@ -460,9 +469,11 @@ class fchain_dot_printer =
           Printf.bprintf b "subgraph cluster_%s {\n"
           (Grdf_port.string_of_dir dir);
         let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
+        dbg ~level: 3 (fun () -> Printf.sprintf "#do_print_op ports=%d" (List.length ports));
         let printed_ports = List.filter
           (self#print_port ~all: (root || clustering) ctx b) ports
         in
+        dbg ~level: 3 (fun () -> Printf.sprintf "#do_print_op printed_ports=%d" (List.length printed_ports));
         begin
           match node with
             None -> ()
@@ -504,7 +515,8 @@ class fchain_dot_printer =
                 List.exists
                 (fun dir ->
                    List.exists
-                   (fun p -> (port_consumers ctx p <> []) || (port_producers ctx p <> []))
+                   (fun p -> (self#port_consumers ctx p <> []) ||
+                      (self#port_producers ctx p <> []))
                     (Grdf_port.ports ctx.ctx_rdf uri dir)
                 )
                 [ Grdf_port.In ; Grdf_port.Out ]

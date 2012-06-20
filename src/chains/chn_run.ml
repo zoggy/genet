@@ -45,9 +45,27 @@ let extract_git_file config ~file ~id ~target =
      failwith msg
 ;;
 
-let record_file ctx reporter file port =
-  ()
+let filename_of_md5 ctx md5 =
+  Filename.concat (Config.out_dir ctx.ctx_cfg) md5
 ;;
+
+let record_file ctx reporter file port =
+  if not (Sys.file_exists file) then
+    failwith (Printf.sprintf "File %S not found" file);
+  let md5 =
+    match (Unix.stat file).Unix.st_kind with
+      Unix.S_DIR -> Misc.dir_md5sum file
+    | Unix.S_REG -> Misc.file_md5sum file
+    | _ -> failwith (Printf.sprintf "Invalid file kind for %S" file)
+  in
+  let outfile = Filename.concat (Config.out_dir ctx.ctx_cfg) md5 in
+  if not (Sys.file_exists outfile) then
+    Misc.copy_file ~src: file ~dst: outfile;
+  Grdfs.add_triple ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri port) ~pred: (Rdf_node.Uri Grdfs.genet_filemd5)
+    ~obj: (Rdf_node.node_of_literal_string md5)
+;;
+
 
 let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_node Grdf_port.In in
@@ -84,6 +102,10 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
           in
           match Sys.command com with
             0 ->
+              List.iter2
+                (fun port file ->
+                 record_file ctx reporter (Filename.concat tmp_dir file) port)
+                out_ports out_files;
               let g = Graph.remove_node g uri_node in
               run_nodes ctx reporter comb g port_to_file tmp_dir
               (Graph.pred_roots g)
@@ -103,7 +125,8 @@ let init_run ctx reporter uri_inst input g port_to_file tmp_dir =
     let ports = Grdf_port.ports ctx.ctx_rdf uri_inst Grdf_port.In in
     List.map (fun uri ->
        prerr_endline (Printf.sprintf "port uri = %S" (Rdf_uri.string uri));
-       Urimap.find uri port_to_file) ports
+       (uri, Urimap.find uri port_to_file))
+       ports
   in
   let nb_in_files = List.length in_files in
   let nb_port_files = List.length port_files in
@@ -112,10 +135,11 @@ let init_run ctx reporter uri_inst input g port_to_file tmp_dir =
     (Printf.sprintf "Numbers of input files (%d) and ports (%d) differ."
       nb_in_files nb_port_files);
 
-  let f (in_file, id) port_file =
+  let f (in_file, id) (port, port_file) =
     let target = Filename.concat tmp_dir port_file in
     let file = Filename.concat input.Ind_types.dir in_file in
-    extract_git_file ctx.ctx_cfg ~file ~id ~target
+    extract_git_file ctx.ctx_cfg ~file ~id ~target;
+    record_file ctx reporter target port
   in
   List.iter2 f in_files port_files
 ;;

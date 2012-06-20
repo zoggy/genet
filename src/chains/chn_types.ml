@@ -115,6 +115,10 @@ let ichain_modname (name,_) = chain_modname name;;
 let ichain_basename (name,_) = chain_basename name;;
 let mk_ichain_name name id = (name, id);;
 
+let string_of_ichain_name (chain_name, id) =
+  Printf.sprintf "%s/%s" (string_of_chain_name chain_name) id
+;;
+
 let uri_ichain_module prefix modname =
   let s = String.concat "/" modname in
   Grdfs.uri_ichain_module prefix s
@@ -158,6 +162,11 @@ let uri_inst_port_of_flat_port ctx ~inst ~flat =
   inst_port
 ;;
 
+let is_uri_ichain prefix uri =
+  match Grdfs.is_uri_ichain prefix uri with
+    None -> None
+  | Some ((modname, name), id) -> Some ((modname, name), id)
+;;
 (*
 let is_uri_ichain_module prefix uri =
   prerr_endline (Printf.sprintf "is_uri_ichain_module %s" (Rdf_uri.string uri));

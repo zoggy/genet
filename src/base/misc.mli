@@ -139,6 +139,9 @@ val get_git_id : string -> string
 val unique_id : unit -> string
 
 val dir_md5sum : string -> string
+val file_md5sum : string -> string
+
+val copy_file : src: string -> dst: string -> unit
 
 (** [path_under ~parent file] returns the path to [file] from [parent].
      @raise Failure if [parent] is not a prefix of [file].*)

@@ -290,6 +290,15 @@ let xhtml_navpath_of_fchain ctx fchain_name =
   xhtml_navpath_join_path path
 ;;
 
+let xhtml_navpath_of_ichain ctx uri =
+  match Chn_inst.instance_source ctx uri with
+    None -> ""
+  | Some uri_fchain ->
+      match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri_fchain with
+        None -> ""
+      | Some fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
+;;
+
 let xhtml_navpath ctx = function
 | `Chains
 | `Flat_chains
@@ -306,8 +315,9 @@ let xhtml_navpath ctx = function
 | `Chain_module modname -> xhtml_navpath_of_chain_module ctx
 | `Chain fullname -> xhtml_navpath_of_chain ctx fullname
 | `Flat_chain_module modname -> xhtml_navpath_of_fchain_module ctx
-| `Flat_chain uri -> xhtml_navpath_of_fchain ctx uri
+| `Flat_chain name -> xhtml_navpath_of_fchain ctx name
 | `Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
+| `Inst_chain uri -> xhtml_navpath_of_ichain ctx uri
 ;;
 
 let intf_list ctx intfs =
@@ -737,12 +747,35 @@ let get_fchain ctx uri =
     let dot = Rest_xpage.dot_of_fchain ctx fchain_name in
     dot_to_svg ~svg_h: 600 dot
   in
-  let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
-  let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri_fchain) in
+(*  let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in*)
+  let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
   let contents =
     Printf.sprintf
        "<p><strong>Commit id:</strong> %s</p><p><strong>Creation date:</strong> %s</p>%s\n"
        (Misc.string_of_opt id)
+       date
+       svg
+  in
+  ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
+;;
+
+let get_ichain ctx uri =
+  let ichain_name =
+    match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
+      None -> assert false
+    | Some n -> n
+  in
+  let title = "" in
+  let wtitle = Chn_types.string_of_ichain_name ichain_name in
+  let navpath = xhtml_navpath ctx (`Inst_chain uri) in
+  let svg =
+    let dot = Rest_xpage.dot_of_ichain ctx ichain_name in
+    dot_to_svg ~svg_h: 600 dot
+  in
+  let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
+  let contents =
+    Printf.sprintf
+       "<p><strong>Creation date:</strong> %s</p>%s\n"
        date
        svg
   in
@@ -770,6 +803,7 @@ let get ctx thing args =
   | Flat_chain_module modname -> get_fchain_module ctx modname
   | Flat_chain uri -> get_fchain ctx uri
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
+  | Inst_chain uri -> get_ichain ctx uri
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

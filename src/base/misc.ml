@@ -257,12 +257,27 @@ let unique_id () =
 let dir_md5sum dir =
   let temp_file = Filename.temp_file "dir_md5sum" ".txt" in
   let com = Printf.sprintf
-    "cd %s && find . -type f  -exec md5sum {} + | awk '{print $2, $1}' | sort | cut -b 3-1000 | md5sum > %s"
+    "cd %s && find . -type f  -exec md5sum {} + | awk '{print $2, $1}' | sort | cut -b 3-1000 | md5sum | cut -d' ' -f 1 > %s"
     (Filename.quote dir) (Filename.quote temp_file)
   in
   match Sys.command com with
     0 ->
-      let s = string_of_file temp_file in
+      let s = strip_string (string_of_file temp_file) in
+      Sys.remove temp_file;
+      s
+  | n ->
+      (try Sys.remove temp_file with _ -> ());
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+;;
+
+let file_md5sum file =
+  let temp_file = Filename.temp_file "file_md5sum" ".txt" in
+  let com = Printf.sprintf "md5sum %s | cut -d' ' -f 1 > %s"
+    (Filename.quote file) (Filename.quote temp_file)
+  in
+  match Sys.command com with
+    0 ->
+      let s = strip_string (string_of_file temp_file) in
       Sys.remove temp_file;
       s
   | n ->
@@ -278,4 +293,14 @@ let path_under ~parent file =
     end
   else
     failwith (Printf.sprintf "%s is not under %s" file parent)
+;;
+
+let copy_file ~src ~dst =
+  let com = Printf.sprintf "cp -r %s %s"
+    (Filename.quote src) (Filename.quote dst)
+  in
+  match Sys.command com with
+    0 -> ()
+  | n ->
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 ;;

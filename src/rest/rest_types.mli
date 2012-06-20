@@ -34,6 +34,7 @@ type thing =
   | Flat_chain_module of Chn_types.chain_modname
   | Flat_chain of Rdf_uri.uri
   | Flat_chain_list of Chn_types.fchain_name
+  | Inst_chain of Rdf_uri.uri
 ;;
 
 type response = arg list * string

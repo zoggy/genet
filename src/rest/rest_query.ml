@@ -121,6 +121,13 @@ let rec thing_of_path ctx path =
   | None when uri =@= Grdfs.uri_filetypes ctx.ctx_rdf.Grdf_types.wld_prefix -> Filetypes
   | None when uri =@= Grdfs.uri_chains ctx.ctx_rdf.Grdf_types.wld_prefix -> Chains
   | None when uri =@= Grdfs.uri_fchains ctx.ctx_rdf.Grdf_types.wld_prefix -> Flat_chains
+  | Some c when c =@= Grdfs.genet_tool -> Tool uri
+  | Some c when c =@= Grdfs.genet_branch -> Branch uri
+  | Some c when c =@= Grdfs.genet_version -> Version uri
+  | Some c when c =@= Grdfs.genet_intf -> Intf uri
+  | Some c when c =@= Grdfs.genet_filetype -> Filetype uri
+  | Some c when c =@= Grdfs.genet_flatchain -> Flat_chain uri
+  | Some c when c =@= Grdfs.genet_instchain -> Inst_chain uri
   | None ->
       begin
         match try_is_uri_of ctx uri with
@@ -136,12 +143,6 @@ let rec thing_of_path ctx path =
             with
               Not_found -> Other uri
       end
-  | Some c when c =@= Grdfs.genet_tool -> Tool uri
-  | Some c when c =@= Grdfs.genet_branch -> Branch uri
-  | Some c when c =@= Grdfs.genet_version -> Version uri
-  | Some c when c =@= Grdfs.genet_intf -> Intf uri
-  | Some c when c =@= Grdfs.genet_filetype -> Filetype uri
-  | Some c when c =@= Grdfs.genet_flatchain -> Flat_chain uri
   | Some c -> prerr_endline (Rdf_uri.string c); Other uri
 ;;
 

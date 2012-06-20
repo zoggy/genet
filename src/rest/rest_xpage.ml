@@ -259,13 +259,13 @@ class xhtml_chain_dot_printer prefix =
 
     method private get_port_type_uri t =
       Grdf_port.port_file_type_uri prefix t
-      
+
     method print_port b color p =
       let link = self#get_port_type_uri p.p_ftype in
       let ft = Grdf_port.string_of_port_type (fun x -> x) p.p_ftype in
       Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" style=\"filled\" \
                             shape=\"box\" href=\"%s\" label=\"%s:%s\"];\n"
-        p.p_name color 
+        p.p_name color
         (match link with None -> "" | Some uri -> Rdf_uri.string uri)
          p.p_name ft
 
@@ -300,5 +300,74 @@ let dot_of_fchain ctx fchain_name =
   in
   let o = new xhtml_fchain_dot_printer in
   o#dot_of_fchain ctx fchain
+;;
+
+class xhtml_ichain_dot_printer =
+  let get_origin ctx uri =
+    Grdfs.object_uri ctx.Chn_types.ctx_rdf
+    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
+  in
+  object(self)
+    inherit xhtml_fchain_dot_printer as super
+
+    (* use maps to associate flat <-> instanciated ports,
+         not to store all edges between ports. Then we
+         redefine port_consumers and port_produces to use
+         these maps.
+         *)
+    val mutable flat_to_inst = Urimap.empty
+    val mutable inst_to_flat = Urimap.empty
+
+    method private init_port_maps ctx uri =
+      let f_port inst_uri =
+        match get_origin ctx inst_uri with
+          None -> ()
+        | Some flat_uri ->
+            flat_to_inst <- Urimap.add flat_uri inst_uri flat_to_inst;
+            inst_to_flat <- Urimap.add inst_uri flat_uri inst_to_flat
+      in
+      let f_dir uri dir =
+        let ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri dir in
+        List.iter f_port ports
+      in
+      let f uri = f_dir uri Grdf_port.In; f_dir uri Grdf_port.Out in
+      List.iter f (uri :: (Chn_flat.get_ops ctx uri))
+
+    method port_consumers ctx inst_uri =
+      let flat_uri = Urimap.find inst_uri inst_to_flat in
+      let ports = super#port_consumers ctx flat_uri in
+      List.map (fun uri -> Urimap.find uri flat_to_inst) ports
+
+    method port_produces ctx inst_uri =
+      let flat_uri = Urimap.find inst_uri inst_to_flat in
+      let ports = super#port_producers ctx flat_uri in
+      List.map (fun uri -> Urimap.find uri flat_to_inst) ports
+
+   method port_link_and_name ctx uri =
+      let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf uri in
+      let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
+      let link =
+        match Grdfs.object_literal ctx.Chn_types.ctx_rdf
+          ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_filemd5
+        with
+          None -> None
+        | Some md5 ->
+            Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
+      in
+      (link, name)
+
+    method dot_of_fchain ctx ?debug uri =
+      self#init_port_maps ctx uri;
+      super#dot_of_fchain ctx ?debug uri
+  end;;
+
+let dot_of_ichain ctx ichain_name =
+  let uri = Chn_types.uri_ichain
+    ctx.Chn_types.ctx_cfg.Config.rest_api ichain_name
+  in
+  let o = new xhtml_ichain_dot_printer in
+  let dot = o#dot_of_fchain ctx uri in
+  Misc.file_of_string ~file: "/tmp/instgraph.dot" dot;
+  dot
 ;;
 

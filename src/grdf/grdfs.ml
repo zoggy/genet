@@ -76,6 +76,7 @@ let genet_hascommitid = genet_"hasCommitId";;
 let genet_useinput = genet_"^useInput";;
 let genet_useinputcommitid = genet_"^useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
+let genet_filemd5 = genet_"fileMd5";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj
@@ -133,9 +134,9 @@ let uri_chain ~prefix ~modname name  =
   Rdf_uri.concat (uri_chain_module ~prefix modname) name
 ;;
 
-let is_in_chains prefix uri =
+let is_in_ f_prefix prefix uri =
   let uri = Rdf_uri.string uri in
-  let prefix = Rdf_uri.string (uri_chains prefix) in
+  let prefix = Rdf_uri.string (f_prefix prefix) in
   if Misc.is_prefix prefix uri then
     begin
       let len = String.length prefix in
@@ -145,6 +146,8 @@ let is_in_chains prefix uri =
   else
     None
 ;;
+
+let is_in_chains = is_in_ uri_chains;;
 
 let is_uri_chain_module prefix uri =
   match is_in_chains prefix uri with
@@ -208,18 +211,7 @@ let  uri_fchain_op fchain path =
   List.fold_left Rdf_uri.concat fchain path
 ;;
 
-let is_in_fchains prefix uri =
-  let uri = Rdf_uri.string uri in
-  let prefix = Rdf_uri.string (uri_fchains prefix) in
-  if Misc.is_prefix prefix uri then
-    begin
-      let len = String.length prefix in
-      let base = String.sub uri len (String.length uri - len) in
-      Some base
-    end
-  else
-    None
-;;
+let is_in_fchains = is_in_ uri_fchains;;
 
 let is_uri_fchain_module prefix uri =
   match is_in_fchains prefix uri with
@@ -270,6 +262,19 @@ let ichain_in_file_rank uri =
 
 let uri_ichain_in_file uri rank =
   Rdf_uri.concat (Rdf_uri.concat uri "input") (string_of_int rank)
+;;
+
+let is_in_ichains = is_in_ uri_ichains;;
+
+let is_uri_ichain prefix uri =
+  prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));
+  match is_in_ichains prefix uri with
+    None -> None
+  | Some base ->
+      prerr_endline (Printf.sprintf "base=%s" base);
+      match split_fchain_name base with
+        `Fullname (fullname, id) -> Some (fullname, id)
+      | _ -> None
 ;;
 
 (** {3 Versions} *)
@@ -346,6 +351,12 @@ let remove_prefix prefix uri =
     end
   else
     uri
+;;
+
+(** Files and directories *)
+
+let uri_outfile_path prefix path =
+  List.fold_left Rdf_uri.concat prefix ("out" :: path)
 ;;
 
 (** {2 Utilities} *)

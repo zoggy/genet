@@ -4,6 +4,11 @@ open Rdf_graph;;
 open Grdf_types;;
 open Chn_types;;
 
+let instance_source ctx inst_uri =
+  Grdfs.object_uri ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri inst_uri)
+    ~pred: Grdfs.genet_instanciate
+;;
 
 let version_combinations ctx fchain =
   let intfs = Chn_flat.intfs_of_flat_chain ctx fchain in
@@ -223,8 +228,7 @@ let create_graph ctx ~inst ~fchain input =
          Grdfs.add_type ctx.ctx_rdf
          ~sub: (Rdf_node.Uri sub) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
 
-         Grdfs.add_triple_uris ctx.ctx_rdf
-           ~sub: inst ~pred: Grdfs.genet_containsop ~obj: sub;
+         Chn_flat.add_containsop ctx ~src: inst ~dst: sub;
 
          sub
         )
