@@ -45,6 +45,13 @@ let extract_git_file config ~file ~id ~target =
      failwith msg
 ;;
 
+let get_op_origin ctx uri =
+  match Grdfs.object_uri ctx.ctx_rdf ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_instanciate with
+  | Some uri -> Chn_flat.get_op_origin ctx uri
+  | None ->
+      failwith (Printf.sprintf "Operation %s has no 'instanciate' link." (Rdf_uri.string uri))
+;;
+
 let record_file ctx reporter file port =
   ()
 ;;
@@ -62,7 +69,7 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
   let out_ports = Grdf_port.ports ctx.ctx_rdf uri_node Grdf_port.Out in
   let out_files = List.map (fun uri -> Urimap.find uri port_to_file) out_ports in
 
-  let uri_from = Chn_flat.get_op_origin ctx uri_node in
+  let uri_from = get_op_origin ctx uri_node in
   match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
     None -> assert false
   | Some _ ->

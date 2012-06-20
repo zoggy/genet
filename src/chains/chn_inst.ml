@@ -117,6 +117,20 @@ let inst_chain_exists ctx uri_fchain input comb =
 
 module Graph = Chn_run.Graph;;
 
+let copy_flat_port ctx ~inst ~parent ~flat_port =
+  let inst_port = Chn_types.uri_inst_port_of_flat_port
+    ctx ~inst ~flat: flat_port
+  in
+  let ptype = Grdf_port.port_type ctx.ctx_rdf flat_port in
+  Grdf_port.set_port_type ctx.ctx_rdf inst_port ptype;
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: inst_port ~pred: Grdfs.genet_instanciate ~obj: flat_port;
+
+  let pred = Grdf_port.pred_of_dir (Grdf_port.port_dir flat_port) in
+  Grdfs.add_triple_uris ctx.ctx_rdf ~sub: parent ~pred ~obj: inst_port;
+  inst_port
+;;
+
 let create_graph ctx ~inst ~fchain input =
   let g = Graph.create () in
   let file_sym =
@@ -147,14 +161,9 @@ let create_graph ctx ~inst ~fchain input =
       Chn_types.uri_inst_opn_of_flat_opn
       ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_uri_dst
     in
-    let inst_p_dst = Chn_types.uri_inst_port_of_flat_port
-      ctx ~inst ~flat: p_dst
+    let inst_p_dst = copy_flat_port ctx
+      ~inst ~parent: inst_uri_dst ~flat_port: p_dst
     in
-    let ptype = Grdf_port.port_type ctx.ctx_rdf p_dst in
-    Grdf_port.set_port_type ctx.ctx_rdf inst_p_dst ptype;
-
-    Grdfs.add_triple_uris ctx.ctx_rdf
-    ~sub: inst_p_dst ~pred: Grdfs.genet_instanciate ~obj: p_dst;
 
     if Rdf_uri.equal flat_uri_dst fchain then
       begin
@@ -182,12 +191,7 @@ let create_graph ctx ~inst ~fchain input =
       (g, map, set)
     with
       Not_found ->
-        let inst_p = Chn_types.uri_inst_port_of_flat_port ctx ~inst ~flat: p in
-        Grdfs.add_triple_uris ctx.ctx_rdf
-        ~sub: inst_p ~pred: Grdfs.genet_instanciate ~obj: p;
-        let ptype = Grdf_port.port_type ctx.ctx_rdf p in
-        Grdf_port.set_port_type ctx.ctx_rdf inst_p ptype;
-
+        let inst_p = copy_flat_port ctx ~inst ~parent: inst_uri ~flat_port: p in
         let consumers = Chn_flat.port_consumers ctx p in
         let inst_consumers = List.map
           (fun flat -> Chn_types.uri_inst_port_of_flat_port ctx ~inst ~flat)
