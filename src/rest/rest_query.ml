@@ -146,6 +146,100 @@ let rec thing_of_path ctx path =
   | Some c -> prerr_endline (Rdf_uri.string c); Other uri
 ;;
 
+(** Return the path relative to the application, i.e. the path to
+  analyse to know what to do and return. *)
+let application_path ctx path =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let prefix_path = String.concat "/" (Rdf_uri.path prefix) in
+  Neturl.split_path (Misc.path_under ~parent: prefix_path path)
+;;
+
+let uri_append uri s =
+  let s_uri = Rdf_uri.string uri in
+  let len = String.length s_uri in
+  let s_uri = if s_uri.[len-1] = '/' then String.sub s_uri 0 (len-1) else s_uri in
+  let s_uri = Printf.sprintf "%s/%s" s_uri s in
+  prerr_endline (Printf.sprintf "uri_append => %s" s_uri);
+  Rdf_uri.uri s_uri
+;;
+
+let rec read_path_branch uri_parent = function
+  [] -> assert false
+| s :: q ->
+    let uri = uri_append uri_parent s in
+    match q with
+      [] -> Branch uri
+    | _ -> read_path_branch uri q
+;;
+
+let read_path_branches uri_parent cur_uri = function
+  [] -> Branches uri_parent
+| q -> read_path_branch cur_uri q
+;;
+
+let read_path_intfs uri cur_uri = function
+  [] -> Intfs uri
+| [s] -> Intf (uri_append cur_uri s)
+| _ -> Other uri
+;;
+
+let read_path_versions uri cur_uri = function
+  [] -> Versions uri
+| [s] -> Version (uri_append cur_uri s)
+| _ -> Tool uri
+;;
+
+let read_path_tools =
+  let next =
+    [
+      Grdfs.suffix_branches, read_path_branches ;
+      Grdfs.suffix_intfs, read_path_intfs ;
+      Grdfs.suffix_versions, read_path_versions ;
+    ]
+  in
+  fun ctx uri -> function
+    | [] -> Tools
+    | [tool] -> Tool (uri_append uri tool)
+    | tool :: s :: q ->
+        let uri_tool = uri_append uri tool in
+        try (List.assoc s next) uri_tool (uri_append uri_tool s) q
+        with Not_found -> Tool uri
+;;
+
+let read_path =
+  let next =
+    [ Grdfs.suffix_tools, read_path_tools ;
+(*      Grdfs.suffix_chains, read_path_chains ;
+      Grdfs.suffix_fchains, read_path_fchains ;
+      Grdfs.suffix_ichains, read_path_ichains ;
+      Grdfs.suffix_filetypes, read_path_filetypes ;
+      Grdfs.suffix_out, read_path_out ;
+*)    ]
+  in
+  fun ctx uri -> function
+    | [] -> Tools
+    | s :: q ->
+        try (List.assoc s next) ctx (uri_append ctx.ctx_cfg.Config.rest_api s) q
+        with Not_found ->
+            try
+              let static_files = allowed_files ctx.ctx_cfg in
+              let (f, t) = List.assoc uri static_files in
+              let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
+                ["in" ; "web" ; f]
+              in
+              Static_file (f, t)
+            with
+              Not_found -> Other uri
+;;
+
+
+let rec thing_of_path ctx path =
+  (* we must change the path to an uri according to rest_api *)
+  let uri = uri_of_query_path ctx path in
+  let app_path = application_path ctx path in
+  read_path ctx uri app_path
+;;
+
 let handler_by_method h ctx = function
   Get (path, args) -> h.h_get ctx (thing_of_path ctx path) args
 | Delete path -> h.h_del ctx (thing_of_path ctx path)
