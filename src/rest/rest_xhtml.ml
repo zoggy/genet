@@ -45,6 +45,7 @@ let home_page = page_active "home";;
 let tool_page = page_active "tools";;
 let filetype_page = page_active "filetypes";;
 let chain_page = page_active "chains";;
+let out_page = page_active "out";;
 
 let table ?heads rows =
   let b = Buffer.create 256 in
@@ -138,6 +139,15 @@ let a_fchain ctx fullname =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_fchain prefix fullname in
   a ~href (Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname))
+;;
+
+let a_outfile ctx path =
+  match List.rev path with
+    [] -> ""
+  | basename :: _ ->
+      let prefix = ctx.ctx_cfg.Config.rest_api in
+      let href = Grdfs.uri_outfile_path prefix path in
+      a ~href basename
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -299,6 +309,26 @@ let xhtml_navpath_of_ichain ctx uri =
       | Some fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
 ;;
 
+let xhtml_navpath_of_outfile ctx path =
+  match List.rev path with
+    [] -> ""
+  | _ :: q ->
+      let f (acc, acc_path) name =
+        (a_outfile ctx (List.rev (name :: acc_path)) :: acc,
+         name :: acc_path
+        )
+      in
+      let (path, _) = List.fold_left f ([], []) (List.rev q) in
+      let path = List.rev path in
+      let out_link =
+        let href = Grdfs.uri_outfile_path ctx.ctx_cfg.Config.rest_api [] in
+        a ~href Grdfs.suffix_out
+      in
+      let path = out_link :: path in
+      xhtml_navpath_join_path path
+;;
+
+
 let xhtml_navpath ctx = function
 | `Chains
 | `Flat_chains
@@ -318,6 +348,7 @@ let xhtml_navpath ctx = function
 | `Flat_chain name -> xhtml_navpath_of_fchain ctx name
 | `Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
 | `Inst_chain uri -> xhtml_navpath_of_ichain ctx uri
+| `Out_file path -> xhtml_navpath_of_outfile ctx path
 ;;
 
 let intf_list ctx intfs =
@@ -782,15 +813,28 @@ let get_ichain ctx uri =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
-let get_outfile ctx path raw =
+let get_outfile_raw ctx path =
   let filename =
     List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
   in
-  let title = String.concat "/" path in
   let file_contents = Misc.string_of_file filename in
-  let contents = (Xtmpl.T ("pre", [], [Xtmpl.D file_contents])) in
-  let contents = Xtmpl.string_of_xml contents in
-  ([ctype ()], chain_page ctx ~title contents)
+  let ctype = ctype ~t: (Misc.file_mimetype filename) () in
+  ([ctype], file_contents)
+;;
+
+let get_outfile ctx path raw =
+  match raw with
+    true -> get_outfile_raw ctx path
+  | false ->
+      let filename =
+        List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
+      in
+      let title = String.concat "/" path in
+      let file_contents = Misc.string_of_file filename in
+      let contents = (Xtmpl.T ("pre", [], [Xtmpl.D file_contents])) in
+      let contents = Xtmpl.string_of_xml contents in
+      let navpath = xhtml_navpath ctx (`Out_file path) in
+      ([ctype ()], out_page ctx ~title ~navpath contents)
 ;;
 
 let get ctx thing args =

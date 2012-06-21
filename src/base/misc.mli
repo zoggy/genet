@@ -140,6 +140,7 @@ val unique_id : unit -> string
 
 val dir_md5sum : string -> string
 val file_md5sum : string -> string
+val file_mimetype : string -> string
 
 val copy_file : src: string -> dst: string -> unit
 

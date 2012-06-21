@@ -295,6 +295,21 @@ let path_under ~parent file =
     failwith (Printf.sprintf "%s is not under %s" file parent)
 ;;
 
+let file_mimetype file =
+  let temp_file = Filename.temp_file "mimetype_md5sum" ".txt" in
+  let com = Printf.sprintf "file -i %s | cut -d' ' -f 2-10 > %s"
+    (Filename.quote file) (Filename.quote temp_file)
+  in
+  match Sys.command com with
+    0 ->
+      let s = strip_string (string_of_file temp_file) in
+      Sys.remove temp_file;
+      s
+  | n ->
+      (try Sys.remove temp_file with _ -> ());
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+;;
+
 let copy_file ~src ~dst =
   let com = Printf.sprintf "cp -r %s %s"
     (Filename.quote src) (Filename.quote dst)
