@@ -822,6 +822,11 @@ let get_outfile_raw ctx path =
   ([ctype], file_contents)
 ;;
 
+let file_date file =
+  try Netdate.mk_mail_date (Unix.stat file).Unix.st_mtime
+  with Unix.Unix_error _ -> ""
+;;
+
 let get_outfile ctx path raw =
   match raw with
     true -> get_outfile_raw ctx path
@@ -829,12 +834,26 @@ let get_outfile ctx path raw =
       let filename =
         List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
       in
-      let title = String.concat "/" path in
+      let wtitle = String.concat "/" path in
+      let raw_link =
+        let prefix = ctx.ctx_cfg.Config.rest_api in
+        let href = Grdfs.uri_outfile_path ~raw: true prefix path in
+        a ~href "raw"
+      in
+      let title =
+        Printf.sprintf "%s [%s]"
+        (match List.rev path with [] -> assert false | s :: _ -> s) raw_link
+      in
       let file_contents = Misc.string_of_file filename in
-      let contents = (Xtmpl.T ("pre", [], [Xtmpl.D file_contents])) in
-      let contents = Xtmpl.string_of_xml contents in
+      let file_contents = Xtmpl.string_of_xml
+        (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
+      in
+      let contents = Printf.sprintf "<p><strong>Date:</strong> %s</p>%s"
+        (file_date filename)
+        file_contents
+      in
       let navpath = xhtml_navpath ctx (`Out_file path) in
-      ([ctype ()], out_page ctx ~title ~navpath contents)
+      ([ctype ()], out_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get ctx thing args =

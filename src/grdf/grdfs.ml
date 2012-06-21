@@ -356,8 +356,10 @@ let remove_prefix prefix uri =
 (** Files and directories *)
 
 let suffix_out = "out";;
-let uri_outfile_path prefix path =
-  List.fold_left Rdf_uri.concat prefix (suffix_out :: path)
+let suffix_raw = "raw";;
+let uri_outfile_path ?(raw=false) prefix path =
+  List.fold_left Rdf_uri.concat prefix
+    (if raw then suffix_out :: suffix_raw :: path else suffix_out :: path)
 ;;
 
 (** {2 Utilities} *)
