@@ -870,14 +870,55 @@ let get_outfile ctx path raw =
          %s"
         (file_date filename)
         (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
-        (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
+        (Rdf_uri.string (Grdfs.uri_ichains_consumers_of prefix path))
         file_contents
       in
       let navpath = xhtml_navpath ctx (`Out_file path) in
       ([ctype ()], out_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
-
+let xhtml_inst_list_of_ports ctx ports =
+  let heads = [ "Instanciated chain" ; "Port" ; "Date" ] in
+  let f port =
+    let (port_name, inst) =
+      let pname =
+        match Grdf_port.port_name ctx.ctx_rdf port with
+          "" -> string_of_int (Grdf_port.port_rank port)
+        | s -> s
+      in
+      let container = Grdfs.port_container port in
+      match Grdfs.is_a_instopn ctx.ctx_rdf container with
+        false -> (pname, container)
+      | true ->
+          let origin = Chn_flat.get_op_origin ctx container in
+          let name =
+            match Grdfs.name ctx.ctx_rdf (Rdf_node.Uri origin) with
+              "" -> pname
+            | s -> Printf.sprintf "%s.%s" s pname
+          in
+          let inst =
+            match Grdfs.subject_uri ctx.ctx_rdf
+              ~pred: Grdfs.genet_containsop ~obj: (Rdf_node.Uri container)
+            with
+              None -> failwith "No instanciated chain ???"
+            | Some inst -> inst
+          in
+          (name, inst)
+    in
+    let a_inst =
+      match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
+        None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
+      | Some uri -> a_ichain ctx uri
+    in
+    [ a_inst ;
+      port_name ;
+      Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
+    ]
+  in
+  let rows = List.map f ports in
+  table ~heads rows
+;;
+(* TODO: filter ports according to producer/consumer flag *)
 let get_inst_producers_of ctx path =
   match path with
     [] -> assert false
@@ -886,47 +927,23 @@ let get_inst_producers_of ctx path =
         ~pred: Grdfs.genet_filemd5
         ~obj: (Rdf_node.node_of_literal_string md5)
       in
-      let heads = [ "Instanciated chain" ; "Port" ; "Date" ] in
-      let f port =
-        let (port_name, inst) =
-           let pname =
-             match Grdf_port.port_name ctx.ctx_rdf port with
-               "" -> string_of_int (Grdf_port.port_rank port)
-            | s -> s
-          in
-          let container = Grdfs.port_container port in
-          match Grdfs.is_a_instopn ctx.ctx_rdf container with
-            false -> (pname, container)
-          | true ->
-              let origin = Chn_flat.get_op_origin ctx container in
-              let name =
-                match Grdfs.name ctx.ctx_rdf (Rdf_node.Uri origin) with
-                 "" -> pname
-                | s -> Printf.sprintf "%s.%s" s pname
-              in
-              let inst =
-                match Grdfs.subject_uri ctx.ctx_rdf
-                  ~pred: Grdfs.genet_containsop ~obj: (Rdf_node.Uri container)
-                with
-                  None -> failwith "No instanciated chain ???"
-                | Some inst -> inst
-              in
-              (name, inst)
-        in
-        let a_inst =
-          match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
-            None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
-          | Some uri -> a_ichain ctx uri
-        in
-        [ a_inst ;
-          port_name ;
-          Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
-        ]
-      in
-      let rows = List.map f ports in
-      let table = table ~heads rows in
+      let table = xhtml_inst_list_of_ports ctx ports in
       let title = Printf.sprintf "Producers of %s" (a_outfile ctx [md5]) in
       let wtitle = Printf.sprintf "Producers of %s" md5 in
+      ([ctype ()], chain_page ctx ~title ~wtitle table)
+;;
+
+let get_inst_consumers_of ctx path =
+  match path with
+    [] -> assert false
+  | md5 :: _ ->
+      let ports = Grdfs.subject_uris ctx.ctx_rdf
+        ~pred: Grdfs.genet_filemd5
+        ~obj: (Rdf_node.node_of_literal_string md5)
+      in
+      let table = xhtml_inst_list_of_ports ctx ports in
+      let title = Printf.sprintf "Consumers of %s" (a_outfile ctx [md5]) in
+      let wtitle = Printf.sprintf "Consumers of %s" md5 in
       ([ctype ()], chain_page ctx ~title ~wtitle table)
 ;;
 
@@ -954,5 +971,6 @@ let get ctx thing args =
   | Inst_chain uri -> get_ichain ctx uri
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
   | Inst_producers_of path -> get_inst_producers_of ctx path
+  | Inst_consumers_of path -> get_inst_consumers_of ctx path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

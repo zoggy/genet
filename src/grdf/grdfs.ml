@@ -237,6 +237,8 @@ let is_uri_fchain prefix uri =
 
 let suffix_ichains = "inst-chains";;
 let suffix_producers_of = "producers-of";;
+let suffix_consumers_of = "consumers-of";;
+
 let uri_ichains prefix = Rdf_uri.concat prefix suffix_ichains;;
 
 let uri_ichain_module ~prefix modname =
@@ -281,6 +283,11 @@ let is_uri_ichain prefix uri =
 let uri_ichains_producers_of prefix path =
   List.fold_left Rdf_uri.concat prefix
   (suffix_ichains :: suffix_producers_of :: path)
+;;
+
+let uri_ichains_consumers_of prefix path =
+  List.fold_left Rdf_uri.concat prefix
+  (suffix_ichains :: suffix_consumers_of :: path)
 ;;
 
 (** {3 Versions} *)
