@@ -338,21 +338,33 @@ class xhtml_ichain_dot_printer =
       let ports = super#port_consumers ctx flat_uri in
       List.map (fun uri -> Urimap.find uri flat_to_inst) ports
 
-    method port_produces ctx inst_uri =
+    method port_producers ctx inst_uri =
       let flat_uri = Urimap.find inst_uri inst_to_flat in
       let ports = super#port_producers ctx flat_uri in
       List.map (fun uri -> Urimap.find uri flat_to_inst) ports
 
    method port_link_and_name ctx uri =
-      let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf uri in
+      let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf
+        (Urimap.find uri inst_to_flat)
+      in
       let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
       let link =
         match Grdfs.object_literal ctx.Chn_types.ctx_rdf
           ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_filemd5
         with
-          None -> None
         | Some md5 ->
             Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
+        | None ->
+            match self#port_producers ctx uri with
+              [] -> None
+            | p :: _ ->
+                match
+                  Grdfs.object_literal ctx.Chn_types.ctx_rdf
+                  ~sub: (Rdf_node.Uri p) ~pred: Grdfs.genet_filemd5
+                with
+                | Some md5 ->
+                    Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
+                | None -> None
       in
       (link, name)
 

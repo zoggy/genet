@@ -418,7 +418,7 @@ class fchain_dot_printer =
 
     method port_link_and_name ctx uri =
       let ptype = Grdf_port.port_type ctx.ctx_rdf uri in
-      let link =self#get_port_type_uri ctx ptype in
+      let link = self#get_port_type_uri ctx ptype in
       let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
       (link, name)
 
