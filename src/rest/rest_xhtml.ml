@@ -64,6 +64,8 @@ let handle_page_error ?(page=home_page) ctx f x =
       let error = Xtmpl.string_of_xml msg in
       ([ctype ()], page ctx ~title ~error "")
 ;;
+let handle_chain_error ctx = handle_page_error ~page: chain_page ctx;;
+let handle_outfile_error = handle_page_error ~page: out_page;;
 
 let table ?heads rows =
   let b = Buffer.create 256 in
@@ -157,6 +159,12 @@ let a_fchain ctx fullname =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_fchain prefix fullname in
   a ~href (Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname))
+;;
+
+let a_ichain ctx name =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let href = Chn_types.uri_ichain prefix name in
+  a ~href (Chn_types.string_of_ichain_name name)
 ;;
 
 let a_outfile ctx path =
@@ -717,7 +725,6 @@ let get_chain ctx fullname =
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
-let handle_chain_error ctx = handle_page_error ~page: chain_page ctx;;
 
 let get_fchains ctx = get_chains ctx;;
 
@@ -837,12 +844,12 @@ let get_outfile ctx path raw =
   match raw with
     true -> get_outfile_raw ctx path
   | false ->
+      let prefix = ctx.ctx_cfg.Config.rest_api in
       let filename =
         List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
       in
       let wtitle = String.concat "/" path in
       let raw_link =
-        let prefix = ctx.ctx_cfg.Config.rest_api in
         let href = Grdfs.uri_outfile_path ~raw: true prefix path in
         a ~href "raw"
       in
@@ -854,8 +861,16 @@ let get_outfile ctx path raw =
       let file_contents = Xtmpl.string_of_xml
         (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
       in
-      let contents = Printf.sprintf "<p><strong>Date:</strong> %s</p>%s"
+      let contents = Printf.sprintf
+        "<p><strong>Date:</strong> %s</p>
+         <p><div class=\"btn-group\">
+         <a class=\"btn\" href=\"%s\">Producers</a>
+         <a class=\"btn\" href=\"%s\">Consumers</a>
+         </div></p>
+         %s"
         (file_date filename)
+        (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
+        (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
         file_contents
       in
       let navpath = xhtml_navpath ctx (`Out_file path) in
@@ -863,8 +878,57 @@ let get_outfile ctx path raw =
 ;;
 
 
-
-let handle_outfile_error = handle_page_error ~page: out_page;;
+let get_inst_producers_of ctx path =
+  match path with
+    [] -> assert false
+  | md5 :: _ ->
+      let ports = Grdfs.subject_uris ctx.ctx_rdf
+        ~pred: Grdfs.genet_filemd5
+        ~obj: (Rdf_node.node_of_literal_string md5)
+      in
+      let heads = [ "Instanciated chain" ; "Port" ; "Date" ] in
+      let f port =
+        let (port_name, inst) =
+           let pname =
+             match Grdf_port.port_name ctx.ctx_rdf port with
+               "" -> string_of_int (Grdf_port.port_rank port)
+            | s -> s
+          in
+          let container = Grdfs.port_container port in
+          match Grdfs.is_a_instopn ctx.ctx_rdf container with
+            false -> (pname, container)
+          | true ->
+              let origin = Chn_flat.get_op_origin ctx container in
+              let name =
+                match Grdfs.name ctx.ctx_rdf (Rdf_node.Uri origin) with
+                 "" -> pname
+                | s -> Printf.sprintf "%s.%s" s pname
+              in
+              let inst =
+                match Grdfs.subject_uri ctx.ctx_rdf
+                  ~pred: Grdfs.genet_containsop ~obj: (Rdf_node.Uri container)
+                with
+                  None -> failwith "No instanciated chain ???"
+                | Some inst -> inst
+              in
+              (name, inst)
+        in
+        let a_inst =
+          match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
+            None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
+          | Some uri -> a_ichain ctx uri
+        in
+        [ a_inst ;
+          port_name ;
+          Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
+        ]
+      in
+      let rows = List.map f ports in
+      let table = table ~heads rows in
+      let title = Printf.sprintf "Producers of %s" (a_outfile ctx [md5]) in
+      let wtitle = Printf.sprintf "Producers of %s" md5 in
+      ([ctype ()], chain_page ctx ~title ~wtitle table)
+;;
 
 let get ctx thing args =
   match thing with
@@ -889,6 +953,6 @@ let get ctx thing args =
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
   | Inst_chain uri -> get_ichain ctx uri
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
-
+  | Inst_producers_of path -> get_inst_producers_of ctx path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

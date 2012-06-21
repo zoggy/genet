@@ -36,6 +36,7 @@ type thing =
   | Flat_chain_list of Chn_types.fchain_name
   | Inst_chain of Rdf_uri.uri
   | Out_file of string list * bool (** true = raw access *)
+  | Inst_producers_of of string list (** inst chains producing file path *)
 ;;
 
 type response = arg list * string

@@ -236,6 +236,7 @@ let is_uri_fchain prefix uri =
 (** {3 Instanciated chains} *)
 
 let suffix_ichains = "inst-chains";;
+let suffix_producers_of = "producers-of";;
 let uri_ichains prefix = Rdf_uri.concat prefix suffix_ichains;;
 
 let uri_ichain_module ~prefix modname =
@@ -275,6 +276,11 @@ let is_uri_ichain prefix uri =
       match split_fchain_name base with
         `Fullname (fullname, id) -> Some (fullname, id)
       | _ -> None
+;;
+
+let uri_ichains_producers_of prefix path =
+  List.fold_left Rdf_uri.concat prefix
+  (suffix_ichains :: suffix_producers_of :: path)
 ;;
 
 (** {3 Versions} *)
@@ -390,6 +396,7 @@ let is_a_branch = is_a_ genet_branch;;
 let is_a_version = is_a_ genet_version;;
 let is_a_intf = is_a_ genet_intf;;
 let is_a_filetype = is_a_ genet_filetype;;
+let is_a_instopn = is_a_ genet_instopn;;
 
 let is_uri_for_ f_is string wld uri =
   match uri_basename uri with
