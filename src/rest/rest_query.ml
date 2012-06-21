@@ -197,7 +197,7 @@ let read_path_tools =
       Grdfs.suffix_versions, read_path_versions ;
     ]
   in
-  fun ctx uri -> function
+  fun _ uri -> function
     | [] -> Tools
     | [tool] -> Tool (uri_append uri tool)
     | tool :: s :: q ->
@@ -206,15 +206,62 @@ let read_path_tools =
         with Not_found -> Tool uri
 ;;
 
+let rec read_path_chain uri modpath = function
+  [] ->
+    Chain_module
+     (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
+| m :: q when String.capitalize m = m ->
+    read_path_chain uri (m :: modpath) q
+| basename :: _ ->
+    let name = String.concat "." (List.rev (basename :: modpath)) in
+    let chain_name = Chn_types.chain_name_of_string name in
+    Chain chain_name
+;;
+
+let read_path_chains _ uri = function
+  [] -> Chains
+| modname :: q ->
+    read_path_chain uri [modname] q
+;;
+
+let rec read_path_fchain ctx uri modpath = function
+  [] ->
+    Flat_chain_module
+     (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
+| m :: q when String.capitalize m = m ->
+    read_path_fchain ctx uri (m :: modpath) q
+| basename :: q ->
+    let name = String.concat "." (List.rev (basename :: modpath)) in
+    let chain_name = Chn_types.chain_name_of_string name in
+    match q with
+      [] ->
+        let fchain_name = Chn_types.mk_fchain_name chain_name "" in
+        Flat_chain_list fchain_name
+    | id :: _ ->
+        let fchain_name = Chn_types.mk_fchain_name chain_name id in
+        let uri = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
+        Flat_chain uri
+;;
+
+let read_path_fchains ctx uri = function
+  [] -> Flat_chains
+| modname :: q ->
+    read_path_fchain ctx uri [modname] q
+;;
+
 let read_path =
   let next =
     [ Grdfs.suffix_tools, read_path_tools ;
-(*      Grdfs.suffix_chains, read_path_chains ;
+      Grdfs.suffix_chains, read_path_chains ;
       Grdfs.suffix_fchains, read_path_fchains ;
+(*
       Grdfs.suffix_ichains, read_path_ichains ;
-      Grdfs.suffix_filetypes, read_path_filetypes ;
+*)
+(*      Grdfs.suffix_filetypes, read_path_filetypes ;*)
+(*
       Grdfs.suffix_out, read_path_out ;
-*)    ]
+*)
+    ]
   in
   fun ctx uri -> function
     | [] -> Tools
