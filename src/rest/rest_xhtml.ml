@@ -47,6 +47,24 @@ let filetype_page = page_active "filetypes";;
 let chain_page = page_active "chains";;
 let out_page = page_active "out";;
 
+let handle_page_error ?(page=home_page) ctx f x =
+  try f x
+  with exc ->
+      let p msg = Xtmpl.T ("p", [], [Xtmpl.D msg]) in
+      let pre msg = Xtmpl.T ("pre", [], [Xtmpl.D msg]) in
+      let msg =
+        match exc with
+        | Sys_error s | Failure s -> p s
+        | Loc.Problem pb -> pre (Loc.string_of_problem pb)
+        | Unix.Unix_error (e,s1,s2) ->
+            p (Printf.sprintf "%s: %s %s" (Unix.error_message e) s1 s2)
+        | e -> p (Printexc.to_string e)
+      in
+      let title = "Error" in
+      let error = Xtmpl.string_of_xml msg in
+      ([ctype ()], page ctx ~title ~error "")
+;;
+
 let table ?heads rows =
   let b = Buffer.create 256 in
   Buffer.add_string b "<table class=\"table table-bordered table-striped\">";
@@ -699,19 +717,7 @@ let get_chain ctx fullname =
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
 
-let handle_chain_error f ctx p =
-  try f ctx p
-  with  e ->
-      let title = "Error" in
-      let error =
-        match e with
-          Loc.Problem pb -> Loc.string_of_problem pb
-        | Sys_error msg | Failure msg -> msg
-        | e -> Printexc.to_string e
-      in
-      let error = Printf.sprintf "<pre><![CDATA[%s]]></pre>" error in
-      ([ctype ()], chain_page ctx ~title ~error "")
-;;
+let handle_chain_error ctx = handle_page_error ~page: chain_page ctx;;
 
 let get_fchains ctx = get_chains ctx;;
 
@@ -856,6 +862,10 @@ let get_outfile ctx path raw =
       ([ctype ()], out_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+
+
+let handle_outfile_error = handle_page_error ~page: out_page;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -871,14 +881,14 @@ let get ctx thing args =
   | Versions uri -> get_versions ctx uri
   | Branches uri -> get_branches ctx uri
   | Chains -> get_chains ctx
-  | Chain_module modname -> handle_chain_error (get_chain_module ?nav: None) ctx modname
-  | Chain fullname -> handle_chain_error get_chain ctx fullname
+  | Chain_module modname -> handle_chain_error ctx (get_chain_module ?nav: None ctx) modname
+  | Chain fullname -> handle_chain_error ctx (get_chain ctx) fullname
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname
   | Flat_chain uri -> get_fchain ctx uri
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
   | Inst_chain uri -> get_ichain ctx uri
-  | Out_file (path, raw) -> get_outfile ctx path raw
+  | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;
