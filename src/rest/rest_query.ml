@@ -50,6 +50,7 @@ let uri_of_query_path ctx path =
   Rdf_uri.uri uri
 ;;
 
+(*
 let try_is_uri_of ctx uri =
   let embed1 test build =
     fun uri ->
@@ -145,6 +146,7 @@ let rec thing_of_path ctx path =
       end
   | Some c -> prerr_endline (Rdf_uri.string c); Other uri
 ;;
+*)
 
 (** Return the path relative to the application, i.e. the path to
   analyse to know what to do and return. *)
@@ -168,23 +170,23 @@ let rec read_path_branch uri_parent = function
 | s :: q ->
     let uri = uri_append uri_parent s in
     match q with
-      [] -> Branch uri
+      [] | [""] -> Branch uri
     | _ -> read_path_branch uri q
 ;;
 
 let read_path_branches uri_parent cur_uri = function
-  [] -> Branches uri_parent
+  [] | [""] -> Branches uri_parent
 | q -> read_path_branch cur_uri q
 ;;
 
 let read_path_intfs uri cur_uri = function
-  [] -> Intfs uri
+  [] | [""] -> Intfs uri
 | [s] -> Intf (uri_append cur_uri s)
 | _ -> Other uri
 ;;
 
 let read_path_versions uri cur_uri = function
-  [] -> Versions uri
+  [] | [""] -> Versions uri
 | [s] -> Version (uri_append cur_uri s)
 | _ -> Tool uri
 ;;
@@ -198,7 +200,7 @@ let read_path_tools =
     ]
   in
   fun _ uri -> function
-    | [] -> Tools
+    | [] | [""] -> Tools
     | [tool] -> Tool (uri_append uri tool)
     | tool :: s :: q ->
         let uri_tool = uri_append uri tool in
@@ -207,7 +209,7 @@ let read_path_tools =
 ;;
 
 let rec read_path_chain uri modpath = function
-  [] ->
+  [] | [""] ->
     Chain_module
      (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
 | m :: q when String.capitalize m = m ->
@@ -219,13 +221,13 @@ let rec read_path_chain uri modpath = function
 ;;
 
 let read_path_chains _ uri = function
-  [] -> Chains
+  [] | [""] -> Chains
 | modname :: q ->
     read_path_chain uri [modname] q
 ;;
 
 let rec read_path_fchain ctx uri modpath = function
-  [] ->
+  [] | [""] ->
     Flat_chain_module
      (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
 | m :: q when String.capitalize m = m ->
@@ -244,9 +246,39 @@ let rec read_path_fchain ctx uri modpath = function
 ;;
 
 let read_path_fchains ctx uri = function
-  [] -> Flat_chains
+  [] | [""] -> Flat_chains
 | modname :: q ->
     read_path_fchain ctx uri [modname] q
+;;
+
+let rec read_path_ichain ctx uri modpath = function
+  [] | [""] -> (* TODO: define and handle Inst_chain_module *)
+    Flat_chain_module
+     (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
+| m :: q when String.capitalize m = m ->
+    read_path_ichain ctx uri (m :: modpath) q
+| basename :: q ->
+    let name = String.concat "." (List.rev (basename :: modpath)) in
+    let chain_name = Chn_types.chain_name_of_string name in
+    match q with
+      [] -> (* TODO: define and handle Inst_chain_list *)
+        let fchain_name = Chn_types.mk_fchain_name chain_name "" in
+        Flat_chain_list fchain_name
+    | id :: _ ->
+        let ichain_name = Chn_types.mk_ichain_name chain_name id in
+        let uri = Chn_types.uri_ichain ctx.ctx_cfg.Config.rest_api ichain_name in
+        Inst_chain uri
+;;
+
+let read_path_ichains ctx uri = function
+  [] | [""] -> Chains (* TODO: define and handle Inst_chains *)
+| modname :: q ->
+    read_path_ichain ctx uri [modname] q
+;;
+
+let read_path_filetypes ctx uri = function
+  [] | [""] -> Filetypes
+| s :: _ -> Filetype (uri_append uri s)
 ;;
 
 let read_path =
@@ -254,17 +286,15 @@ let read_path =
     [ Grdfs.suffix_tools, read_path_tools ;
       Grdfs.suffix_chains, read_path_chains ;
       Grdfs.suffix_fchains, read_path_fchains ;
-(*
       Grdfs.suffix_ichains, read_path_ichains ;
-*)
-(*      Grdfs.suffix_filetypes, read_path_filetypes ;*)
+      Grdfs.suffix_filetypes, read_path_filetypes ;
 (*
       Grdfs.suffix_out, read_path_out ;
 *)
     ]
   in
   fun ctx uri -> function
-    | [] -> Tools
+    | [] | [""] -> Tools
     | s :: q ->
         try (List.assoc s next) ctx (uri_append ctx.ctx_cfg.Config.rest_api s) q
         with Not_found ->
