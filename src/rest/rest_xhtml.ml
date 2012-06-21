@@ -782,6 +782,17 @@ let get_ichain ctx uri =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let get_outfile ctx path raw =
+  let filename =
+    List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
+  in
+  let title = String.concat "/" path in
+  let file_contents = Misc.string_of_file filename in
+  let contents = (Xtmpl.T ("pre", [], [Xtmpl.D file_contents])) in
+  let contents = Xtmpl.string_of_xml contents in
+  ([ctype ()], chain_page ctx ~title contents)
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -804,6 +815,7 @@ let get ctx thing args =
   | Flat_chain uri -> get_fchain ctx uri
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
   | Inst_chain uri -> get_ichain ctx uri
+  | Out_file (path, raw) -> get_outfile ctx path raw
 
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

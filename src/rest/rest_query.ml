@@ -281,6 +281,17 @@ let read_path_filetypes ctx uri = function
 | s :: _ -> Filetype (uri_append uri s)
 ;;
 
+let rec read_path_out_path ?(raw=false) outpath = function
+  [] -> Out_file (List.rev outpath, raw)
+| s :: q -> read_path_out_path ~raw (s :: outpath) q
+;;
+
+let read_path_out ctx uri = function
+  [] -> (* TODO: define and handle Outfiles *) Tools
+| "raw" :: s :: q -> read_path_out_path ~raw: true [s] q
+| s :: q -> read_path_out_path [s] q
+;;
+
 let read_path =
   let next =
     [ Grdfs.suffix_tools, read_path_tools ;
@@ -288,9 +299,7 @@ let read_path =
       Grdfs.suffix_fchains, read_path_fchains ;
       Grdfs.suffix_ichains, read_path_ichains ;
       Grdfs.suffix_filetypes, read_path_filetypes ;
-(*
       Grdfs.suffix_out, read_path_out ;
-*)
     ]
   in
   fun ctx uri -> function

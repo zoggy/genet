@@ -35,6 +35,7 @@ type thing =
   | Flat_chain of Rdf_uri.uri
   | Flat_chain_list of Chn_types.fchain_name
   | Inst_chain of Rdf_uri.uri
+  | Out_file of string list * bool (** true = raw access *)
 ;;
 
 type response = arg list * string
