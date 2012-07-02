@@ -70,6 +70,8 @@ let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
 let genet_containsop = genet_"containsOperation";;
 let genet_createdon = genet_"createdOn";;
+let genet_startedon = genet_"startedOn";;
+let genet_stoppedon = genet_"stoppedOn";;
 let genet_isactive = genet_"isActive";;
 let genet_instanciate = genet_"instanciate";;
 let genet_hascommitid = genet_"hasCommitId";;
@@ -369,6 +371,7 @@ let remove_prefix prefix uri =
 (** Files and directories *)
 
 let suffix_out = "out";;
+let suffix_in = "in";;
 let suffix_raw = "raw";;
 let uri_outfile_path ?(raw=false) prefix path =
   List.fold_left Rdf_uri.concat prefix
@@ -505,29 +508,40 @@ let object_uri wld ~sub ~pred =
   | uri :: _ -> Some uri
 ;;
 
-let remove_creation_date_uri wld sub =
+let remove_date_uri_ pred wld sub =
   let sub = Uri sub in
-  let pred = Uri genet_createdon in
+  let pred = Uri pred in
   let l = wld.wld_graph.objects_of ~sub ~pred in
   let f obj = rem_triple wld ~sub ~pred ~obj in
   List.iter f l
 ;;
 
-let set_creation_date_uri wld sub ?d () =
-  remove_creation_date_uri wld sub;
+let set_date_uri_ pred wld sub ?d () =
+  remove_date_uri_ pred wld sub;
   add_triple wld
-    ~sub: (Uri sub) ~pred: (Uri genet_createdon)
+    ~sub: (Uri sub) ~pred: (Uri pred)
     ~obj: (Rdf_node.node_of_datetime ?d ())
 ;;
-
-let creation_date_uri wld sub =
-  let pred = Uri genet_createdon in
-  match wld.wld_graph.objects_of ~sub:(Uri sub) ~pred with
+let date_uri_ pred wld sub =
+  let uri_pred = Uri pred in
+  match wld.wld_graph.objects_of ~sub:(Uri sub) ~pred: uri_pred with
     [] -> None
   | [Literal lit] ->
       Some (Rdf_node.datetime_of_literal lit)
-  | _ -> failwith "Invalid createdon object"
-;;
+  | _ -> failwith (Printf.sprintf "Invalid %s object" (Rdf_uri.string pred))
+
+let remove_creation_date_uri = remove_date_uri_ genet_createdon;;
+let set_creation_date_uri = set_date_uri_ genet_createdon;;
+let creation_date_uri = date_uri_ genet_createdon ;;
+
+let remove_start_date_uri = remove_date_uri_ genet_startedon;;
+let set_start_date_uri = set_date_uri_ genet_startedon;;
+let start_date_uri = date_uri_ genet_startedon ;;
+
+let remove_stop_date_uri = remove_date_uri_ genet_stoppedon;;
+let set_stop_date_uri = set_date_uri_ genet_stoppedon;;
+let stop_date_uri = date_uri_ genet_stoppedon ;;
+
 
 let remove_is_active_uri wld sub =
   let sub = Uri sub in

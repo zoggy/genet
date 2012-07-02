@@ -45,6 +45,7 @@ let home_page = page_active "home";;
 let tool_page = page_active "tools";;
 let filetype_page = page_active "filetypes";;
 let chain_page = page_active "chains";;
+let in_page = page_active "in";;
 let out_page = page_active "out";;
 
 let handle_page_error ?(page=home_page) ctx f x =
@@ -817,10 +818,33 @@ let get_ichain ctx uri =
     dot_to_svg ~svg_h: 600 dot
   in
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
+  let start_date = Misc.string_of_opt (Chn_run.ichain_start_date ctx uri) in
+  let stop_date = Misc.string_of_opt (Chn_run.ichain_stop_date ctx uri) in
+  let tool_versions =
+    let map = Chn_inst.inst_versions ctx uri in
+    let l = Urimap.fold (fun tool v acc -> (tool, v) :: acc) map [] in
+    let heads = ["Tool" ; "Version"] in
+    let rows = List.map
+      (fun (tool, version) ->
+        [ a_tool ctx tool ; a_version ctx version ]
+      )
+      l
+    in
+    table ~heads rows
+  in
+  let input_info =
+    match Chn_inst.inst_input ctx uri with
+      None -> "??"
+    | Some (name, id) -> Printf.sprintf "%s [%s]" name id
+  in
   let contents =
     Printf.sprintf
-       "<p><strong>Creation date:</strong> %s</p>%s\n"
-       date
+       "<p><strong>Creation date:</strong> %s</p>
+       <p><strong>Start date:</strong> %s</p>
+       <p><strong>Stop date:</strong> %s</p>
+       <p><strong>Input:</strong> %s</p>%s%s\n"
+       date start_date stop_date input_info
+       tool_versions
        svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
@@ -932,6 +956,15 @@ let get_inst_producers_of ctx path =
       ([ctype ()], chain_page ctx ~title ~wtitle table)
 ;;
 
+let get_inputs ctx =
+  let inputs = Ind_io.list_inputs ctx.ctx_cfg in
+  let heads = ["Input"] in
+  let rows = List.map (fun s -> [s]) inputs in
+  let table = table ~heads rows in
+  let title = "Inputs" in
+  ([ctype ()], in_page ctx ~title table)
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -956,5 +989,6 @@ let get ctx thing args =
   | Inst_chain uri -> get_ichain ctx uri
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
   | Inst_producers_of path -> get_inst_producers_of ctx path
+  | Inputs -> get_inputs ctx
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

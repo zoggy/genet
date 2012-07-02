@@ -2,6 +2,20 @@
 
 open Chn_types;;
 
+
+let ichain_start_date ctx uri =
+  match Grdfs.start_date_uri ctx.ctx_rdf uri with
+    None -> None
+  | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
+;;
+
+let ichain_stop_date ctx uri =
+  match Grdfs.stop_date_uri ctx.ctx_rdf uri with
+    None -> None
+  | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
+;;
+
+
 module Graph = Graph.Make_with_map
   (struct
      type t = Rdf_uri.uri
@@ -100,8 +114,10 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
             (String.concat " " (List.map Filename.quote in_files))
             (String.concat " " (List.map Filename.quote out_files))
           in
+          Grdfs.set_start_date_uri ctx.ctx_rdf uri_node ();
           match Sys.command com with
             0 ->
+              Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
               List.iter2
                 (fun port file ->
                  record_file ctx reporter (Filename.concat tmp_dir file) port)
@@ -110,6 +126,7 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
               run_nodes ctx reporter comb g port_to_file tmp_dir
               (Graph.pred_roots g)
           | n ->
+              Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
               failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 
 and run_nodes ctx reporter comb g port_to_file tmp_dir uri_nodes =
@@ -145,6 +162,7 @@ let init_run ctx reporter uri_inst input g port_to_file tmp_dir =
 ;;
 
 let run_graph ctx reporter uri_inst comb input g port_to_file =
+  Grdfs.set_start_date_uri ctx.ctx_rdf uri_inst ();
   print_endline "run_graph";
   (* break cycles due to having only one node for the flat chain
     in the graph, with input ports and output ports associated to it. *)
@@ -175,13 +193,14 @@ let run_graph ctx reporter uri_inst comb input g port_to_file =
   (* graph should be empty now *)
   begin
     match Graph.fold_succ g (fun k _ acc -> k :: acc) [] with
-    [] -> ()
-  | l ->
-      let l = List.map Rdf_uri.string l in
-      let msg = Printf.sprintf "The following nodes were not executed:\n%s"
-        (String.concat "\n" l)
-      in
-      failwith msg
+      [] ->  Grdfs.set_stop_date_uri ctx.ctx_rdf uri_inst ()
+    | l ->
+        Grdfs.set_stop_date_uri ctx.ctx_rdf uri_inst ();
+        let l = List.map Rdf_uri.string l in
+        let msg = Printf.sprintf "The following nodes were not executed:\n%s"
+          (String.concat "\n" l)
+        in
+        failwith msg
   end;
 
 

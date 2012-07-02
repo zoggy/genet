@@ -36,6 +36,7 @@ type thing =
   | Inst_chain of Rdf_uri.uri
   | Out_file of string list * bool (* true = raw access *)
   | Inst_producers_of of string list (* inst ports producing file path *)
+  | Inputs
 ;;
 
 type response = arg list * string

@@ -79,3 +79,15 @@ let write dir =
   g.group#read ~on_type_error: (on_type_error file) file;
   g.group#write file
 ;;
+
+let list_inputs config =
+  let data_dir = Config.data_dir config in
+  let pred s = (Filename.basename s) = input_basename in
+  let spec_files = Find.find_list
+    Find.Stderr [data_dir] [Find.Type Unix.S_REG ; Find.Predicate pred]
+  in
+  List.map
+  (fun f -> Misc.path_under ~parent: data_dir (Filename.dirname f))
+  spec_files
+;;
+

@@ -293,6 +293,11 @@ let read_path_out ctx uri = function
 | s :: q -> read_path_out_path [s] q
 ;;
 
+let read_path_in ctx uri = function
+  [] -> Inputs
+| s :: q -> (* TODO: define and handle Input *) Tools
+;;
+
 let read_path =
   let next =
     [ Grdfs.suffix_tools, read_path_tools ;
@@ -301,6 +306,7 @@ let read_path =
       Grdfs.suffix_ichains, read_path_ichains ;
       Grdfs.suffix_filetypes, read_path_filetypes ;
       Grdfs.suffix_out, read_path_out ;
+      Grdfs.suffix_in, read_path_in ;
     ]
   in
   fun ctx uri -> function

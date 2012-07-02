@@ -79,23 +79,25 @@ let inst_input ctx uri_inst =
 
 let equal_tool_versions = Urimap.equal Rdf_uri.equal;;
 
+let inst_versions ctx uri_inst =
+  let versions = Grdfs.object_uris ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri uri_inst) ~pred: Grdfs.genet_useversion
+  in
+  List.fold_left
+  (fun acc v -> Urimap.add
+     (Grdf_version.tool_of_version v)
+     v
+     acc)
+    Urimap.empty
+  versions
+;;
+
 let instances ctx uri_fchain =
   let insts = Grdfs.subject_uris ctx.ctx_rdf
      ~pred: Grdfs.genet_instanciate ~obj: (Rdf_node.Uri uri_fchain)
   in
   let f acc uri_i =
-    let versions = Grdfs.object_uris ctx.ctx_rdf
-      ~sub: (Rdf_node.Uri uri_i) ~pred: Grdfs.genet_useversion
-    in
-    let versions =
-      List.fold_left
-      (fun acc v -> Urimap.add
-         (Grdf_version.tool_of_version v)
-         v
-         acc)
-      Urimap.empty
-      versions
-    in
+    let versions = inst_versions ctx uri_i in
     let input = inst_input ctx uri_i in
     (uri_i, versions, input) :: acc
   in
