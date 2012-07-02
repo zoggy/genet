@@ -273,7 +273,6 @@ let rec read_path_ichain ctx uri modpath = function
 let read_path_ichains ctx uri = function
   [] | [""] -> Chains (* TODO: define and handle Inst_chains *)
 | s :: path when s = Grdfs.suffix_producers_of -> Inst_producers_of path
-| s :: path when s = Grdfs.suffix_consumers_of -> Inst_consumers_of path
 | modname :: q ->
     read_path_ichain ctx uri [modname] q
 ;;

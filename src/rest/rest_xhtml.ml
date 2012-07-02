@@ -865,12 +865,10 @@ let get_outfile ctx path raw =
         "<p><strong>Date:</strong> %s</p>
          <p><div class=\"btn-group\">
          <a class=\"btn\" href=\"%s\">Producers</a>
-         <a class=\"btn\" href=\"%s\">Consumers</a>
          </div></p>
          %s"
         (file_date filename)
         (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
-        (Rdf_uri.string (Grdfs.uri_ichains_consumers_of prefix path))
         file_contents
       in
       let navpath = xhtml_navpath ctx (`Out_file path) in
@@ -918,11 +916,12 @@ let xhtml_inst_list_of_ports ctx ports =
   let rows = List.map f ports in
   table ~heads rows
 ;;
-(* TODO: filter ports according to producer/consumer flag *)
+
 let get_inst_producers_of ctx path =
   match path with
     [] -> assert false
   | md5 :: _ ->
+      (* get the producers of the file *)
       let ports = Grdfs.subject_uris ctx.ctx_rdf
         ~pred: Grdfs.genet_filemd5
         ~obj: (Rdf_node.node_of_literal_string md5)
@@ -930,20 +929,6 @@ let get_inst_producers_of ctx path =
       let table = xhtml_inst_list_of_ports ctx ports in
       let title = Printf.sprintf "Producers of %s" (a_outfile ctx [md5]) in
       let wtitle = Printf.sprintf "Producers of %s" md5 in
-      ([ctype ()], chain_page ctx ~title ~wtitle table)
-;;
-
-let get_inst_consumers_of ctx path =
-  match path with
-    [] -> assert false
-  | md5 :: _ ->
-      let ports = Grdfs.subject_uris ctx.ctx_rdf
-        ~pred: Grdfs.genet_filemd5
-        ~obj: (Rdf_node.node_of_literal_string md5)
-      in
-      let table = xhtml_inst_list_of_ports ctx ports in
-      let title = Printf.sprintf "Consumers of %s" (a_outfile ctx [md5]) in
-      let wtitle = Printf.sprintf "Consumers of %s" md5 in
       ([ctype ()], chain_page ctx ~title ~wtitle table)
 ;;
 
@@ -971,6 +956,5 @@ let get ctx thing args =
   | Inst_chain uri -> get_ichain ctx uri
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
   | Inst_producers_of path -> get_inst_producers_of ctx path
-  | Inst_consumers_of path -> get_inst_consumers_of ctx path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;
