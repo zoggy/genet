@@ -57,6 +57,8 @@ let handle_page_error ?(page=home_page) ctx f x =
         match exc with
         | Sys_error s | Failure s -> p s
         | Loc.Problem pb -> pre (Loc.string_of_problem pb)
+        | Ind_io.Error (file, msg) ->
+            pre (Printf.sprintf "File %s:\n%s" file msg)
         | Unix.Unix_error (e,s1,s2) ->
             p (Printf.sprintf "%s: %s %s" (Unix.error_message e) s1 s2)
         | e -> p (Printexc.to_string e)
@@ -67,6 +69,7 @@ let handle_page_error ?(page=home_page) ctx f x =
 ;;
 let handle_chain_error ctx = handle_page_error ~page: chain_page ctx;;
 let handle_outfile_error = handle_page_error ~page: out_page;;
+let handle_in_error = handle_page_error ~page: in_page;;
 
 let table ?heads rows =
   let b = Buffer.create 256 in
@@ -1113,7 +1116,8 @@ let get ctx thing args =
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
   | Inst_producers_of path -> get_inst_producers_of ctx path
   | Inputs -> get_inputs ctx
-  | Input path -> get_input ctx path
-  | Input_file (input, file_path, raw) -> get_input_file ctx ~raw ~input file_path
+  | Input path -> handle_in_error ctx (get_input ctx) path
+  | Input_file (input, file_path, raw) ->
+      handle_in_error ctx (get_input_file ctx ~raw ~input) file_path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;
