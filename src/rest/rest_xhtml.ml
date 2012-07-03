@@ -29,9 +29,9 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
-let page ?(env=Xtmpl.env_empty) ctx ~title ?wtitle ?navpath ?error contents =
+let page ?(env=Xtmpl.env_empty) ctx ~title ?javascript ?wtitle ?navpath ?error contents =
   let s = Rest_xpage.page ctx.ctx_cfg ~env
-    ~title ?wtitle ?navpath ?error [Xtmpl.xml_of_string contents]
+    ~title ?javascript ?wtitle ?navpath ?error [Xtmpl.xml_of_string contents]
   in
   Printf.sprintf "<!DOCTYPE html>\n%s\n" s
 ;;
@@ -1093,8 +1093,14 @@ let get_input_file ctx ~raw ~input file_path =
 
 let get_inst_chains ctx =
   let title = "Executions" in
-  let contents = "" in
-  ([ctype ()], out_page ctx ~title contents)
+  let javascript =
+    let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
+      ["tmpl" ; "inst_chain_query.js"]
+    in
+    Misc.string_of_file file
+  in
+  let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
+  ([ctype ()], out_page ctx ~title ~javascript contents)
 ;;
 let inst_chain_query ctx iq =
   ([ctype ()], "<div>coucou</div>")
