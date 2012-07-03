@@ -177,6 +177,15 @@ let a_outfile ctx path =
       a ~href basename
 ;;
 
+let a_input ctx path =
+  match List.rev path with
+    [] -> ""
+  | _ ->
+      let prefix = ctx.ctx_cfg.Config.rest_api in
+      let href= Grdfs.uri_input_path prefix path in
+      a ~href (List.fold_left (fun acc s -> acc ^ "/" ^ s) "" path)
+;;
+
 let xhtml_of_ports ctx dir uri =
   let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
   let sep = match dir with Grdf_port.In -> " -&gt; " | Grdf_port.Out -> " * " in
@@ -355,6 +364,24 @@ let xhtml_navpath_of_outfile ctx path =
       xhtml_navpath_join_path path
 ;;
 
+let xhtml_navpath_of_input ctx path =
+  match List.rev path with
+    [] -> ""
+  | _ :: q ->
+      let f (acc, acc_path) name =
+        (a_input ctx (List.rev (name :: acc_path)) :: acc,
+         name :: acc_path
+        )
+      in
+      let (path, _) = List.fold_left f ([], []) (List.rev q) in
+      let path = List.rev path in
+      let in_link =
+        let href = Grdfs.uri_input_path ctx.ctx_cfg.Config.rest_api [] in
+        a ~href Grdfs.suffix_in
+      in
+      let path = in_link :: path in
+      xhtml_navpath_join_path path
+;;
 
 let xhtml_navpath ctx = function
 | `Chains
@@ -376,6 +403,7 @@ let xhtml_navpath ctx = function
 | `Flat_chain_list fchain_name -> xhtml_navpath_of_fchain_list ctx fchain_name
 | `Inst_chain uri -> xhtml_navpath_of_ichain ctx uri
 | `Out_file path -> xhtml_navpath_of_outfile ctx path
+| `Input path -> xhtml_navpath_of_input ctx path
 ;;
 
 let intf_list ctx intfs =
@@ -959,10 +987,30 @@ let get_inst_producers_of ctx path =
 let get_inputs ctx =
   let inputs = Ind_io.list_inputs ctx.ctx_cfg in
   let heads = ["Input"] in
-  let rows = List.map (fun s -> [s]) inputs in
+  let rows = List.map (fun s -> [a_input ctx [s]] ) inputs in
   let table = table ~heads rows in
   let title = "Inputs" in
   ([ctype ()], in_page ctx ~title table)
+;;
+
+let get_input ctx path =
+  (*let prefix = ctx.ctx_cfg.Config.rest_api in*)
+  let dirname =
+    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) path
+  in
+  let title = String.concat "/" path in
+  (*let input = Ind_io.load ctx.ctx_cfg dirname in*)
+  let git_id = Misc.get_git_id dirname in
+  let contents = Printf.sprintf
+        "<p><strong>Id:</strong> %s</p>"
+        git_id
+  in
+  let navpath = xhtml_navpath ctx (`Input path) in
+  ([ctype ()], in_page ctx ~title ~navpath contents)
+;;
+
+let get_input_file ctx ~input file_path =
+  assert false
 ;;
 
 let get ctx thing args =
@@ -990,5 +1038,7 @@ let get ctx thing args =
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw
   | Inst_producers_of path -> get_inst_producers_of ctx path
   | Inputs -> get_inputs ctx
+  | Input path -> get_input ctx path
+  | Input_file (input, file_path) -> get_input_file ctx ~input file_path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

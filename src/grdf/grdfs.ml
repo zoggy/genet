@@ -378,6 +378,10 @@ let uri_outfile_path ?(raw=false) prefix path =
     (if raw then suffix_out :: suffix_raw :: path else suffix_out :: path)
 ;;
 
+let uri_input_path prefix path =
+  List.fold_left Rdf_uri.concat prefix (suffix_in :: path)
+;;
+
 (** {2 Utilities} *)
 
 let uri_basename uri =

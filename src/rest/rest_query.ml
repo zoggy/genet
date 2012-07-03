@@ -293,9 +293,25 @@ let read_path_out ctx uri = function
 | s :: q -> read_path_out_path [s] q
 ;;
 
+let rec read_path_in_path inpath = function
+  [] -> Input (List.rev inpath)
+| s :: q ->
+    let dir = List.fold_left Filename.concat "" (List.rev (s :: inpath)) in
+    let spec_file = Filename.concat dir Ind_io.input_basename in
+    if Sys.file_exists spec_file then
+      begin
+        let input_path = List.rev (s :: inpath) in
+        match q with
+          [] -> Input input_path
+        | _ -> Input_file (input_path, q)
+      end
+    else
+      read_path_in_path (s :: inpath) q
+;;
+
 let read_path_in ctx uri = function
   [] -> Inputs
-| s :: q -> (* TODO: define and handle Input *) Tools
+| s :: q -> read_path_in_path [s] q
 ;;
 
 let read_path =
