@@ -1091,6 +1091,15 @@ let get_input_file ctx ~raw ~input file_path =
       ([ctype ()], in_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let get_inst_chains ctx =
+  let title = "Executions" in
+  let contents = "" in
+  ([ctype ()], out_page ctx ~title contents)
+;;
+let inst_chain_query ctx iq =
+  ([ctype ()], "<div>coucou</div>")
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -1119,5 +1128,7 @@ let get ctx thing args =
   | Input path -> handle_in_error ctx (get_input ctx) path
   | Input_file (input, file_path, raw) ->
       handle_in_error ctx (get_input_file ctx ~raw ~input) file_path
+  | Inst_chains -> get_inst_chains ctx
+  | Inst_chain_query iq -> inst_chain_query ctx iq
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

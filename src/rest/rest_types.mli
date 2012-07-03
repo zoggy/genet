@@ -14,6 +14,13 @@ type met =
 
 type content_type = Xhtml | Json
 
+type inst_chain_query =
+  { iq_fchain : Chn_types.fchain_name option ;
+    iq_tools : Rdf_uri.uri Urimap.t ;
+    iq_input : (string list * string option) option ; (** input path * git id option *)
+  }
+;;
+
 type thing =
   | Tool of uri
   | Branch of uri
@@ -40,6 +47,8 @@ type thing =
   | Inputs
   | Input of string list
   | Input_file of string list * string list * bool (** true = raw access *)
+  | Inst_chains
+  | Inst_chain_query of inst_chain_query
 ;;
 
 type response = arg list * string
