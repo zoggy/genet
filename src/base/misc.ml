@@ -319,3 +319,5 @@ let copy_file ~src ~dst =
   | n ->
       failwith (Printf.sprintf "Command failed [%d]: %s" n com)
 ;;
+
+let split_filename s = split_string s [ Filename.dir_sep.[0] ];;

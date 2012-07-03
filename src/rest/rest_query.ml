@@ -293,25 +293,27 @@ let read_path_out ctx uri = function
 | s :: q -> read_path_out_path [s] q
 ;;
 
-let rec read_path_in_path inpath = function
+let rec read_path_in_path ctx raw inpath = function
   [] -> Input (List.rev inpath)
 | s :: q ->
-    let dir = List.fold_left Filename.concat "" (List.rev (s :: inpath)) in
+    let data_dir = Config.data_dir ctx.ctx_cfg in
+    let dir = List.fold_left Filename.concat data_dir (List.rev (s :: inpath)) in
     let spec_file = Filename.concat dir Ind_io.input_basename in
+    prerr_endline (Printf.sprintf "spec_file=%S" spec_file);
     if Sys.file_exists spec_file then
       begin
-        let input_path = List.rev (s :: inpath) in
         match q with
-          [] -> Input input_path
-        | _ -> Input_file (input_path, q)
+          [] -> Input (List.rev (s :: inpath))
+        | _ -> Input_file (inpath, s::q, raw)
       end
     else
-      read_path_in_path (s :: inpath) q
+      read_path_in_path ctx raw (s :: inpath) q
 ;;
 
 let read_path_in ctx uri = function
   [] -> Inputs
-| s :: q -> read_path_in_path [s] q
+| "raw" :: path -> read_path_in_path ctx true [] path
+| path -> read_path_in_path ctx false [] path
 ;;
 
 let read_path =

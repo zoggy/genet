@@ -138,9 +138,14 @@ let a_branch ctx uri =
   a ~href: uri name
 ;;
 
-let a_chain ctx fullname =
+let a_chain ctx ?(full=false) fullname =
   let href = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
-  let name = Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname) in
+  let name =
+    if full then
+      Chn_types.string_of_chain_name fullname
+    else
+      Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname)
+  in
   a ~href name
 ;;
 
@@ -177,13 +182,29 @@ let a_outfile ctx path =
       a ~href basename
 ;;
 
-let a_input ctx path =
+let a_input ctx ?(full=true) path =
+  match List.rev path with
+    [] -> ""
+  | h :: q ->
+      let prefix = ctx.ctx_cfg.Config.rest_api in
+      let href= Grdfs.uri_input_path prefix path in
+      let label =
+        if full then
+          List.fold_left (fun acc s -> acc ^ "/" ^ s) h q
+        else
+          h
+      in
+      a ~href label
+;;
+
+let a_input_file ctx path file_path =
   match List.rev path with
     [] -> ""
   | _ ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
-      let href= Grdfs.uri_input_path prefix path in
-      a ~href (List.fold_left (fun acc s -> acc ^ "/" ^ s) "" path)
+      let href= Grdfs.uri_input_file_path prefix path file_path in
+      let label = match file_path with [] -> assert false | s :: _ -> s in
+      a ~href label
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -364,11 +385,12 @@ let xhtml_navpath_of_outfile ctx path =
       xhtml_navpath_join_path path
 ;;
 
-let xhtml_navpath_of_input ctx path =
+let navpath_of_input ctx path =
   match List.rev path with
-    [] -> ""
+    [] -> []
   | _ :: q ->
       let f (acc, acc_path) name =
+         prerr_endline (Printf.sprintf "name=%s" name);
         (a_input ctx (List.rev (name :: acc_path)) :: acc,
          name :: acc_path
         )
@@ -379,8 +401,16 @@ let xhtml_navpath_of_input ctx path =
         let href = Grdfs.uri_input_path ctx.ctx_cfg.Config.rest_api [] in
         a ~href Grdfs.suffix_in
       in
-      let path = in_link :: path in
-      xhtml_navpath_join_path path
+      in_link :: path
+;;
+
+let xhtml_navpath_of_input ctx path =
+  xhtml_navpath_join_path (navpath_of_input ctx path)
+;;
+
+let xhtml_navpath_of_input_file ctx ~input path =
+  let path = navpath_of_input ctx (input @ path) in
+  xhtml_navpath_join_path path
 ;;
 
 let xhtml_navpath ctx = function
@@ -404,6 +434,7 @@ let xhtml_navpath ctx = function
 | `Inst_chain uri -> xhtml_navpath_of_ichain ctx uri
 | `Out_file path -> xhtml_navpath_of_outfile ctx path
 | `Input path -> xhtml_navpath_of_input ctx path
+| `Input_file (input, path) -> xhtml_navpath_of_input_file ctx ~input path
 ;;
 
 let intf_list ctx intfs =
@@ -994,23 +1025,67 @@ let get_inputs ctx =
 ;;
 
 let get_input ctx path =
-  (*let prefix = ctx.ctx_cfg.Config.rest_api in*)
   let dirname =
     List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) path
   in
   let title = String.concat "/" path in
-  (*let input = Ind_io.load ctx.ctx_cfg dirname in*)
+  let spec = Ind_io.load ctx.ctx_cfg dirname in
   let git_id = Misc.get_git_id dirname in
+  let in_table =
+    let f (name, _) =
+      let file_path = Misc.split_filename name in
+      [a_input_file ctx path file_path]
+    in
+    let rows = List.map f spec.Ind_types.in_files in
+    table rows
+  in
+  let out_table = table (List.map (fun s -> [s]) spec.Ind_types.out_files) in
+  let chains_table =
+     let f name =
+       let chain_name = Chn_types.chain_name_of_string name in
+       [a_chain ctx ~full:true chain_name]
+    in
+    let rows = List.map f spec.Ind_types.chains in
+    table rows
+  in
   let contents = Printf.sprintf
-        "<p><strong>Id:</strong> %s</p>"
+        "<p><strong>Id:</strong> %s</p>
+        <h2>Inputs</h2>%s
+        <h2>Outputs</h2>%s
+        <h2>Chains</h2>%s"
         git_id
+        in_table out_table
+        chains_table
   in
   let navpath = xhtml_navpath ctx (`Input path) in
   ([ctype ()], in_page ctx ~title ~navpath contents)
 ;;
 
-let get_input_file ctx ~input file_path =
-  assert false
+let get_input_file ctx ~raw ~input file_path =
+  let filename =
+    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) (input @ file_path)
+  in
+  let file_contents = Misc.string_of_file filename in
+  match raw with
+    true ->
+      let ctype = ctype ~t: (Misc.file_mimetype filename) () in
+      ([ctype], file_contents)
+  | false ->
+      let prefix = ctx.ctx_cfg.Config.rest_api in
+      let contents = Xtmpl.string_of_xml
+        (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
+      in
+      let raw_link =
+        let href = Grdfs.uri_input_file_path ~raw: true prefix input file_path in
+        a ~href "raw"
+      in
+      let title =
+        Printf.sprintf "%s [%s]"
+        (match List.rev file_path with [] -> assert false | s :: _ -> s) raw_link
+      in
+      let wtitle = Rdf_uri.string (Grdfs.uri_input_file_path prefix input file_path) in
+      let navpath = xhtml_navpath ctx (`Input_file (input, file_path)) in
+      ([ctype ()], in_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
 let get ctx thing args =
@@ -1039,6 +1114,6 @@ let get ctx thing args =
   | Inst_producers_of path -> get_inst_producers_of ctx path
   | Inputs -> get_inputs ctx
   | Input path -> get_input ctx path
-  | Input_file (input, file_path) -> get_input_file ctx ~input file_path
+  | Input_file (input, file_path, raw) -> get_input_file ctx ~raw ~input file_path
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

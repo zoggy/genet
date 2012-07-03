@@ -147,3 +147,5 @@ val copy_file : src: string -> dst: string -> unit
 (** [path_under ~parent file] returns the path to [file] from [parent].
      @raise Failure if [parent] is not a prefix of [file].*)
 val path_under : parent: string -> string -> string
+
+val split_filename : string -> string list

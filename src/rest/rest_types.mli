@@ -39,7 +39,7 @@ type thing =
   | Inst_producers_of of string list (** inst ports producing file path *)
   | Inputs
   | Input of string list
-  | Input_file of string list * string list
+  | Input_file of string list * string list * bool (** true = raw access *)
 ;;
 
 type response = arg list * string
