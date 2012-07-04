@@ -1091,6 +1091,20 @@ let get_input_file ctx ~raw ~input file_path =
       ([ctype ()], in_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let xhtml_inst_list ctx list =
+  let heads = [ "Execution" ; "Date" ] in
+  let rows = List.map
+    (fun uri_inst ->
+       match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_inst with
+         None -> [ "bad ichain "^(Rdf_uri.string uri_inst) ; "" ]
+       | Some name ->
+           [ a_ichain ctx name ; Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri_inst)]
+    )
+    list
+  in
+  table ~heads rows
+;;
+
 let inst_chain_query_of_args args =
   let input =
     match Rest_types.get_arg args "input" with
@@ -1106,18 +1120,31 @@ let inst_chain_query_of_args args =
       "" -> None
     | s -> Some (Rdf_uri.uri s)
   in
+  let tools =
+    let l = Misc.split_string (Rest_types.get_arg args "tools") [','] in
+    let f acc version =
+      let uri = Rdf_uri.uri version in
+      Urimap.add (Grdf_version.tool_of_version uri) uri acc
+    in
+    List.fold_left f Urimap.empty l
+  in
   { Rest_types.iq_chain = chain ;
     iq_input = input ;
-    iq_tools = Urimap.empty ;
+    iq_tools = tools ;
   }
 ;;
 
 
 let inst_chain_query ctx iq =
   let contents =
-    match iq.Rest_types.iq_input, iq.Rest_types.iq_chain with
-      None, None -> "no parameter"
-    | _ -> "<div>coucou</div>"
+    match iq.Rest_types.iq_input, iq.Rest_types.iq_chain, Urimap.is_empty iq.Rest_types.iq_tools with
+      None, None, true -> "Please give at least one criterium"
+    | _ ->
+        let inst_list = Chn_inst.query_instances ctx
+          ?input: iq.Rest_types.iq_input ?chain: iq.Rest_types.iq_chain
+          ~tools: iq.Rest_types.iq_tools
+        in
+        xhtml_inst_list ctx inst_list
   in
   ([ctype ()], contents)
 ;;
