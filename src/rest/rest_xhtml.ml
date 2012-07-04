@@ -36,7 +36,7 @@ let page ?(env=Xtmpl.env_empty) ctx ~title ?javascript ?wtitle ?navpath ?error c
   Printf.sprintf "<!DOCTYPE html>\n%s\n" s
 ;;
 
-let page_active ?(env=Xtmpl.env_empty) v =
+let page_active v ?(env=Xtmpl.env_empty) =
   let env = Xtmpl.env_add_att ("navbar-"^v) "active" env in
   page ~env
 ;;
@@ -1170,8 +1170,61 @@ let get_inst_chains ctx args =
           in
           Misc.string_of_file file
         in
+        let input_options _ _ _ =
+          let inputs = Ind_io.list_inputs ctx.ctx_cfg in
+          let inputs = List.sort Pervasives.compare inputs in
+          List.map
+            (fun i -> Xtmpl.T ("option", ["value", i], [Xtmpl.D i]))
+            inputs
+        in
+        let chain_options _ _ _ =
+          let prefix = ctx.ctx_cfg.Config.rest_api in
+          let f_fchain acc uri =
+            match Chn_types.is_uri_fchain prefix uri with
+            | None -> acc
+            | Some name ->
+                match Chn_types.fchain_id name with
+                  None -> acc
+                | Some id ->
+                    (Xtmpl.T ("option", ["value", Rdf_uri.string uri], [Xtmpl.D ("  "^id)])) :: acc
+          in
+          let f_chain modname acc chn =
+            let name = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
+            let uri = Chn_types.uri_chain prefix name in
+            let acc =
+              (Xtmpl.T ("option", ["value", Rdf_uri.string uri],
+                [Xtmpl.D (Chn_types.string_of_chain_name name)])
+              ) :: acc
+            in
+            let flats = Chn_flat.flat_chains_of_chain ctx name in
+            List.fold_left f_fchain acc flats
+          in
+          let f_mod acc m =
+            let file = Chn_io.file_of_modname ctx.ctx_cfg m in
+            let chains =
+              try
+                let m = Chn_io.chn_module_of_file file in
+                List.sort
+                  (fun c1 c2 -> Pervasives.compare c1.Chn_ast.chn_name c2.Chn_ast.chn_name)
+                  m.Chn_ast.cmod_chains
+              with _ -> []
+            in
+            List.fold_left (f_chain m) acc chains
+          in
+          let chain_files = Chn_io.chain_files ctx.ctx_cfg in
+          let modules = List.map Chn_io.modname_of_file chain_files in
+          let modules = List.sort Chn_types.compare_chain_modname modules in
+          List.rev (List.fold_left f_mod [] modules)
+        in
+        let tools _ _ _ = [] in
+        let env =
+           ("input_options", input_options) ::
+           ("chain_options", chain_options) ::
+           ("tools", tools) :: []
+        in
+        let env = Xtmpl.env_of_list env in
         let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
-        ([ctype ()], out_page ctx ~title ~javascript contents)
+        ([ctype ()], out_page ctx ~env ~title ~javascript contents)
       end
   | _ ->
       let iq = inst_chain_query_of_args args in
