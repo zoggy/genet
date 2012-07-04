@@ -52,16 +52,14 @@ let is_uri_chain_module prefix uri =
   match Grdfs.is_uri_chain_module prefix uri with
     None -> None
   | Some slashes_modname ->
-      let modname = Misc.split_string slashes_modname ['/'] in
-      Some (string_of_chain_modname modname)
+      Some (Misc.split_string slashes_modname ['/'])
 ;;
 
 let is_uri_chain prefix uri =
   match Grdfs.is_uri_chain prefix uri with
     None -> None
   | Some (slashes_modname, name) ->
-      let s = Misc.split_string slashes_modname ['/'] in
-      Some (String.concat "." (s@[name]))
+      Some (Misc.split_string slashes_modname ['/'], name)
 ;;
 
 let uri_intf_of_interface_spec ~prefix s  =

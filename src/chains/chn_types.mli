@@ -29,8 +29,8 @@ val compare_chain_name : chain_name -> chain_name -> int
 val uri_chain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
 val uri_chain : Grdf_types.uri -> chain_name -> Grdf_types.uri
 
-val is_uri_chain_module : Grdf_types.uri -> Grdf_types.uri -> string option
-val is_uri_chain : Grdf_types.uri -> Grdf_types.uri -> string option
+val is_uri_chain_module : Grdf_types.uri -> Grdf_types.uri -> chain_modname option
+val is_uri_chain : Grdf_types.uri -> Grdf_types.uri -> chain_name option
 val uri_intf_of_interface_spec : prefix: Grdf_types.uri -> string -> Grdf_types.uri
 
 type fchain_name

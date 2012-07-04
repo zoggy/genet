@@ -1134,13 +1134,12 @@ let inst_chain_query_of_args args =
   }
 ;;
 
-
 let inst_chain_query ctx iq =
   let contents =
     match iq.Rest_types.iq_input, iq.Rest_types.iq_chain, Urimap.is_empty iq.Rest_types.iq_tools with
       None, None, true -> "Please give at least one criterium"
     | _ ->
-        let inst_list = Chn_inst.query_instances ctx
+        let inst_list = Chn_inst_query.query_instances ctx
           ?input: iq.Rest_types.iq_input ?chain: iq.Rest_types.iq_chain
           ~tools: iq.Rest_types.iq_tools
         in

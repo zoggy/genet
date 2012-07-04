@@ -104,43 +104,7 @@ let instances ctx uri_fchain =
   List.fold_left f [] insts
 ;;
 
-(* TODO: part of this function should be rewritten when sparql will
-  be implemented in ocaml-rdf *)
-let query_instances ctx ?input ?chain ~tools =
-  match input, chain, Urimap.is_empty tools with
-    None, None, true -> []
-  | _ ->
-      let list =
-        match input with
-          None -> []
-        | Some (input, id_opt) ->
-            let input_name = String.concat "/" input in
-            let list = Grdfs.subject_uris ctx.ctx_rdf
-              ~pred: Grdfs.genet_useinput
-              ~obj: (Rdf_node.node_of_literal_string input_name)
-            in
-            match id_opt with
-              None -> list
-            | Some id ->
-                let list_by_id = Grdfs.subject_uris ctx.ctx_rdf
-                  ~pred: Grdfs.genet_useinputcommitid
-                  ~obj: (Rdf_node.node_of_literal_string id)
-                in
-                let by_id = List.fold_right
-                  Uriset.add list_by_id Uriset.empty
-                in
-                List.filter (fun uri -> Uriset.mem uri by_id) list
-      in
-      let list =
-        match list, chain with
-          _, None -> list
-        | [], Some uri ->
-            list
-        | _, Some uri ->
-            list
-      in
-      list
-;;
+
 
 (** @todo[3] This could be rewritten when OCaml-RDF offers a
     Sparql implementation. *)

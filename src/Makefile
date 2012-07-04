@@ -188,6 +188,7 @@ CHN_CMXFILES=chains/chn_types.cmx \
 	chains/chn_flat.cmx \
 	chains/chn_run.cmx \
 	chains/chn_inst.cmx \
+	chains/chn_inst_query.cmx \
 	chains/chn_exec.cmx
 
 CHN_CMOFILES=$(CHN_CMXFILES:.cmx=.cmo)
