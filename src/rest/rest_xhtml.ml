@@ -1091,19 +1091,54 @@ let get_input_file ctx ~raw ~input file_path =
       ([ctype ()], in_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
-let get_inst_chains ctx =
-  let title = "Executions" in
-  let javascript =
-    let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
-      ["tmpl" ; "inst_chain_query.js"]
-    in
-    Misc.string_of_file file
+let inst_chain_query_of_args args =
+  let input =
+    match Rest_types.get_arg args "input" with
+      "" -> None
+    | s ->
+        let input = Misc.split_filename s in
+        match Rest_types.get_arg args "inputid" with
+          "" -> Some (input, None)
+        | id -> Some (input, Some id)
   in
-  let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
-  ([ctype ()], out_page ctx ~title ~javascript contents)
+  let chain =
+    match Rest_types.get_arg args "chain" with
+      "" -> None
+    | s -> Some (Rdf_uri.uri s)
+  in
+  { Rest_types.iq_chain = chain ;
+    iq_input = input ;
+    iq_tools = Urimap.empty ;
+  }
 ;;
+
+
 let inst_chain_query ctx iq =
-  ([ctype ()], "<div>coucou</div>")
+  let contents =
+    match iq.Rest_types.iq_input, iq.Rest_types.iq_chain with
+      None, None -> "no parameter"
+    | _ -> "<div>coucou</div>"
+  in
+  ([ctype ()], contents)
+;;
+
+let get_inst_chains ctx args =
+  match Rest_types.get_arg args "query" with
+    "" ->
+      begin
+        let title = "Executions" in
+        let javascript =
+          let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
+            ["tmpl" ; "inst_chain_query.js"]
+          in
+          Misc.string_of_file file
+        in
+        let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
+        ([ctype ()], out_page ctx ~title ~javascript contents)
+      end
+  | _ ->
+      let iq = inst_chain_query_of_args args in
+      inst_chain_query ctx iq
 ;;
 
 let get ctx thing args =
@@ -1134,7 +1169,7 @@ let get ctx thing args =
   | Input path -> handle_in_error ctx (get_input ctx) path
   | Input_file (input, file_path, raw) ->
       handle_in_error ctx (get_input_file ctx ~raw ~input) file_path
-  | Inst_chains -> get_inst_chains ctx
+  | Inst_chains -> get_inst_chains ctx args
   | Inst_chain_query iq -> inst_chain_query ctx iq
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

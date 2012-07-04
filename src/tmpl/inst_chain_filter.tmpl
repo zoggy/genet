@@ -1,7 +1,49 @@
 <div>
-filtre
-
-<div class="insts_results">
-résultats
-</div>
+<form class="form-horizontal">
+ <fieldset>
+   <div class="control-group">
+    <label for="input" class="control-label">Input</label>
+    <div class="controls">
+      <select name="input" onChange="onChange(the_input, this)">
+       <option value=""></option>
+       <option value="test1">Test1</option>
+       <option value="test2">Test2</option>
+      </select>
+    </div>
+   </div>
+   <div class="control-group">
+    <label for="chainname">Chain</label>
+    <div class="controls">
+     <select name="chainname" onChange="onChange(the_chain, this)">
+      <option value=""></option>
+      <option value="Altergo.prove">Altergo.prove</option>
+      <option value="Why3.split_altergo">Why3.split_altergo</option>
+      <option value="Why3.prove_with_ae">Why3.prove_with_ae</option>
+     </select>
+    </div>
+   </div>
+   <div class="control-group">
+     <label for="toolaltergo">Altergo</label>
+     <div class="controls">
+      <select name="toolaltergo">
+       <option value=""></option>
+       <option value="http://localhost:8082/tools/altergo/versions/0.94">0.94</option>
+      </select>
+     </div>
+   </div>
+   <div class="control-group">
+     <label for="toolwhy3">Why3</label>
+     <div class="controls">
+      <select name="toolwhy3">
+       <option value=""></option>
+  <option value="http://localhost:8082/tools/why3/versions/15515d3efeeca8d2af20c99db75d6681edac610a">15515d3efeeca8d2af20c99db75d6681edac610a</option>
+      </select>
+     </div>
+   </div>
+ </fieldset>
+  <div class="alert alert-info" id="query"> </div>
+  <output name="result" for="input chainname toolaltergo toolwhy3">
+    <div id="qresult"/>
+  </output>
+</form>
 </div>

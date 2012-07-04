@@ -1,6 +1,13 @@
 (** *)
 
 type arg = string * string
+
+
+let get_arg args name =
+  try List.assoc name args
+  with Not_found -> ""
+;;
+
 type uri = Grdf_types.uri
 type path = string
 
@@ -14,7 +21,7 @@ type met =
 type content_type = Xhtml | Json
 
 type inst_chain_query =
-  { iq_fchain : Chn_types.fchain_name option ;
+  { iq_chain : Rdf_uri.uri option ;
     iq_tools : Rdf_uri.uri Urimap.t ;
     iq_input : (string list * string option) option ; (* input path * git id option *)
   }
