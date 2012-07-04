@@ -1093,12 +1093,23 @@ let get_input_file ctx ~raw ~input file_path =
 
 let xhtml_inst_list ctx list =
   let heads = [ "Execution" ; "Date" ] in
+  let list = List.map
+    (fun uri -> (uri, Grdfs.creation_date_uri ctx.ctx_rdf uri)) list
+  in
+  let list = List.sort
+    (fun (_,d1) (_,d2) -> Pervasives.compare d2 d1) list
+  in
   let rows = List.map
-    (fun uri_inst ->
+    (fun (uri_inst, date) ->
        match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_inst with
          None -> [ "bad ichain "^(Rdf_uri.string uri_inst) ; "" ]
        | Some name ->
-           [ a_ichain ctx name ; Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri_inst)]
+           let date =
+             match date with
+               None -> ""
+             | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
+           in
+           [ a_ichain ctx name ; date]
     )
     list
   in
