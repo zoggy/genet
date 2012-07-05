@@ -18,7 +18,11 @@ function filter()
     xmlhttp=new ActiveXObject('Microsoft.XMLHTTP');
    }
   // encode ampersands to prevent them from being escaped by xml templating system
-  the_query = window.location.href +
+  root = window.location.href ;
+  idx = root.search(/\?/);
+  if (idx == -1) { the_query = root ; } else { the_query = root.substring(0,idx); }
+
+  the_query +=
      '?query=1\x26input='+the_input.value+'\x26chain='+the_chain.value+'\x26tools=' ;
   for (var k in the_tools) {
     // use hasOwnProperty to filter out keys from the Object.prototype
@@ -41,15 +45,21 @@ function filter()
     }
 }
 
-function onToolChange (toolname, input)
+function onToolChange (toolname, input, do_filter)
 {
   the_tools[toolname] = input.options[input.selectedIndex].value ;
-  filter () ;
+  (typeof do_filter === 'undefined') ? 0 : filter ();
 }
 
-function onChange(the_var, input)
+function onChange(the_var, input, do_filter)
 {
   the_var.value = input.options[input.selectedIndex].value ;
   //alert(the_var.value + 'chain=' + the_chain.value + ' input=' + the_input.value);
-  filter() ;
+  (typeof do_filter === 'undefined') ? 0 : filter ();
+}
+
+function initInputAndChain()
+{
+  onChange(the_chain,document.getElementById('chainname'));
+  onChange(the_input,document.getElementById('input'));
 }

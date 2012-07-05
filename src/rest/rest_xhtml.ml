@@ -1164,21 +1164,35 @@ let get_inst_chains ctx args =
     "" ->
       begin
         let title = "Executions" in
-        let javascript =
-          let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
-            ["tmpl" ; "inst_chain_query.js"]
-          in
-          Misc.string_of_file file
+        let javascript = Buffer.create 256 in
+        let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
+          ["tmpl" ; "inst_chain_query.js"]
         in
+        Buffer.add_string javascript (Misc.string_of_file file);
+        let iq = inst_chain_query_of_args args in
         let input_options _ _ _ =
           let inputs = Ind_io.list_inputs ctx.ctx_cfg in
           let inputs = List.sort Pervasives.compare inputs in
+          let selected =
+            match iq.Rest_types.iq_input with
+              None -> ""
+            | Some (i, _) -> String.concat "/" i
+          in
           List.map
-            (fun i -> Xtmpl.T ("option", ["value", i], [Xtmpl.D i]))
+            (fun i ->
+              let atts =
+                ("value", i) :: (if i = selected then ["selected","true"] else [])
+              in
+              Xtmpl.T ("option", atts, [Xtmpl.D i]))
             inputs
         in
         let chain_options _ _ _ =
           let prefix = ctx.ctx_cfg.Config.rest_api in
+          let selected =
+            match iq.Rest_types.iq_chain with
+              None -> ""
+            | Some uri -> Rdf_uri.string uri
+          in
           let f_fchain acc uri =
             match Chn_types.is_uri_fchain prefix uri with
             | None -> acc
@@ -1186,13 +1200,23 @@ let get_inst_chains ctx args =
                 match Chn_types.fchain_id name with
                   None -> acc
                 | Some id ->
-                    (Xtmpl.T ("option", ["value", Rdf_uri.string uri], [Xtmpl.D ("  "^id)])) :: acc
+                    let uri = Rdf_uri.string uri in
+                    let atts =
+                      ("value", uri) ::
+                      (if uri = selected then ["selected", "true"] else [])
+                    in
+                    (Xtmpl.T ("option", atts, [Xtmpl.D ("  "^id)])) :: acc
           in
           let f_chain modname acc chn =
             let name = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
             let uri = Chn_types.uri_chain prefix name in
             let acc =
-              (Xtmpl.T ("option", ["value", Rdf_uri.string uri],
+              let uri = Rdf_uri.string uri in
+              let atts =
+                ("value", uri) ::
+                (if uri = selected then ["selected", "true"] else [])
+              in
+              (Xtmpl.T ("option", atts,
                 [Xtmpl.D (Chn_types.string_of_chain_name name)])
               ) :: acc
             in
@@ -1216,34 +1240,45 @@ let get_inst_chains ctx args =
           let modules = List.sort Chn_types.compare_chain_modname modules in
           List.rev (List.fold_left f_mod [] modules)
         in
-        let tools _ _ _ =
-          let f_version version =
-            let name = Grdf_version.name ctx.ctx_rdf version in
-            Xtmpl.T ("option", ["value", Rdf_uri.string version], [Xtmpl.D ("  "^name)])
-          in
-          let f tool =
-            let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
-            let tool_name = Grdf_tool.name ctx.ctx_rdf tool in
-            let options = List.map f_version versions in
-            let id = Printf.sprintf "tool%s" tool_name in
-            Xtmpl.T ("div", ["class", "control-group"],
-             [
-              Xtmpl.T ("label", ["for", id], [ Xtmpl.D tool_name ]) ;
+        Buffer.add_string javascript
+          "function onPageLoad() {\n  initInputAndChain();\n";
+
+        let tools =
+          let result =
+            let f_version version =
+              let name = Grdf_version.name ctx.ctx_rdf version in
+              Xtmpl.T ("option", ["value", Rdf_uri.string version], [Xtmpl.D ("  "^name)])
+            in
+            let f tool =
+              let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
+              let tool_name = Grdf_tool.name ctx.ctx_rdf tool in
+              let options = List.map f_version versions in
+              let id = Printf.sprintf "tool%s" tool_name in
+              Printf.bprintf javascript
+                "  onToolChange('%s',document.getElementById('%s'));\n"
+                tool_name id;
+              Xtmpl.T ("div", ["class", "control-group"],
+               [
+                 Xtmpl.T ("label", ["for", id], [ Xtmpl.D tool_name ]) ;
               Xtmpl.T ("div", ["class", "controls"],
-                [
-                 Xtmpl.T ("select",
-                   ["name", id; "onChange", Printf.sprintf "onToolChange('%s',this)" tool_name],
-                   (Xtmpl.T ("option", ["value", ""], [])) :: options
-                  )
-                ]
-                )
-             ]
-            )
+                  [
+                    Xtmpl.T ("select",
+                     ["name", id; "id", id ;
+                      "onChange", Printf.sprintf "onToolChange('%s',this, true)" tool_name],
+                     (Xtmpl.T ("option", ["value", ""], [])) :: options
+                    )
+                  ]
+                 )
+               ]
+              )
+            in
+            let tools = Grdf_tool.tools ctx.ctx_rdf in
+            let tools = List.sort Rdf_uri.compare tools in
+            List.map f tools
           in
-          let tools = Grdf_tool.tools ctx.ctx_rdf in
-          let tools = List.sort Rdf_uri.compare tools in
-          List.map f tools
+          fun _ _ _ -> result
         in
+        Buffer.add_string javascript "filter();\n}\n";
         let env =
            ("input_options", input_options) ::
            ("chain_options", chain_options) ::
@@ -1251,7 +1286,7 @@ let get_inst_chains ctx args =
         in
         let env = Xtmpl.env_of_list env in
         let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
-        ([ctype ()], out_page ctx ~env ~title ~javascript contents)
+        ([ctype ()], out_page ctx ~env ~title ~javascript: (Buffer.contents javascript) contents)
       end
   | _ ->
       let iq = inst_chain_query_of_args args in

@@ -4,7 +4,7 @@
    <div class="control-group">
     <label for="input" class="control-label">Input</label>
     <div class="controls">
-      <select name="input" onChange="onChange(the_input, this)">
+      <select name="input" id="input" onChange="onChange(the_input, this, true)">
        <option value=""></option>
        <input_options/>
 <!--
@@ -17,7 +17,7 @@
    <div class="control-group">
     <label for="chainname">Chain</label>
     <div class="controls">
-     <select name="chainname" onChange="onChange(the_chain, this)">
+     <select name="chainname" id="chainname" onChange="onChange(the_chain, this, true)">
       <option value=""></option>
       <chain_options/>
 <!--

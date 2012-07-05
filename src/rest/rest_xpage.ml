@@ -166,10 +166,12 @@ let default_commands config =
 
 let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath="") ?(error="") contents =
   let morehead =
-    match javascript with
-      None -> []
-    | Some code ->
-        [ Xtmpl.T ("script", ["type", "text/javascript"], [Xtmpl.D code]) ]
+    let code =
+      match javascript with
+        None -> "function onPageLoad() { }"
+      | Some code -> code
+    in
+    [ Xtmpl.T ("script", ["type", "text/javascript"], [Xtmpl.D code]) ]
   in
   let env = Xtmpl.env_of_list ?env
     (("page-title", (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
