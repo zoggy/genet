@@ -17,26 +17,46 @@ Dans le dépôt, l'organisation est la suivante:
   notamment pour OCamldoc mais aussi le vocabulaire RDF utilisé,</li>
 <li><icode>/website</icode>: source du site web, contenant aussi la documentation.
   Le site est généré avec <ext-a href="http://zoggy.github.com/stog/">Stog</ext-a>.</li>
-<li><icode>/src</icode>: les sources des exécutables OCaml et quelques templates
-  (notamment pour Ocsigen).
+<li><icode>/src</icode>: les sources des exécutables OCaml et quelques templates.
   <ul>
-  <li><icode>/grdf</icode>: sources de la partie manipulation du graphe sémantique (stockage,
-    modification, extraction, ...).</li>
-  <li><icode>/driver</icode>: sources des programmes principaux, et quelques modules
-    partagés entre ces programmes (options de ligne de commande, ...).</li>
-  <li><icode>/ocsigen</icode>: sources de l'interface web basée sur
-     <ext-a href="http://ocsigen.org">Osigen</ext-a>.</li>
   <li><icode>/base</icode>: sources de la bibliothèque de base contenant des modules
     utilisés par les autres parties du logiciel.</li>
+  <li><icode>/indata</icode>: sources de la gestion des jeux d'entrée
+    ("inputs") (lecture, création, ...).</li>
+  <li><icode>/grdf</icode>: sources de la partie manipulation du graphe sémantique (stockage,
+    modification, extraction, ...).</li>
+  <li><icode>/chains</icode>: sources de la gestion des chaines de traitement (parsing,
+    mise à plat, stockage, lecture, recherche, exécution, ...)/</li>
+  <li><icode>/rest</icode>: sources de l'interface REST, notamment l'interface web.</li>
+  <li><icode>/driver</icode>: sources des programmes principaux, et quelques modules
+    partagés entre ces programmes (options de ligne de commande, ...).</li>
+  <li><icode>/tmpl</icode>: templates utilisés pour l'interface web (fichiers XML
+    utilisés avec Xtmpl).</li>
   <li><icode>/tests</icode>: différents fichiers pour les tests.</li>
   </ul>
 </li>
 <li><icode>/draft</icode>: fichiers de prises de notes, quelques figures, etc.
+  <ul>
+    <li><icode>/proval</icode>: scripts de tests utilisant les outils de Proval.</li>
+  </ul>
 </li>
 </ul>
 </section>
 
 <section name="deps" title="Dépendances">
+<p>
+La compilation de Genet nécessite l'installation préalable de:
+</p>
+<ul>
+<li><a href="http://caml.inria.fr/">OCaml &gt;= 4.00</a>,</li>
+<li><a href="http://gallium.inria.fr/~fpottier/menhir/">Menhir &gt;= 20122301</a> (installed with findlib),</li>
+<li><a href="http://zoggy.github.com/xtmpl">Xtmpl &gt;= 0.1</a>,</li>
+<li><a href="http://config-file.forge.ocamlcore.org/">Config-file &gt;= 1.1</a>,</li>
+<li><a href="http://raevnos.pennmush.org/code/ocaml-mysql/">OCaml-MySQL &gt;= 1.0.4</a> (should work with prior versions),</li>
+<li><a href="http://ocaml-rdf.forge.ocamlcore.org/">OCaml-RDF &gt;= 0.1</a>,</li>
+<li><a href="http://projects.camlcity.org/projects/ocamlnet.html/">OCamlnet &gt;= 3.5.1</a> (with Nethttpd library enabled),</li>
+<li><a href="https://bitbucket.org/mmottl/pcre-ocaml">Pcre-OCaml &gt;= 6.2.5</a> (should work with prior versions),</li>
+</ul>
 </section>
 
 <section name="configuration" title="Configuration">
@@ -65,11 +85,8 @@ les variables <icode>BINDIR</icode>, <icode>LIBDIR</icode> et
 </p>
 <ul>
 <li><icode>BINDIR/genet*</icode>: les exécutables.</li>
-<li><icode>LIBDIR/*genet*</icode>: les bibliothèques, et notamment la bibliothèque
-  chargée par Ocsigen contenant l'application web.</li>
-<li><icode>SHAREDIR/ocsigen.conf.xtmpl</icode>: patron de configuration Ocsigen,
-  utilisé par l'outil <icode>genet-ocsigen-conf</icode> pour générer un fichier
-  de configuration Ocsigen adapté à un projet.</li>
+<li><icode>SHAREDIR/web/</icode>: feuilles de style et images de l'interface web.</li>
+<li><icode>SHAREDIR/web/tmpl</icode>: répertoire des templates de l'interface web.</li>
 <!--
 <li><icode> </icode></li>
 <li><icode> </icode></li>

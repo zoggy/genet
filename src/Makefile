@@ -464,7 +464,11 @@ distrib: all
 #################
 # Installation
 #################
-install: install-web-files
+install: install-web-files install-bin
+
+install-bin:
+	$(MKDIR) $(BINDIR)
+	$(CP) $(TOOLS) $(TOOLS_BYTE) $(BINDIR)/
 
 install-web-files:
 	$(MKDIR) $(SHAREDIR)/web
