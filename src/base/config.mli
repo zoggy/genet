@@ -8,7 +8,6 @@ type t = {
   db_user : string;
   db_passwd : string;
   db_host : string;
-  uri_prefix : Rdf_uri.uri ;
   rest_api : Rdf_uri.uri ;
   root_dir : string;
 }
