@@ -17,16 +17,18 @@ function filter()
    {// code for IE6, IE5
     xmlhttp=new ActiveXObject('Microsoft.XMLHTTP');
    }
-  query = '/inst-chains?query=1\x26input='+the_input.value+'\x26chain='+the_chain.value+'\x26tools=' ;
+  // encode ampersands to prevent them from being escaped by xml templating system
+  the_query = window.location.href +
+     '?query=1\x26input='+the_input.value+'\x26chain='+the_chain.value+'\x26tools=' ;
   for (var k in the_tools) {
     // use hasOwnProperty to filter out keys from the Object.prototype
     if (the_tools.hasOwnProperty(k)) {
         v = the_tools[k] ;
-        if (v != '') { query += v + ',' }
+        if (v != '') { the_query += v + ',' }
     }
   }
-  document.getElementById('query').innerHTML=query;
-  xmlhttp.open('GET',query,false);
+  document.getElementById('query').innerHTML=the_query;
+  xmlhttp.open('GET',the_query,false);
   xmlhttp.send();
 
   if (xmlhttp.status==200)

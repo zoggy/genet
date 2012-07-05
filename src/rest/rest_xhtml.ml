@@ -1216,7 +1216,34 @@ let get_inst_chains ctx args =
           let modules = List.sort Chn_types.compare_chain_modname modules in
           List.rev (List.fold_left f_mod [] modules)
         in
-        let tools _ _ _ = [] in
+        let tools _ _ _ =
+          let f_version version =
+            let name = Grdf_version.name ctx.ctx_rdf version in
+            Xtmpl.T ("option", ["value", Rdf_uri.string version], [Xtmpl.D ("  "^name)])
+          in
+          let f tool =
+            let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
+            let tool_name = Grdf_tool.name ctx.ctx_rdf tool in
+            let options = List.map f_version versions in
+            let id = Printf.sprintf "tool%s" tool_name in
+            Xtmpl.T ("div", ["class", "control-group"],
+             [
+              Xtmpl.T ("label", ["for", id], [ Xtmpl.D tool_name ]) ;
+              Xtmpl.T ("div", ["class", "controls"],
+                [
+                 Xtmpl.T ("select",
+                   ["name", id; "onChange", Printf.sprintf "onToolChange('%s',this)" tool_name],
+                   (Xtmpl.T ("option", ["value", ""], [])) :: options
+                  )
+                ]
+                )
+             ]
+            )
+          in
+          let tools = Grdf_tool.tools ctx.ctx_rdf in
+          let tools = List.sort Rdf_uri.compare tools in
+          List.map f tools
+        in
         let env =
            ("input_options", input_options) ::
            ("chain_options", chain_options) ::
