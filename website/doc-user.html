@@ -72,7 +72,7 @@ With mysql as database backend:
 <hcode>
 # mysql -u root -p
 mysql> create database &lt;db&gt;;
-mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&lt;@localhost identified by "&lt;dbpasswd&gt;";
+mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&gt;@localhost identified by "&lt;dbpasswd&gt;";
 </hcode>
 </p>
 <p>
@@ -97,9 +97,9 @@ genet init-db
 </p>
 <p>
 If the configuration file is not <icode>config.txt</icode>, you can specify
-another with the <icode>-c</icode> option:
+another with the <icode>--config</icode> option:
 <command-line>
-genet init-db -c myfile.txt
+genet init-db --config myfile.txt
 </command-line>
 </p>
 </subsection>

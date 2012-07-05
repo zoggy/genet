@@ -13,7 +13,7 @@ build:
 site:
 	$(STOG) $(STOG_OPTIONS) .
 	$(LESSC) tmpl/style.less > $(DEST_DIR)/style.css
-	cp -f *.svg $(DEST_DIR)/
+	cp -f tmpl/*png *.svg $(DEST_DIR)/
 
 test:
 	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site
