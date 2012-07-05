@@ -85,11 +85,7 @@ if test "$bindir" = "\${exec_prefix}/bin" ; then
 fi
 
 if test "$libdir" = "\${exec_prefix}/lib" ; then
-        libdir=$OCAMLLIB/cameleon2
-fi
-
-if test "$mandir" = "\${prefix}/man" ; then
-        mandir=$prefix/man
+        libdir=$OCAMLLIB/genet
 fi
 
 if test "$mandir" = "\${prefix}/man" ; then
@@ -106,6 +102,7 @@ fi
 INSTALLDIR=$prefix
 BINDIR=$bindir
 SHAREDIR=$datadir
+LIBDIR=$libdir
 
 ############################
 # Flags
@@ -163,6 +160,7 @@ AC_SUBST(BIBTEX)
 AC_SUBST(EXEC_PREFIX)
 AC_SUBST(INSTALLDIR)
 AC_SUBST(BINDIR)
+AC_SUBST(LIBDIR)
 AC_SUBST(SHAREDIR)
 AC_SUBST(ROOT)
 AC_SUBST(DEBUG_LEVEL)
@@ -178,8 +176,9 @@ chmod a-w src/base/install.ml
 echo "
 ### Results of configuration ###
 
-Binaries will be installed in $bindir
-Libraries will be installed in $libdir
+Binaries will be installed in ${BINDIR}
+Libraries will be installed in ${LIBDIR}
+Shared files will be installed in ${SHAREDIR}
 
 Debug level is set to $DEBUG_LEVEL
 
