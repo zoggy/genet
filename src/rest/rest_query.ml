@@ -288,7 +288,7 @@ let rec read_path_out_path ?(raw=false) outpath = function
 ;;
 
 let read_path_out ctx uri = function
-  [] -> (* TODO: define and handle Outfiles *) Tools
+  [] -> (* TODO: define and handle Outfiles *) Inst_chains
 | "raw" :: s :: q -> read_path_out_path ~raw: true [s] q
 | s :: q -> read_path_out_path [s] q
 ;;
