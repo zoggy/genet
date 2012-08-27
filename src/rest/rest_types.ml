@@ -11,11 +11,13 @@ let get_arg args name =
 type uri = Grdf_types.uri
 type path = string
 
+type json = string (*Yojson.Basic.json*)
+
 type met =
   | Get of path * arg list
   | Delete of path
-  | Post of path * Yojson.Basic.json
-  | Put of path * Yojson.Basic.json
+  | Post of path * json
+  | Put of path * json
 ;;
 
 type content_type = Xhtml | Json
@@ -69,8 +71,8 @@ type context = Chn_types.context =
 
 type get_handler = context -> thing -> arg list -> response
 type delete_handler = context -> thing -> response
-type post_handler = context -> thing -> Yojson.Basic.json -> response
-type put_handler = context -> thing -> Yojson.Basic.json -> response
+type post_handler = context -> thing -> json -> response
+type put_handler = context -> thing -> json -> response
 
 type content_type_handlers = {
   h_get : get_handler ;

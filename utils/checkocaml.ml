@@ -944,7 +944,7 @@ let _ = check_ocamlfind_package conf "mysql";;
 let _ = check_ocamlfind_package conf "rdf.mysql";;
 let _ = check_ocamlfind_package conf "nethttpd";;
 let _ = check_ocamlfind_package conf "pcre";;
-let _ = check_ocamlfind_package conf "yojson";;
+(*let _ = check_ocamlfind_package conf "yojson";;*)
 let _ = check_ocamlfind_package conf "xtmpl";;
 
 

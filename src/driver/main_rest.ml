@@ -15,8 +15,8 @@ let get_method cgi =
       let args = List.map (fun a -> (a#name, a#value)) cgi#arguments in
       Rest_types.Get (path, args)
   | `DELETE -> Rest_types.Delete path
-  | `POST -> Rest_types.Post (path, `Null)
-  | `PUT arg -> Rest_types.Put (path, `Null)
+  | `POST -> Rest_types.Post (path, "" (*`Null*))
+  | `PUT arg -> Rest_types.Put (path, "" (*`Null*))
 ;;
 
 let rest_api config host port (cgi : Netcgi.cgi_activation) =

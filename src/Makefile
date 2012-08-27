@@ -2,7 +2,7 @@ include ../master.Makefile
 
 BASE_PACKAGES=unix,str,config-file,rdf.mysql,menhirLib
 NET_PACKAGES=equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix
-REST_PACKAGES=xtmpl,yojson
+REST_PACKAGES=xtmpl#,yojson
 
 ALL_PACKAGES=$(BASE_PACKAGES),$(NET_PACKAGES),$(REST_PACKAGES)
 OF_FLAGS=-package $(ALL_PACKAGES)
