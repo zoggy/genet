@@ -474,7 +474,7 @@ install-web-files:
 	$(MKDIR) $(SHAREDIR)/web
 	$(CP) -r tmpl $(SHAREDIR)/web/
 	$(CP) $(ROOT)/website/genet-logo.svg $(SHAREDIR)/web/
-	$(LESSC) $(ROOT)/website/tmpl/style.less > $(SHAREDIR)/web/style.css
+	$(LESSC) $(ROOT)/website/less/style.less > $(SHAREDIR)/web/style.css
 
 ###########################
 # additional dependencies
