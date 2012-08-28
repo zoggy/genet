@@ -32,8 +32,8 @@ html { margin: 0 ; padding: 0 ;height: 100% ; }
 
 body {
   font: normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
-  #gradient > .vertical(@color1, @color2);
-  background-color: @color2 ;
+  /* #gradient > .vertical(@color1, @color2); */
+  background-color: darken(@bgcolor, 10) ;
   color: @fgcolor ;
   height: 100%;
   margin: 0 ;
@@ -64,8 +64,9 @@ div#page {
     border-width: 0 5px 0 5px ;
     border-color: #DDDDDD;
   */
-  border-width: 0 ;
+  border-width: 0 1px 0 1px;
   border-style: solid ;
+  border-color: @fgcolor;
   /* border-width: 0 3px 0 0 ;
      border-color: rgba(50%, 0%, 0%, 10%) ;
   */
