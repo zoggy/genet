@@ -1,5 +1,5 @@
 <page title="User documentation"
-nabvar-doc="active"
+navbar-doc="active"
 >
 <prepare-toc depth="2">
 <toc>Table of contents</toc>
@@ -38,14 +38,14 @@ The following command can create this directory struture (if no
 <icode>[directory]</icode> is provided, the structure is created in
 the current directory):
 <command-line>
-genet init-dir [directory]
+$ genet init-dir [directory]
 </command-line>
 </p>
 <p>
 If the <icode>in</icode> directory will be a git clone, you can specify
 the git repository to clone with the <icode>-git</icode> option:
 <command-line>
-genet init-dir -git git@foo.bar:my/git/respository.git [directory]
+$ genet init-dir -git git@foo.bar:my/git/respository.git [directory]
 </command-line>
 Required directories in the cloned repository are not created by the tool.
 </p>
@@ -70,50 +70,198 @@ the user specified in the configuration file.
 </p>
 <p>
 With mysql as database backend:
-<hcode>
-# mysql -u root -p
+<command-line>
+$ mysql -u root -p
 mysql> create database &lt;db&gt;;
 mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&gt;@localhost identified by "&lt;dbpasswd&gt;";
-</hcode>
+</command-line>
 </p>
+<!--
 <p>
 With postgresql:
 <hcode lang="sql">
 # su
 # su postgres
-# createuser [ --superuser ] &lt;dbuser&gt;
+# createuser [ - -superuser ] &lt;dbuser&gt;
 # ^D
 # ^D
 # createdb -E UTF8 -T template0  &lt;db&gt;
 </hcode>
 Refer to some <ext-a href="https://help.ubuntu.com/community/PostgreSQL">Postgresql documentation</ext-a> for details.
 </p>
+-->
 </subsection>
 
 <subsection name="setup:init-db" title="Initialize the database">
 <p>
 <command-line>
-genet init-db
+$ genet init-db
 </command-line>
 </p>
 <p>
 If the configuration file is not <icode>config.txt</icode>, you can specify
 another with the <icode>--config</icode> option:
 <command-line>
-genet init-db --config myfile.txt
+$ genet init-db --config myfile.txt
 </command-line>
 </p>
 </subsection>
 </section>
 
-<section name="chains" title="Define execution chains">
+<section name="server" title="Launch the web server">
 <p>
-<hcode lang="genet" lang-file="genet.lang" defer_="1">
-<include file="../../../draft/chain1.gnt" raw="true"/>
-</hcode>
-bla bla bla
+Genet comes with a web server to browse the various elements defined
+(tools, branches, filetypes, chains, results, ..., see the next sections below).
+</p>
+<p>
+To launch the server, use the following command:
+</p>
+<command-line>
+$ genet-rest [--config /path/to/your/project/config.txt]
+</command-line>
+<p>
+The port to listen to is obtained from the <icode>rest_api</icode> field of
+your project configuration file.
 </p>
 </section>
+<section name="filetypes" title="Define filetypes">
+<p>
+The treatment chains will operate on files. To ensure that a file
+of one type, produced by a command, will not be consumed by
+another command reading files of another type, ports of
+interfaces (see below) have to be typed. So you have to define the filetypes
+you will use. Moreover, the way to compare two files can depend on their filetype.
+</p>
+<p>
+To define a filetype, use <icode>genet</icode> in the root directory of your project,
+where the file <icode>config.txt</icode> is with a command of the following form:
+</p>
+<command-line>
+genet add filetype &lt;id&gt; &lt;extension&gt; &lt;description&gt;
+</command-line>
+<p>Here is an example to add a new filetype with id "why", extension <icode>why</icode>
+and description "why/alt-ergo file". The url identifying the filetype is printed
+if the filetype is added:
+</p>
+<command-line>
+$ genet add filetype "why"  why "why/alt-ergo file"
+http://localhost:8082/filetypes/why
+</command-line>
+<p>
+You can browse the url if the web server is running (see <a href="#server">here</a>).
+</p>
+</section>
+
+<section name="tools" title="Define tools, branches, versions, intefaces">
+<p>
+The next thing to do is to define your <i>tools</i> in the database. For each
+tool you have to define <i>branches</i> and <i>versions</i>.
+Then you can define <i>interfaces</i>. An interface has input ports and output ports and
+performs a treatment. This treatment is done by a command associated to the interface.
+When treatment chains will be executed, the command will take as argument the list
+of inputs and output data, matching the ports.
+</p>
+All these operations are performed with the <icode>genet</icode> tool. Then the url of
+the created element is printed:
+<dl>
+<dt>Adding a tool:</dt>
+<dd><icode>genet add tool &lt;id&gt;</icode>
+<command-line>$ genet add tool why3
+http://localhost:8082/tools/why3
+</command-line>
+</dd>
+
+<dt>Adding a branch to a tool or branch:</dt>
+<dd><icode>genet add branch &lt;url of tool/branch&gt; &lt;id&gt;</icode>
+<command-line>$ genet add branch http://localhost:8082/tools/why3 0.x
+http://localhost:8082/tools/why3/branches/0.x
+</command-line>
+</dd>
+
+<dt>Adding a version to a tool or branch:</dt>
+<dd><icode>genet add version &lt;url of tool&gt; [url of branch] &lt;id&gt;</icode>
+<command-line>$ genet add version http://localhost:8082/tools/why3 \
+  http://localhost:8082/tools/why3/branches/0.x 0.1
+http://localhost:8082/tools/why3/versions/0.1
+</command-line>
+</dd>
+
+<dt>Add an interface to a tool or branch:</dt>
+<dd><icode>genet add interface -p &lt;command path&gt; &lt;url to tool/branch&gt; &lt;id&gt;</icode>
+<command-line>$ genet add interface -p "/opt/why3-%v/bin/why3_split.sh" \
+  http://localhost:8082/tools/why3/branches/0.x split-2-altergo
+http://localhost:8082/tools/why3/interfaces/split-2-altergo
+</command-line>
+The <icode>%v</icode> in the command path will be replaced by a version id of the tool
+when the command is executed.
+</dd>
+
+<dt>Adding a port to an interface:</dt>
+<dd><icode>genet add port &lt;url of interface&gt; &lt;in|out&gt; &lt;filetype id&gt;</icode>
+<command-line>$ genet add port http://localhost:8082/tools/why3/interfaces/split-2-altergo in why
+  http://localhost:8082/tools/why3/interfaces/split-2-altergo/in/1
+</command-line>
+<icode>in</icode> creates an input port, <icode>out</icode> creates an output port.
+The <icode>-p n</icode> option can be specified to insert the port at a given (1-based) position.
+Default is to append the new port.
+</dd>
+</dl>
+<p>
+Now that some elements were created in the database you may use the web interface
+to have a look at them.
+</p>
+</section>
+
+<section name="chains" title="Define treatment chains">
+<p>
+The next step is to define treatment chains. These chains define a flow of data,
+based on commands (interfaces) consuming and producing files.
+</p>
+<p>
+A chain is defined in a module, and a module is just a file in the
+<icode>&lt;project-root&gt;/in/chains</icode> directory, with extension <icode>.gnt</icode>.
+</p>
+<p>
+Here is the syntax to define a chain:
+</p>
+<hcode lang="genet" lang-file="genet.lang"><![CDATA[
+chain <id>
+(* mandatory description of the chain *)
+{
+  (* definition of input and output ports *)
+  in: <filetype id> <id of input port 1>[, <filetype id> <id of input port 2>[, ...]] ;
+  out: <filetype id> <id of output port 1>[, <filetype id> <id of output port 2>[, ...]] ;
+
+  (* definition of operations *)
+  operation <id> : < "<tool id>/<interface id>" | <Module_id>.<chain_id> > ;
+  operation ... ;
+
+  (* edges between
+    - chain input port id and operation input port number, or
+    - operation output port number and this chain output port id, or
+    - operation output port number and another operation input port number.
+  *)
+  <port id> -> <operation id>.<port number> ;
+  <operation id>.<port number> -> <port id> ;
+  <operation id>.<port number> -> <operation id>.<port number> ;
+  ...
+}]]>
+</hcode>
+<p>
+<page href="chain_example">Here</page> is a complete example of a chain module.
+</p>
+<p>A chain module can define various chains. Each chain can be referenced by its absolute
+name; for example the chain <icode>foo</icode> in module <icode>Mod</icode> can be referenced
+by <icode>Mod.foo</icode>. This allows a modular definition of chains, to share
+simple chains between more complex chains.
+</p>
+<p>As other elements, you can browse your chains in the web interface.</p>
+</section>
+
+<section name="inputs" title="Define inputs">
+
+</section>
+
 
 </prepare-toc>
 </page>

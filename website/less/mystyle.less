@@ -31,7 +31,9 @@ html { margin: 0 ; padding: 0 ;height: 100% ; }
 
 
 body {
-  font: normal normal 14px Arial, Tahoma, Helvetica, FreeSans, sans-serif;
+  font-size: @baseFontSize;
+  font-family: @baseFontFamily;
+  line-height: @baseLineHeight;
   /* #gradient > .vertical(@color1, @color2); */
   background-color: darken(@bgcolor, 10) ;
   color: @fgcolor ;
@@ -59,6 +61,7 @@ div#page {
   margin-right: auto;
   padding-left: 2em;
   padding-right: 2em;
+  padding-bottom: 1px;
   line-height: 1.4;
   /*
     border-width: 0 5px 0 5px ;
