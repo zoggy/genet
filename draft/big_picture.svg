@@ -16,7 +16,7 @@
    height="744.09448"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.1 r9760"
+   inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="big_picture.svg">
   <sodipodi:namedview
      id="base"
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.87"
-     inkscape:cx="426.5532"
+     inkscape:cx="428.85205"
      inkscape:cy="372.07853"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -308,34 +308,23 @@
          y="396.59698"
          x="77.052605"
          id="tspan6737"
-         sodipodi:role="line">data_out/</tspan></text>
-    <text
-       sodipodi:linespacing="150%"
-       id="text6739"
-       y="489.64044"
-       x="77.052605"
-       style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
-       xml:space="preserve"><tspan
-         y="489.64044"
-         x="77.052605"
-         id="tspan6741"
-         sodipodi:role="line">data_in/.git</tspan></text>
+         sodipodi:role="line">out/</tspan></text>
     <text
        sodipodi:linespacing="150%"
        id="text6743"
-       y="610.51001"
-       x="76.912956"
+       y="578.76288"
+       x="80.361229"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="610.51001"
-         x="76.912956"
+         y="578.76288"
+         x="80.361229"
          id="tspan6745"
-         sodipodi:role="line">spec/.git</tspan></text>
+         sodipodi:role="line">in/.git</tspan></text>
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path6747"
-       d="m 59.387444,376.59699 0.86957,233.41799 11.30435,-0.37451"
+       d="m 59.387444,376.59699 0.86957,195.41799 11.30435,-0.37451"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        inkscape:connector-curvature="0"
@@ -350,68 +339,63 @@
     <text
        sodipodi:linespacing="150%"
        id="text6755"
-       y="635.01971"
-       x="100.65307"
+       y="487.89328"
+       x="81.112839"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="635.01971"
-         x="100.65307"
+         y="487.89328"
+         x="81.112839"
          id="tspan6757"
          sodipodi:role="line">config.txt (proj. name, db info, uri prefix ...)</tspan></text>
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path6747-5"
-       d="m 82.284954,620.01443 -0.58349,39.07897 14.70552,-0.37451"
+       d="m 80.284954,608.01443 -0.58349,39.07897 14.70552,-0.37451"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <text
        sodipodi:linespacing="150%"
        id="text6755-1"
-       y="663.64099"
-       x="100.88262"
+       y="649.64099"
+       x="98.882622"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="663.64099"
-         x="100.88262"
+         y="649.64099"
+         x="98.882622"
          id="tspan6757-0"
          sodipodi:role="line">chains/</tspan></text>
-    <path
-       inkscape:connector-curvature="0"
-       id="path6801"
-       d="m 81.923684,631.60021 14.35185,-0.46296"
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path6747-5-4"
-       d="m 149.34543,669.91157 -0.58349,39.07897 14.70552,-0.37451"
+       d="m 109.11554,657.26789 -0.58349,39.07897 14.70552,-0.37451"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <text
        sodipodi:linespacing="150%"
        id="text6755-1-0"
-       y="711.53815"
-       x="167.9431"
+       y="698.89447"
+       x="127.71322"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="711.53815"
-         x="167.9431"
+         y="698.89447"
+         x="127.71322"
          id="tspan6757-0-8"
          sodipodi:role="line">proving.gnt</tspan></text>
     <text
        sodipodi:linespacing="150%"
        id="text6755-1-0-3"
-       y="686.2182"
-       x="168.61401"
+       y="673.57452"
+       x="128.38412"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="686.2182"
-         x="168.61401"
+         y="673.57452"
+         x="128.38412"
          id="tspan6757-0-8-9"
          sodipodi:role="line">utils.gnt</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path6919"
-       d="m 149.34211,682.65166 14.47368,0"
+       d="m 109.11222,670.00798 14.47368,0"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        sodipodi:nodetypes="ccc"
@@ -429,20 +413,20 @@
          y="424.39017"
          x="103.35715"
          id="tspan6757-0-8-2"
-         sodipodi:role="line">&lt;md5&gt;.&lt;ext&gt;</tspan></text>
+         sodipodi:role="line">&lt;md5&gt;</tspan></text>
     <path
        sodipodi:nodetypes="cc"
        transform="translate(0,308.2677)"
        inkscape:connector-curvature="0"
        id="path6945"
-       d="m 543.90244,305.07009 c 45.44092,-37.31684 113.59517,-53.10322 152.03252,-21.95121"
+       d="m 507.12083,359.09308 c 45.44092,-37.31684 150.37678,-107.12621 188.81413,-75.9742"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
     <path
        sodipodi:nodetypes="cc"
        transform="translate(0,308.2677)"
        inkscape:connector-curvature="0"
        id="path6947"
-       d="m 391.05691,300.19205 c 16.26016,-28.99729 173.17073,-72.62873 297.56098,-78.04878"
+       d="M 351.97645,156.51389 C 368.23661,127.5166 546.98626,96.528837 686.31904,146.2812"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
     <text
        sodipodi:linespacing="150%"
@@ -459,31 +443,31 @@
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path6947-8"
-       d="M 685.76587,437.02278 C 591.45692,377.13118 384.13985,331.06071 236.17238,399.6244"
+       d="M 685.76587,437.02278 C 591.45692,377.13118 333.56514,332.21014 185.59767,400.77383"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path6947-8-6"
-       d="M 526.29143,377.53841 C 437.67354,360.73624 343.71505,396.81114 255.22683,494.66064"
+       d="M 691.80867,516.61887 C 603.19078,499.8167 290.84149,517.5008 190.85901,585.46524"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)" />
     <path
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path6747-5-4-3-9"
-       d="m 86.575341,496.43378 -0.58349,19.56677 14.705519,-0.37451"
+       d="m 80.828215,588.3878 -0.58349,19.56677 14.705519,-0.37451"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <text
        sodipodi:linespacing="150%"
        id="text6755-1-0-8-9"
-       y="518.54822"
-       x="105.17301"
+       y="610.50226"
+       x="99.425888"
        style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;font-family:DejaVu Serif;-inkscape-font-specification:DejaVu Serif"
        xml:space="preserve"><tspan
-         y="518.54822"
-         x="105.17301"
+         y="610.50226"
+         x="99.425888"
          id="tspan6757-0-8-2-7"
-         sodipodi:role="line">examples, tests</tspan></text>
+         sodipodi:role="line">data (tests, ...)</tspan></text>
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
@@ -500,7 +484,7 @@
        sodipodi:nodetypes="cccc"
        inkscape:connector-curvature="0"
        id="path6947-8-6-0"
-       d="m 91.005692,525.61861 -38.629703,11.40008 -0.04429,254.86869 332.650041,2.07297"
+       d="m 104.7988,616.42321 -51.273386,25.19318 -1.193715,150.27099 332.650041,2.07297"
        style="fill:none;stroke:#f62100;stroke-width:2.20000005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow2Lendu)" />
     <path
        sodipodi:nodetypes="ccccc"
