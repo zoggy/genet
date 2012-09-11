@@ -65,7 +65,7 @@ chain prove_with_ae
   out: ae_result set o1;
 
   operation split : Why3.split_altergo ;
-  operation prove : Altergo.prove ;
+  operation prove : foreach(Altergo.prove,1) ;
 
   i1 -> split.1 ;
   split.1 -> prove.1 ;
