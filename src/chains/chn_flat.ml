@@ -295,10 +295,11 @@ let create_data_edge ctx uri map edge =
   let type_src = Grdf_port.port_type ctx.ctx_rdf uri_src in
   let type_dst = Grdf_port.port_type ctx.ctx_rdf uri_dst in
   let compat = types_are_compatible type_src type_dst in
-  prerr_endline
-  (Printf.sprintf "uri_src=%s type=%s\nuri_dst=%s type=%s"
-    (Rdf_uri.string uri_src) (Grdf_port.string_of_port_type (fun x -> x) type_src)
-   (Rdf_uri.string uri_dst) (Grdf_port.string_of_port_type (fun x -> x) type_dst)
+  dbg ~level: 2
+  (fun () ->
+     Printf.sprintf "uri_src=%s type=%s\nuri_dst=%s type=%s"
+     (Rdf_uri.string uri_src) (Grdf_port.string_of_port_type (fun x -> x) type_src)
+     (Rdf_uri.string uri_dst) (Grdf_port.string_of_port_type (fun x -> x) type_dst)
   );
   if not compat then
     Loc.raise_problem edge.edge_src.ep_loc
