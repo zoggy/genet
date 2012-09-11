@@ -80,6 +80,23 @@ let record_file ctx reporter file port =
     ~obj: (Rdf_node.node_of_literal_string md5)
 ;;
 
+let run_command ctx reporter tmp_dir path in_files out_ports out_files =
+  let com = Printf.sprintf
+    "cd %s ; %s %s %s"
+    (Filename.quote tmp_dir)
+    path
+    (String.concat " " (List.map Filename.quote in_files))
+    (String.concat " " (List.map Filename.quote out_files))
+  in
+  match Sys.command com with
+    0 ->
+      List.iter2
+      (fun port file ->
+         record_file ctx reporter (Filename.concat tmp_dir file) port)
+      out_ports out_files
+  | n ->
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+;;
 
 let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_node Grdf_port.In in
@@ -107,27 +124,25 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
           let version = Urimap.find tool comb in
           let path = replace_version ctx path version in
           prerr_endline (Printf.sprintf "path = %s" path);
-          let com = Printf.sprintf
-            "cd %s ; %s %s %s"
-            (Filename.quote tmp_dir)
-            path
-            (String.concat " " (List.map Filename.quote in_files))
-            (String.concat " " (List.map Filename.quote out_files))
-          in
           Grdfs.set_start_date_uri ctx.ctx_rdf uri_node ();
-          match Sys.command com with
-            0 ->
+          begin
+            try run_command ctx reporter tmp_dir path in_files out_ports out_files;
               Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
-              List.iter2
+            with
+              e ->
+                Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
+                raise e
+          end;
+          List.iter2
                 (fun port file ->
                  record_file ctx reporter (Filename.concat tmp_dir file) port)
                 out_ports out_files;
-              let g = Graph.remove_node g uri_node in
-              run_nodes ctx reporter comb g port_to_file tmp_dir
-              (Graph.pred_roots g)
-          | n ->
-              Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
-              failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+          let g = Graph.remove_node g uri_node in
+          run_nodes ctx reporter comb g port_to_file tmp_dir
+          (Graph.pred_roots g)
+
+(*and run_foreach_node ctx reporter comb gport_to_file tmp_dir uri_node =*)
+
 
 and run_nodes ctx reporter comb g port_to_file tmp_dir uri_nodes =
   List.fold_left
