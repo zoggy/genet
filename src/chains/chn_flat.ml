@@ -284,6 +284,11 @@ let types_are_compatible =
       Grdf_types.Var _, Grdf_types.Var _ -> true
     | Grdf_types.T u1, Grdf_types.T u2 -> String.compare u1 u2 = 0
     | Grdf_types.Set t1, Grdf_types.Set t2 -> comp t1 t2
+    | Grdf_types.Tuple t1, Grdf_types.Tuple t2 ->
+        (
+         try List.for_all2 comp t1 t2
+         with Invalid_argument _ -> false
+        )
     | _ -> false
   in
   comp

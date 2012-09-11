@@ -40,26 +40,14 @@ let rec map_port_type f = function
 exception Invalid_type of string
 exception Invalid_type_id of string
 
-let parse_port_type =
-  let re = Str.regexp "'?[a-zA-Z][a-zA-Z_0-9]*$" in
-  let get_leaf s =
-    if Str.string_match re s 0 then
-      if s.[0] = '\'' then
-        Var (String.sub s 1 (String.length s - 1))
-      else
-        T s
-    else
-      raise (Invalid_type_id s)
-  in
-  fun str ->
-    let l = Misc.split_string str [' ' ; '\n' ; '\t' ; '\r' ] in
-    let rec iter = function
-      [] -> raise (Invalid_type str)
-    | [s] -> get_leaf s
-    | "set" :: q -> Set (iter q)
-    | _ :: _ -> raise (Invalid_type str)
-    in
-    iter (List.rev l)
+let parse_port_type str =
+  let lexbuf = Lexing.from_string str in
+   try Grdf_parser.port_type Lexer.main lexbuf
+  with
+    Grdf_parser.Error ->
+      let pos = lexbuf.Lexing.lex_curr_p in
+      let loc = { Loc.loc_start = pos ; Loc.loc_end = pos } in
+      Loc.raise_problem loc (Printf.sprintf "Invalid type: %s" str)
 ;;
 
 let string_of_port_type =
