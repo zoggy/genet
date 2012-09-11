@@ -24,7 +24,10 @@ type edge = {
     edge_dst : edge_part ;
   }
 
-type op_origin = Chain of chain_name | Interface of string
+type op_origin =
+  | Chain of chain_name
+  | Interface of string
+  | Foreach of op_origin * port_ref
 
 type operation = {
   op_name : operation_name ;
@@ -95,26 +98,29 @@ let compute_deps wld config cmods =
   in
   let map = List.fold_left f_cmod Cmap.empty cmods in
 
-  let f_origin d op =
-    match op.op_from with
-    | Interface s ->
-        begin
-          try
-            let uri = Chn_types.uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
-            match Grdf_intf.intf_exists wld uri with
-              Some _ -> { d with dep_intfs = Sset.add s d.dep_intfs }
-            | None -> raise Not_found
-          with
-            _ ->
-            { d with dep_unknown = (Interface s) :: d.dep_unknown }
-        end
-    | Chain fullname ->
+  let rec iter_origin d = function
+  | Interface s ->
+      begin
         try
+          let uri = Chn_types.uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
+          match Grdf_intf.intf_exists wld uri with
+            Some _ -> { d with dep_intfs = Sset.add s d.dep_intfs }
+          | None -> raise Not_found
+        with
+          _ ->
+            { d with dep_unknown = (Interface s) :: d.dep_unknown }
+      end
+    | Chain fullname ->
+      begin
+          try
           ignore(Cmap.find fullname map);
           { d with dep_chains = Cset.add fullname d.dep_chains }
         with Not_found ->
-            { d with dep_unknown = (Chain fullname) :: d.dep_unknown }
+              { d with dep_unknown = (Chain fullname) :: d.dep_unknown }
+      end
+  | Foreach (origin, _) -> iter_origin d origin
   in
+  let f_origin d op = iter_origin d op.op_from in
   let f_chn fullname d map =
     let d = List.fold_left f_origin d d.dep_chn.chn_ops in
     Cmap.add fullname d map
@@ -136,6 +142,8 @@ class ast_printer =
     method string_of_op_origin = function
       Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
+    | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
+        (self#string_of_op_origin origin) (self#string_of_port_ref port_ref)
 
     method string_of_operation op =
       Printf.sprintf "  operation %s : %s ;\n" op.op_name
@@ -196,14 +204,18 @@ class chain_dot_printer =
     method string_of_op_origin = function
       Chain s -> Chn_types.string_of_chain_name s
     | Interface uri -> Printf.sprintf "%S" uri
+    | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
+        (self#string_of_op_origin origin) (self#string_of_port_ref ~label: true Grdf_port.In port_ref)
 
     method uri_of_op_origin prefix = function
       Chain s -> Chn_types.uri_chain prefix s
     | Interface uri -> Chn_types.uri_intf_of_interface_spec ~prefix uri
+    | Foreach (origin, _) -> self#uri_of_op_origin prefix origin
 
     method color_of_op_origin = function
       Chain _ -> self#color_chain
     | Interface _ -> self#color_interface
+    | Foreach (origin, _) -> self#color_of_op_origin origin
 
     method string_of_port dir color p =
       Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"

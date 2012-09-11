@@ -12,12 +12,13 @@ open Chn_ast
 
 %token DOT
 %token LBRACE RBRACE
+%token LPAR RPAR
 %token COLON
 %token SEMICOLON
 %token COMMA
 %token RIGHTARROW
 
-%token CHAIN OPERATION
+%token CHAIN OPERATION FOREACH
 %token IN OUT
 %token SET
 
@@ -101,6 +102,7 @@ operation: OPERATION ident=Ident COLON from=op_origin SEMICOLON option(Comment)
 op_origin:
 | s=String { Interface s}
 | name=chain_fullname { Chain name }
+| FOREACH LPAR ori=op_origin COMMA r=port_ref RPAR { Foreach(ori, r) }
 
 chain_fullname:
 | modname=chain_modname DOT ident=Ident {

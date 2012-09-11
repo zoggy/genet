@@ -11,6 +11,7 @@ let error lexbuf msg =
 
 let keywords = [
     "chain", CHAIN ;
+    "foreach", FOREACH ;
     "operation", OPERATION ;
     "in", IN ;
     "out", OUT ;
@@ -65,6 +66,8 @@ rule main = parse
 | '.' { DOT }
 | '{' { LBRACE }
 | '}' { RBRACE }
+| '(' { LPAR }
+| ')' { RPAR }
 | ';' { SEMICOLON }
 | ':' { COLON }
 | ',' { COMMA }

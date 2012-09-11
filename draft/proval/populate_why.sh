@@ -12,6 +12,14 @@ ${GENET} add filetype "ae_result"  ae_result "alt-ergo result file"
 ${GENET} add port ${SPLIT} in mlw
 ${GENET} add port ${SPLIT} out "why set"
 
+CP=`${GENET} add interface -p "/bin/cp" ${WHY} cp`
+${GENET} add port ${CP} in "why"
+${GENET} add port ${CP} out "why"
+
+CPR=`${GENET} add interface -p "/bin/cp -r" ${WHY} cpr`
+${GENET} add port ${CPR} in "why set"
+${GENET} add port ${CPR} out "why set"
+
 ALTERGO=`${GENET} add tool altergo`
 cp -f alt-ergo_prove.sh /opt/alt-ergo-0.94/bin/
 ${GENET} add branch ${ALTERGO} 0.x

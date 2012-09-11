@@ -126,7 +126,10 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
           prerr_endline (Printf.sprintf "path = %s" path);
           Grdfs.set_start_date_uri ctx.ctx_rdf uri_node ();
           begin
-            try run_command ctx reporter tmp_dir path in_files out_ports out_files;
+            try
+              (
+               run_command ctx reporter tmp_dir path in_files out_ports out_files;
+              );
               Grdfs.set_stop_date_uri ctx.ctx_rdf uri_node ();
             with
               e ->
@@ -141,7 +144,7 @@ let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
           run_nodes ctx reporter comb g port_to_file tmp_dir
           (Graph.pred_roots g)
 
-(*and run_foreach_node ctx reporter comb gport_to_file tmp_dir uri_node =*)
+(*and run_foreach ctx reporter comb gport_to_file tmp_dir uri_node =*)
 
 
 and run_nodes ctx reporter comb g port_to_file tmp_dir uri_nodes =

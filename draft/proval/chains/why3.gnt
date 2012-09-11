@@ -1,5 +1,50 @@
 (* Example of genet chain description *)
 
+chain id
+(* dummy identity chain, for testing purpose *)
+{
+  in: why i1 ;
+  out: why o1 ;
+  operation cp : "/why3/cp" ;
+  i1 -> cp.1 ;
+  cp.1 -> o1;
+
+}
+
+chain dummy
+(* Dummy chain for testing purpose *)
+{
+  in: why i1 ;
+  out: why o1 ;
+
+  operation id1 : Why3.id ;
+  operation id2 : Why3.id ;
+  operation id3 : Why3.id ;
+  operation id4 : Why3.id ;
+
+  i1 -> id1.1 ;
+  id1.1 -> id2.1 ;
+  id2.1 -> id3.1 ;
+  id3.1 -> id4.1 ;
+  id4.1 -> o1 ;
+}
+
+chain dummy_r
+(* Dummy chain for testing purpose *)
+{
+  in: why set i1 ;
+  out: why set o1 ;
+
+  operation id1 : "/why3/cpr" ;
+  operation id2 : foreach(Why3.dummy, 1) ;
+  operation id3 : "why3/cpr" ;
+
+  i1 -> id1.1 ;
+  id1.1 -> id2.1 ;
+  id2.1 -> id3.1 ;
+  id3.1 -> o1 ;
+}
+
 chain split_altergo
 (*  This is the description of the chain *)
 {

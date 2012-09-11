@@ -373,6 +373,7 @@ and add_op ctx uri_fchain map op =
         in
         add_edges_from_maps ctx map_in map_out;
         (Smap.empty, Smap.empty)
+    | Foreach _ -> assert false
   in
   Smap.add op.op_name (uri_op, map_in, map_out) map
 ;;
