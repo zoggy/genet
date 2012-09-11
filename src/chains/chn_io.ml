@@ -13,7 +13,7 @@ let file_of_modname config name =
 
 let input_chn_module name lexbuf =
   try
-    let l = Chn_parser.ast Chn_lexer.main lexbuf in
+    let l = Chn_parser.ast Lexer.main lexbuf in
     { Chn_ast.cmod_name = name ;
       Chn_ast.cmod_chains = l ;
     }

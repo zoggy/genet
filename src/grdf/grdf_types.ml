@@ -35,3 +35,5 @@ let string_of_error = function
     Printf.sprintf "The tool of branch %s is %s but %s was expected."
     (Rdf_uri.string branch) (Rdf_uri.string branch_tool) (Rdf_uri.string tool)
 ;;
+
+type 'a port_type = Var of string | T of 'a | Set of 'a port_type | Tuple of ('a port_type list) ;;

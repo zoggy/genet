@@ -32,8 +32,8 @@ chain dummy
 chain dummy_r
 (* Dummy chain for testing purpose *)
 {
-  in: why set i1 ;
-  out: why set o1 ;
+  in: why set i1, (why * why) i2 ;
+  out: why set o1, (why * why) o2 ;
 
   operation id1 : "/why3/cpr" ;
   operation id2 : foreach(Why3.dummy, 1) ;
@@ -43,6 +43,7 @@ chain dummy_r
   id1.1 -> id2.1 ;
   id2.1 -> id3.1 ;
   id3.1 -> o1 ;
+  i2 -> o2;
 }
 
 chain split_altergo

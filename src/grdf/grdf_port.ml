@@ -7,7 +7,6 @@ let dbg = Misc.create_log_fun
   ~prefix: "Chn_flat"
     "GENET_GRDF_PORT_DEBUG_LEVEL"
 ;;
-type 'a port_type = Var of string | T of 'a | Set of 'a port_type | Tuple of ('a port_type list) ;;
 type dir = In | Out ;;
 
 let pred_of_dir = function

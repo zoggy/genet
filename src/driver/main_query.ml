@@ -123,7 +123,7 @@ let test wld config n =
             let dir = if Random.int 2 = 0 then Grdf_port.In else Grdf_port.Out in
             let ftype = Grdf_ftype.name wld filetypes.(Random.int n) in
             let port =
-              if Random.int 1 = 0 then Grdf_port.Set (Grdf_port.T ftype) else Grdf_port.T ftype
+              if Random.int 1 = 0 then Grdf_types.Set (Grdf_types.T ftype) else Grdf_types.T ftype
             in
             let _intfs = Uriset.elements intfs in
 

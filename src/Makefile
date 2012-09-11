@@ -79,7 +79,9 @@ BASE_CMXFILES=base/version.cmx \
 	base/checks.cmx \
 	base/loc.cmx \
 	base/cmdline.cmx \
-	base/graph.cmx
+	base/graph.cmx \
+	base/tokens.cmx \
+	base/lexer.cmx
 
 #	base/constant.cmx \
 #	base/base_types.cmx \
@@ -127,6 +129,7 @@ GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/grdf_branch.cmx \
 	grdf/grdf_ftype.cmx \
 	grdf/grdf_version.cmx \
+	grdf/grdf_parser.cmx \
 	grdf/grdf_port.cmx \
 	grdf/grdf_intf.cmx \
 	grdf/grdf_tool.cmx \
@@ -183,7 +186,6 @@ LIB_CHN_A=$(LIB_CHN:.cmxa=.a)
 CHN_CMXFILES=chains/chn_types.cmx \
 	chains/chn_ast.cmx \
 	chains/chn_parser.cmx \
-	chains/chn_lexer.cmx \
 	chains/chn_io.cmx \
 	chains/chn_flat.cmx \
 	chains/chn_run.cmx \
@@ -479,11 +481,15 @@ install-web-files:
 ###########################
 # additional dependencies
 ###########################
-chains/chn_parser.ml chains/chn_parser.mli: chains/chn_parser.mly
-	$(MENHIR) --explain --base chains/chn_parser $^
+chains/chn_parser.ml chains/chn_parser.mli: base/tokens.mly grdf/grdf_parser.mly chains/chn_parser.mly
+	$(MENHIR) --explain --base chains/chn_parser --external-tokens Tokens $^
 
-chains/chn_lexer.ml chains/chn_lexer.mli: chains/chn_lexer.mll
+base/lexer.ml base/lexer.mli: base/lexer.mll
 	$(OCAMLLEX) $<
-	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i chains/chn_lexer.ml > chains/chn_lexer.mli
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i base/lexer.ml > base/lexer.mli
 
+grdf/grdf_parser.ml grdf/grdf_parser.mli: base/tokens.mly grdf/grdf_parser.mly
+	$(MENHIR) --base grdf/grdf_parser --external-tokens Tokens $^
 
+base/tokens.ml base/tokens.mli: base/tokens.mly
+	$(MENHIR) $<

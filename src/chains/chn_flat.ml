@@ -147,9 +147,9 @@ let build_implode_ports ctx uri_op op_name =
   let out_port =
     let t =
       match in_ports with
-        [] -> Grdf_port.Tuple []
-      | [(_,t,_)] -> Grdf_port.Set t
-      | _ -> Grdf_port.Set (Grdf_port.Tuple (List.map (fun (_, t, _) -> t) in_ports))
+        [] -> Grdf_types.Tuple []
+      | [(_,t,_)] -> Grdf_types.Set t
+      | _ -> Grdf_types.Set (Grdf_types.Tuple (List.map (fun (_, t, _) -> t) in_ports))
     in
     (1, t, Some "o")
   in
@@ -181,7 +181,7 @@ let build_explode_ports ctx uri_op op_name port_ref =
     in
     iter ports
   in
-  let in_port = (1, Grdf_port.Set port_type, name) in
+  let in_port = (1, Grdf_types.Set port_type, name) in
   let out_port = (1, port_type, name) in
   ([in_port], [out_port])
 ;;
@@ -281,9 +281,9 @@ let find_port map dir edge_part =
 let types_are_compatible =
   let rec comp t1 t2 =
     match t1, t2 with
-      Grdf_port.Var _, Grdf_port.Var _ -> true
-    | Grdf_port.T u1, Grdf_port.T u2 -> String.compare u1 u2 = 0
-    | Grdf_port.Set t1, Grdf_port.Set t2 -> comp t1 t2
+      Grdf_types.Var _, Grdf_types.Var _ -> true
+    | Grdf_types.T u1, Grdf_types.T u2 -> String.compare u1 u2 = 0
+    | Grdf_types.Set t1, Grdf_types.Set t2 -> comp t1 t2
     | _ -> false
   in
   comp

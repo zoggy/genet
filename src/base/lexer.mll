@@ -1,7 +1,7 @@
 {
 (** Common lexer. *)
 
-open Chn_parser;;
+open Tokens;;
 
 let error lexbuf msg =
   let pos = lexbuf.Lexing.lex_curr_p in
@@ -68,6 +68,7 @@ rule main = parse
 | '}' { RBRACE }
 | '(' { LPAR }
 | ')' { RPAR }
+| '*' { STAR }
 | ';' { SEMICOLON }
 | ':' { COLON }
 | ',' { COMMA }

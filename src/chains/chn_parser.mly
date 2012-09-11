@@ -3,26 +3,6 @@
 %{
 open Chn_ast
 %}
-%token <string> Ident
-%token <string> Var
-%token <string> CapIdent
-%token <string> String
-%token <string> Comment
-%token <int> Int
-
-%token DOT
-%token LBRACE RBRACE
-%token LPAR RPAR
-%token COLON
-%token SEMICOLON
-%token COMMA
-%token RIGHTARROW
-
-%token CHAIN OPERATION FOREACH
-%token IN OUT
-%token SET
-
-%token EOF
 
 %start <Chn_ast.chain list> ast
 
@@ -74,10 +54,6 @@ port: ftype=port_type name=Ident {
   }
 }
 
-port_type:
-  s=Ident { Grdf_port.T s }
-| s=Var { Grdf_port.Var s }
-| t=port_type SET { Grdf_port.Set t }
 
 operation: OPERATION ident=Ident COLON from=op_origin SEMICOLON option(Comment)
   {

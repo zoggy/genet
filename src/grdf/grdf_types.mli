@@ -22,3 +22,5 @@ exception Error of error
 
 val error : error -> 'a
 val string_of_error : error -> string
+
+type 'a port_type = Var of string | T of 'a | Set of 'a port_type | Tuple of ('a port_type list) ;;

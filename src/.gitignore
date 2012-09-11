@@ -12,8 +12,13 @@ base/install.ml
 dump.odoc
 chains/chn_parser.ml
 chains/chn_parser.mli
-chains/chn_lexer.ml
-
-chains/chn_lexer.mli
+base/lexer.ml
+base/lexer.mli
+base/tokens.ml
+base/tokens.mli
+base/tokens.cnoflicts
 chains/chn_parser.conflicts
+grdf/grdf_parser.ml
+grdf/grdf_parser.mli
+grdf/grdf_parser.conflics
 genet-chain*

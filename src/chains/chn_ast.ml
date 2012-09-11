@@ -8,7 +8,7 @@ type port_name = string
 type port = {
   p_name : port_name ;
   p_loc : Loc.t ;
-  p_ftype : string Grdf_port.port_type ;
+  p_ftype : string Grdf_types.port_type ;
 }
 
 
