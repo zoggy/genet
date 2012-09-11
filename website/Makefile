@@ -1,6 +1,6 @@
 STOGDIR=/home/guesdon/Personal/stog
 STOG=$(STOGDIR)/stog.byte
-DEST_DIR=/tmp/genet
+DEST_DIR=/tmp/genet-web
 BASE_URL_OPTION=
 STOG_OPTIONS=-d $(DEST_DIR) $(BASE_URL_OPTION)
 LESSC=lessc
