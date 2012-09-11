@@ -24,10 +24,15 @@ type edge = {
     edge_dst : edge_part ;
   }
 
-type op_origin =
+type special =
+  | Explode of operation_name * op_origin * port_ref (** the operation name is needed in flattening *)
+  | Implode of operation_name * op_origin * port_ref (** the operation name is needed in flattening *)
+
+and op_origin =
   | Chain of chain_name
   | Interface of string
   | Foreach of op_origin * port_ref
+  | Special of special
 
 type operation = {
   op_name : operation_name ;
@@ -119,6 +124,7 @@ let compute_deps wld config cmods =
               { d with dep_unknown = (Chain fullname) :: d.dep_unknown }
       end
   | Foreach (origin, _) -> iter_origin d origin
+  | Special _ -> assert false
   in
   let f_origin d op = iter_origin d op.op_from in
   let f_chn fullname d map =
@@ -144,6 +150,7 @@ class ast_printer =
     | Interface uri -> Printf.sprintf "%S" uri
     | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref port_ref)
+    | Special _ -> assert false
 
     method string_of_operation op =
       Printf.sprintf "  operation %s : %s ;\n" op.op_name
@@ -206,16 +213,19 @@ class chain_dot_printer =
     | Interface uri -> Printf.sprintf "%S" uri
     | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref ~label: true Grdf_port.In port_ref)
+    | Special _ -> assert false
 
     method uri_of_op_origin prefix = function
       Chain s -> Chn_types.uri_chain prefix s
     | Interface uri -> Chn_types.uri_intf_of_interface_spec ~prefix uri
     | Foreach (origin, _) -> self#uri_of_op_origin prefix origin
+    | Special _ -> assert false
 
     method color_of_op_origin = function
       Chain _ -> self#color_chain
     | Interface _ -> self#color_interface
     | Foreach (origin, _) -> self#color_of_op_origin origin
+    | Special _ -> assert false
 
     method string_of_port dir color p =
       Printf.sprintf "<TR><TD BGCOLOR=\"%s\" PORT=\"%s\">%s</TD></TR>"
@@ -317,3 +327,65 @@ class chain_dot_deps ?(chain_dot=new chain_dot_printer) () =
       Buffer.add_string b "}\n";
       Buffer.contents b
   end;;
+
+let flatten_foreaches ctx chn =
+  let pred name port ep =
+    (* FIXME: handle both case Pint and Pname ? *)
+    ep.ep_op = Some name && ep.ep_port = port
+  in
+  let replace_in_port edges op_name op_port port =
+    let f edge =
+      if pred op_name op_port edge.edge_dst then
+        { edge with edge_dst = port }
+      else
+          edge
+    in
+    List.map f edges
+  in
+  let replace_out_ports edges op_name op_name2 =
+    let f acc edge =
+      if edge.edge_src.ep_op = Some op_name then
+        (
+         let edge2 = { edge with edge_src = { edge.edge_src with ep_op = Some op_name2 } } in
+         let acc = edge2 :: acc in
+         let acc = {
+             edge_src = edge.edge_src ;
+             edge_dst = edge2.edge_src ;
+           } :: acc
+         in
+         acc
+        )
+      else
+          edge :: acc
+    in
+    List.fold_left f [] edges
+  in
+  let f (ops, edges) op =
+    match op.op_from with
+    | Chain _ | Interface _
+    | Special _ -> (op :: ops, edges)
+    | Foreach (Foreach _, _) -> failwith "Nested foreach are not allowed"
+    | Foreach (origin, port_ref) ->
+        let op = { op with op_from = origin } in
+        let explode = { op with
+            op_from = Special (Explode (op.op_name, origin, port_ref)) ;
+            op_name = op.op_name^"-explode"}
+        in
+        let implode = { op with
+            op_from = Special (Implode (op.op_name, origin, port_ref)) ;
+            op_name = op.op_name^"-implode"}
+        in
+        let explode_in = { ep_op = Some explode.op_name ; ep_port = Pint 1 ; ep_loc = explode.op_loc } in
+        let explode_out = { ep_op = Some explode.op_name ; ep_port = Pint 1 ; ep_loc = explode.op_loc } in
+        let edges = replace_in_port edges op.op_name port_ref explode_in in
+        let edges = {
+            edge_src = explode_out ;
+            edge_dst = { ep_op = Some op.op_name ; ep_port = port_ref ; ep_loc = explode.op_loc }
+          } :: edges
+        in
+        let edges = replace_out_ports edges op.op_name implode.op_name in
+        (op :: explode :: implode :: ops, edges)
+  in
+  let (ops, edges) = List.fold_left f ([], chn.chn_edges) chn.chn_ops in
+  { chn with chn_ops = ops ; chn_edges = edges }
+;;

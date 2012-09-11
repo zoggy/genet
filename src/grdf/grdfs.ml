@@ -39,6 +39,8 @@ let genet_chain = genet_ "Chain";;
 let genet_flatchain = genet_ "Flatchain";;
 let genet_instchain = genet_ "Instchain";;
 let genet_instopn = genet_ "InstOperation";;
+let genet_implode = genet_"Implode";;
+let genet_explode = genet_"Explode";;
 
 let string_of_class = function
   s when Rdf_uri.equal s genet_tool -> "tool"

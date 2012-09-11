@@ -131,6 +131,81 @@ let add_intf ctx uri_op loc intf_spec =
   ignore(Grdf_port.copy_ports ctx.ctx_rdf ~src: uri_intf ~dst: uri_op)
 ;;
 
+let port_info wld uri =
+  (Grdf_port.port_rank uri, Grdf_port.port_type wld uri, Some (Grdf_port.port_name wld uri))
+;;
+
+let build_implode_ports ctx uri_op op_name =
+  (* we assume that the operation corresponding to the implode
+     was already flattened, so that we can retrieve ports from it ;
+     we must to so because, in case this operation is another chain,
+     we must use the same version; reading the source file is less sure
+     that using the already created flat operation *)
+  let uri_orig = Rdf_uri.concat (Rdf_uri.parent uri_op) op_name in
+  let ports = Grdf_port.ports ctx.ctx_rdf uri_orig Grdf_port.Out in
+  let in_ports = List.map (port_info ctx.ctx_rdf) ports in
+  let out_port =
+    let t =
+      match in_ports with
+        [] -> Grdf_port.Tuple []
+      | [(_,t,_)] -> Grdf_port.Set t
+      | _ -> Grdf_port.Set (Grdf_port.Tuple (List.map (fun (_, t, _) -> t) in_ports))
+    in
+    (1, t, Some "o")
+  in
+  (in_ports, [out_port])
+;;
+
+let build_explode_ports ctx uri_op op_name port_ref =
+  (* we assume that the operation corresponding to the implode
+     was already flattened, so that we can retrieve ports from it ;
+     we must to so because, in case this operation is another chain,
+     we must use the same version; reading the source file is less sure
+     that using the already created flat operation *)
+  let uri_orig = Rdf_uri.concat (Rdf_uri.parent uri_op) op_name in
+  let ports = Grdf_port.ports ctx.ctx_rdf uri_orig Grdf_port.In in
+  let (port_type, name) =
+    let rec iter = function
+      [] -> failwith (Printf.sprintf "Exploded port not found for operation %s" (Rdf_uri.string uri_orig))
+    | uri :: q ->
+        let (rank, typ, name) = port_info ctx.ctx_rdf uri in
+        let b =
+          match port_ref with
+            Pint n -> n = rank
+          | Pname s -> name = Some s
+        in
+        if b then
+          (typ, name)
+        else
+          iter q
+    in
+    iter ports
+  in
+  let in_port = (1, Grdf_port.Set port_type, name) in
+  let out_port = (1, port_type, name) in
+  ([in_port], [out_port])
+;;
+
+let add_special ctx uri_op loc spec =
+  let dbg = dbg ~loc: "add_special" in
+  dbg ~level: 2 (fun () -> Printf.sprintf "uri_op=%s" (Rdf_uri.string uri_op));
+  let (typ, in_ports, out_ports) =
+    match spec with
+      Implode (op_name, _, _) ->
+        let (in_ports, out_ports) = build_implode_ports ctx uri_op op_name in
+        (Grdfs.genet_implode, in_ports, out_ports)
+    | Explode (op_name, _, port_ref) ->
+        let (in_ports, out_ports) = build_explode_ports ctx uri_op op_name port_ref in
+        (Grdfs.genet_explode, in_ports, out_ports)
+  in
+  Grdfs.add_type ctx.ctx_rdf ~sub: (Rdf_node.Uri uri_op) ~obj: (Rdf_node.Uri typ);
+  let f = Grdf_port.set_ports ctx.ctx_rdf in
+  f uri_op Grdf_port.In in_ports;
+  f uri_op Grdf_port.Out out_ports ;
+  Grdfs.add_triple_uris ctx.ctx_rdf
+  ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: typ
+;;
+
 let create_ports_from_chn ctx uri chn =
   let dbg = dbg ~loc: "create_port_from_chn" in
   dbg ~level: 2
@@ -220,6 +295,11 @@ let create_data_edge ctx uri map edge =
   let type_src = Grdf_port.port_type ctx.ctx_rdf uri_src in
   let type_dst = Grdf_port.port_type ctx.ctx_rdf uri_dst in
   let compat = types_are_compatible type_src type_dst in
+  prerr_endline
+  (Printf.sprintf "uri_src=%s type=%s\nuri_dst=%s type=%s"
+    (Rdf_uri.string uri_src) (Grdf_port.string_of_port_type (fun x -> x) type_src)
+   (Rdf_uri.string uri_dst) (Grdf_port.string_of_port_type (fun x -> x) type_dst)
+  );
   if not compat then
     Loc.raise_problem edge.edge_src.ep_loc
       (Printf.sprintf "Incompatible types: %s <--> %s"
@@ -323,6 +403,7 @@ let rec do_flatten ctx fullname =
           None -> failwith (Printf.sprintf "Unbound chain %s" (Chn_types.string_of_chain_name fullname))
         | Some chn -> chn
       in
+      let chn = Chn_ast.flatten_foreaches ctx chn in
       let op_map =
         let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
         Smap.singleton "" (uri_fchain, map_in, map_out)
@@ -361,6 +442,10 @@ and add_op ctx uri_fchain map op =
         add_intf ctx uri_op op.op_from_loc s;
         (mk_port_map ctx uri_op Grdf_port.In,
          mk_port_map ctx uri_op Grdf_port.Out)
+    | Special sp ->
+        add_special ctx uri_op op.op_from_loc sp;
+        (mk_port_map ctx uri_op Grdf_port.In,
+         mk_port_map ctx uri_op Grdf_port.Out)
     | Chain fullname ->
         dbg ~level: 2
           (fun () -> Printf.sprintf "add_op: Chain %s"
@@ -373,11 +458,11 @@ and add_op ctx uri_fchain map op =
         in
         add_edges_from_maps ctx map_in map_out;
         (Smap.empty, Smap.empty)
-    | Foreach _ -> assert false
+    | Foreach _ ->
+        assert false
   in
   Smap.add op.op_name (uri_op, map_in, map_out) map
 ;;
-
 
 let flatten ctx fullname =
   ctx.ctx_rdf.wld_graph.transaction_start ();

@@ -211,6 +211,7 @@ class xhtml_ast_printer prefix =
     | Foreach (origin, port_ref) ->
         Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref port_ref)
+    | Special _ -> assert false
     | Interface s ->
         try
           let href = Rdf_uri.string

@@ -7,7 +7,7 @@ let dbg = Misc.create_log_fun
   ~prefix: "Chn_flat"
     "GENET_GRDF_PORT_DEBUG_LEVEL"
 ;;
-type 'a port_type = Var of string | T of 'a | Set of 'a port_type ;;
+type 'a port_type = Var of string | T of 'a | Set of 'a port_type | Tuple of ('a port_type list) ;;
 type dir = In | Out ;;
 
 let pred_of_dir = function
@@ -35,6 +35,7 @@ let rec map_port_type f = function
 | Var s -> Var s
 | T a -> T (f a)
 | Set s -> Set (map_port_type f s)
+| Tuple l -> Tuple (List.map (map_port_type f) l)
 ;;
 
 exception Invalid_type of string
@@ -67,6 +68,7 @@ let string_of_port_type =
     Var s -> Printf.sprintf "'%s" s
   | T s -> f s
   | Set t -> Printf.sprintf "%s set" (iter f t)
+  | Tuple l -> Printf.sprintf "(%s)" (String.concat " * " (List.map (iter f) l))
   in
   iter
 ;;
@@ -82,6 +84,8 @@ let port_file_type_uri =
     Var _ -> None
   | T s -> Some (Grdfs.uri_filetype prefix s)
   | Set t -> iter prefix t
+  | Tuple [] -> None
+  | Tuple (h::_) -> iter prefix h
   in
   iter
 ;;
