@@ -321,13 +321,10 @@ let get_node_input_files ctx port_to_file port_map flat_ports =
   List.map (get_node_input_file ctx port_to_file port_map) flat_ports
 ;;
 
-let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node =
-  dbg ~level: 1
-    (fun () -> Printf.sprintf "run_node %S" (Rdf_uri.string flat_node));
+let new_inst_node ctx ~inst flat_node =
   let inst_node = Chn_types.uri_inst_opn_of_flat_opn
       ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_node
   in
-
   Grdfs.add_triple_uris ctx.ctx_rdf
   ~sub: inst_node ~pred: Grdfs.genet_opfrom ~obj: flat_node;
 
@@ -335,6 +332,13 @@ let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat
   ~sub: (Rdf_node.Uri inst_node) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
 
   Chn_flat.add_containsop ctx ~src: inst ~dst: inst_node;
+  inst_node
+;;
+
+let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node =
+  dbg ~level: 1
+    (fun () -> Printf.sprintf "run_node %S" (Rdf_uri.string flat_node));
+  let inst_node = new_inst_node ctx ~inst flat_node in
 
   let flat_in_ports = Grdf_port.ports ctx.ctx_rdf flat_node Grdf_port.In in
   let (inst_in_ports, port_map) =
