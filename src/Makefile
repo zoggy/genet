@@ -395,7 +395,7 @@ doc: all dump.odoc
 	$(CP) ../doc/ocamldoc_style.css ocamldoc/style.css
 	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
 	$(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
-	-t "Genet library reference" -html \
+	-t "Genet library reference" -g odoc_depgraph.cma \
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc

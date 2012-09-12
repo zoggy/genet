@@ -1,26 +1,77 @@
 {2 Base modules (in [base/])}
-{!modules:
+{modgraph[width=600]
+Checks
 Cmdline
 Config
+Find
+Graph
+Install
+Lexer
+Loc
 Misc
+Reporter
 Sset
+Smap
+Tokens
 Version
 }
 
 {2 Semantic web modules (in [grdf/])}
-{!modules:
-Grdfs
+{modgraph[width=600]
 Grdf_branch
+Grdf_constant
+Grdf_dot
+Grdf_ftype
 Grdf_init
+Grdf_intf
+Grdf_parser
+Grdf_port
 Grdf_tool
 Grdf_types
 Grdf_version
+Grdfs
+Rdf_sparql
+Urimap
+Uriset
+}
+
+{2 Chains (in [chains/])}
+{modgraph[width=600]
+Chn_ast
+Chn_exec
+Chn_flat
+Chn_inst
+Chn_inst_query
+Chn_io
+Chn_parser
+Chn_run
+Chn_types
+}
+
+{2 Inputs (in [indata/])}
+{modgraph[width=600]
+Ind_io
+Ind_types
+}
+
+{2 Rest interface (in [rest/])}
+{modgraph[width=600]
+Rest_query
+Rest_types
+Rest_xhtml
+Rest_xpage
 }
 
 {2 Application modules (in [driver/])}
-{!modules:
+{modgraph[width=600]
 Main
+Main_chain
+Main_exec
 Main_genrdfs
 Main_query
+Main_rest
 Options
 }
+
+{2 All}
+{modgraph[width=1000, height=700] }
