@@ -4,6 +4,10 @@ open Rdf_graph;;
 open Grdf_types;;
 open Chn_types;;
 
+let dbg = Misc.create_log_fun
+  ~prefix: "Chn_inst"
+    "GENET_CHN_INST_DEBUG_LEVEL"
+;;
 let instance_source ctx inst_uri =
   Grdfs.object_uri ctx.ctx_rdf
     ~sub: (Rdf_node.Uri inst_uri)
@@ -335,7 +339,83 @@ let do_instanciate ctx reporter uri_fchain input comb =
 *)
 
 let create_flat_graph ctx uri_fchain =
-  Graph.create ()
+  let g = Graph.create () in
+  let f_consumer uri_src p_src (g, set) p_dst =
+    let uri_dst = Grdfs.port_container p_dst in
+    if Rdf_uri.equal uri_dst uri_fchain then
+      begin
+        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        (g, set)
+      end
+    else
+      begin
+        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let set =
+          (* FIXME: need to handle explode/implode ? *)
+          let uri_from = Chn_flat.get_op_origin ctx uri_dst in
+          match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+            None -> set
+          | Some _ -> Uriset.add uri_dst set
+        in
+        (g, set)
+      end
+  in
+  let f_producer uri (g, port_set, set) p =
+    if Uriset.mem p port_set then
+      (* port already handled; do nothing more *)
+      (g, port_set, set)
+    else
+       (
+        let consumers = Chn_flat.port_consumers ctx p in
+        let port_set = Uriset.add p port_set in
+        let (g, set) = List.fold_left
+          (f_consumer uri p) (g, set) consumers
+        in
+        (g, port_set, set)
+       )
+  in
+  let rec fill uri (g, port_set) =
+    dbg ~level: 1 (fun () -> Printf.sprintf "fill uri=%s" (Rdf_uri.string uri));
+    let dir =
+      if Rdf_uri.equal uri uri_fchain
+      then Grdf_port.In
+      else Grdf_port.Out
+    in
+    let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
+    dbg ~level: 1 (fun () -> Printf.sprintf "%d port(s)" (List.length ports));
+    let (g, port_set, set) = List.fold_left (f_producer uri)
+      (g, port_set, Uriset.empty) ports
+    in
+    Uriset.fold fill set (g, port_set)
+  in
+  let (g, _) = fill uri_fchain (g, Uriset.empty) in
+  g
+;;
+
+let dot_of_graph ctx g =
+  let f_edge (p1, p2) =
+    let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
+    let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
+    let f p = Grdf_port.string_of_port_type (fun x -> x) p in
+    let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
+    (label, [])
+  in
+  let f_node uri =
+    let label =
+      try
+        let uri_from = Chn_flat.get_op_origin ctx uri in
+        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+          None -> Filename.basename (Rdf_uri.string uri)
+        | Some name -> name
+      with
+        _ ->
+          Filename.basename (Rdf_uri.string uri)
+    in
+    let href = Rdf_uri.string uri in
+    let id = "n"^(Digest.to_hex (Digest.string href)) in
+    (id, label, [ "href", href ])
+  in
+  Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
 let do_instanciate ctx reporter uri_fchain input comb =
@@ -368,9 +448,9 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
 
       let g = create_flat_graph ctx uri_fchain in
-      ignore(g);
-      uri_inst
-
+      let dot = dot_of_graph ctx g in
+      Misc.file_of_string ~file: "/tmp/inst.dot" dot;
+      failwith "Instanciation not yet fully implemented"
 ;;
 
 let instanciate ctx reporter uri_fchain input comb =
