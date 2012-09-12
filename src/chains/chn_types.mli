@@ -44,7 +44,7 @@ val uri_fchain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
 val uri_fchain : Grdf_types.uri -> fchain_name -> Grdf_types.uri
 
 val is_uri_fchain_module : Grdf_types.uri -> Grdf_types.uri -> chain_modname option
-val is_uri_fchain : Grdf_types.uri -> Grdf_types.uri -> fchain_name option
+val is_uri_fchain : context -> Grdf_types.uri -> fchain_name option
 
 type ichain_name
 val ichain_id : ichain_name -> string

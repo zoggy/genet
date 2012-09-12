@@ -99,11 +99,16 @@ let is_uri_fchain_module prefix uri =
       Some (modname)
 ;;
 
-let is_uri_fchain prefix uri =
+let is_uri_fchain ctx uri =
+  let prefix = ctx.ctx_cfg.Config.rest_api in
   match Grdfs.is_uri_fchain prefix uri with
     None -> None
   | Some ((modname, name), id) ->
-      Some ((modname, name), Misc.opt_of_string id)
+      match Grdfs.subject_uri ctx.ctx_rdf
+        ~pred: Grdfs.genet_flattenedto ~obj: (Rdf_node.Uri uri)
+      with
+        None -> None
+      | Some _ -> Some ((modname, name), Misc.opt_of_string id)
 ;;
 
 type ichain_name = chain_name * string

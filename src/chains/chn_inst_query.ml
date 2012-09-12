@@ -42,7 +42,7 @@ let instances_of_chain ctx ?(acc=Uriset.empty) uri =
   match Chn_types.is_uri_chain prefix uri with
     None ->
       begin
-        match Chn_types.is_uri_fchain prefix uri with
+        match Chn_types.is_uri_fchain ctx uri with
           None -> acc
         | Some _ -> instances_of_fchain ctx ~acc uri
       end

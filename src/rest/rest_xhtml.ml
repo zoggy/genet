@@ -364,7 +364,7 @@ let xhtml_navpath_of_ichain ctx uri =
   match Chn_inst.instance_source ctx uri with
     None -> ""
   | Some uri_fchain ->
-      match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri_fchain with
+      match Chn_types.is_uri_fchain ctx uri_fchain with
         None -> ""
       | Some fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
 ;;
@@ -806,7 +806,7 @@ let get_fchain_list ctx fchain_name =
   let rows = List.map
     (fun uri ->
        let id =
-         match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
+         match Chn_types.is_uri_fchain ctx uri with
            None -> ""
          | Some name ->
              match Chn_types.fchain_id name with
@@ -839,8 +839,8 @@ let get_fchain_list ctx fchain_name =
 
 let get_fchain ctx uri =
   let fchain_name =
-    match Chn_types.is_uri_fchain ctx.ctx_cfg.Config.rest_api uri with
-      None -> assert false
+    match Chn_types.is_uri_fchain ctx uri with
+      None -> failwith (Printf.sprintf "Unknown flat chain %S" (Rdf_uri.string uri))
     | Some n -> n
   in
   let id = Chn_types.fchain_id fchain_name in
@@ -1194,7 +1194,7 @@ let get_inst_chains ctx args =
             | Some uri -> Rdf_uri.string uri
           in
           let f_fchain acc uri =
-            match Chn_types.is_uri_fchain prefix uri with
+            match Chn_types.is_uri_fchain ctx uri with
             | None -> acc
             | Some name ->
                 match Chn_types.fchain_id name with
@@ -1312,7 +1312,7 @@ let get ctx thing args =
   | Chain fullname -> handle_chain_error ctx (get_chain ctx) fullname
   | Flat_chains -> get_fchains ctx
   | Flat_chain_module modname -> get_fchain_module ctx modname
-  | Flat_chain uri -> get_fchain ctx uri
+  | Flat_chain uri -> handle_chain_error ctx (get_fchain ctx) uri
   | Flat_chain_list fchain_name -> get_fchain_list ctx fchain_name
   | Inst_chain uri -> get_ichain ctx uri
   | Out_file (path, raw) -> handle_outfile_error ctx (get_outfile ctx path) raw

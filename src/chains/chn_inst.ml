@@ -292,7 +292,7 @@ let set_input_info ctx uri_inst input =
 
 let do_instanciate ctx reporter uri_fchain input comb =
   let prefix = ctx.ctx_cfg.Config.rest_api in
-  match Chn_types.is_uri_fchain prefix uri_fchain with
+  match Chn_types.is_uri_fchain ctx uri_fchain with
     None -> assert false
   | Some fchain_name ->
       let id = Misc.unique_id () in

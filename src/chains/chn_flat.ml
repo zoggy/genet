@@ -691,7 +691,7 @@ class fchain_dot_printer =
       acc
 
     method print_op ctx b ?(maxdepth=max_int) ~depth ~cluster acc uri =
-      prerr_endline (Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
+      dbg ~level: 2 (fun () ->  Printf.sprintf "print_op uri=%s" (Rdf_uri.string uri));
       if depth > maxdepth then
         acc
       else
