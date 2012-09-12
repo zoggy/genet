@@ -255,21 +255,25 @@ let copy_flat_ports ctx ~inst ~container port_map flat_ports =
   List.fold_right f flat_ports ([], port_map)
 ;;
 
-let new_file ctx port_to_file inst_port =
-  let ext =
+let new_file ctx tmp_dir port_to_file inst_port =
+  let (ext, is_dir) =
     let typ = Grdf_port.port_type ctx.ctx_rdf inst_port in
-    match Grdf_port.port_file_type_uri ctx.ctx_cfg.Config.rest_api typ with
-      None -> None
-    | Some uri -> Some (Grdf_ftype.extension ctx.ctx_rdf uri)
+    match typ with
+      Grdf_types.T s ->
+        let uri = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
+        (Some (Grdf_ftype.extension ctx.ctx_rdf uri), false)
+    | Var _ -> None, false
+    | Set _ | Tuple _ -> (None, true)
   in
   let file = gen_file ?ext () in
+  if is_dir then Misc.mkdir (Filename.concat tmp_dir file);
   (file, Urimap.add inst_port file port_to_file)
 ;;
 
 (* we make sure to keep order of inst_ports in the returned file list *)
-let new_files ctx port_to_file inst_ports =
+let new_files ctx tmp_dir port_to_file inst_ports =
   let f inst_port  (files, port_to_file) =
-    let (file, port_to_file) = new_file ctx port_to_file inst_port in
+    let (file, port_to_file) = new_file ctx tmp_dir port_to_file inst_port in
     (file :: files, port_to_file)
   in
   List.fold_right f inst_ports ([], port_to_file)
@@ -291,7 +295,7 @@ let init_run ctx reporter ~inst ~fchain input tmp_dir =
       nb_in_files nb_in_ports);
 
   let f port_to_file (in_file, id) inst_port =
-    let (port_file, port_to_file) = new_file ctx port_to_file inst_port in
+    let (port_file, port_to_file) = new_file ctx tmp_dir port_to_file inst_port in
     let target = Filename.concat tmp_dir port_file in
     let file = Filename.concat input.Ind_types.dir in_file in
     extract_git_file ctx.ctx_cfg ~file ~id ~target;
@@ -358,7 +362,7 @@ let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat
     copy_flat_ports ctx ~inst ~container: inst_node port_map flat_out_ports
   in
 
-  let (out_files, port_to_file) = new_files ctx port_to_file inst_out_ports in
+  let (out_files, port_to_file) = new_files ctx tmp_dir port_to_file inst_out_ports in
 
   let uri_from = Chn_flat.get_op_origin ctx flat_node in
   match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
@@ -388,9 +392,6 @@ let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat
           let g = Graph.remove_node g flat_node in
           run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map)
           (Graph.pred_roots g)
-
-(*and run_foreach ctx reporter comb gport_to_file tmp_dir uri_node =*)
-
 
 and run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_nodes =
   dbg ~level: 1 (fun () -> "run_nodes");
