@@ -104,7 +104,20 @@ let instances ctx uri_fchain =
   List.fold_left f [] insts
 ;;
 
+let set_input_info ctx uri_inst input =
+  let input_name = input.Ind_types.from_in_data in
+  let input_id = Misc.get_git_id input.Ind_types.dir in
 
+  let sub = Rdf_node.Uri uri_inst in
+
+  let pred = Rdf_node.Uri Grdfs.genet_useinput in
+  let obj = Rdf_node.node_of_literal_string input_name in
+  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
+
+  let pred = Rdf_node.Uri Grdfs.genet_useinputcommitid in
+  let obj = Rdf_node.node_of_literal_string input_id in
+  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
+;;
 
 (** @todo[3] This could be rewritten when OCaml-RDF offers a
     Sparql implementation. *)
@@ -126,6 +139,7 @@ let inst_chain_exists ctx uri_fchain input comb =
 
 module Graph = Chn_run.Graph;;
 
+(*
 let copy_flat_port ctx ~inst ~parent ~flat_port =
   let inst_port = Chn_types.uri_inst_port_of_flat_port
     ctx ~inst ~flat: flat_port
@@ -275,21 +289,6 @@ let dot_of_graph ctx g port_to_file =
   Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
-let set_input_info ctx uri_inst input =
-  let input_name = input.Ind_types.from_in_data in
-  let input_id = Misc.get_git_id input.Ind_types.dir in
-
-  let sub = Rdf_node.Uri uri_inst in
-
-  let pred = Rdf_node.Uri Grdfs.genet_useinput in
-  let obj = Rdf_node.node_of_literal_string input_name in
-  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
-
-  let pred = Rdf_node.Uri Grdfs.genet_useinputcommitid in
-  let obj = Rdf_node.node_of_literal_string input_id in
-  Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
-;;
-
 let do_instanciate ctx reporter uri_fchain input comb =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   match Chn_types.is_uri_fchain ctx uri_fchain with
@@ -332,6 +331,46 @@ let do_instanciate ctx reporter uri_fchain input comb =
 
       ignore(Chn_run.run_graph ctx reporter uri_inst comb input g port_to_file);
       uri_inst
+;;
+*)
+
+let create_flat_graph ctx uri_fchain =
+  Graph.create ()
+;;
+
+let do_instanciate ctx reporter uri_fchain input comb =
+   let prefix = ctx.ctx_cfg.Config.rest_api in
+  match Chn_types.is_uri_fchain ctx uri_fchain with
+    None -> assert false
+  | Some fchain_name ->
+      let id = Misc.unique_id () in
+      let inst_name = Chn_types.mk_ichain_name
+        (Chn_types.fchain_chainname fchain_name) id
+      in
+      let uri_inst = Chn_types.uri_ichain prefix inst_name in
+      Grdfs.add_type ctx.ctx_rdf
+        ~sub: (Rdf_node.Uri uri_inst)
+        ~obj: (Rdf_node.Uri Grdfs.genet_instchain);
+      Grdfs.add_triple_uris ctx.ctx_rdf
+        ~sub: uri_inst ~pred: Grdfs.genet_instanciate ~obj: uri_fchain;
+      (* associate tool versions *)
+      Urimap.iter
+        (fun _ version ->
+          Grdfs.add_triple_uris ctx.ctx_rdf
+            ~sub: uri_inst ~pred: Grdfs.genet_useversion ~obj: version
+        )
+        comb;
+      (** associate input *)
+      let obj = Rdf_node.node_of_literal_string input.Ind_types.from_in_data in
+      let pred = Rdf_node.Uri Grdfs.genet_useinput in
+      Grdfs.add_triple ctx.ctx_rdf ~sub: (Rdf_node.Uri uri_inst) ~pred ~obj;
+
+      Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
+
+      let g = create_flat_graph ctx uri_fchain in
+      ignore(g);
+      uri_inst
+
 ;;
 
 let instanciate ctx reporter uri_fchain input comb =
