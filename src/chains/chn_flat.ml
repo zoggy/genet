@@ -26,10 +26,62 @@ let merge_port_maps =
   Urimap.merge merge
 ;;
 
-let fchain_exists ctx orig_fullname uri_fchain =
+module Chain_versions =
+  Set.Make
+  (struct
+     type t = Chn_types.chain_modname * string (* git id *)
+     let compare (n1,id1) (n2, id2) =
+       match Chn_types.compare_chain_modname n1 n2 with
+         0 -> Pervasives.compare id1 id2
+       | n -> n
+   end)
+;;
+
+let fchain_chain_versions ctx uri_fchain =
+  let l = Grdfs.object_literals ctx.ctx_rdf
+    ~sub: (Uri uri_fchain) ~pred: Grdfs.genet_useversion
+  in
+  let f acc s =
+    match Misc.split_string s ['/'] with
+      [modname ; id] -> Chain_versions.add (Chn_types.chain_modname_of_string modname, id) acc
+    | _ -> failwith (Printf.sprintf "Invalid chain version %S" s)
+  in
+  List.fold_left f Chain_versions.empty l
+;;
+
+let remove_chain_version ctx uri_fchain (modname, id) =
+  let obj = Rdf_node.node_of_literal_string
+    (Printf.sprintf "%s/%s" (Chn_types.string_of_chain_modname modname) id)
+  in
+  Grdfs.rem_triple ctx.ctx_rdf ~sub: (Uri uri_fchain)
+  ~pred: (Uri Grdfs.genet_useversion) ~obj
+;;
+
+let add_chain_version ctx uri_fchain (modname, id) =
+  let obj = Rdf_node.node_of_literal_string
+    (Printf.sprintf "%s/%s" (Chn_types.string_of_chain_modname modname) id)
+  in
+  Grdfs.add_triple ctx.ctx_rdf ~sub: (Uri uri_fchain)
+  ~pred: (Uri Grdfs.genet_useversion) ~obj
+;;
+
+let set_fchain_chain_versions ctx uri_fchain chain_versions =
+  let previous = fchain_chain_versions ctx uri_fchain in
+  Chain_versions.iter (remove_chain_version ctx uri_fchain) previous;
+  Chain_versions.iter (add_chain_version ctx uri_fchain) chain_versions
+;;
+
+let fchain_exists ctx orig_fullname chain_versions =
   let uri_chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api orig_fullname in
-  ctx.ctx_rdf.wld_graph.exists ~sub: (Uri uri_chain)
-   ~pred: (Uri Grdfs.genet_flattenedto) ~obj: (Uri uri_fchain) ()
+  let fchains = Grdfs.object_uris ctx.ctx_rdf
+    ~sub: (Uri uri_chain) ~pred: Grdfs.genet_flattenedto
+  in
+  let pred uri_fchain =
+    let versions = fchain_chain_versions ctx uri_fchain in
+    Chain_versions.equal versions chain_versions
+  in
+  try Some (List.find pred fchains)
+  with Not_found -> None
 ;;
 
 let get_ops ctx uri =
@@ -384,50 +436,75 @@ let remove_useless_ports ctx uri_fchain =
   List.iter f_op (get_ops ctx uri_fchain)
 ;;
 
-let rec do_flatten ctx fullname =
+let rec do_flatten ctx deps fullname =
   let dbg = dbg ~loc: "do_flatten" in
   dbg ~level: 2
     (fun () -> Printf.sprintf "fullname=%s"
       (Chn_types.string_of_chain_name fullname));
+
   let modname = Chn_types.chain_modname fullname in
   let name = Chn_types.chain_basename fullname in
   let file = Chn_io.file_of_modname ctx.ctx_cfg modname in
-  let id = Misc.get_git_id file in
-  let uri_fchain = Grdfs.uri_fchain ~prefix: ctx.ctx_cfg.Config.rest_api
-    ~modname: (Chn_types.string_of_chain_modname modname)
-    ~name: (Chn_types.string_of_chain_basename name) ~id
+  let chain_versions =
+    let files =
+      try (Chn_ast.Cmap.find fullname deps).Chn_io.dep_files
+      with Not_found ->
+          failwith (Printf.sprintf "Unknown chain %S" (Chn_types.string_of_chain_name fullname))
+    in
+    (* if at least on module has no git id, we will use an empty set
+      as constraints against original files; this means we are in
+      test mode, this empty set will not be kept, but we can use
+      it until the rollback not to flatten the same flat chain twice *)
+    let f (file, st) set =
+      match st with
+        Misc.Git_id id ->
+          let modname = Chn_io.modname_of_file file in
+          Chain_versions.add (modname, id) set
+      | _ -> set
+    in
+    let set = Chn_io.File_set.fold f files Chain_versions.empty in
+    if Chain_versions.cardinal set <> Chn_io.File_set.cardinal files then
+      Chain_versions.empty
+    else
+      set
   in
-  dbg ~level:3
-    (fun () -> Printf.sprintf "uri_fchain=%s" (Rdf_uri.string uri_fchain));
-  if fchain_exists ctx fullname uri_fchain then
-    uri_fchain
-  else
-    begin
-      let chn_mod = Chn_io.chn_module_of_file file in
-      let chn =
-        match Chn_ast.get_chain chn_mod name with
-          None -> failwith (Printf.sprintf "Unbound chain %s" (Chn_types.string_of_chain_name fullname))
-        | Some chn -> chn
-      in
-      let chn = Chn_ast.flatten_foreaches ctx chn in
-      let op_map =
-        let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
-        Smap.singleton "" (uri_fchain, map_in, map_out)
-      in
-      let op_map = List.fold_left (add_op ctx uri_fchain) op_map chn.chn_ops in
-      create_data_edges ctx uri_fchain op_map chn;
-      let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
-      remove_useless_ports ctx uri_fchain;
-      Grdfs.add_triple_uris ctx.ctx_rdf
+  match fchain_exists ctx fullname chain_versions with
+    Some uri ->
+      dbg ~level:3
+      (fun () -> Printf.sprintf "fchain with uri=%s already exists for chain versions"
+         (Rdf_uri.string uri));
+      uri
+  | None ->
+      begin
+        let id = Misc.unique_id () in
+        let fchain_name = Chn_types.mk_fchain_name fullname id in
+        let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
+        let chn_mod = Chn_io.chn_module_of_file file in
+        let chn =
+          match Chn_ast.get_chain chn_mod name with
+            None -> failwith (Printf.sprintf "Unbound chain %s" (Chn_types.string_of_chain_name fullname))
+          | Some chn -> chn
+        in
+        let chn = Chn_ast.flatten_foreaches ctx chn in
+        let op_map =
+          let (map_in, map_out) = create_ports_from_chn ctx uri_fchain chn in
+          Smap.singleton "" (uri_fchain, map_in, map_out)
+        in
+        let op_map = List.fold_left (add_op ctx deps uri_fchain) op_map chn.chn_ops in
+        create_data_edges ctx uri_fchain op_map chn;
+        let sub = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api fullname in
+        remove_useless_ports ctx uri_fchain;
+        Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub ~pred: Grdfs.genet_flattenedto ~obj: uri_fchain;
-      Grdfs.set_creation_date_uri ctx.ctx_rdf uri_fchain ();
-      Grdfs.add_type ctx.ctx_rdf
-         ~sub: (Rdf_node.Uri uri_fchain)
-         ~obj:(Rdf_node.Uri Grdfs.genet_flatchain);
-      uri_fchain
-    end
+        set_fchain_chain_versions ctx uri_fchain chain_versions;
+        Grdfs.set_creation_date_uri ctx.ctx_rdf uri_fchain ();
+        Grdfs.add_type ctx.ctx_rdf
+        ~sub: (Rdf_node.Uri uri_fchain)
+        ~obj:(Rdf_node.Uri Grdfs.genet_flatchain);
+        uri_fchain
+      end
 
-and add_op ctx uri_fchain map op =
+and add_op ctx deps uri_fchain map op =
   let dbg = dbg ~loc: "add_op" in
   dbg ~level: 2
   (fun () ->
@@ -457,7 +534,7 @@ and add_op ctx uri_fchain map op =
           (fun () -> Printf.sprintf "add_op: Chain %s"
              (Chn_types.string_of_chain_name fullname)
           );
-        let src = do_flatten ctx fullname in
+        let src = do_flatten ctx deps fullname in
         add ~sub: uri_op ~pred: Grdfs.genet_opfrom ~obj: src;
         let (map_in, map_out) =
           import_flat_op ctx src uri_fchain path (Urimap.empty, Urimap.empty)
@@ -494,7 +571,7 @@ let flatten ctx fullname =
         true
   in
   try
-    let uri = do_flatten ctx fullname in
+    let uri = do_flatten ctx deps fullname in
     if test_mode then
       ctx.ctx_rdf.wld_graph.transaction_rollback ()
     else

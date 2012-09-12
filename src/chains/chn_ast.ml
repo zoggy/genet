@@ -336,7 +336,9 @@ class chain_dot_deps ?(chain_dot=new chain_dot_printer) () =
       let intfs = Cmap.fold (self#print_chn b ~prefix ~fullnames) deps Sset.empty in
       Sset.iter (self#print_intf b ~prefix) intfs;
       Buffer.add_string b "}\n";
-      Buffer.contents b
+      let dot = Buffer.contents b in
+      (*Misc.file_of_string ~file: "/tmp/t.dot" dot;*)
+      dot
   end;;
 
 let flatten_foreaches ctx chn =
