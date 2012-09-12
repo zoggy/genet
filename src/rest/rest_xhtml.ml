@@ -843,8 +843,18 @@ let get_fchain ctx uri =
       None -> failwith (Printf.sprintf "Unknown flat chain %S" (Rdf_uri.string uri))
     | Some n -> n
   in
-  let id = Chn_types.fchain_id fchain_name in
+  let module_ids =
+    let heads = [ "Module" ; "Commit id" ] in
+    let versions = Chn_flat.fchain_chain_versions ctx uri in
+    let rows = Chn_flat.Chain_versions.fold
+      (fun (mn, id) acc -> [ Chn_types.string_of_chain_modname mn ; id ]  :: acc) versions []
+    in
+    let rows = List.sort Pervasives.compare rows in
+    table ~heads rows
+  in
+
   let title = "" in
+  let id = Chn_types.fchain_id fchain_name in
   let wtitle = Printf.sprintf "%s (%s)"
     (Chn_types.string_of_chain_name (Chn_types.fchain_chainname fchain_name))
     (Misc.string_of_opt id)
@@ -858,9 +868,9 @@ let get_fchain ctx uri =
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
   let contents =
     Printf.sprintf
-       "<p><strong>Commit id:</strong> %s</p><p><strong>Creation date:</strong> %s</p>%s\n"
-       (Misc.string_of_opt id)
-       date
+       "<p><strong>Id:</strong> %s</p><p><strong>Creation date:</strong> %s</p><p><strong>Module ids:</strong>%s</p>%s\n"
+       (Misc.string_of_opt id) date
+       module_ids
        svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)

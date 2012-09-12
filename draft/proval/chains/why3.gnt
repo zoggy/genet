@@ -28,3 +28,14 @@ chain prove_with_ae
   split.1 -> prove.1 ;
   prove.1 -> o1;
 }
+
+chain dummy
+(* for testing purpose *)
+{
+  in: why i1 ;
+  out: why o1 ;
+
+  operation cp : Dummy.id ;
+  i1 -> cp.1;
+  cp.1 -> o1;
+}
