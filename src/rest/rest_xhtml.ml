@@ -164,10 +164,14 @@ let a_fchain_module ctx modname =
   a ~href (Chn_types.string_of_chain_modname modname)
 ;;
 
-let a_fchain ctx fullname =
+let a_fchain ctx ?label fullname =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_fchain prefix fullname in
-  a ~href (Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname))
+  let label = match label with
+      None -> Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname)
+    | Some s -> s
+  in
+  a ~href label
 ;;
 
 let a_ichain ctx name =
@@ -909,13 +913,27 @@ let get_ichain ctx uri =
       None -> "??"
     | Some (name, id) -> Printf.sprintf "%s [%s]" name id
   in
+  let flat_uri =
+    match Chn_inst.instance_source ctx uri with
+      None -> "?"
+    | Some uri ->
+        match Chn_types.is_uri_fchain ctx uri with
+          None -> "?"
+        | Some flat_name ->
+            let chain_name = Chn_types.fchain_chainname flat_name in
+            let chain = Chn_types.string_of_chain_name chain_name in
+            let label = Misc.string_of_opt (Chn_types.fchain_id flat_name) in
+            let fchain = a_fchain ctx ~label flat_name in
+            Printf.sprintf "%s [%s]" chain fchain
+  in
   let contents =
     Printf.sprintf
        "<p><strong>Creation date:</strong> %s</p>
        <p><strong>Start date:</strong> %s</p>
        <p><strong>Stop date:</strong> %s</p>
-       <p><strong>Input:</strong> %s</p>%s%s\n"
-       date start_date stop_date input_info
+       <p><strong>Input:</strong> %s</p>\n
+       <p><strong>Flat chain:</strong> %s</p>%s%s\n"
+       date start_date stop_date input_info flat_uri
        tool_versions
        svg
   in
