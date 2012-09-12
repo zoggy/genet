@@ -953,6 +953,26 @@ let file_date file =
   try Netdate.mk_mail_date (Unix.stat file).Unix.st_mtime
   with Unix.Unix_error _ -> ""
 ;;
+let xhtml_outdir_contents ctx path =
+  let dir = List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path in
+  let entries = Find.find_list Find.Ignore [dir] [Find.Maxdepth 1] in
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let rows =
+    List.fold_left (fun acc file ->
+       if file = dir then
+         acc
+       else
+         (
+          let base = Filename.basename file in
+          let href = Grdfs.uri_outfile_path ~raw: false prefix (path@[base]) in
+          [a ~href base] :: acc
+         )
+    )
+    []
+    entries
+  in
+  table rows
+;;
 
 let get_outfile ctx path raw =
   match raw with
@@ -963,17 +983,26 @@ let get_outfile ctx path raw =
         List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
       in
       let wtitle = String.concat "/" path in
+      let kind = (Unix.lstat filename).Unix.st_kind in
       let raw_link =
-        let href = Grdfs.uri_outfile_path ~raw: true prefix path in
-        a ~href "raw"
+        match kind with
+          Unix.S_DIR -> ""
+        | _ ->
+            let href = Grdfs.uri_outfile_path ~raw: true prefix path in
+            Printf.sprintf " [%s]" (a ~href "raw")
       in
       let title =
-        Printf.sprintf "%s [%s]"
+        Printf.sprintf "%s%s"
         (match List.rev path with [] -> assert false | s :: _ -> s) raw_link
       in
-      let file_contents = Misc.string_of_file filename in
-      let file_contents = Xtmpl.string_of_xml
-        (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
+      let file_contents =
+        match kind with
+          Unix.S_DIR ->
+            xhtml_outdir_contents ctx path
+        | _ ->
+            let file_contents = Misc.string_of_file filename in
+            Xtmpl.string_of_xml
+            (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
       in
       let contents = Printf.sprintf
         "<p><strong>Date:</strong> %s</p>
