@@ -1,7 +1,12 @@
 (** Running commands to instanciate a chain. *)
 
+open Grdf_types;;
 open Chn_types;;
 
+let dbg = Misc.create_log_fun
+  ~prefix: "Chn_run"
+    "GENET_CHN_RUN_DEBUG_LEVEL"
+;;
 
 let ichain_start_date ctx uri =
   match Grdfs.start_date_uri ctx.ctx_rdf uri with
@@ -80,24 +85,7 @@ let record_file ctx reporter file port =
     ~obj: (Rdf_node.node_of_literal_string md5)
 ;;
 
-let run_command ctx reporter tmp_dir path in_files out_ports out_files =
-  let com = Printf.sprintf
-    "cd %s ; %s %s %s"
-    (Filename.quote tmp_dir)
-    path
-    (String.concat " " (List.map Filename.quote in_files))
-    (String.concat " " (List.map Filename.quote out_files))
-  in
-  match Sys.command com with
-    0 ->
-      List.iter2
-      (fun port file ->
-         record_file ctx reporter (Filename.concat tmp_dir file) port)
-      out_ports out_files
-  | n ->
-      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
-;;
-
+(*
 let rec run_node ctx reporter comb g port_to_file tmp_dir uri_node =
   let in_ports = Grdf_port.ports ctx.ctx_rdf uri_node Grdf_port.In in
   let in_files = List.map (fun uri -> Urimap.find uri port_to_file) in_ports in
@@ -182,12 +170,7 @@ let init_run ctx reporter uri_inst input g port_to_file tmp_dir =
 let run_graph ctx reporter uri_inst comb input g port_to_file =
   Grdfs.set_start_date_uri ctx.ctx_rdf uri_inst ();
   print_endline "run_graph";
-  (* break cycles due to having only one node for the flat chain
-    in the graph, with input ports and output ports associated to it. *)
-  let preds = Graph.pred g uri_inst in
-  let g = List.fold_left
-    (fun g (k,_) -> Graph.rem_all g (k, uri_inst)) g preds
-  in
+
   let tmp_dir = Filename.temp_file "genet-run" ".dir" in
   Sys.remove tmp_dir;
   Misc.mkdir tmp_dir ;
@@ -219,13 +202,236 @@ let run_graph ctx reporter uri_inst comb input g port_to_file =
           (String.concat "\n" l)
         in
         failwith msg
-  end;
-
-
-(*  with
-    Failure s | Sys_error s ->
-      reporter#error s ;
-      reporter#incr_errors;
+  end
+;;
 *)
-  (* clean tmp_dir *)
+
+(****************************** new version ********************************)
+
+let run_command ctx reporter tmp_dir path in_files inst_out_ports out_files =
+  let com = Printf.sprintf
+    "cd %s ; %s %s %s"
+    (Filename.quote tmp_dir)
+    path
+    (String.concat " " (List.map Filename.quote in_files))
+    (String.concat " " (List.map Filename.quote out_files))
+  in
+  match Sys.command com with
+    0 ->
+      List.iter2
+      (fun port file ->
+         record_file ctx reporter (Filename.concat tmp_dir file) port)
+      inst_out_ports out_files
+  | n ->
+      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+;;
+let gen_file =
+  let cpt = ref 0 in
+  fun ?ext () ->
+    incr cpt;
+    Printf.sprintf "file%d%s" !cpt (match ext with None -> "" | Some s -> "."^s)
+;;
+
+let copy_flat_port ctx ~inst ~container port_map flat_port  =
+  let inst_port = Chn_types.uri_inst_port_of_flat_port
+    ctx ~inst ~flat: flat_port
+  in
+  let ptype = Grdf_port.port_type ctx.ctx_rdf flat_port in
+  Grdf_port.set_port_type ctx.ctx_rdf inst_port ptype;
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: inst_port ~pred: Grdfs.genet_opfrom ~obj: flat_port;
+
+  let pred = Grdf_port.pred_of_dir (Grdf_port.port_dir flat_port) in
+  Grdfs.add_triple_uris ctx.ctx_rdf ~sub: container ~pred ~obj: inst_port;
+  (inst_port, Urimap.add flat_port inst_port port_map)
+;;
+
+(* we make sure to keep the order of flat_ports when producing inst_ports *)
+let copy_flat_ports ctx ~inst ~container port_map flat_ports =
+  let f flat_port (inst_ports, port_map) =
+    let (inst_port, port_map) = copy_flat_port ctx ~inst ~container port_map flat_port in
+    (inst_port :: inst_ports, port_map)
+  in
+  List.fold_right f flat_ports ([], port_map)
+;;
+
+let new_file ctx port_to_file inst_port =
+  let ext =
+    let typ = Grdf_port.port_type ctx.ctx_rdf inst_port in
+    match Grdf_port.port_file_type_uri ctx.ctx_cfg.Config.rest_api typ with
+      None -> None
+    | Some uri -> Some (Grdf_ftype.extension ctx.ctx_rdf uri)
+  in
+  let file = gen_file ?ext () in
+  (file, Urimap.add inst_port file port_to_file)
+;;
+
+(* we make sure to keep order of inst_ports in the returned file list *)
+let new_files ctx port_to_file inst_ports =
+  let f inst_port  (files, port_to_file) =
+    let (file, port_to_file) = new_file ctx port_to_file inst_port in
+    (file :: files, port_to_file)
+  in
+  List.fold_right f inst_ports ([], port_to_file)
+;;
+
+let init_run ctx reporter ~inst ~fchain input tmp_dir =
+  let in_files = input.Ind_types.in_files in
+  prerr_endline (Printf.sprintf "inst = %S" (Rdf_uri.string inst));
+  let flat_in_ports = Grdf_port.ports ctx.ctx_rdf fchain Grdf_port.In in
+  let (inst_in_ports, port_map) =
+    copy_flat_ports ctx ~inst ~container: inst Urimap.empty flat_in_ports
+  in
+
+  let nb_in_files = List.length in_files in
+  let nb_in_ports = List.length inst_in_ports in
+  if nb_in_files <> nb_in_ports then
+    failwith
+    (Printf.sprintf "Numbers of input files (%d) and ports (%d) differ."
+      nb_in_files nb_in_ports);
+
+  let f port_to_file (in_file, id) inst_port =
+    let (port_file, port_to_file) = new_file ctx port_to_file inst_port in
+    let target = Filename.concat tmp_dir port_file in
+    let file = Filename.concat input.Ind_types.dir in_file in
+    extract_git_file ctx.ctx_cfg ~file ~id ~target;
+    record_file ctx reporter target inst_port;
+    port_to_file
+  in
+  (List.fold_left2 f Urimap.empty in_files inst_in_ports, port_map)
+;;
+
+let get_node_input_file ctx port_to_file port_map flat_port =
+  match Chn_flat.port_producers ctx flat_port with
+    [] -> failwith (Printf.sprintf "No producer for flat port %S" (Rdf_uri.string flat_port))
+  | _ :: _ :: _ ->
+      failwith (Printf.sprintf "More than one producer for flat port %S" (Rdf_uri.string flat_port))
+  | [src_port] ->
+      let inst_src_port =
+        try Urimap.find src_port port_map
+        with Not_found ->
+            failwith (Printf.sprintf "No inst port for flat port %S" (Rdf_uri.string src_port))
+      in
+      try Urimap.find inst_src_port port_to_file
+      with Not_found ->
+          failwith (Printf.sprintf "No file for inst port %S" (Rdf_uri.string inst_src_port))
+;;
+
+let get_node_input_files ctx port_to_file port_map flat_ports =
+  List.map (get_node_input_file ctx port_to_file port_map) flat_ports
+;;
+
+let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node =
+  dbg ~level: 1
+    (fun () -> Printf.sprintf "run_node %S" (Rdf_uri.string flat_node));
+  let inst_node = Chn_types.uri_inst_opn_of_flat_opn
+      ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_node
+  in
+
+  Grdfs.add_triple_uris ctx.ctx_rdf
+  ~sub: inst_node ~pred: Grdfs.genet_opfrom ~obj: flat_node;
+
+  Grdfs.add_type ctx.ctx_rdf
+  ~sub: (Rdf_node.Uri inst_node) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
+
+  Chn_flat.add_containsop ctx ~src: inst ~dst: inst_node;
+
+  let flat_in_ports = Grdf_port.ports ctx.ctx_rdf flat_node Grdf_port.In in
+  let (inst_in_ports, port_map) =
+    copy_flat_ports ctx ~inst ~container: inst_node port_map flat_in_ports
+  in
+  let in_files = get_node_input_files ctx port_to_file port_map flat_in_ports in
+
+  let test file =
+     let file = Filename.concat tmp_dir file in
+     if not (Sys.file_exists file) then
+      failwith (Printf.sprintf "File %s does not exist" file)
+  in
+  List.iter test in_files;
+
+  let flat_out_ports = Grdf_port.ports ctx.ctx_rdf flat_node Grdf_port.Out in
+  let (inst_out_ports, port_map) =
+    copy_flat_ports ctx ~inst ~container: inst_node port_map flat_out_ports
+  in
+
+  let (out_files, port_to_file) = new_files ctx port_to_file inst_out_ports in
+
+  let uri_from = Chn_flat.get_op_origin ctx flat_node in
+  match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+    None -> assert false
+  | Some _ ->
+      match Grdf_intf.command_path ctx.ctx_rdf uri_from with
+        None ->
+          failwith
+          (Printf.sprintf "No path for interface %s" (Rdf_uri.string uri_from))
+      | Some path ->
+          let tool = Grdf_intf.tool_of_intf uri_from in
+          let version = Urimap.find tool comb in
+          let path = replace_version ctx path version in
+          prerr_endline (Printf.sprintf "path = %s" path);
+          Grdfs.set_start_date_uri ctx.ctx_rdf inst_node ();
+          begin
+            try
+              (
+               run_command ctx reporter tmp_dir path in_files inst_out_ports out_files;
+              );
+              Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
+            with
+              e ->
+                Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
+                raise e
+          end;
+          let g = Graph.remove_node g flat_node in
+          run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map)
+          (Graph.pred_roots g)
+
+(*and run_foreach ctx reporter comb gport_to_file tmp_dir uri_node =*)
+
+
+and run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_nodes =
+  dbg ~level: 1 (fun () -> "run_nodes");
+  match flat_nodes with
+    [] -> (g, port_to_file, port_map)
+  | flat_node :: _ ->
+      run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node
+;;
+
+let run ctx reporter ~inst ~fchain input comb g =
+  Grdfs.set_start_date_uri ctx.ctx_rdf inst ();
+  (* break cycles due to having only one node for the flat chain
+    in the graph, with input ports and output ports associated to it. *)
+  let g = Graph.remove_node g fchain in
+
+  let tmp_dir = Filename.temp_file "genet-run" ".dir" in
+  Sys.remove tmp_dir;
+  Misc.mkdir tmp_dir ;
+
+  let (port_to_file, port_map) = init_run ctx reporter ~inst ~fchain input tmp_dir in
+  let g = Graph.remove_node g inst in
+  let (g, port_to_file, port_map) =
+    run_nodes ctx reporter inst comb tmp_dir
+    (g, port_to_file, port_map) (Graph.pred_roots g)
+  in
+
+  let flat_out_ports = Grdf_port.ports ctx.ctx_rdf fchain Grdf_port.Out in
+  let (inst_out_ports, port_map) =
+    copy_flat_ports ctx ~inst ~container: inst port_map flat_out_ports
+  in
+  let out_files = get_node_input_files ctx port_to_file port_map flat_out_ports in
+  let out_files = List.map (Filename.concat tmp_dir) out_files in
+
+  List.iter2 (record_file ctx reporter) out_files inst_out_ports;
+
+  (* graph should be empty now *)
+  begin
+    match Graph.fold_succ g (fun k _ acc -> k :: acc) [] with
+      [] ->  Grdfs.set_stop_date_uri ctx.ctx_rdf inst ()
+    | l ->
+        Grdfs.set_stop_date_uri ctx.ctx_rdf inst ();
+        let l = List.map Rdf_uri.string l in
+        let msg = Printf.sprintf "The following nodes were not executed:\n%s"
+          (String.concat "\n" l)
+        in
+        failwith msg
+  end
 ;;

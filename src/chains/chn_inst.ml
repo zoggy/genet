@@ -440,17 +440,17 @@ let do_instanciate ctx reporter uri_fchain input comb =
             ~sub: uri_inst ~pred: Grdfs.genet_useversion ~obj: version
         )
         comb;
-      (** associate input *)
-      let obj = Rdf_node.node_of_literal_string input.Ind_types.from_in_data in
-      let pred = Rdf_node.Uri Grdfs.genet_useinput in
-      Grdfs.add_triple ctx.ctx_rdf ~sub: (Rdf_node.Uri uri_inst) ~pred ~obj;
 
+      (* associate input files *)
+      set_input_info ctx uri_inst input;
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
 
       let g = create_flat_graph ctx uri_fchain in
       let dot = dot_of_graph ctx g in
       Misc.file_of_string ~file: "/tmp/inst.dot" dot;
-      failwith "Instanciation not yet fully implemented"
+
+      Chn_run.run ctx reporter ~inst: uri_inst ~fchain: uri_fchain input comb g;
+      uri_inst
 ;;
 
 let instanciate ctx reporter uri_fchain input comb =
