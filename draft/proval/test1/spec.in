@@ -3,5 +3,5 @@ in = ["same_fringe.mlw" ]
 (* Output files and directories; order matters *)
 out = [ "outfiles" ]
 (* The chains to apply *)
-chains = ["Why3.split_altergo" ; "Why3.prove_with_ae"]
+chains = [(* "Why3.split_altergo" ;*) "Why3.prove_with_ae"]
 

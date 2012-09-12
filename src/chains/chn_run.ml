@@ -339,6 +339,47 @@ let new_inst_node ctx ~inst flat_node =
   inst_node
 ;;
 
+let run_explode ctx inst tmp_dir ~inst_node ~flat_node (g, port_to_file, port_map) =
+  dbg ~level:1 (fun () -> Printf.sprintf "run_explode inst_node=%S" (Rdf_uri.string inst_node));
+  let inst_in_port =
+      match Grdf_port.ports ctx.ctx_rdf inst_node Grdf_port.In with
+      [p] -> p
+    | _ -> assert false
+  in
+  let in_file = try Urimap.find inst_in_port port_to_file with Not_found -> assert false in
+  let flat_exploded =
+    let inst_out_port =
+      match Grdf_port.ports ctx.ctx_rdf inst_node Grdf_port.Out with
+        [p] -> p
+      | _ -> assert false
+    in
+    let flat_out_port = Urimap.find inst_out_port port_map in
+    let flat_dst_port =
+      match Chn_flat.port_consumers ctx flat_out_port with
+        [x] -> x
+      | _ -> assert false
+    in
+    Grdfs.port_container flat_dst_port
+  in
+  let in_files =
+     let root = Filename.concat tmp_dir in_file in
+     let entries = Find.find_list Find.Ignore [root] [Find.Maxdepth 1] in
+     List.filter ((<>) root) entries
+  in
+  let f_in_file (g, port_to_file, port_map) =
+     assert false
+  in
+  let (g, port_to_file, port_map) = List.fold_left f_in_file (g,port_to_file,port_map) in_files in
+  let g = Graph.remove_node g flat_node in
+  (g, port_to_file, port_map)
+;;
+
+let run_implode ctx inst tmp_dir ~inst_node ~flat_node (g, port_to_file, port_map) =
+  dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (Rdf_uri.string inst_node));
+  let g = Graph.remove_node g flat_node in
+  (g, port_to_file, port_map)
+;;
+
 let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node =
   dbg ~level: 1
     (fun () -> Printf.sprintf "run_node %S" (Rdf_uri.string flat_node));
@@ -365,37 +406,43 @@ let rec run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat
   let (out_files, port_to_file) = new_files ctx tmp_dir port_to_file inst_out_ports in
 
   let uri_from = Chn_flat.get_op_origin ctx flat_node in
-  match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-    None -> assert false
-  | Some _ ->
-      match Grdf_intf.command_path ctx.ctx_rdf uri_from with
-        None ->
-          failwith
-          (Printf.sprintf "No path for interface %s" (Rdf_uri.string uri_from))
-      | Some path ->
-          let tool = Grdf_intf.tool_of_intf uri_from in
-          let version = Urimap.find tool comb in
-          let path = replace_version ctx path version in
-          prerr_endline (Printf.sprintf "path = %s" path);
-          Grdfs.set_start_date_uri ctx.ctx_rdf inst_node ();
-          begin
-            try
-              (
-               run_command ctx reporter tmp_dir path in_files inst_out_ports out_files;
-              );
-              Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
-            with
-              e ->
-                Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
-                raise e
-          end;
-          let g = Graph.remove_node g flat_node in
-          run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map)
-          (Graph.pred_roots g)
+  let (g, port_to_file, port_map) =
+    match uri_from with
+    | _ when Rdf_uri.equal uri_from Grdfs.genet_explode ->
+        run_explode ctx inst tmp_dir ~inst_node ~flat_node (g, port_to_file, port_map)
+    | _ when Rdf_uri.equal uri_from Grdfs.genet_implode ->
+        run_implode ctx inst tmp_dir ~inst_node ~flat_node (g, port_to_file, port_map)
+    | _ ->
+        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+          None -> assert false
+        | Some _ ->
+            match Grdf_intf.command_path ctx.ctx_rdf uri_from with
+              None ->
+                failwith
+                (Printf.sprintf "No path for interface %s" (Rdf_uri.string uri_from))
+            | Some path ->
+                let tool = Grdf_intf.tool_of_intf uri_from in
+                let version = Urimap.find tool comb in
+                let path = replace_version ctx path version in
+                prerr_endline (Printf.sprintf "path = %s" path);
+                Grdfs.set_start_date_uri ctx.ctx_rdf inst_node ();
+                begin
+                  try
+                    run_command ctx reporter tmp_dir path in_files inst_out_ports out_files;
+                  Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
+                  with
+                    e ->
+                      Grdfs.set_stop_date_uri ctx.ctx_rdf inst_node ();
+                      raise e
+                end;
+                let g = Graph.remove_node g flat_node in
+                (g, port_to_file, port_map)
+  in
+  run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map)
 
-and run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_nodes =
+and run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map) =
   dbg ~level: 1 (fun () -> "run_nodes");
-  match flat_nodes with
+  match Graph.pred_roots g with
     [] -> (g, port_to_file, port_map)
   | flat_node :: _ ->
       run_node ctx reporter inst comb tmp_dir (g, port_to_file, port_map) flat_node
@@ -414,8 +461,7 @@ let run ctx reporter ~inst ~fchain input comb g =
   let (port_to_file, port_map) = init_run ctx reporter ~inst ~fchain input tmp_dir in
   let g = Graph.remove_node g inst in
   let (g, port_to_file, port_map) =
-    run_nodes ctx reporter inst comb tmp_dir
-    (g, port_to_file, port_map) (Graph.pred_roots g)
+    run_nodes ctx reporter inst comb tmp_dir (g, port_to_file, port_map)
   in
 
   let flat_out_ports = Grdf_port.ports ctx.ctx_rdf fchain Grdf_port.Out in

@@ -353,20 +353,32 @@ let create_flat_graph ctx uri_fchain =
         let set =
           (* FIXME: need to handle explode/implode ? *)
           let uri_from = Chn_flat.get_op_origin ctx uri_dst in
-          match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-            None -> set
-          | Some _ -> Uriset.add uri_dst set
+          match uri_from with
+           | _ when Rdf_uri.equal uri_from Grdfs.genet_explode ->
+             Uriset.add uri_dst set
+           | _ when Rdf_uri.equal uri_from Grdfs.genet_implode ->
+             Uriset.add uri_dst set
+           | _ ->
+             match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+               None -> set
+             | Some _ -> Uriset.add uri_dst set
         in
         (g, set)
       end
   in
   let f_producer uri (g, port_set, set) p =
     if Uriset.mem p port_set then
-      (* port already handled; do nothing more *)
-      (g, port_set, set)
+      (
+       dbg ~level: 1 (fun () -> Printf.sprintf "port %s already seen, stop" (Rdf_uri.string p));
+       (* port already handled; do nothing more *)
+       (g, port_set, set)
+      )
     else
        (
         let consumers = Chn_flat.port_consumers ctx p in
+        dbg ~level: 1
+         (fun () -> Printf.sprintf "%d consumers for port %s"
+            (List.length consumers) (Rdf_uri.string p));
         let port_set = Uriset.add p port_set in
         let (g, set) = List.fold_left
           (f_consumer uri p) (g, set) consumers
@@ -382,7 +394,7 @@ let create_flat_graph ctx uri_fchain =
       else Grdf_port.Out
     in
     let ports = Grdf_port.ports ctx.ctx_rdf uri dir in
-    dbg ~level: 1 (fun () -> Printf.sprintf "%d port(s)" (List.length ports));
+    dbg ~level: 1 (fun () -> Printf.sprintf "%d %s port(s)" (List.length ports) (Grdf_port.string_of_dir dir));
     let (g, port_set, set) = List.fold_left (f_producer uri)
       (g, port_set, Uriset.empty) ports
     in

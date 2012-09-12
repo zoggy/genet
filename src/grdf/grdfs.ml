@@ -186,7 +186,6 @@ let uri_fchain_module ~prefix modname =
   Rdf_uri.concat (uri_fchains prefix) modname;;
 
 let split_fchain_name s =
-  prerr_endline ("SPLIT: "^s);
   match Misc.split_string s ['/'] with
     [] -> failwith ("Invalid name "^s)
   | l ->
