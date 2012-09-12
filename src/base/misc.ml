@@ -225,25 +225,76 @@ let is_capitalized s =
     false
 ;;
 
-let get_git_id file =
-  let temp_file = Filename.temp_file "git" "log" in
-  let dir = Filename.dirname file in
-  let basename = Filename.basename file in
-  let com = Printf.sprintf "(cd %s ; git log -n 1 %s | head -n 1 | cut -d' ' -f 2) > %s"
-    (Filename.quote dir) (Filename.quote basename) (Filename.quote temp_file)
+let exec_command com =
+  let pref = Filename.basename Sys.argv.(0) in
+  let file_out = Filename.temp_file pref "out" in
+  let file_err = Filename.temp_file pref "err" in
+  let com = Printf.sprintf "( %s ) > %s 2> %s"
+    com (Filename.quote file_out) (Filename.quote file_err)
   in
   match Sys.command com with
     0 ->
-      let s = string_of_file temp_file in
-      Sys.remove temp_file ;
-      begin
-        match split_string s ['\n'] with
-          id :: _ -> id
-        | _ -> failwith "No git id"
-      end
+      let s = string_of_file file_out in
+      Sys.remove file_out ; Sys.remove file_err ;
+      s
   | n ->
-      let msg = Printf.sprintf "Command failed with code %d: %s" n com in
+      let err = try string_of_file file_err with _ -> "" in
+      (try Sys.remove file_out with _ -> ());
+      (try Sys.remove file_err with _ -> ());
+      let msg = Printf.sprintf "Command %S failed with code %d: %s" com n err in
       failwith msg
+;;
+
+exception Git_modified_file of string
+
+type git_status = Git_modified of string | Git_id of string | Git_unknown
+
+let get_git_id file =
+  let dir = Filename.dirname file in
+  let basename = Filename.basename file in
+  let com = Printf.sprintf "cd %s ; git log -n 1 %s | head -n 1 | cut -d' ' -f 2"
+    (Filename.quote dir) (Filename.quote basename)
+  in
+  let out = exec_command com in
+  match split_string out ['\n'] with
+    id :: _ -> id
+  | _ -> failwith "No git id"
+;;
+
+let git_status_file file =
+  let dir = Filename.dirname file in
+  let basename = Filename.basename file in
+  let com = Printf.sprintf "cd %s ; git status --porcelain %s | cut  -b 1-2 "
+    (Filename.quote dir) (Filename.quote basename)
+  in
+  match strip_string (exec_command com) with
+  | "??" -> Git_unknown
+  | "" -> Git_id (get_git_id file)
+  | s -> Git_modified s
+;;
+
+let git_status_dir dir =
+  let parent = Filename.dirname dir in
+  let basename = Filename.basename dir in
+  let com = Printf.sprintf
+    "cd %s ; git status --porcelain --untracked-files=no %s | cut -b 1-2"
+    (Filename.quote parent) (Filename.quote basename)
+  in
+  let out = exec_command com in
+  let lines = split_string out ['\n'] in
+  match lines with
+    [] | [""] -> Git_id (get_git_id dir)
+  | _ -> Git_modified out
+;;
+
+let git_status file =
+  match
+    try Some (Unix.lstat file).Unix.st_kind
+    with _ -> None
+  with
+    None -> Git_unknown
+  | Some Unix.S_DIR -> git_status_dir file
+  | _ -> git_status_file file
 ;;
 
 let unique_id () =

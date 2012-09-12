@@ -472,9 +472,33 @@ and add_op ctx uri_fchain map op =
 
 let flatten ctx fullname =
   ctx.ctx_rdf.wld_graph.transaction_start ();
+  let deps = Chn_io.get_chain_deps_files ctx fullname in
+  let files =
+    try (Chn_ast.Cmap.find fullname deps).Chn_io.dep_files
+    with Not_found -> assert false
+  in
+  let test_mode =
+    let f (file, st) acc =
+      match st with
+        Misc.Git_id _ -> acc
+      | _ -> file :: acc
+    in
+    match Chn_io.File_set.fold f files [] with
+      [] -> false
+    | files ->
+        let msg = Printf.sprintf
+          "The following files are not commited:\n%s\n=> The flattened chains will no be kept (test mode)"
+          (String.concat "\n" files)
+        in
+        Checks.print_warning msg;
+        true
+  in
   try
     let uri = do_flatten ctx fullname in
-    ctx.ctx_rdf.wld_graph.transaction_commit();
+    if test_mode then
+      ctx.ctx_rdf.wld_graph.transaction_rollback ()
+    else
+      ctx.ctx_rdf.wld_graph.transaction_commit();
     uri
   with
     e ->

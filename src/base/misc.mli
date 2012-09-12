@@ -133,8 +133,18 @@ val split_string : ?keep_empty:bool -> string -> char list -> string list
 
 val is_capitalized : string -> bool
 
+(** [exec_command com] executes the given command and returns stdout or
+  raise [Failure] with a message containing stderr if the command fails. *)
+val exec_command : string -> string
+
+type git_status = Git_modified of string | Git_id of string | Git_unknown
+
 (** Get the git last commit id of the given file, or raise [Failure]. *)
 val get_git_id : string -> string
+
+(** [git_status file] returns the status of the given file or directory.
+     Not that a directory can never have status [Git_unknown].*)
+val git_status : string -> git_status
 
 val unique_id : unit -> string
 

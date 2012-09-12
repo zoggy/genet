@@ -134,6 +134,17 @@ let compute_deps wld config cmods =
   Cmap.fold f_chn map map
 ;;
 
+module Chn_graph = Graph.Make_with_map
+  (Chn_ord_type)(struct type t = unit let compare = Pervasives.compare end);;
+
+let compute_dep_graph deps =
+  let rec f chain_name dep g =
+    Cset.fold (fun name g -> Chn_graph.add g (chain_name, name, ()))
+    dep.dep_chains g
+  in
+  Cmap.fold f deps (Chn_graph.create())
+;;
+
 class ast_printer =
   object(self)
     method string_of_port_type = Grdf_port.string_of_port_type (fun x -> x)

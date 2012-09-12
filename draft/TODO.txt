@@ -31,4 +31,6 @@ Chains:
 
 Flattening:
 - remove useless ports and operations
-
+- associate all file ids to a flat chain, not only the main file
+- generate random ids for flat chains instead of main file git id
+- if one .gnt file used in not commited, warn "test mode" and do not commit the transaction
