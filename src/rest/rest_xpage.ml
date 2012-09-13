@@ -372,7 +372,9 @@ class xhtml_ichain_dot_printer =
     method port_producers ctx inst_uri =
       let flat_uri =
         try Urimap.find inst_uri inst_to_flat
-        with Not_found -> assert false
+        with Not_found ->
+            prerr_endline (Printf.sprintf "Port %S not found" (Rdf_uri.string inst_uri));
+            assert false
       in
       let ports = super#port_producers ctx flat_uri in
       List.map (fun uri -> try Urimap.find uri flat_to_inst with _ -> assert false) ports
