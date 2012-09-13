@@ -467,7 +467,12 @@ let new_inst_node ctx ~inst node =
 
 let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
   dbg ~level:1 (fun () -> Printf.sprintf "run_explode inst_node=%S" (g_uri_string inst_node));
-  let inst_in_port = match in_ports state inst_node with [p] -> p | _ -> assert false in
+  let inst_in_port =
+    match in_ports state inst_node with
+      [p] -> p
+    | [] -> assert false
+    | _ -> assert false
+  in
   let in_file = try Gurimap.find inst_in_port state.port_to_file with Not_found -> assert false in
   let in_files =
      let root = Filename.concat tmp_dir in_file in
