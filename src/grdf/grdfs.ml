@@ -41,6 +41,7 @@ let genet_instchain = genet_ "Instchain";;
 let genet_instopn = genet_ "InstOperation";;
 let genet_implode = genet_"Implode";;
 let genet_explode = genet_"Explode";;
+let genet_subgraph = genet_"Subgraph";;
 
 let string_of_class = function
   s when Rdf_uri.equal s genet_tool -> "tool"
@@ -81,6 +82,7 @@ let genet_useinput = genet_"^useInput";;
 let genet_useinputcommitid = genet_"^useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
 let genet_filemd5 = genet_"fileMd5";;
+let genet_hasimplode = genet_"hasImplode";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj

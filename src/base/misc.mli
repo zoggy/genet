@@ -159,3 +159,13 @@ val copy_file : src: string -> dst: string -> unit
 val path_under : parent: string -> string -> string
 
 val split_filename : string -> string list
+
+(*i==v=[List.list_diff]=1.0====*)
+(** [list_diff l1 l2] returns the list [l1 - l2].
+@@author Maxence Guesdon
+@@version 1.0
+@@param pred can be sued to specify the equality predicate (default is [(=)]).
+@@cgname List.list_diff*)
+val list_diff : ?pred:('a8 -> 'a8 -> bool) -> 'a8 list -> 'a8 list -> 'a8 list
+(*/i==v=[List.list_diff]=1.0====*)
+

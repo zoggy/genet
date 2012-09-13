@@ -25,8 +25,10 @@ type edge = {
   }
 
 type special =
-  | Explode of operation_name * op_origin * port_ref (** the operation name is needed in flattening *)
-  | Implode of operation_name * op_origin * port_ref (** the operation name is needed in flattening *)
+  | Explode of operation_name * op_origin * port_ref
+    (** the operation name is needed in flattening *)
+  | Implode of operation_name * op_origin * port_ref
+    (** the operation name is needed in flattening *)
 
 and op_origin =
   | Chain of chain_name

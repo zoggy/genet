@@ -247,6 +247,12 @@ let add_special ctx uri_op loc spec =
         let (in_ports, out_ports) = build_implode_ports ctx uri_op op_name in
         (Grdfs.genet_implode, in_ports, out_ports)
     | Explode (op_name, _, port_ref) ->
+        let uri_implode =
+          let parent = Rdf_uri.parent uri_op in
+          Rdf_uri.concat parent (Printf.sprintf "%s-implode" op_name)
+        in
+        Grdfs.add_triple_uris ctx.ctx_rdf
+          ~sub: uri_op ~pred: Grdfs.genet_hasimplode ~obj: uri_implode;
         let (in_ports, out_ports) = build_explode_ports ctx uri_op op_name port_ref in
         (Grdfs.genet_explode, in_ports, out_ports)
   in

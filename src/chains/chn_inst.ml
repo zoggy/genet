@@ -344,14 +344,19 @@ let create_flat_graph ctx uri_fchain =
     let uri_dst = Grdfs.port_container p_dst in
     if Rdf_uri.equal uri_dst uri_fchain then
       begin
-        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let g = Graph.add g
+         (Chn_run.Flat uri_src, Chn_run.Flat uri_dst,
+          (Chn_run.Flat p_src, Chn_run.Flat p_dst)
+         ) in
         (g, set)
       end
     else
       begin
-        let g = Graph.add g (uri_src, uri_dst, (p_src, p_dst)) in
+        let g = Graph.add g
+           (Chn_run.Flat uri_src, Chn_run.Flat uri_dst,
+            (Chn_run.Flat p_src, Chn_run.Flat p_dst)
+           ) in
         let set =
-          (* FIXME: need to handle explode/implode ? *)
           let uri_from = Chn_flat.get_op_origin ctx uri_dst in
           match uri_from with
            | _ when Rdf_uri.equal uri_from Grdfs.genet_explode ->
@@ -404,31 +409,7 @@ let create_flat_graph ctx uri_fchain =
   g
 ;;
 
-let dot_of_graph ctx g =
-  let f_edge (p1, p2) =
-    let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
-    let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
-    let f p = Grdf_port.string_of_port_type (fun x -> x) p in
-    let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
-    (label, [])
-  in
-  let f_node uri =
-    let label =
-      try
-        let uri_from = Chn_flat.get_op_origin ctx uri in
-        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-          None -> Filename.basename (Rdf_uri.string uri)
-        | Some name -> name
-      with
-        _ ->
-          Filename.basename (Rdf_uri.string uri)
-    in
-    let href = Rdf_uri.string uri in
-    let id = "n"^(Digest.to_hex (Digest.string href)) in
-    (id, label, [ "href", href ])
-  in
-  Graph.dot_of_graph ~f_edge ~f_node g
-;;
+
 
 let do_instanciate ctx reporter uri_fchain input comb =
    let prefix = ctx.ctx_cfg.Config.rest_api in
@@ -458,10 +439,10 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Grdfs.set_creation_date_uri ctx.ctx_rdf uri_inst ();
 
       let g = create_flat_graph ctx uri_fchain in
-      let dot = dot_of_graph ctx g in
+      let dot = Chn_run.dot_of_graph ctx g in
       Misc.file_of_string ~file: "/tmp/inst.dot" dot;
 
-      Chn_run.run ctx reporter ~inst: uri_inst ~fchain: uri_fchain input comb g;
+      Chn_run.run ctx reporter ~inst: uri_inst ~fchain: uri_fchain input comb g ;
       uri_inst
 ;;
 

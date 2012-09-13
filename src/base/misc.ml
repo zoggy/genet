@@ -372,3 +372,15 @@ let copy_file ~src ~dst =
 ;;
 
 let split_filename s = split_string s [ Filename.dir_sep.[0] ];;
+
+(*c==v=[List.list_diff]=1.0====*)
+let list_diff ?(pred=(=)) l1 l2 =
+  List.fold_right
+    (fun el acc ->
+       if not (List.exists (pred el) l2) then
+         el :: acc
+       else
+         acc
+    )
+    l1 []
+(*/c==v=[List.list_diff]=1.0====*)
