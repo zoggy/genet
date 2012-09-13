@@ -336,20 +336,26 @@ let copy_flat_ports ctx ~inst ~container ?cpt flat_ports =
   List.fold_right f flat_ports ([], Gurimap.empty)
 ;;
 
+(* do not create a new file if one is already associated
+  to the port; this is useful for predecessors of implode
+  operations, which are created by [run_explode] operations
+  so that they output their result in the implode directory. *)
 let new_file ctx tmp_dir state inst_port =
-  let (ext, is_dir) =
-    let typ = Grdf_port.port_type ctx.ctx_rdf (uri_of_g_uri inst_port) in
-    match typ with
-      Grdf_types.T s ->
-        let uri = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
+  try (Gurimap.find inst_port state.port_to_file, state)
+  with Not_found ->
+      let (ext, is_dir) =
+        let typ = Grdf_port.port_type ctx.ctx_rdf (uri_of_g_uri inst_port) in
+        match typ with
+          Grdf_types.T s ->
+            let uri = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
         (Some (Grdf_ftype.extension ctx.ctx_rdf uri), false)
-    | Var _ -> None, false
-    | Set _ | Tuple _ -> (None, true)
-  in
-  let file = gen_file ?ext () in
-  if is_dir then Misc.mkdir (Filename.concat tmp_dir file);
-  let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
-   (file, state)
+        | Var _ -> None, false
+        | Set _ | Tuple _ -> (None, true)
+      in
+      let file = gen_file ?ext () in
+      if is_dir then Misc.mkdir (Filename.concat tmp_dir file);
+      let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
+      (file, state)
 ;;
 
 (* we make sure to keep order of inst_ports in the returned file list *)
@@ -537,28 +543,30 @@ let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
      let entries = Find.find_list Find.Ignore [root] [Find.Maxdepth 1] in
      List.filter ((<>) root) entries
   in
-  let exploded_nodes =
+  let uri_implode =
     match Grdfs.object_uri ctx.ctx_rdf
       ~sub: (Rdf_node.Uri (uri_of_g_uri orig_node)) ~pred: Grdfs.genet_hasimplode
     with
       None -> failwith "No implode node associated to explode!"
-    | Some uri_implode ->
-        (* remove main node to prevent cycling and getting all nodes *)
-        let g = Graph.remove_node state.g (Inst inst) in
-        (* FIXME: maybe a problem here in case of nested explodes: how to find the correct
-          implode, which may be a Inst node now ? *)
-        let after_implode =
-          let l = Graph.recursive_succs g (Flat uri_implode) in
-          List.fold_right Guriset.add (Flat uri_implode :: l) Guriset.empty
-        in
-        let after_explode =
-          let l = Graph.recursive_succs g orig_node in
-          List.fold_right Guriset.add l Guriset.empty
-        in
-        dbg ~level: 1
-          (fun () -> Printf.sprintf "after_implode=\n%s\nafter_explode=\n%s"
-            (string_of_guriset after_implode) (string_of_guriset after_explode));
-        Guriset.diff after_explode after_implode
+    | Some uri -> uri
+  in
+  let exploded_nodes =
+    (* remove main node to prevent cycling and getting all nodes *)
+    let g = Graph.remove_node state.g (Inst inst) in
+    (* FIXME: maybe a problem here in case of nested explodes: how to find the correct
+       implode, which may be a Inst node now ? *)
+    let after_implode =
+      let l = Graph.recursive_succs g (Flat uri_implode) in
+      List.fold_right Guriset.add (Flat uri_implode :: l) Guriset.empty
+    in
+    let after_explode =
+      let l = Graph.recursive_succs g orig_node in
+      List.fold_right Guriset.add l Guriset.empty
+    in
+    dbg ~level: 1
+    (fun () -> Printf.sprintf "after_implode=\n%s\nafter_explode=\n%s"
+       (string_of_guriset after_implode) (string_of_guriset after_explode));
+    Guriset.diff after_explode after_implode
   in
   assert (Guriset.cardinal exploded_nodes > 0);
 
@@ -604,44 +612,10 @@ let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
   let state = set_node_as_run state inst_node in
   let g = Graph.remove_node g orig_node in
   { state with g }
-
-
-(*
-
-  let inst_in_port =
-      match Grdf_port.ports ctx.ctx_rdf inst_node Grdf_port.In with
-      [p] -> p
-    | _ -> assert false
-  in
-  let in_file = try Urimap.find inst_in_port port_to_file with Not_found -> assert false in
-  let flat_exploded =
-    let inst_out_port =
-      match Grdf_port.ports ctx.ctx_rdf inst_node Grdf_port.Out with
-        [p] -> p
-      | _ -> assert false
-    in
-    let flat_out_port = Urimap.find inst_out_port port_map in
-    let flat_dst_port =
-      match Chn_flat.port_consumers ctx flat_out_port with
-        [x] -> x
-      | _ -> assert false
-    in
-    Grdfs.port_container flat_dst_port
-  in
-  let in_files =
-     let root = Filename.concat tmp_dir in_file in
-     let entries = Find.find_list Find.Ignore [root] [Find.Maxdepth 1] in
-     List.filter ((<>) root) entries
-  in
-  let f_in_file (g, port_to_file, port_map) =
-     assert false
-  in
-  let (g, port_to_file, port_map) = List.fold_left f_in_file (g,port_to_file,port_map) in_files in
-  let g = Graph.remove_node g flat_node in
-  (g, port_to_file, port_map)
-*)
 ;;
 
+(* implode do nothing, it just acts as a synchronsation point
+  before allowing successors to run. *)
 let run_implode ctx inst tmp_dir ~inst_node ~orig_node state =
   dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (g_uri_string inst_node));
   set_node_as_run state orig_node
