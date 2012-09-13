@@ -46,12 +46,21 @@ module Graph = Graph.Make_with_map (Guri_ord_type)
    end)
 ;;
 
+let rec get_origin ctx uri =
+  dbg ~level: 3 (fun() -> Printf.sprintf "get_origin uri=%S" (Rdf_uri.string uri));
+  match Grdfs.object_uri ctx.Chn_types.ctx_rdf
+    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
+  with
+    None -> uri
+  | Some uri -> get_origin ctx uri
+;;
+
 let dot_of_graph ctx g =
   let f_edge (p1, p2) =
     let p1 = uri_of_g_uri p1 in
     let p2 = uri_of_g_uri p2 in
-    let type1 = Grdf_port.port_type ctx.ctx_rdf p1 in
-    let type2 = Grdf_port.port_type ctx.ctx_rdf p2 in
+    let type1 = Grdf_port.port_type ctx.ctx_rdf (get_origin ctx p1) in
+    let type2 = Grdf_port.port_type ctx.ctx_rdf (get_origin ctx p2) in
     let f p = Grdf_port.string_of_port_type (fun x -> x) p in
     let label = Printf.sprintf "%s:%s" (f type1) (f type2) in
     (label, [])
@@ -301,10 +310,10 @@ let gen_file =
     Printf.sprintf "file%d%s" !cpt (match ext with None -> "" | Some s -> "."^s)
 ;;
 
-let copy_flat_port ctx ~inst ~container flat_port =
+let copy_flat_port ctx ~inst ~container ?cpt flat_port =
   let flat_port = uri_of_g_uri flat_port in
   let container = uri_of_g_uri container in
-  let inst_port = Chn_types.uri_inst_port_of_flat_port ~ichain: true
+  let inst_port = Chn_types.uri_inst_port_of_flat_port ~ichain: true ?cpt
     ctx ~inst ~flat: flat_port
   in
   let ptype = Grdf_port.port_type ctx.ctx_rdf flat_port in
@@ -319,9 +328,9 @@ let copy_flat_port ctx ~inst ~container flat_port =
 ;;
 
 (* we make sure to keep the order of flat_ports when producing inst_ports *)
-let copy_flat_ports ctx ~inst ~container flat_ports =
+let copy_flat_ports ctx ~inst ~container ?cpt flat_ports =
   let f flat_port (inst_ports, port_map) =
-    let inst_port = copy_flat_port ctx ~inst ~container flat_port in
+    let inst_port = copy_flat_port ctx ~inst ~container ?cpt flat_port in
     (inst_port :: inst_ports, Gurimap.add flat_port inst_port port_map)
   in
   List.fold_right f flat_ports ([], Gurimap.empty)
@@ -426,6 +435,8 @@ let init_run ctx reporter ~inst ~fchain input tmp_dir g =
 
 let get_port_input_file ctx state port =
   let node = Grdfs.port_container (uri_of_g_uri port) in
+  dbg ~level: 1
+  (fun () -> Printf.sprintf "get_port_input_file port=%S uri=%S" (g_uri_string port) (Rdf_uri.string node));
   let src =
     let preds =
       try Graph.pred state.g (Inst node)
@@ -435,7 +446,10 @@ let get_port_input_file ctx state port =
               failwith (Printf.sprintf "port container %S not in graph" (g_uri_string port))
     in
     let (_,(src,_)) =
-      try List.find (fun (_,(src,dst)) -> compare_g_uri dst port = 0) preds
+      try List.find
+        (fun (_,(src,dst)) ->
+          prerr_endline (Printf.sprintf "src=%S\ndst=%S" (g_uri_string src) (g_uri_string dst)) ;
+          compare_g_uri dst port = 0) preds
       with Not_found ->
           failwith (Printf.sprintf "No ancestor found for port %S" (g_uri_string port))
     in
@@ -454,15 +468,8 @@ let new_inst_node ctx ~inst ?cpt node =
   dbg ~level: 1 (fun () -> Printf.sprintf "new_inst_node node=%S" (g_uri_string node));
   let node = uri_of_g_uri node in
 
-  let inst_node = Chn_types.uri_inst_opn_of_flat_opn ~ichain: true
+  let inst_node = Chn_types.uri_inst_opn_of_flat_opn ~ichain: true ?cpt
       ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: node
-  in
-  let inst_node =
-    match cpt with
-      None -> inst_node
-    | Some cpt ->
-        let name = match List.rev (Rdf_uri.path inst_node) with [] -> assert false | name :: _ -> name in
-        Rdf_uri.concat (Rdf_uri.parent inst_node) (Printf.sprintf "%s-%d" name cpt)
   in
   Grdfs.add_triple_uris ctx.ctx_rdf
   ~sub: inst_node ~pred: Grdfs.genet_opfrom ~obj: node;
@@ -478,15 +485,15 @@ let string_of_guriset set = String.concat "\n"
   (Guriset.fold (fun x acc -> (g_uri_string x) :: acc) set [])
 ;;
 
-let copy_expl_node ctx ~inst cpt pred_node pred_out_port state expl_node =
+let copy_expl_node ctx ~inst cpt orig_pred_node pred_node pred_out_port state expl_node =
   dbg ~level: 1
   (fun () -> Printf.sprintf "copying node %S (cpt=%d)"
      (g_uri_string expl_node) cpt);
   let in_ports = in_ports state expl_node in
   let out_ports = out_ports state expl_node in
   let new_expl_node = new_inst_node ctx ~inst ~cpt expl_node in
-  let (in_ports, port_map_in) = copy_flat_ports ctx ~inst ~container: new_expl_node in_ports in
-  let (out_ports, port_map_out) = copy_flat_ports ctx ~inst ~container: new_expl_node out_ports in
+  let (in_ports, port_map_in) = copy_flat_ports ctx ~inst ~container: new_expl_node ~cpt in_ports in
+  let (out_ports, port_map_out) = copy_flat_ports ctx ~inst ~container: new_expl_node ~cpt out_ports in
 
   let f_succ cpt g (succ,(p1,p2)) =
     let p1 = Gurimap.find p1 port_map_out in
@@ -494,11 +501,8 @@ let copy_expl_node ctx ~inst cpt pred_node pred_out_port state expl_node =
   in
   let f_pred cpt g (pred,(p1,p2)) =
     let (g, pred, p1) =
-      if compare_g_uri pred pred_node = 0 then
-        (
-         let g = Graph.rem g (pred, expl_node) (rem_pred (p1,p2)) in
+      if compare_g_uri pred orig_pred_node = 0 then
          (g, pred_node, pred_out_port)
-        )
       else
         (g, pred, p1)
     in
@@ -516,6 +520,12 @@ let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
   dbg ~level:1 (fun () -> Printf.sprintf "run_explode inst_node=%S" (g_uri_string inst_node));
   let orig_in_port =
     match in_ports state orig_node with
+      [p] -> p
+    | [] -> assert false
+    | _ -> assert false
+  in
+  let orig_out_port =
+    match out_ports state orig_node with
       [p] -> p
     | [] -> assert false
     | _ -> assert false
@@ -564,7 +574,14 @@ let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
   let new_out_port =
     fun cpt state in_file ->
       let uri = Grdfs.uri_intf_out_port (uri_of_g_uri inst_node) cpt in
-      record_file ctx reporter in_file (Inst uri);
+      Grdfs.add_triple_uris ctx.ctx_rdf
+      ~sub: uri ~pred: Grdfs.genet_opfrom ~obj: (uri_of_g_uri orig_out_port);
+
+      let pred = Grdf_port.pred_of_dir Grdf_port.Out in
+      Grdfs.add_triple_uris ctx.ctx_rdf ~sub: (uri_of_g_uri inst_node) ~pred ~obj: uri;
+
+      (* FIXME HANDLE FILES *)
+      record_file ctx reporter (Filename.concat tmp_dir in_file) (Inst uri);
       let port = Inst uri in
       (port,
        { state with port_to_file = Gurimap.add port in_file state.port_to_file }
@@ -573,10 +590,11 @@ let run_explode ctx reporter inst tmp_dir ~inst_node ~orig_node state =
 
   let f_node cpt in_file expl_node state =
     let (out_port, state) = new_out_port cpt state in_file in
-    let state = copy_expl_node ctx ~inst cpt inst_node out_port state expl_node in
+    let state = copy_expl_node ctx ~inst cpt orig_node inst_node out_port state expl_node in
     state
   in
   let insert_graph (state, cpt) in_file =
+    let in_file = Misc.path_under ~parent: tmp_dir in_file in
     let state = Guriset.fold (f_node cpt in_file) exploded_nodes state in
     (state, cpt+1)
   in
@@ -640,10 +658,15 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
 
   let orig_in_ports = in_ports state orig_node in
   (* even if these ports are not used to compute what we need,
-    copying will register them as ports of inst_node *)
-  let (_inst_in_ports, _port_map_in) =
-    copy_flat_ports ctx ~inst ~container: inst_node orig_in_ports
-  in
+    copying will register them as ports of inst_node
+    FIXME: handled correctly in case of nested foreach
+  *)
+  begin
+    match orig_node with
+      Flat _ ->
+         ignore(copy_flat_ports ctx ~inst ~container: inst_node orig_in_ports)
+     | Inst _ -> ();
+  end;
   let in_files = get_port_input_files ctx state orig_in_ports in
 
   let test file =
@@ -671,7 +694,12 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
             | Some path ->
                 let orig_out_ports = out_ports state orig_node in
                 let (inst_out_ports, port_map_out) =
-                  copy_flat_ports ctx ~inst ~container: inst_node orig_out_ports
+                  (* FIXME: handle correctly when nested foreach *)
+                  match orig_node with
+                    Flat _ -> copy_flat_ports ctx ~inst ~container: inst_node orig_out_ports
+                  | Inst _ ->
+                      List.fold_right
+                      (fun p (acc, map) -> (p::acc, Gurimap.add p p map)) orig_out_ports ([], Gurimap.empty)
                 in
                 let (out_files, state) = new_files ctx tmp_dir state inst_out_ports in
                 let g =

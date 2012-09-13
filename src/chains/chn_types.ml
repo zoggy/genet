@@ -133,7 +133,7 @@ let uri_ichain prefix (fullname, id) =
   Grdfs.uri_ichain ~prefix ~modname ~name ~id
 ;;
 
-let uri_inst_opn_of_flat_opn ?(ichain=false) ~prefix ~inst ~flat =
+let uri_inst_opn_of_flat_opn ?(ichain=false) ?cpt ~prefix ~inst ~flat =
   let base =
     match Grdfs.is_in_fchains prefix flat with
     | Some x -> x
@@ -147,19 +147,26 @@ let uri_inst_opn_of_flat_opn ?(ichain=false) ~prefix ~inst ~flat =
             (Printf.sprintf "%S is not an inst chain uri" (Rdf_uri.string flat))
         | Some x -> x
   in
-  match Grdfs.split_fchain_name base with
-    `Fchain_op (_,_,path) -> List.fold_left Rdf_uri.concat inst path
-  | `Fullname _ -> inst
-  | _ ->
-      let msg = Printf.sprintf
-        "%S is not a flat chain uri" (Rdf_uri.string flat)
-      in
-      failwith msg
+  let inst =
+    match Grdfs.split_fchain_name base with
+      `Fchain_op (_,_,path) -> List.fold_left Rdf_uri.concat inst path
+    | `Fullname _ -> inst
+    | _ ->
+        let msg = Printf.sprintf
+          "%S is not a flat chain uri" (Rdf_uri.string flat)
+        in
+        failwith msg
+  in
+  match cpt with
+    None -> inst
+  | Some n ->
+      let name = match List.rev (Rdf_uri.path inst) with [] -> assert false | name :: _ -> name in
+      Rdf_uri.concat (Rdf_uri.parent inst) (Printf.sprintf "%s-%d" name n)
 ;;
 
-let uri_inst_port_of_flat_port ?ichain ctx ~inst ~flat =
+let uri_inst_port_of_flat_port ?ichain ?cpt ctx ~inst ~flat =
   let flat_opn = Grdfs.port_container flat in
-  let inst_opn = uri_inst_opn_of_flat_opn ?ichain
+  let inst_opn = uri_inst_opn_of_flat_opn ?ichain ?cpt
     ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: flat_opn in
   let dir = Grdf_port.port_dir flat in
   let rank = Grdf_port.port_rank flat in

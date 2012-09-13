@@ -58,11 +58,11 @@ val uri_ichain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
 val uri_ichain : Grdf_types.uri -> ichain_name -> Grdf_types.uri
 
 val uri_inst_opn_of_flat_opn :
-  ?ichain: bool ->
+  ?ichain: bool -> ?cpt: int ->
   prefix: Grdf_types.uri -> inst: Grdf_types.uri -> flat: Grdf_types.uri
   -> Grdf_types.uri
 
 val uri_inst_port_of_flat_port :
-  ?ichain: bool ->  context -> inst: Grdf_types.uri -> flat: Grdf_types.uri -> Grdf_types.uri
+  ?ichain: bool -> ?cpt: int ->  context -> inst: Grdf_types.uri -> flat: Grdf_types.uri -> Grdf_types.uri
 
 val is_uri_ichain : Grdf_types.uri -> Grdf_types.uri -> ichain_name option
