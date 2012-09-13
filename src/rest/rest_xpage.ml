@@ -317,17 +317,26 @@ let dot_of_fchain ctx fchain_name =
 
 class xhtml_ichain_dot_printer =
   let get_origin ctx uri =
-    Grdfs.object_uri ctx.Chn_types.ctx_rdf
-    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
+    match Grdfs.object_uri ctx.Chn_types.ctx_rdf
+      ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
+    with
+      None ->
+        prerr_endline
+        (Printf.sprintf "get_origin %S => None" (Rdf_uri.string uri));
+        None
+    | Some uri2 ->
+        prerr_endline (Printf.sprintf "get_origin %S => %S"
+         (Rdf_uri.string uri) (Rdf_uri.string uri2));
+        Some uri2
   in
   object(self)
     inherit xhtml_fchain_dot_printer as super
 
     (* use maps to associate flat <-> instanciated ports,
-         not to store all edges between ports. Then we
-         redefine port_consumers and port_produces to use
-         these maps.
-         *)
+       not to store all edges between ports. Then we
+       redefine port_consumers and port_produces to use
+       these maps.
+    *)
     val mutable flat_to_inst = Urimap.empty
     val mutable inst_to_flat = Urimap.empty
 
@@ -347,18 +356,30 @@ class xhtml_ichain_dot_printer =
       List.iter f (uri :: (Chn_flat.get_ops ctx uri))
 
     method port_consumers ctx inst_uri =
-      let flat_uri = Urimap.find inst_uri inst_to_flat in
+      let flat_uri =
+        try Urimap.find inst_uri inst_to_flat
+        with Not_found -> assert false
+      in
       let ports = super#port_consumers ctx flat_uri in
-      List.map (fun uri -> Urimap.find uri flat_to_inst) ports
+      List.map
+      (fun uri ->
+         try Urimap.find uri flat_to_inst
+         with _ ->
+             prerr_endline (Printf.sprintf "Port %S not found" (Rdf_uri.string uri));
+             assert false)
+      ports
 
     method port_producers ctx inst_uri =
-      let flat_uri = Urimap.find inst_uri inst_to_flat in
+      let flat_uri =
+        try Urimap.find inst_uri inst_to_flat
+        with Not_found -> assert false
+      in
       let ports = super#port_producers ctx flat_uri in
-      List.map (fun uri -> Urimap.find uri flat_to_inst) ports
+      List.map (fun uri -> try Urimap.find uri flat_to_inst with _ -> assert false) ports
 
    method port_link_and_name ctx uri =
       let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf
-        (Urimap.find uri inst_to_flat)
+        (try Urimap.find uri inst_to_flat with _ -> assert false)
       in
       let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
       let link =
