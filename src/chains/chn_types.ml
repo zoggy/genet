@@ -91,7 +91,7 @@ let uri_fchain prefix (fullname, id) =
 ;;
 
 let is_uri_fchain_module prefix uri =
-  prerr_endline (Printf.sprintf "is_uri_fchain_module %s" (Rdf_uri.string uri));
+  (*prerr_endline (Printf.sprintf "is_uri_fchain_module %s" (Rdf_uri.string uri));*)
   match Grdfs.is_uri_fchain_module prefix uri with
     None -> None
   | Some slashes_modname ->
@@ -185,20 +185,3 @@ let is_uri_ichain prefix uri =
     None -> None
   | Some ((modname, name), id) -> Some ((modname, name), id)
 ;;
-(*
-let is_uri_ichain_module prefix uri =
-  prerr_endline (Printf.sprintf "is_uri_ichain_module %s" (Rdf_uri.string uri));
-  match Grdfs.is_uri_ichain_module prefix uri with
-    None -> None
-  | Some slashes_modname ->
-      let modname = Misc.split_string slashes_modname ['/'] in
-      Some (modname)
-;;
-
-let is_uri_ichain prefix uri =
-  match Grdfs.is_uri_ichain prefix uri with
-    None -> None
-  | Some ((modname, name), id) ->
-      Some ((modname, name), Misc.opt_of_string id)
-;;
-*)

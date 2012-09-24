@@ -107,7 +107,7 @@ let extract_git_file config ~file ~id ~target =
     target_dir (Filename.quote base_dir) target_dir target_base
     target_dir
   in
-  prerr_endline com;
+  dbg ~level:3 (fun () -> Printf.sprintf "extract_git_file: %s" com);
   match Sys.command com with
     0 -> ()
   | n ->
@@ -329,8 +329,10 @@ let init_run ctx reporter ~inst ~fchain input tmp_dir g =
 
   let (inst_node,_,_,state) = copy_node ctx ~inst (Flat fchain) state in
   let inst_in_ports = out_ports state inst_node in
-  prerr_endline "run_init: in_ports =";
-  List.iter (fun inst_in -> prerr_endline (g_uri_string inst_in)) inst_in_ports;
+  dbg ~level: 2
+    (fun () -> Printf.sprintf "run_init: in_ports =\n%s"
+      (String.concat "\n" (List.map g_uri_string inst_in_ports))
+    );
 
   let nb_in_files = List.length in_files in
   let nb_in_ports = List.length inst_in_ports in
@@ -366,7 +368,7 @@ let get_port_input_file ctx state port =
     let (_,(src,_)) =
       try List.find
         (fun (_,(src,dst)) ->
-          prerr_endline (Printf.sprintf "src=%S\ndst=%S" (g_uri_string src) (g_uri_string dst)) ;
+          (*prerr_endline (Printf.sprintf "src=%S\ndst=%S" (g_uri_string src) (g_uri_string dst)) ;*)
           compare_g_uri dst port = 0) preds
       with Not_found ->
           failwith (Printf.sprintf "No ancestor found for port %S" (g_uri_string port))
@@ -642,7 +644,7 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
                 let tool = Grdf_intf.tool_of_intf uri_from in
                 let version = Urimap.find tool comb in
                 let path = replace_version ctx path version in
-                prerr_endline (Printf.sprintf "path = %s" path);
+                (*prerr_endline (Printf.sprintf "path = %s" path);*)
                 Grdfs.set_start_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
                 begin
                   try
