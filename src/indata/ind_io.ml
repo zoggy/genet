@@ -17,7 +17,6 @@ let string_of_error (file, msg) =
 type input =
 { group : CF.group ;
   in_cp : string list CF.cp ;
-  out_cp : string list CF.cp ;
   chains_cp : string list CF.cp ;
 }
 
@@ -26,13 +25,10 @@ let mk_spec_group () =
   let in_cp = new CF.list_cp CF.string_wrappers ~group ["in"] []
     "Input files and directories; order matters"
   in
-  let out_cp = new CF.list_cp CF.string_wrappers ~group ["out"] []
-    "Output files and directories; order matters"
-  in
   let chains_cp = new CF.list_cp CF.string_wrappers ~group ["chains"] []
     "The chains to apply"
   in
-  { group ; in_cp ; out_cp ; chains_cp }
+  { group ; in_cp ; chains_cp }
 ;;
 
 let on_type_error file cp _ _ _ =
@@ -59,7 +55,6 @@ let load config dir =
     { dir = dir ;
       from_in_data = from_in_data ;
       in_files = in_files ;
-      out_files = g.out_cp#get ;
       chains = g.chains_cp#get ;
     }
   with

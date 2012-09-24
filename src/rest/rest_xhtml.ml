@@ -1104,7 +1104,6 @@ let get_input ctx path =
     let rows = List.map f spec.Ind_types.in_files in
     table rows
   in
-  let out_table = table (List.map (fun s -> [s]) spec.Ind_types.out_files) in
   let chains_table =
      let f name =
        let chain_name = Chn_types.chain_name_of_string name in
@@ -1116,10 +1115,9 @@ let get_input ctx path =
   let contents = Printf.sprintf
         "<p><strong>Id:</strong> %s</p>
         <h2>Inputs</h2>%s
-        <h2>Outputs</h2>%s
         <h2>Chains</h2>%s"
         git_id
-        in_table out_table
+        in_table
         chains_table
   in
   let navpath = xhtml_navpath ctx (`Input path) in
