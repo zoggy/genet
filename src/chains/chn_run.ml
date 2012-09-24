@@ -273,11 +273,12 @@ let new_inst_node ctx ~inst ?cpt node =
   Grdfs.add_triple_uris ctx.ctx_rdf
   ~sub: inst_node ~pred: Grdfs.genet_opfrom ~obj: node;
 
-  Grdfs.add_type ctx.ctx_rdf
-  ~sub: (Rdf_node.Uri inst_node) ~obj: (Rdf_node.Uri Grdfs.genet_instopn);
-
   if not (Rdf_uri.equal inst inst_node) then
-    Chn_flat.add_containsop ctx ~src: inst ~dst: inst_node;
+    (
+     Chn_flat.add_containsop ctx ~src: inst ~dst: inst_node;
+     Grdfs.add_type ctx.ctx_rdf
+     ~sub: (Rdf_node.Uri inst_node) ~obj: (Rdf_node.Uri Grdfs.genet_instopn)
+    );
   Inst inst_node
 ;;
 
@@ -556,11 +557,21 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
   { state with g }
 ;;
 
-(* implode do nothing, it just acts as a synchronsation point
-  before allowing successors to run. *)
-let run_implode ctx inst tmp_dir ~orig_node state =
-  dbg ~level:1 (fun () -> Printf.sprintf "run_implode orig_node=%S" (g_uri_string orig_node));
-  set_node_as_run state orig_node
+(* implode only gather input files to output directory;
+  it also acts as a synchronsation point before allowing successors to run. *)
+let run_implode ctx reporter inst tmp_dir inst_node state =
+  dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (g_uri_string inst_node));
+  let in_files = get_port_input_files ctx state (in_ports state inst_node) in
+  let (out_port, out_file, state) =
+    match out_ports state inst_node with
+      [p] ->
+        let (file, state) = new_file ctx tmp_dir state p in
+        (p, file, state)
+     | [] -> assert false | _ -> assert false
+   in
+  let path = Printf.sprintf "cp -fr" in
+  run_command ctx reporter tmp_dir path in_files [out_port] [out_file];
+  set_node_as_run state inst_node
 ;;
 
 let rec run_node ctx reporter inst comb tmp_dir state orig_node =
@@ -587,7 +598,7 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
     | _ when Rdf_uri.equal uri_from Grdfs.genet_explode ->
         run_explode ctx reporter inst tmp_dir ~orig_node state
     | _ when Rdf_uri.equal uri_from Grdfs.genet_implode ->
-        run_implode ctx inst tmp_dir ~orig_node state
+        run_implode ctx reporter inst tmp_dir orig_node state
     | _ ->
         match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
           None -> assert false

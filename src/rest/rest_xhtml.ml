@@ -1020,8 +1020,8 @@ let get_outfile ctx path raw =
 
 let xhtml_inst_list_of_ports ctx ports =
   let heads = [ "Instanciated chain" ; "Port" ; "Date" ] in
-  let f port =
-    let (port_name, inst) =
+  let f acc port =
+    let v =
       let pname =
         match Grdf_port.port_name ctx.ctx_rdf port with
           "" -> string_of_int (Grdf_port.port_rank port)
@@ -1029,7 +1029,7 @@ let xhtml_inst_list_of_ports ctx ports =
       in
       let container = Grdfs.port_container port in
       match Grdfs.is_a_instopn ctx.ctx_rdf container with
-        false -> (pname, container)
+        false -> None (* do not make ichain ports appear, but only ichain operation ports *)
       | true ->
           let origin = Chn_flat.get_op_origin ctx container in
           let name =
@@ -1041,22 +1041,27 @@ let xhtml_inst_list_of_ports ctx ports =
             match Grdfs.subject_uri ctx.ctx_rdf
               ~pred: Grdfs.genet_containsop ~obj: (Rdf_node.Uri container)
             with
-              None -> failwith "No instanciated chain ???"
+              None ->
+                failwith
+                (Printf.sprintf "No instanciated chain ??? (container=%S)" (Rdf_uri.string  container))
             | Some inst -> inst
           in
-          (name, inst)
+          Some (name, inst)
     in
-    let a_inst =
-      match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
-        None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
-      | Some uri -> a_ichain ctx uri
-    in
-    [ a_inst ;
-      port_name ;
-      Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
-    ]
+    match v with
+      None -> acc
+    | Some (port_name, inst) ->
+        let a_inst =
+          match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
+            None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
+          | Some uri -> a_ichain ctx uri
+        in
+        [ a_inst ;
+          port_name ;
+          Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
+        ] :: acc
   in
-  let rows = List.map f ports in
+  let rows = List.fold_left f [] ports in
   table ~heads rows
 ;;
 
