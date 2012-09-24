@@ -1,10 +1,41 @@
 <page title="Development documentation"
 >
-<div class="alert alert-info">This part is in french, by now.</div>
+<div class="alert alert-info">This page is not finished yet.</div>
 <prepare-toc depth="2">
-<toc>Table des matières</toc>
-<section name="" title="">
-
+<toc>Table of contents</toc>
+<section name="sources" title="Organisation of source code">
+<p>
+Source code is versioned with git on Gitorious:
+<ext-a href="https://gitorious.org/genet">https://gitorious.org/genet</ext-a>.
+</p>
+<p>
+The code is organised as follows:
+</p>
+<ul>
+<li><icode>/utils</icode>: utilities for compilation.</li>
+<li><icode>/doc</icode>: files used to generate documentation,
+  including OCamldoc and the RDF vocabulary.</li>
+<li><icode>/website</icode>: web site sources, including the documentation.
+  The site is generated with <ext-a href="http://zoggy.github.com/stog/">Stog</ext-a>.</li>
+<li><icode>/src</icode>: OCaml source code for executables and some templates:
+  <ul>
+  <li><icode>/base</icode>: base library, with modules used by other parts of the code.</li>
+  <li><icode>/indata</icode>: management of input files (reading, writing).</li>
+  <li><icode>/grdf</icode>: semantic graph manipulation (storing, modifying, ...).</li>
+  <li><icode>/chains</icode>: handling chains (parsing, flattening, storing, executing, ...).</li>
+  <li><icode>/rest</icode>: REST interface, including web interface.</li>
+  <li><icode>/driver</icode>: main programs and additional modules shared among these
+  programs (options and command line management, ...).</li>
+  <li><icode>/tmpl</icode>: templates used in web interface (XML files used with Xtmpl).</li>
+  <li><icode>/tests</icode>: some test files.</li>
+  </ul>
+</li>
+<li><icode>/draft</icode>: some notes, figures, test files, ...
+  <ul>
+    <li><icode>/proval</icode>: test scripts using tools from the Proval team.</li>
+  </ul>
+</li>
+</ul>
 </section>
 
 </prepare-toc>

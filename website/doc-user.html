@@ -1,6 +1,9 @@
 <page title="User documentation"
 navbar-doc="active"
 >
+<p>
+This is a very short introduction to the use of Genet.
+</p>
 <prepare-toc depth="2">
 <toc>Table of contents</toc>
 <div class="alert alert-warning">
@@ -54,7 +57,7 @@ Required directories in the cloned repository are not created by the tool.
 <subsection name="setup:config-file" title="Edit the configuration file">
 <p>
 The generated configuration file has the following form:
-<hcode defer_="1"><include file="../../../src/config.txt"/>
+<hcode lang="ocaml" defer_="1"><include file="../../../src/config.txt"/>
 </hcode>
 Edit the generated file and adapt it to your project.
 </p>
@@ -259,7 +262,69 @@ simple chains between more complex chains.
 </section>
 
 <section name="inputs" title="Define inputs">
+<p>An input is a file defining a list of input files and a list of chains whose
+instances will be executed using these files as input.
+</p>
+<p>Each input is defined in a subdirectory of the <icode>&lt;project-root&gt;/in/data</icode> directory.
+The file <icode>spec.in</icode> defines the list of input files, in this directory, and the list
+of chains to apply on these files.
+</p>
+<p>For example, let's define a <icode>test1</icode> input by adding a
+<icode>&lt;project-root&gt;/in/data/test1/spec.in</icode> file with the following contents:
+</p>
+<hcode lang="ocaml">
+(* Input files and directories; order matters *)
+in = ["foo.v" ; "bar.ml" ]
+(* The chains to apply *)
+chains = [ "Mod1.my_chain" ; "Mod2.other_chain" ]
+</hcode>.
+<p>The <icode>test1</icode> input uses two files <icode>foo.v</icode>
+and <icode>bar.ml</icode> which must be present in the <icode>in/data/test1</icode>
+directory:
+</p>
+<command-line>$ ls in/data/test1
+bar.ml  foo.v  spec.in
+</command-line>
+</section>
 
+<section name="flattening" title="Flatten chains">
+<p>
+To be applied, a chain has to be flattened first, that is a "flat" data flow is computed
+from the chain specification. A flat chain contains only calls to interfaces and no more
+calls to other chains. The flat chain obtained is then stored with a unique id and remains
+associated to the version ids of the source files used in the chain definition.
+</p>
+<p>
+The following command will flatten the current versions of the chains
+<icode>Mod1.my_chain</icode> and <icode>Mod1.my_chain2</icode>:
+</p>
+<command-line>$ genet-chain -f Mod1.my_chain -f Mod1.my_chain2
+Mod1.my_chain => http://localhost:8082/flat-chains/Mod1/my_chain/c4be-fc5d-d901-a047
+Mod1.my_chain2 => http://localhost:8082/flat-chains/Mod1/my_chain2/d2fe-c10d-d231-f98f
+</command-line>
+<p>
+If any source file used by a chain is not commited, then the flat chain is not kept.
+It is useful to test before commiting.
+</p>
+<p>The list of available options is obtained with <icode>genet-chain --help</icode>.</p>
+</section>
+
+<section name="executing" title="Execute chains">
+<p>
+The <icode>genet-exec</icode> tool "executes" an input, that is it applies available
+flat chains on the input files, according to the list of chains specified in the
+<icode>spec.in</icode> file of the input (see <a href="#inputs">this section</a>).
+</p>
+<p>For example, with the <icode>test1</icode> input as defined above, the following
+command will run the chains <icode>Mod1.my_chain</icode> and <icode>Mod2.other_chain</icode>.
+To do so, it will use <b>the last flattened chain</b> (according to its flattening date)
+for each specified chain name:
+</p>
+<command-line>$ genet-exec test1
+</command-line>
+<p>
+The two executions of the two chains can now be browsed in the web interface.
+</p>
 </section>
 
 
