@@ -316,73 +316,29 @@ let dot_of_fchain ctx fchain_name =
 ;;
 
 class xhtml_ichain_dot_printer =
+  let dotp = new Chn_ast.chain_dot_printer in
   let get_origin ctx uri =
     match Grdfs.object_uri ctx.Chn_types.ctx_rdf
       ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
     with
       None ->
-        prerr_endline
+        failwith
         (Printf.sprintf "get_origin %S => None" (Rdf_uri.string uri));
-        None
     | Some uri2 ->
-        prerr_endline (Printf.sprintf "get_origin %S => %S"
-         (Rdf_uri.string uri) (Rdf_uri.string uri2));
-        Some uri2
+        (*prerr_endline (Printf.sprintf "get_origin %S => %S"
+         (Rdf_uri.string uri) (Rdf_uri.string uri2));*)
+        uri2
   in
   object(self)
-    inherit xhtml_fchain_dot_printer as super
+    method id s = "n"^(Digest.to_hex (Digest.string s))
+    method uri_id uri = self#id (Rdf_uri.string uri)
 
-    (* use maps to associate flat <-> instanciated ports,
-       not to store all edges between ports. Then we
-       redefine port_consumers and port_produces to use
-       these maps.
-    *)
-    val mutable flat_to_inst = Urimap.empty
-    val mutable inst_to_flat = Urimap.empty
+    method color_of_port_dir = function
+    | Grdf_port.In -> dotp#color_in
+    | Grdf_port.Out -> dotp#color_out
 
-    method private init_port_maps ctx uri =
-      let f_port inst_uri =
-        match get_origin ctx inst_uri with
-          None -> ()
-        | Some flat_uri ->
-            flat_to_inst <- Urimap.add flat_uri inst_uri flat_to_inst;
-            inst_to_flat <- Urimap.add inst_uri flat_uri inst_to_flat
-      in
-      let f_dir uri dir =
-        let ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri dir in
-        List.iter f_port ports
-      in
-      let f uri = f_dir uri Grdf_port.In; f_dir uri Grdf_port.Out in
-      List.iter f (uri :: (Chn_flat.get_ops ctx uri))
-
-    method port_consumers ctx inst_uri =
-      let flat_uri =
-        try Urimap.find inst_uri inst_to_flat
-        with Not_found -> assert false
-      in
-      let ports = super#port_consumers ctx flat_uri in
-      List.map
-      (fun uri ->
-         try Urimap.find uri flat_to_inst
-         with _ ->
-             prerr_endline (Printf.sprintf "Port %S not found" (Rdf_uri.string uri));
-             assert false)
-      ports
-
-    method port_producers ctx inst_uri =
-      let flat_uri =
-        try Urimap.find inst_uri inst_to_flat
-        with Not_found ->
-            prerr_endline (Printf.sprintf "Port %S not found" (Rdf_uri.string inst_uri));
-            assert false
-      in
-      let ports = super#port_producers ctx flat_uri in
-      List.map (fun uri -> try Urimap.find uri flat_to_inst with _ -> assert false) ports
-
-   method port_link_and_name ctx uri =
-      let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf
-        (try Urimap.find uri inst_to_flat with _ -> assert false)
-      in
+    method port_link_and_name ctx uri =
+      let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf (get_origin ctx uri) in
       let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
       let link =
         match Grdfs.object_literal ctx.Chn_types.ctx_rdf
@@ -391,7 +347,7 @@ class xhtml_ichain_dot_printer =
         | Some md5 ->
             Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
         | None ->
-            match self#port_producers ctx uri with
+            match Chn_flat.port_producers ctx uri with
               [] -> None
             | p :: _ ->
                 match
@@ -404,17 +360,89 @@ class xhtml_ichain_dot_printer =
       in
       (link, name)
 
-    method dot_of_fchain ctx ?debug uri =
-      self#init_port_maps ctx uri;
-      super#dot_of_fchain ctx ?debug uri
-  end;;
+    method print_port_edges ctx b uri =
+      prerr_endline (Printf.sprintf "Printing edges of %s" (Rdf_uri.string uri));
+      let ports = Chn_flat.port_consumers ctx uri in
+      let src = self#uri_id uri in
+      let f p =
+        Printf.bprintf b "%s -> %s ;\n" src (self#uri_id p)
+      in
+      List.iter f ports
+
+    method print_port ctx b uri =
+      let dir = Grdf_port.port_dir uri in
+      let id = self#uri_id uri in
+      let (link, name) = self#port_link_and_name ctx uri in
+      let label =
+        match Grdf_port.port_name ctx.Chn_types.ctx_rdf uri with
+          "" -> string_of_int (Grdf_port.port_rank uri)
+        | s -> s
+      in
+      Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
+                            style=\"filled\" shape=\"box\" \
+                            href=\"%s\" label=\"%s:%s\" rank=%S];\n"
+        id (self#color_of_port_dir dir)
+        (match link with None -> "" | Some uri -> Rdf_uri.string uri)
+        label name
+        (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max")
+
+    method print_op ctx ichain b acc_ports uri =
+      let (color, label, href) =
+        let uri_from = Chn_flat.get_op_origin ctx uri in
+        match Grdf_intf.intf_exists ctx.Chn_types.ctx_rdf uri_from with
+          None -> dotp#color_chain, Chn_flat.get_op_name uri, uri
+        | Some name ->
+            let tool = Grdf_intf.tool_of_intf uri_from in
+            let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
+            dotp#color_interface, name, uri_from
+      in
+      if not (Rdf_uri.equal ichain uri) then
+        Printf.bprintf b "subgraph cluster_%s {\n\
+             label=%S;\n color=\"black\" fillcolor=%S;\n\
+             style=\"filled\"; href=%S;\n"
+        (self#uri_id uri) label color
+        (Rdf_uri.string href);
+      let in_ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri Grdf_port.In in
+      let out_ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri Grdf_port.Out in
+      List.iter (self#print_port ctx b) in_ports;
+      List.iter (self#print_port ctx b) out_ports;
+      (* align in ports and out ports on two column, using invisible edges *)
+      begin
+        match in_ports with
+          [] -> ()
+        | in_p :: _ ->
+            List.iter
+            (fun out_p ->
+               Printf.bprintf b "%s -> %s [style=\"invis\"];\n"
+               (self#uri_id in_p) (self#uri_id out_p)
+            )
+            out_ports
+      end;
+      let ports =
+        if not (Rdf_uri.equal ichain uri) then
+          ( Buffer.add_string b "}\n"; out_ports )
+        else
+          in_ports
+      in
+      List.fold_right Uriset.add ports acc_ports
+
+    method dot_of_chain ctx uri =
+      let b = Buffer.create 256 in
+      Buffer.add_string b "digraph g {\nrankdir=LR;\nfontsize=10;\n";
+      let ports = List.fold_left
+        (self#print_op ctx uri b) Uriset.empty (uri :: (Chn_flat.get_ops ctx uri))
+      in
+      Uriset.iter (self#print_port_edges ctx b) ports;
+      Buffer.add_string b "}\n";
+      Buffer.contents b
+  end
 
 let dot_of_ichain ctx ichain_name =
   let uri = Chn_types.uri_ichain
     ctx.Chn_types.ctx_cfg.Config.rest_api ichain_name
   in
   let o = new xhtml_ichain_dot_printer in
-  let dot = o#dot_of_fchain ctx uri in
+  let dot = o#dot_of_chain ctx uri in
   Misc.file_of_string ~file: "/tmp/instgraph.dot" dot;
   dot
 ;;
