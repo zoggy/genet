@@ -11,7 +11,7 @@ let dbg = Misc.create_log_fun
 
 (** {2 Vocabulary} *)
 
-let genet = Rdf_uri.uri "http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf";;
+let genet = Rdf_uri.uri "https://raw.github.com/zoggy/genet/master/doc/genet.ttl";;
 let genet_ = Rdf_uri.set_fragment genet;;
 
 let rdf_ = Rdf_uri.set_fragment (Rdf_uri.uri "http://www.w3.org/1999/02/22-rdf-syntax-ns");;
