@@ -1,12 +1,11 @@
 STOGDIR=/home/guesdon/Personal/stog
 STOG=$(STOGDIR)/stog.byte
-DEST_DIR=/tmp/genet-web
+DEST_DIR=/home/guesdon/devel/genet-gh-pages
 BASE_URL_OPTION=
 STOG_OPTIONS=-d $(DEST_DIR) $(BASE_URL_OPTION)
 LESSC=lessc
 
 build:
-	rm -fr $(DEST_DIR)
 	$(MAKE) site
 
 
