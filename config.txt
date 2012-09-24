@@ -1,0 +1,10 @@
+project_name = Foo
+project_id = foo
+db = {
+  name = genet
+  user = genet
+  host = localhost
+  password = ""
+}
+uri_prefix = "http://foo.net"
+rest_api = "http://localhost:8082/"

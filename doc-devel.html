@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : Development documentation</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="file:///home/guesdon/devel/genet-gh-pages/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/download.html">Download</a></li>
+    <li class="&lt;navbar-doc/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Development documentation</div>
+</div>
+<span/>
+
+
+<div class="alert alert-info">This page is not finished yet.</div>
+
+Table of contents<ul class="toc"><li class="toc-section"><a href="#sources">Organisation of source code</a></li></ul>
+<div class="section"><div class="section-title" id="sources">Organisation of source code</div>
+<p>
+Source code is versioned with git on Gitorious:
+<span class="ext-a"><a href="https://gitorious.org/genet">https://gitorious.org/genet</a></span>.
+</p>
+<p>
+The code is organised as follows:
+</p>
+<ul>
+<li><span class="icode">/utils</span>: utilities for compilation.</li>
+<li><span class="icode">/doc</span>: files used to generate documentation,
+  including OCamldoc and the RDF vocabulary.</li>
+<li><span class="icode">/website</span>: web site sources, including the documentation.
+  The site is generated with <span class="ext-a"><a href="http://zoggy.github.com/stog/">Stog</a></span>.</li>
+<li><span class="icode">/src</span>: OCaml source code for executables and some templates:
+  <ul>
+  <li><span class="icode">/base</span>: base library, with modules used by other parts of the code.</li>
+  <li><span class="icode">/indata</span>: management of input files (reading, writing).</li>
+  <li><span class="icode">/grdf</span>: semantic graph manipulation (storing, modifying, ...).</li>
+  <li><span class="icode">/chains</span>: handling chains (parsing, flattening, storing, executing, ...).</li>
+  <li><span class="icode">/rest</span>: REST interface, including web interface.</li>
+  <li><span class="icode">/driver</span>: main programs and additional modules shared among these
+  programs (options and command line management, ...).</li>
+  <li><span class="icode">/tmpl</span>: templates used in web interface (XML files used with Xtmpl).</li>
+  <li><span class="icode">/tests</span>: some test files.</li>
+  </ul>
+</li>
+<li><span class="icode">/draft</span>: some notes, figures, test files, ...
+  <ul>
+    <li><span class="icode">/proval</span>: test scripts using tools from the Proval team.</li>
+  </ul>
+</li>
+</ul>
+</div>
+
+
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+</body>
+</html>

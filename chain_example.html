@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : Example of chain module</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="file:///home/guesdon/devel/genet-gh-pages/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/download.html">Download</a></li>
+    <li class="active"><a href="file:///home/guesdon/devel/genet-gh-pages/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Example of chain module</div>
+</div>
+<span/>
+
+
+<pre class="code-genet"><span class="hl com">(* Example of genet chain description *)</span>
+
+
+
+<span class="hl kwa">chain</span> split_altergo
+<span class="hl com">(*  This is the description of the chain *)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">in</span><span class="hl opt">:</span> mlw i1 <span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> why set o1 <span class="hl opt">;</span>
+
+  <span class="hl kwb">operation</span> op1 <span class="hl opt">:</span> <span class="hl str">&quot;/why3/split-2-altergo&quot;</span> <span class="hl opt">;</span>
+
+  i1 <span class="hl opt">-&gt;</span> op1<span class="hl opt">.</span>1 <span class="hl opt">;</span><span class="hl com">(* automatically generated name for 1st input of op1 *)</span>
+  op1<span class="hl opt">.</span>1 <span class="hl opt">-&gt;</span> o1 <span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">chain</span> prove_with_ae
+<span class="hl com">(* split and prove splitted goals with alt-ergo *)</span>
+<span class="hl opt">{</span>
+
+  <span class="hl kwb">in</span><span class="hl opt">:</span> mlw i1 <span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> ae_result set o1<span class="hl opt">;</span>
+
+  <span class="hl kwb">operation</span> split <span class="hl opt">:</span> <span class="hl kwd">Why3</span><span class="hl opt">.</span>split_altergo <span class="hl opt">;</span>
+  <span class="hl kwb">operation</span> prove <span class="hl opt">:</span> foreach<span class="hl opt">(</span><span class="hl kwd">Altergo</span><span class="hl opt">.</span>prove<span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">) ;</span>
+
+  i1 <span class="hl opt">-&gt;</span> split<span class="hl num">.1</span> <span class="hl opt">;</span>
+  split<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> prove<span class="hl num">.1</span> <span class="hl opt">;</span>
+  prove<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> o1<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+
+<span class="hl kwa">chain</span> dummy
+<span class="hl com">(* for testing purpose *)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">in</span><span class="hl opt">:</span> why i1 <span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> why o1 <span class="hl opt">;</span>
+
+  <span class="hl kwb">operation</span> cp <span class="hl opt">:</span> <span class="hl kwd">Dummy</span><span class="hl opt">.</span>id <span class="hl opt">;</span>
+  i1 <span class="hl opt">-&gt;</span> cp<span class="hl num">.1</span><span class="hl opt">;</span>
+  cp<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> o1<span class="hl opt">;</span>
+<span class="hl opt">}</span>
+</pre>
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+</body>
+</html>

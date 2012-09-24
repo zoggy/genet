@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : Installation</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="file:///home/guesdon/devel/genet-gh-pages/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/download.html">Download</a></li>
+    <li class="active"><a href="file:///home/guesdon/devel/genet-gh-pages/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Installation</div>
+</div>
+<span/>
+
+
+<div class="section"><div class="section-title" id="deps">Dependencies</div>
+<p>
+Compiling Genet requires that following software to be installed:
+</p>
+<ul>
+<li><span class="ext-a"><a href="http://caml.inria.fr/">OCaml &gt;= 4.00</a></span>,</li>
+<li><span class="ext-a"><a href="http://gallium.inria.fr/~fpottier/menhir/">Menhir &gt;= 20122301</a></span> (installed with findlib),</li>
+<li><span class="ext-a"><a href="http://zoggy.github.com/xtmpl">Xtmpl &gt;= 0.3</a></span>,</li>
+<li><span class="ext-a"><a href="http://config-file.forge.ocamlcore.org/">Config-file &gt;= 1.1</a></span>,</li>
+<li><span class="ext-a"><a href="http://raevnos.pennmush.org/code/ocaml-mysql/">OCaml-MySQL &gt;= 1.0.4</a></span> (should work with prior versions),</li>
+<li><span class="ext-a"><a href="http://ocaml-rdf.forge.ocamlcore.org/">OCaml-RDF &gt;= 0.1</a></span>,</li>
+<li><span class="ext-a"><a href="http://projects.camlcity.org/projects/ocamlnet.html/">OCamlnet &gt;= 3.6</a></span> (with Nethttpd library enabled),</li>
+<li><span class="ext-a"><a href="https://bitbucket.org/mmottl/pcre-ocaml">Pcre-OCaml &gt;= 6.2.5</a></span> (should work with prior versions),</li>
+<li><span class="ext-a"><a href="http://zoggy.github.com/stog">Stog &gt;= 0.3</a></span> for the documentation.</li>
+</ul>
+<p>
+<span class="ext-a"><a href="http://git-scm.com/">Git is required as it is used to identify versions of your project files.</a></span>
+<span class="ext-a"><a href="http://www.graphviz.org">Graphviz</a></span> must also be installed; it is used by the
+web interface to display clickable graphs.
+</p>
+
+</div>
+
+<div class="section"><div class="section-title" id="making">Compiling and installing</div>
+<p>
+After extracting the source tree, go to the extracted directory and type:
+</p>
+<pre class="code-txt">./configure [options]
+make all
+make install # with sufficient rights</pre>
+<p>
+The following files and repositories will be installed,
+using variables <span class="icode">BINDIR</span>, <span class="icode">LIBDIR</span> and
+<span class="icode">SHAREDIR</span> set during the configuration step:
+</p>
+<ul>
+<li><span class="icode">BINDIR/genet*</span>: the executables.</li>
+<li><span class="icode">SHAREDIR/web/</span>: stylesheets and images of web interface.</li>
+<li><span class="icode">SHAREDIR/web/tmpl</span>: templates for web interface.</li>
+
+</ul>
+</div>
+
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+</body>
+</html>
