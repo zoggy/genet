@@ -361,7 +361,7 @@ let main () =
           | Serialize_rdf ->
               begin
                  let s = Rdf_xml.to_string
-                   ~namespaces: Grdfs.namespaces
+                   ~namespaces: ((config.Config.rest_api, "project") :: Grdfs.namespaces)
                    rdf_wld.Grdf_types.wld_graph
                 in
                 print_string s
