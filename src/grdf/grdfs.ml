@@ -46,6 +46,8 @@ let owl_ = Rdf_uri.set_fragment (Rdf_uri.uri "http://www.w3.org/2002/07/owl");;
 let xsd_ = Rdf_uri.set_fragment (Rdf_uri.uri "http://www.w3.org/2001/XMLSchema");;
 let foaf_ = Rdf_uri.concat (Rdf_uri.uri "http://xmlns.com/foaf/0.1");;
 
+let namespaces = [ genet_"", "genet" ; rdfs_"", "rdfs" ; dc_"", "dc" ; xsd_"", "xsd" ]
+
 let li_ n =
   if n <= 0 then
     raise (Invalid_argument (Printf.sprintf "li: n=%d <= 0" n))
@@ -103,8 +105,8 @@ let genet_stoppedon = genet_"stoppedOn";;
 let genet_isactive = genet_"isActive";;
 let genet_instanciate = genet_"instanciate";;
 let genet_hascommitid = genet_"hasCommitId";;
-let genet_useinput = genet_"^useInput";;
-let genet_useinputcommitid = genet_"^useInputCommitId";;
+let genet_useinput = genet_"useInput";;
+let genet_useinputcommitid = genet_"useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
 let genet_filemd5 = genet_"fileMd5";;
 let genet_hasimplode = genet_"hasImplode";;

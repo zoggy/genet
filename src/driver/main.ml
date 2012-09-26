@@ -358,16 +358,14 @@ let main () =
         try
           match mode with
           | Init_db -> ()
-          | Serialize_rdf -> failwith "Serialization not implemented"
-(*
+          | Serialize_rdf ->
               begin
-                match Rdf_model.to_string rdf_wld.Grdf_types.wld_model
-                  ~name: opts.Options.rdf_output_format
-                with
-                  None -> failwith "Failed to serialize model"
-                | Some string -> print_string string
+                 let s = Rdf_xml.to_string
+                   ~namespaces: Grdfs.namespaces
+                   rdf_wld.Grdf_types.wld_graph
+                in
+                print_string s
               end
-*)
           | Add_tool -> add_tool config rdf_wld opts
           | Add_branch -> add_branch config rdf_wld opts
           | Add_version -> add_version config rdf_wld opts
