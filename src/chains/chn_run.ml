@@ -227,6 +227,7 @@ let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files in
       inst_out_ports out_files;
       link_output ()
   | n ->
+      dbg ~level: 1 (fun () -> Printf.sprintf "command failed [%d]: %s" n com);
       Grdfs.add_triple ctx.ctx_rdf
         ~sub: (Rdf_node.Uri (uri_of_g_uri inst_node))
         ~pred: (Rdf_node.Uri Grdfs.genet_returncode)
@@ -766,15 +767,17 @@ let run ctx reporter ~inst ~fchain input comb g =
          Misc.file_of_string ~file (dot_of_graph ctx state.g);
          Printf.sprintf "Graph generated in %S" file);
 
-  let flat_out_ports =
-    List.map (fun p -> Flat p) (Grdf_port.ports ctx.ctx_rdf fchain Grdf_port.Out)
-  in
-  let (inst_out_ports, port_map) = copy_flat_ports ctx ~inst ~container: (Inst inst) flat_out_ports in
-  let out_files = get_port_input_files ctx state inst_out_ports in
-  let out_files = List.map (Filename.concat tmp_dir) out_files in
+  if run_ok then
+    begin
+      let flat_out_ports =
+        List.map (fun p -> Flat p) (Grdf_port.ports ctx.ctx_rdf fchain Grdf_port.Out)
+      in
+      let (inst_out_ports, port_map) = copy_flat_ports ctx ~inst ~container: (Inst inst) flat_out_ports in
+      let out_files = get_port_input_files ctx state inst_out_ports in
+      let out_files = List.map (Filename.concat tmp_dir) out_files in
 
-  List.iter2 (record_file ctx reporter) out_files inst_out_ports;
-
+      List.iter2 (record_file ctx reporter) out_files inst_out_ports;
+    end;
   Grdfs.set_stop_date_uri ctx.ctx_rdf inst ();
 
   (* add "consumes" links in database between instanciated ports of the final graph,
