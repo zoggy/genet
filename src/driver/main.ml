@@ -155,6 +155,7 @@ type mode =
   | Init_dir
   | Init_db
   | Serialize_rdf
+  | Import_rdf
   | Add_tool
   | Add_branch
   | Add_version
@@ -261,6 +262,12 @@ let com_serialize = {
   }
 ;;
 
+let com_import = {
+  com_options = [ ];
+  com_usage = "" ; com_kind = Final (set_mode Import_rdf) ;
+  }
+;;
+
 let git_repo = ref None;;
 let com_init_dir = {
     com_options = [
@@ -289,6 +296,7 @@ let commands = [
     "init-dir", com_init_dir, "init directory" ;
     "init-db", com_init_db, "init database" ;
     "serialize-rdf", com_serialize, "print rdf model" ;
+    "import-rdf", com_import, "import rdf model";
     "add", com_add, "add elements to rdf model" ;
     "remove", com_remove, "remove elements from rdf model" ;
   ];;
@@ -356,6 +364,9 @@ let main () =
       let rdf_wld = Grdf_init.open_graph config in
       begin
         try
+          let verbose s =
+            if opts.Options.verb_level > 0 then (prerr_string s; flush stderr)
+          in
           match mode with
           | Init_db -> ()
           | Serialize_rdf ->
@@ -365,6 +376,21 @@ let main () =
                    rdf_wld.Grdf_types.wld_graph
                 in
                 print_string s
+              end
+          | Import_rdf ->
+              begin
+                let f_import file =
+                  verbose (Printf.sprintf "Import file %S..." file);
+                  let base =
+                    let uri = Printf.sprintf "file://%s"
+                      (Filename.concat (Sys.getcwd()) file)
+                    in
+                    Rdf_uri.uri uri
+                  in
+                  Rdf_xml.from_file rdf_wld.Grdf_types.wld_graph ~base file;
+                  verbose " ok"
+                in
+                List.iter f_import opts.Options.args
               end
           | Add_tool -> add_tool config rdf_wld opts
           | Add_branch -> add_branch config rdf_wld opts
