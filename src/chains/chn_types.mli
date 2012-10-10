@@ -91,3 +91,7 @@ val uri_inst_port_of_flat_port :
   ?ichain: bool -> ?cpt: int ->  context -> inst: Grdf_types.uri -> flat: Grdf_types.uri -> Grdf_types.uri
 
 val is_uri_ichain : Grdf_types.uri -> Grdf_types.uri -> ichain_name option
+
+val ichain_op_name : ichain:Rdf_uri.uri -> Rdf_uri.uri -> string
+val uri_ichain_op : Rdf_uri.uri -> string list -> Rdf_uri.uri
+

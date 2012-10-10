@@ -289,10 +289,14 @@ let rec read_path_ichain ctx uri modpath = function
       [] -> (* TODO: define and handle Inst_chain_list *)
         let fchain_name = Chn_types.mk_fchain_name chain_name "" in
         Flat_chain_list fchain_name
-    | id :: _ ->
+    | id :: q ->
         let ichain_name = Chn_types.mk_ichain_name chain_name id in
         let uri = Chn_types.uri_ichain ctx.ctx_cfg.Config.rest_api ichain_name in
-        Inst_chain uri
+        match q with
+          [] -> Inst_chain uri
+        | path ->
+            let uri_op = Chn_types.uri_ichain_op uri path in
+            Inst_chain_op uri_op
 ;;
 
 let read_path_ichains ctx uri = function

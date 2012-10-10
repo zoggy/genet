@@ -82,6 +82,7 @@ type thing =
   | Input_file of string list * string list * bool
   | Inst_chains
   | Inst_chain_query of inst_chain_query
+  | Inst_chain_op of Rdf_uri.uri
 ;;
 
 type response = arg list * string

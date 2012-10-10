@@ -412,14 +412,14 @@ class xhtml_ichain_dot_printer =
         (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max")
 
     method print_op ctx ichain b acc_ports uri =
-      let (color, label, href) =
+      let (color, label) =
         let uri_from = Chn_flat.get_op_origin ctx uri in
         match Grdf_intf.intf_exists ctx.Chn_types.ctx_rdf uri_from with
-          None -> dotp#color_chain, Chn_flat.get_op_name uri, uri
+          None -> dotp#color_chain, Chn_flat.get_op_name uri
         | Some name ->
             let tool = Grdf_intf.tool_of_intf uri_from in
             let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
-            dotp#color_interface, name, uri_from
+            dotp#color_interface, name
       in
       let color =
         if Chn_run.return_code ctx uri <> 0 then
@@ -432,7 +432,7 @@ class xhtml_ichain_dot_printer =
              label=%S;\n color=\"black\" fillcolor=%S;\n\
              style=\"filled\"; href=%S;\n"
         (self#uri_id uri) label color
-        (Rdf_uri.string href);
+        (Rdf_uri.string uri);
       let in_ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri Grdf_port.In in
       let out_ports = Grdf_port.ports ctx.Chn_types.ctx_rdf uri Grdf_port.Out in
       List.iter (self#print_port ctx b) in_ports;
@@ -467,6 +467,13 @@ class xhtml_ichain_dot_printer =
       Buffer.add_string b "}\n";
       Buffer.contents b
   end
+
+let dot_of_ichain_op ctx uri =
+  let o = new xhtml_ichain_dot_printer in
+  let dot = o#dot_of_chain ctx uri in
+  Misc.file_of_string ~file: "/tmp/instgraph.dot" dot;
+  dot
+;;
 
 let dot_of_ichain ctx ichain_name =
   let uri = Chn_types.uri_ichain

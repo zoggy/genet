@@ -374,28 +374,43 @@ let xhtml_navpath_of_fchain_list ctx fchain_name =
   xhtml_navpath_join_path path
 ;;
 
-let xhtml_navpath_of_fchain ctx fchain_name =
+let navpath_of_fchain ctx fchain_name =
   let modname = Chn_types.fchain_modname fchain_name in
   let name = Chn_types.mk_fchain_name
     (Chn_types.fchain_chainname fchain_name) ""
   in
-  let path =
-    (navpath_of_fchain_module ctx) @
-    [
-      a_fchain_module ctx modname;
-      a_fchain ctx name ;
-    ]
-  in
-  xhtml_navpath_join_path path
+  (navpath_of_fchain_module ctx) @
+  [
+    a_fchain_module ctx modname;
+    a_fchain ctx name ;
+  ]
+;;
+
+let xhtml_navpath_of_fchain ctx fchain_name =
+  xhtml_navpath_join_path (navpath_of_fchain ctx fchain_name)
+;;
+
+let navpath_of_ichain ctx uri =
+  match Chn_inst.instance_source ctx uri with
+    None -> []
+  | Some uri_fchain ->
+      match Chn_types.is_uri_fchain ctx uri_fchain with
+        None -> []
+      | Some fchain_name -> navpath_of_fchain ctx fchain_name
 ;;
 
 let xhtml_navpath_of_ichain ctx uri =
-  match Chn_inst.instance_source ctx uri with
+  xhtml_navpath_join_path (navpath_of_ichain ctx uri)
+;;
+
+let xhtml_navpath_of_ichain_op ctx uri_ichain =
+  match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_ichain with
     None -> ""
-  | Some uri_fchain ->
-      match Chn_types.is_uri_fchain ctx uri_fchain with
-        None -> ""
-      | Some fchain_name -> xhtml_navpath_of_fchain ctx fchain_name
+  | Some name ->
+      let p = navpath_of_ichain ctx uri_ichain in
+      let id = Chn_types.ichain_id name in
+      let path = p @ [Printf.sprintf "<a href=\"%s\">%s</a>" (Rdf_uri.string uri_ichain) id] in
+      xhtml_navpath_join_path path
 ;;
 
 let xhtml_navpath_of_outfile ctx path =
@@ -467,6 +482,7 @@ let xhtml_navpath ctx = function
 | `Out_file path -> xhtml_navpath_of_outfile ctx path
 | `Input path -> xhtml_navpath_of_input ctx path
 | `Input_file (input, path) -> xhtml_navpath_of_input_file ctx ~input path
+| `Inst_chain_op ichain -> xhtml_navpath_of_ichain_op ctx ichain
 ;;
 
 let intf_list ctx intfs =
@@ -905,10 +921,72 @@ let get_fchain ctx uri =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let get_ichain_op ctx uri =
+  let inst_chain =
+    match Grdfs.subject_uri ctx.ctx_rdf
+      ~pred: Grdfs.genet_containsop ~obj: (Uri uri)
+    with
+      None -> failwith (Printf.sprintf "%S is not contained" (Rdf_uri.string uri))
+    | Some u -> u
+  in
+  let ichain_name =
+    match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst_chain with
+      None -> assert false
+    | Some n -> n
+  in
+  let op_name = Chn_types.ichain_op_name ~ichain: inst_chain uri in
+  let start_date = Misc.string_of_opt (Chn_run.ichain_start_date ctx uri) in
+  let stop_date = Misc.string_of_opt (Chn_run.ichain_stop_date ctx uri) in
+  let title = op_name in
+  let wtitle = Printf.sprintf "%s/%s" (Chn_types.string_of_ichain_name ichain_name) op_name in
+  let navpath = xhtml_navpath ctx (`Inst_chain_op inst_chain) in
+  let uri_from = Chn_flat.get_op_origin ctx uri in
+  let interface =
+    match Grdf_intf.intf_exists ctx.Chn_types.ctx_rdf uri_from with
+      None -> ""
+    | Some name ->
+        let tool = Grdf_intf.tool_of_intf uri_from in
+        let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
+        Printf.sprintf "<p><strong>Interface:</strong> <a href=\"%s\">%s</a></p>"
+        (Rdf_uri.string uri_from) name
+  in
+  let return_code =
+    match Chn_run.return_code ctx uri with
+      0 -> ""
+    | n -> Printf.sprintf "<p><strong>Return code:</strong> %d</p>" n
+  in
+  let output =
+    match Grdfs.object_literal ctx.ctx_rdf
+      ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_commandoutput
+    with
+      None -> ""
+    | Some md5 ->
+        let s =
+          Printf.sprintf "<p><strong>Output:</strong> %s</p>"
+          (a_outfile ctx [md5])
+        in
+        prerr_endline s;
+        s
+  in
+  let svg =
+    let dot = Rest_xpage.dot_of_ichain_op ctx uri in
+    dot_to_svg ~svg_h: 600 dot
+  in
+  let contents =
+    Printf.sprintf
+       "<p><strong>Start date:</strong> %s</p>
+       <p><strong>Stop date:</strong> %s</p>
+       %s%s%s%s"
+       start_date stop_date
+       interface return_code output svg
+  in
+  ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
+;;
+
 let get_ichain ctx uri =
   let ichain_name =
     match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
-      None -> assert false
+      None -> failwith (Printf.sprintf "Not an instanciated chain uri: %S" (Rdf_uri.string uri))
     | Some n -> n
   in
   let title = "" in
@@ -1420,5 +1498,6 @@ let get ctx thing args =
       handle_in_error ctx (get_input_file ctx ~raw ~input) file_path
   | Inst_chains -> get_inst_chains ctx args
   | Inst_chain_query iq -> inst_chain_query ctx iq
+  | Inst_chain_op uri -> handle_chain_error ctx(get_ichain_op ctx) uri
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

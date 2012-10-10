@@ -210,3 +210,15 @@ let is_uri_ichain prefix uri =
     None -> None
   | Some ((modname, name), id) -> Some ((modname, name), id)
 ;;
+
+let ichain_op_name ~ichain op =
+  let parent = String.concat "/" (Rdf_uri.path ichain) in
+  let path = String.concat "/" (Rdf_uri.path op) in
+  Misc.path_under ~parent path
+;;
+
+let uri_ichain_op ichain path =
+  List.fold_left Rdf_uri.concat ichain path
+;;
+
+

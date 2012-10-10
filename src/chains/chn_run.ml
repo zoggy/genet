@@ -155,7 +155,7 @@ let filename_of_md5 ctx md5 =
   Filename.concat (Config.out_dir ctx.ctx_cfg) md5
 ;;
 
-let record_file ctx reporter ?(pred=Rdf_node.Uri Grdfs.genet_filemd5) file uri =
+let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file uri =
   if not (Sys.file_exists file) then
     failwith (Printf.sprintf "File %S not found" file);
   let md5 =
@@ -168,7 +168,7 @@ let record_file ctx reporter ?(pred=Rdf_node.Uri Grdfs.genet_filemd5) file uri =
   if not (Sys.file_exists outfile) then
     Misc.copy_file ~src: file ~dst: outfile;
   Grdfs.add_triple ctx.ctx_rdf
-    ~sub: (Rdf_node.Uri (uri_of_g_uri uri)) ~pred
+    ~sub: (Rdf_node.Uri (uri_of_g_uri uri)) ~pred: (Rdf_node.Uri pred)
     ~obj: (Rdf_node.node_of_literal_string md5)
 ;;
 
@@ -216,7 +216,9 @@ let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files in
     (Filename.quote out_file)
   in
   dbg ~level: 2 (fun () -> Printf.sprintf "Running %s" com);
-  let link_output () = record_file ctx reporter out_file inst_node in
+  let link_output () = record_file ctx reporter
+    ~pred: (Grdfs.genet_commandoutput) out_file inst_node
+  in
   match Sys.command com with
     0 ->
       List.iter2
