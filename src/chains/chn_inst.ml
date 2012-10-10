@@ -291,7 +291,7 @@ let instanciate ctx reporter uri_fchain input comb =
         ctx.ctx_rdf.wld_graph.transaction_commit();
         uri
       with
-        e ->
+      |  e ->
           ctx.ctx_rdf.wld_graph.transaction_rollback ();
           raise e
 ;;

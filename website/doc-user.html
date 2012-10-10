@@ -82,7 +82,13 @@ mysql> grant all privileges on &lt;db&gt;.* to &lt;dbuser&gt;@localhost identifi
 <!--
 <p>
 With postgresql:
-<hcode lang="sql">
+<hcode lang="sql">postgres=# CREATE DATABASE  genet WITH owner=guesdon ENCODING='UTF-8' TEMPLATE=template0;
+
+ vi /etc/postgresql/9.1/main/postgresql.conf
+shared_buffers = 64MB
+echo 134217728 > /proc/sys/kernel/shmmax
+
+
 # su
 # su postgres
 # createuser [ - -superuser ] &lt;dbuser&gt;

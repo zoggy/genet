@@ -421,6 +421,12 @@ class xhtml_ichain_dot_printer =
             let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
             dotp#color_interface, name, uri_from
       in
+      let color =
+        if Chn_run.return_code ctx uri <> 0 then
+          "red"
+        else
+          color
+      in
       if not (Rdf_uri.equal ichain uri) then
         Printf.bprintf b "subgraph cluster_%s {\n\
              label=%S;\n color=\"black\" fillcolor=%S;\n\

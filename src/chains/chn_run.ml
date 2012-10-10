@@ -45,6 +45,17 @@ let ichain_stop_date ctx uri =
   | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
 ;;
 
+let return_code ctx uri =
+  match Grdfs.object_literal ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_returncode
+  with
+    None -> 0
+  | Some s ->
+      try int_of_string s
+      with _ ->
+          failwith (Printf.sprintf "Invalid command return code %s" s)
+;;
+
 type g_uri = Flat of Rdf_uri.uri | Inst of Rdf_uri.uri;;
 let compare_g_uri t1 t2 =
   match t1, t2 with
@@ -144,7 +155,7 @@ let filename_of_md5 ctx md5 =
   Filename.concat (Config.out_dir ctx.ctx_cfg) md5
 ;;
 
-let record_file ctx reporter file port =
+let record_file ctx reporter ?(pred=Rdf_node.Uri Grdfs.genet_filemd5) file uri =
   if not (Sys.file_exists file) then
     failwith (Printf.sprintf "File %S not found" file);
   let md5 =
@@ -157,7 +168,7 @@ let record_file ctx reporter file port =
   if not (Sys.file_exists outfile) then
     Misc.copy_file ~src: file ~dst: outfile;
   Grdfs.add_triple ctx.ctx_rdf
-    ~sub: (Rdf_node.Uri (uri_of_g_uri port)) ~pred: (Rdf_node.Uri Grdfs.genet_filemd5)
+    ~sub: (Rdf_node.Uri (uri_of_g_uri uri)) ~pred
     ~obj: (Rdf_node.node_of_literal_string md5)
 ;;
 
@@ -166,6 +177,9 @@ type state =
     port_to_file : string Gurimap.t ;
     nodes_run : Guriset.t ;
   }
+
+exception Exec_failed of state * uri * g_uri * string * int
+  (** state * inst_chain * inst_node * command * return code *)
 
 let sort_ports =
   let comp p1 p2 =
@@ -191,23 +205,32 @@ let out_ports state node =
   )
 ;;
 
-let run_command ctx reporter tmp_dir path in_files inst_out_ports out_files =
+let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files inst_out_ports out_files =
+  let out_file = Filename.temp_file "genet" "run_command.out" in
   let com = Printf.sprintf
-    "cd %s ; %s %s %s"
+    "(cd %s ; %s %s %s) > %s 2>&1"
     (Filename.quote tmp_dir)
     path
     (String.concat " " (List.map Filename.quote in_files))
     (String.concat " " (List.map Filename.quote out_files))
+    (Filename.quote out_file)
   in
   dbg ~level: 2 (fun () -> Printf.sprintf "Running %s" com);
+  let link_output () = record_file ctx reporter out_file inst_node in
   match Sys.command com with
     0 ->
       List.iter2
       (fun port file ->
          record_file ctx reporter (Filename.concat tmp_dir file) port)
-      inst_out_ports out_files
+      inst_out_ports out_files;
+      link_output ()
   | n ->
-      failwith (Printf.sprintf "Command failed [%d]: %s" n com)
+      Grdfs.add_triple ctx.ctx_rdf
+        ~sub: (Rdf_node.Uri (uri_of_g_uri inst_node))
+        ~pred: (Rdf_node.Uri Grdfs.genet_returncode)
+        ~obj: (Rdf_node.node_of_literal_string ~typ: Grdfs.datatype_integer (string_of_int n));
+      link_output ();
+      raise (Exec_failed (state, inst_chain, inst_node, com, n))
 ;;
 let gen_file =
   let cpt = ref 0 in
@@ -597,7 +620,7 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
      | [] -> assert false | _ -> assert false
    in
   let path = Printf.sprintf "cp -fr" in
-  run_command ctx reporter tmp_dir path in_files [out_port] [out_file];
+  run_command ctx reporter state inst tmp_dir inst_node path in_files [out_port] [out_file];
   set_node_as_run state inst_node
 ;;
 
@@ -673,7 +696,7 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
                 Grdfs.set_start_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
                 begin
                   try
-                    run_command ctx reporter tmp_dir path in_files inst_out_ports out_files;
+                    run_command ctx reporter state inst tmp_dir inst_node path in_files inst_out_ports out_files;
                     Grdfs.set_stop_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
                   with
                     e ->
@@ -724,7 +747,16 @@ let run ctx reporter ~inst ~fchain input comb g =
       let file = "/tmp/inst_init_run.dot" in
       Misc.file_of_string ~file (dot_of_graph ctx state.g);
       Printf.sprintf "Init run graph generated in %S" file);
-  let state = run_nodes ctx reporter inst comb tmp_dir state in
+  let (state, run_ok) =
+    try (run_nodes ctx reporter inst comb tmp_dir state, true)
+    with Exec_failed (state, _, inst_node, _, _) ->
+        Grdfs.add_triple_uris ctx.ctx_rdf
+        ~sub: inst
+        ~pred: Grdfs.genet_failedcommand
+        ~obj: (uri_of_g_uri inst_node);
+        Grdfs.set_stop_date_uri ctx.ctx_rdf inst ();
+        (state, false)
+  in
 
   dbg ~level: 2
       (fun () ->
@@ -754,17 +786,20 @@ let run ctx reporter ~inst ~fchain input comb g =
   let f_succ _ l = List.iter f_edge l in
   Graph.iter_succ state.g f_succ;
 
-  (* graph should be empty now *)
-  let not_executed = Graph.fold_pred state.g
-    (fun node _ acc ->
-       if Guriset.mem node state.nodes_run then acc else (g_uri_string node) :: acc)
-    []
-  in
-  match not_executed with
-    [] -> ()
-  | _ ->
-      let msg = Printf.sprintf "The following nodes were not executed:\n%s"
-        (String.concat "\n" not_executed)
+  (* graph should be empty now if no error *)
+  if run_ok then
+    begin
+      let not_executed = Graph.fold_pred state.g
+        (fun node _ acc ->
+           if Guriset.mem node state.nodes_run then acc else (g_uri_string node) :: acc)
+        []
       in
-      failwith msg
+      match not_executed with
+        [] -> ()
+      | _ ->
+          let msg = Printf.sprintf "The following nodes were not executed:\n%s"
+            (String.concat "\n" not_executed)
+          in
+          failwith msg
+    end
 ;;

@@ -951,16 +951,28 @@ let get_ichain ctx uri =
             let fchain = a_fchain ctx ~label flat_name in
             Printf.sprintf "%s [%s]" chain fchain
   in
+  let exec_error =
+    match Grdfs.object_uri ctx.ctx_rdf
+      ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_failedcommand
+    with
+      None -> ""
+    | Some err_uri ->
+        let s_uri = Rdf_uri.string err_uri in
+        Printf.sprintf
+        "<p class=\"alert alert-error\">
+        Failed while running <tt><a href=\"%s\">%s</a></tt></p>\n"
+        s_uri s_uri
+  in
   let contents =
     Printf.sprintf
        "<p><strong>Creation date:</strong> %s</p>
        <p><strong>Start date:</strong> %s</p>
        <p><strong>Stop date:</strong> %s</p>
-       <p><strong>Input:</strong> %s</p>\n
-       <p><strong>Flat chain:</strong> %s</p>%s%s\n"
+       <p><strong>Input:</strong> %s</p>
+       <p><strong>Flat chain:</strong> %s</p>\n
+       %s%s%s"
        date start_date stop_date input_info flat_uri
-       tool_versions
-       svg
+       exec_error tool_versions svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;

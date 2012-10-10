@@ -46,6 +46,8 @@ let owl_ = Rdf_uri.set_fragment (Rdf_uri.uri "http://www.w3.org/2002/07/owl");;
 let xsd_ = Rdf_uri.set_fragment (Rdf_uri.uri "http://www.w3.org/2001/XMLSchema");;
 let foaf_ = Rdf_uri.concat (Rdf_uri.uri "http://xmlns.com/foaf/0.1");;
 
+let datatype_integer = xsd_"integer";;
+
 let namespaces = [ genet_"", "genet" ; rdfs_"", "rdfs" ; dc_"", "dc" ; xsd_"", "xsd" ]
 
 let li_ n =
@@ -110,6 +112,9 @@ let genet_useinputcommitid = genet_"useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
 let genet_filemd5 = genet_"fileMd5";;
 let genet_hasimplode = genet_"hasImplode";;
+let genet_returncode = genet_"returnCode";;
+let genet_commandoutput = genet_"commandOutput";;
+let genet_failedcommand = genet_"failedCommand";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj
