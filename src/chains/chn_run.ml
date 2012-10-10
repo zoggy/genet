@@ -123,11 +123,6 @@ let dot_of_graph ctx g =
   Graph.dot_of_graph ~f_edge ~f_node g
 ;;
 
-let replace_version ctx str version =
-  let name = Grdf_version.name ctx.ctx_rdf version in
-  Str.global_replace (Str.regexp "%v") name str
-;;
-
 let extract_git_file config ~file ~id ~target =
   let data_dir = Config.data_dir config in
   let base_dir = Misc.path_under ~parent: data_dir file in
@@ -172,10 +167,30 @@ let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file uri =
     ~obj: (Rdf_node.node_of_literal_string md5)
 ;;
 
+let compute_version_replacement ctx comb =
+  let (versions, comb) = Urimap.fold
+    (fun uri version (versions, comb) ->
+      let s = Printf.sprintf "%%{version-%s}"
+         (Grdf_tool.name ctx.ctx_rdf uri)
+       in
+       let s = Str.regexp_string s in
+       let v = Grdf_version.name ctx.ctx_rdf version in
+       ((s, v) :: versions, Urimap.add uri v comb)
+    )
+    comb
+    ([], Urimap.empty)
+  in
+  fun default_tool s ->
+    let version = Urimap.find default_tool comb in
+    let versions = (Str.regexp_string "%v", version) :: versions in
+    List.fold_right (fun (re,v) s -> Str.global_replace re v s) versions s
+;;
+
 type state =
   { g : Graph.t ;
     port_to_file : string Gurimap.t ;
     nodes_run : Guriset.t ;
+    replace_versions : Rdf_uri.uri -> string -> string ;
   }
 
 exception Exec_failed of state * uri * g_uri * string * int
@@ -373,10 +388,16 @@ let copy_node ctx ~inst ?cpt orig_node ?inports ?outports state =
   (new_node, port_map_in, port_map_out, { state with g })
 ;;
 
-let init_run ctx reporter ~inst ~fchain input tmp_dir g =
+let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
   let in_files = input.Ind_types.in_files in
   dbg ~level: 1 (fun () -> Printf.sprintf "inst = %S" (Rdf_uri.string inst));
-  let state = { g ; port_to_file = Gurimap.empty ; nodes_run = Guriset.empty } in
+  let state = {
+      g ;
+      port_to_file = Gurimap.empty ;
+      nodes_run = Guriset.empty ;
+      replace_versions = compute_version_replacement ctx comb ;
+    }
+  in
 
   let (inst_node,_,_,state) = copy_node ctx ~inst (Flat fchain) state in
   let inst_in_ports = out_ports state inst_node in
@@ -627,7 +648,7 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
   set_node_as_run state inst_node
 ;;
 
-let rec run_node ctx reporter inst comb tmp_dir state orig_node =
+let rec run_node ctx reporter inst tmp_dir state orig_node =
   dbg ~level: 1
     (fun () -> Printf.sprintf "run_node %S" (g_uri_string orig_node));
 
@@ -692,8 +713,7 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
                 in
                 let state = { state with g } in
                 let tool = Grdf_intf.tool_of_intf uri_from in
-                let version = Urimap.find tool comb in
-                let path = replace_version ctx path version in
+                let path = state.replace_versions tool path in
                 (*prerr_endline (Printf.sprintf "path = %s" path);*)
                 Grdfs.set_start_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
                 begin
@@ -712,9 +732,9 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
                 let state = { state with g } in
                 set_node_as_run state inst_node
   in
-  run_nodes ctx reporter inst comb tmp_dir state
+  run_nodes ctx reporter inst tmp_dir state
 
-and run_nodes ctx reporter inst comb tmp_dir state =
+and run_nodes ctx reporter inst tmp_dir state =
   match runnable_nodes state with
     [] ->
       dbg ~level: 1 (fun () -> "run_nodes: no more runnable nodes");
@@ -730,7 +750,7 @@ and run_nodes ctx reporter inst comb tmp_dir state =
          let file = Printf.sprintf "/tmp/inst_run-%d.dot" (Guriset.cardinal state.nodes_run) in
          Misc.file_of_string ~file (dot_of_graph ctx state.g);
          Printf.sprintf "Graph generated in %S" file);
-      run_node ctx reporter inst comb tmp_dir state node
+      run_node ctx reporter inst tmp_dir state node
 ;;
 
 let run ctx reporter ~inst ~fchain input comb g =
@@ -740,7 +760,7 @@ let run ctx reporter ~inst ~fchain input comb g =
   Sys.remove tmp_dir;
   Misc.mkdir tmp_dir ;
 
-  let state = init_run ctx reporter ~inst ~fchain input tmp_dir g  in
+  let state = init_run ctx reporter comb ~inst ~fchain input tmp_dir g  in
   let state = set_node_as_run state (Flat fchain) in
   let state = set_node_as_run state (Inst inst) in
 
@@ -750,7 +770,7 @@ let run ctx reporter ~inst ~fchain input comb g =
       Misc.file_of_string ~file (dot_of_graph ctx state.g);
       Printf.sprintf "Init run graph generated in %S" file);
   let (state, run_ok) =
-    try (run_nodes ctx reporter inst comb tmp_dir state, true)
+    try (run_nodes ctx reporter inst tmp_dir state, true)
     with Exec_failed (state, _, inst_node, _, _) ->
         Grdfs.add_triple_uris ctx.ctx_rdf
         ~sub: inst
