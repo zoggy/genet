@@ -28,5 +28,6 @@
 
 val tools : Grdf_types.world -> Grdf_types.uri list
 
+val tool_exists : Grdf_types.world -> Grdf_types.uri -> string option
 val add_tool : Grdf_types.world -> string -> Grdf_types.uri
 val name : Grdf_types.world -> Grdf_types.uri -> string

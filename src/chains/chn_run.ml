@@ -671,7 +671,6 @@ let rec run_node ctx reporter inst comb tmp_dir state orig_node =
                        List.fold_left (fun acc p -> Gurimap.add p p acc) Gurimap.empty (in_ports state orig_node),
                        List.fold_left (fun acc p -> Gurimap.add p p acc) Gurimap.empty (out_ports state orig_node),
                        state)
-
                 in
                 let inst_out_ports = out_ports state inst_node in
                 let (out_files, state) = new_files ctx tmp_dir state inst_out_ports in

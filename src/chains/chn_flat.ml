@@ -117,6 +117,60 @@ let get_ops ctx uri =
   l
 ;;
 
+let rec get_op_origin ctx ?current uri =
+  match Grdfs.object_uri ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_opfrom with
+  | Some uri -> get_op_origin ctx ~current: uri uri
+  | None ->
+      match current with
+        None ->
+          failwith (Printf.sprintf "Operation %s has no 'from' link." (Rdf_uri.string uri))
+      | Some x -> x
+;;
+
+let intfs_of_flat_chain ctx uri =
+  let rec f acc uri =
+    let uri_from = get_op_origin ctx uri in
+    match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+      None ->
+        let ops = get_ops ctx uri in
+        List.fold_left f acc ops
+    | Some _ ->
+        Uriset.add uri_from acc
+  in
+  let ops = get_ops ctx uri in
+  List.fold_left f Uriset.empty ops
+;;
+
+let check_tool_intfs ctx fchain =
+  let intfs = intfs_of_flat_chain ctx fchain in
+  let (tools, required_tools) =
+    Uriset.fold
+    (fun intf (tools, req) ->
+       let l = Grdf_intf.additional_tools_used ctx.ctx_rdf intf in
+       let req = List.fold_right Uriset.add l req in
+       let tools = Uriset.add (Grdf_intf.tool_of_intf intf) tools in
+       (tools, req)
+    )
+    intfs
+    (Uriset.empty, Uriset.empty)
+  in
+  begin
+    let f tool =
+      match Uriset.mem tool tools with
+        true -> ()
+      | false ->
+          let msg = Printf.sprintf
+            "Tool %S is required by one interface in the chain %S,\
+            but no interface of this tool is used in this chain."
+            (Rdf_uri.string tool) (Rdf_uri.string fchain)
+          in
+        failwith msg
+    in
+    Uriset.iter f required_tools
+  end;
+;;
+
+
 let add_containsop ctx ~src ~dst =
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: src ~pred: Grdfs.genet_containsop ~obj: dst;
@@ -141,15 +195,7 @@ let port_producers ctx uri =
   List.filter Grdfs.is_a_port uris
 ;;
 
-let rec get_op_origin ctx ?current uri =
-  match Grdfs.object_uri ctx.ctx_rdf ~sub: (Uri uri) ~pred: Grdfs.genet_opfrom with
-  | Some uri -> get_op_origin ctx ~current: uri uri
-  | None ->
-      match current with
-        None ->
-          failwith (Printf.sprintf "Operation %s has no 'from' link." (Rdf_uri.string uri))
-      | Some x -> x
-;;
+
 
 let rec import_flat_op ctx uri_src uri_dst path (map_in, map_out) =
   assert (path <> []);
@@ -603,6 +649,7 @@ let flatten ctx fullname =
   in
   try
     let uri = do_flatten ctx deps fullname in
+    check_tool_intfs ctx uri;
     if test_mode then
       ctx.ctx_rdf.wld_graph.transaction_rollback ()
     else
@@ -767,17 +814,5 @@ let fchain_creation_date ctx uri =
   | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
 ;;
 
-let intfs_of_flat_chain ctx uri =
-  let rec f acc uri =
-    let uri_from = get_op_origin ctx uri in
-    match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-      None ->
-        let ops = get_ops ctx uri in
-        List.fold_left f acc ops
-    | Some _ ->
-        Uriset.add uri_from acc
-  in
-  let ops = get_ops ctx uri in
-  List.fold_left f Uriset.empty ops
-;;
+
 

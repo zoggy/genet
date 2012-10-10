@@ -201,5 +201,9 @@ let get_port wld uri ?(pos=max_int) dir =
   f uri p
 ;;
 
+let additional_tools_used wld uri =
+  Grdfs.object_uris wld ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_usetool
+;;
+
 
 

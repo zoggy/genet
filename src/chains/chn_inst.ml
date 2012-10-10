@@ -53,6 +53,7 @@ let version_combinations ctx fchain =
     )
     intfs Urimap.empty
   in
+  Chn_flat.check_tool_intfs ctx fchain;
   let intf_tools = Urimap.fold (fun tool intfs acc -> (tool, intfs) :: acc)
     intfs_by_tool []
   in

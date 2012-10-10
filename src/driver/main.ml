@@ -60,7 +60,7 @@ let add_version config wld options =
   | _ -> failwith "Please give tool uri, optional branch uri and name of the new version"
 ;;
 
-let add_intf config wld ?path options =
+let add_intf config wld ?path ?(tools=[]) options =
   match options.args with
   | [parent ; name] ->
       let parent = Rdf_uri.uri parent in
@@ -69,6 +69,14 @@ let add_intf config wld ?path options =
          None -> ()
        | Some p -> Grdf_intf.set_command_path wld uri p
       );
+      let f_tool tool =
+        let uri_tool = Grdfs.uri_tool config.Config.rest_api tool in
+        match Grdf_tool.tool_exists wld uri_tool with
+          None -> failwith (Printf.sprintf "Unknown tool %S" tool)
+        | _ -> Grdfs.add_triple_uris wld
+          ~sub: uri ~pred: Grdfs.genet_usetool ~obj: uri_tool
+      in
+      List.iter f_tool tools;
       print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give tool or branch uri and name of the new interface"
 ;;
@@ -189,10 +197,14 @@ let com_add_version = {
 ;;
 
 let intf_path = ref None;;
+let intf_tools = ref [];;
 let com_add_intf = {
   com_options = [
       "-p", Arg.String (fun s -> intf_path := Some s),
       "<path> path to command (when used, %v will be replaced by version)" ;
+
+      "-t", Arg.String (fun s -> intf_tools := !intf_tools @ [s]),
+      "<toolname> make interface depend on tool\n\t (when used, %{version-name>} will be replaced by version of tool)" ;
     ];
   com_usage = "<tool|branch uri> <name>" ;
   com_kind = Final (set_mode Add_intf) ;
@@ -303,7 +315,7 @@ let commands = [
 
 let command = {
   com_options = common_options ;
-  com_usage = "[arguments]" ;
+  com_usage = "<command> [arguments]" ;
   com_kind = Commands commands
   }
 
@@ -395,7 +407,7 @@ let main () =
           | Add_tool -> add_tool config rdf_wld opts
           | Add_branch -> add_branch config rdf_wld opts
           | Add_version -> add_version config rdf_wld opts
-          | Add_intf -> add_intf config rdf_wld ?path: !intf_path opts
+          | Add_intf -> add_intf config rdf_wld ?path: !intf_path ~tools: !intf_tools opts
           | Add_filetype -> add_filetype config rdf_wld opts
           | Add_port -> add_port config rdf_wld ?pos: !port_position opts
           | Rem_port -> rem_port config rdf_wld opts

@@ -91,6 +91,7 @@ let genet_file_ext = genet_"file-extension";;
 let genet_hasbranch = genet_"hasBranch";;
 let genet_nointf = genet_"noInterface";;
 let genet_haspath = genet_"hasPath";;
+let genet_usetool = genet_"useTool";;
 let genet_hasversion = genet_"hasVersion";;
 let genet_consumes = genet_"consumes";;
 let genet_produces = genet_"produces";;
