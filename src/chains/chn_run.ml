@@ -173,9 +173,9 @@ let compute_version_replacement ctx comb =
       let s = Printf.sprintf "%%{version-%s}"
          (Grdf_tool.name ctx.ctx_rdf uri)
        in
-       let s = Str.regexp_string s in
+       let re = Str.regexp_string s in
        let v = Grdf_version.name ctx.ctx_rdf version in
-       ((s, v) :: versions, Urimap.add uri v comb)
+       ((re, v) :: versions, Urimap.add uri v comb)
     )
     comb
     ([], Urimap.empty)
@@ -238,7 +238,7 @@ let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files in
     0 ->
       List.iter2
       (fun port file ->
-         record_file ctx reporter (Filename.concat tmp_dir file) port)
+         record_file ctx reporter file port)
       inst_out_ports out_files;
       link_output ()
   | n ->
@@ -296,13 +296,13 @@ let new_file ctx tmp_dir ?path state inst_port =
         match typ with
           Grdf_types.T s ->
             let uri = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
-        (Some (Grdf_ftype.extension ctx.ctx_rdf uri), false)
+            (Some (Grdf_ftype.extension ctx.ctx_rdf uri), false)
         | Var _ -> None, false
         | Set _ | Tuple _ -> (None, true)
       in
       let file = gen_file ?ext () in
       let file = match path with None -> file | Some p -> Filename.concat p file in
-      if is_dir then Misc.mkdir (Filename.concat tmp_dir file);
+      let file = Filename.concat tmp_dir file in
       let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
       (file, state)
 ;;
@@ -415,8 +415,7 @@ let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
 
   let state = { state with g = Graph.remove_node state.g (Flat fchain) } in
   let f state (in_file, id) inst_port =
-    let (port_file, state) = new_file ctx tmp_dir state inst_port in
-    let target = Filename.concat tmp_dir port_file in
+    let (target, state) = new_file ctx tmp_dir state inst_port in
     let file = Filename.concat input.Ind_types.dir in_file in
     extract_git_file ctx.ctx_cfg ~file ~id ~target;
     record_file ctx reporter target inst_port;
@@ -534,9 +533,8 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
   let inst_in_port = match in_ports state inst_node with
     [p] -> p | [] -> assert false | _ -> assert false
   in
-  let in_file = get_port_input_file ctx state orig_in_port in
+  let root = get_port_input_file ctx state orig_in_port in
   let in_files =
-     let root = Filename.concat tmp_dir in_file in
      let entries = Find.find_list Find.Ignore [root] [Find.Maxdepth 1] in
      List.filter ((<>) root) entries
   in
@@ -600,7 +598,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
       Grdfs.add_triple_uris ctx.ctx_rdf ~sub: (uri_of_g_uri inst_node) ~pred ~obj: uri;
 
       (* FIXME HANDLE FILES *)
-      record_file ctx reporter (Filename.concat tmp_dir in_file) (Inst uri);
+      record_file ctx reporter in_file (Inst uri);
       let port = Inst uri in
       (port,
        { state with port_to_file = Gurimap.add port in_file state.port_to_file }
@@ -640,6 +638,7 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
     match out_ports state inst_node with
       [p] ->
         let (file, state) = new_file ctx tmp_dir state p in
+        Misc.mkdir file;
         (p, file, state)
      | [] -> assert false | _ -> assert false
    in
@@ -660,7 +659,6 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
      (List.length in_files) (g_uri_string orig_node));
 
   let test file =
-     let file = Filename.concat tmp_dir file in
      if not (Sys.file_exists file) then
       failwith (Printf.sprintf "File %s does not exist" file)
   in
@@ -793,7 +791,7 @@ let run ctx reporter ~inst ~fchain input comb g =
       in
       let (inst_out_ports, port_map) = copy_flat_ports ctx ~inst ~container: (Inst inst) flat_out_ports in
       let out_files = get_port_input_files ctx state inst_out_ports in
-      let out_files = List.map (Filename.concat tmp_dir) out_files in
+(*      let out_files = List.map (Filename.concat tmp_dir) out_files in*)
 
       List.iter2 (record_file ctx reporter) out_files inst_out_ports;
     end;

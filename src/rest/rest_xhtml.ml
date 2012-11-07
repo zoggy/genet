@@ -1049,8 +1049,11 @@ let get_ichain ctx uri =
        <p><strong>Input:</strong> %s</p>
        <p><strong>Flat chain:</strong> %s</p>\n
        %s%s%s"
+(*
+       <p><strong>Output:</strong></p>\n
+       <pre class=\"log\"><![CDATA[%s]]></pre>"*)
        date start_date stop_date input_info flat_uri
-       exec_error tool_versions svg
+       exec_error tool_versions svg (*log*)
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;

@@ -29,5 +29,6 @@ Chains:
 - after parsing: check all out ports are connected
 - after parsing: warning for unused (=not connected) input ports
 
-Flattening:
-- remove useless ports and operations
+Filetypes:
+- allow '-' in filetype names (while parsing)
+
