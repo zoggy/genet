@@ -1074,6 +1074,10 @@ let file_date file =
 let xhtml_outdir_contents ctx path =
   let dir = List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path in
   let entries = Find.find_list Find.Ignore [dir] [Find.Maxdepth 1] in
+  let entries =
+    (* sort in reverse order because of the fold_left below *)
+    List.sort (fun f1 f2 -> Pervasives.compare f2 f1) entries
+  in
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let rows =
     List.fold_left (fun acc file ->
