@@ -87,6 +87,49 @@ let flatten opts ?dot acc s =
       acc + 1
 ;;
 
+let flatten_all opts acc =
+  try
+    let config = Config.read_config opts.Options.config_file in
+    let (chain_mods, _) = Chn_io.load_chain_files config in
+    let rdf_wld = Grdf_init.open_graph config in
+    let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
+    let f_chain mod_name  acc chain =
+      let fullname = Chn_types.mk_chain_name mod_name chain.chn_name in
+      try
+        let uri = Chn_flat.flatten ctx fullname in
+        print_endline (Printf.sprintf "%s => %s"
+          (Chn_types.string_of_chain_name fullname) (Rdf_uri.string uri));
+        acc
+      with
+        e ->
+          let msg =
+            match e with
+              Failure s | Sys_error s ->  s
+            | Loc.Problem pb -> Loc.string_of_problem pb
+            | e -> Printexc.to_string e
+          in
+          let msg = Printf.sprintf "flatten %s: %s"
+            (Chn_types.string_of_chain_name fullname) msg in
+          prerr_endline msg;
+          acc + 1
+    in
+    let f_mod acc cmod =
+      List.fold_left (f_chain cmod.cmod_name) acc cmod.cmod_chains
+    in
+    List.fold_left f_mod acc chain_mods
+  with
+    e ->
+      let msg =
+        match e with
+          Failure s | Sys_error s ->  s
+        | Loc.Problem pb -> Loc.string_of_problem pb
+        | e -> Printexc.to_string e
+      in
+      let msg = Printf.sprintf "flatten-all: %s" msg in
+      prerr_endline msg;
+      acc + 1
+;;
+
 let string_of_comb ctx comb =
   let f_version tool version acc =
     let s = Printf.sprintf "%s %s"
@@ -114,6 +157,7 @@ let dot = ref None;;
 type action =
   | Test of string
   | Flatten of string
+  | Flatten_all
   | Show_combs of string
 ;;
 let actions = ref [];;
@@ -121,6 +165,7 @@ let actions = ref [];;
 let do_action opts acc = function
   Test file -> if test_file ?dot: !dot file then acc else acc + 1
 | Flatten s -> flatten opts ?dot: !dot acc s
+| Flatten_all -> flatten_all opts acc
 | Show_combs s -> show_combinations opts acc s
 ;;
 
@@ -130,6 +175,7 @@ let options =
     "--dot", Arg.String (fun file -> dot := Some file), " generate dot files" ;
     "-t", Arg.String (fun s -> actions := Test s :: !actions), "<file> test the given file" ;
     "-f", Arg.String (fun s -> actions := Flatten s :: !actions), "<Mod.chain> flatten the given chain" ;
+    "--flatten-all", Arg.Unit (fun s -> actions := Flatten_all :: !actions), "flatten all the chains" ;
 
     "--show-combs", Arg.String (fun s -> actions := Show_combs s :: !actions),
     "<flat chain uri> show tool combinations usable to instanciate this chain";
