@@ -53,26 +53,39 @@ let exec_one opts reporter input =
       reporter#incr_errors
 ;;
 
+let all = ref false;;
+
 let options =
   Options.option_config ::
   Options.option_verbose ::
   [
+   "--all", Arg.Set all, " Execute all inputs" ;
   ]
 ;;
 
 let main () =
   let opts = Options.parse options in
-  match opts.Options.args with
-    [] -> failwith "Please give the name of one input"
-  | inputs ->
-      let reporter = new Reporter.reporter opts.Options.verb_level in
-      List.iter (exec_one opts reporter) inputs ;
-      let errors = reporter#total_errors in
-      print_endline (Reporter.string_of_msg_list reporter#messages);
-      if errors > 0 then
-        prerr_endline
-        (Printf.sprintf "%d error%s" errors (if errors > 1 then "s" else ""));
-      exit errors
+  let reporter = new Reporter.reporter opts.Options.verb_level in
+  let inputs =
+    match opts.Options.args with
+      [] ->
+        begin
+          match !all with
+            false -> failwith "Please give the name of one input or --all"
+          | true ->
+              let config = Config.read_config opts.Options.config_file in
+              Ind_io.list_inputs config
+        end
+    | inputs ->
+        inputs
+  in
+  List.iter (exec_one opts reporter) inputs;
+  let errors = reporter#total_errors in
+  print_endline (Reporter.string_of_msg_list reporter#messages);
+  if errors > 0 then
+    prerr_endline
+    (Printf.sprintf "%d error%s" errors (if errors > 1 then "s" else ""));
+  exit errors
 ;;
 
 let () = Misc.safe_main main;;
