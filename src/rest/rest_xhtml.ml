@@ -36,7 +36,7 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
   let size = String.length dot in
   if size > 50_000 then
     Xtmpl.string_of_xml
-    (Xtmpl.T ("div", ["class", "alert alert-warning"],
+    (Xtmpl.E (("", "div"), [("", "class"), "alert alert-warning"],
       [Xtmpl.D "Dot graph would have been too big; it was not generated"]))
   else
     begin
@@ -48,7 +48,7 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
       with
         Failure msg ->
           Xtmpl.string_of_xml
-            (Xtmpl.T ("div", ["class", "alert alert-error"], [Xtmpl.D msg]))
+            (Xtmpl.E (("", "div"), [("", "class"), "alert alert-error"], [Xtmpl.D msg]))
     end
 ;;
 
@@ -76,8 +76,8 @@ let out_page = page_active "out";;
 let handle_page_error ?(page=home_page) ctx f x =
   try f x
   with exc ->
-      let p msg = Xtmpl.T ("p", [], [Xtmpl.D msg]) in
-      let pre msg = Xtmpl.T ("pre", [], [Xtmpl.D msg]) in
+      let p msg = Xtmpl.E (("", "p"), [], [Xtmpl.D msg]) in
+      let pre msg = Xtmpl.E (("", "pre"), [], [Xtmpl.D msg]) in
       let msg =
         match exc with
         | Sys_error s | Failure s -> p s
@@ -123,7 +123,7 @@ let ul l =
 
 let a ~href contents =
   Xtmpl.string_of_xml
-  (Xtmpl.T ("a", ["href", (Rdf_uri.string href)], [Xtmpl.xml_of_string contents]))
+  (Xtmpl.E (("", "a"), [("", "href"), (Rdf_uri.string href)], [Xtmpl.xml_of_string contents]))
 ;;
 
 let a_by_class ctx uri =
@@ -1124,7 +1124,7 @@ let get_outfile ctx path raw =
         | _ ->
             let file_contents = Misc.string_of_file filename in
             Xtmpl.string_of_xml
-            (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
+            (Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]))
       in
       let contents = Printf.sprintf
         "<p><strong>Date:</strong> %s</p>
@@ -1258,7 +1258,7 @@ let get_input_file ctx ~raw ~input file_path =
   | false ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
       let contents = Xtmpl.string_of_xml
-        (Xtmpl.T ("hcode", [], [Xtmpl.D file_contents]))
+        (Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]))
       in
       let raw_link =
         let href = Grdfs.uri_input_file_path ~raw: true prefix input file_path in
@@ -1363,9 +1363,9 @@ let get_inst_chains ctx args =
           List.map
             (fun i ->
               let atts =
-                ("value", i) :: (if i = selected then ["selected","true"] else [])
+                (("", "value"), i) :: (if i = selected then [("", "selected"),"true"] else [])
               in
-              Xtmpl.T ("option", atts, [Xtmpl.D i]))
+              Xtmpl.E (("", "option"), atts, [Xtmpl.D i]))
             inputs
         in
         let chain_options _ _ _ =
@@ -1384,10 +1384,10 @@ let get_inst_chains ctx args =
                 | Some id ->
                     let uri = Rdf_uri.string uri in
                     let atts =
-                      ("value", uri) ::
-                      (if uri = selected then ["selected", "true"] else [])
+                      (("", "value"), uri) ::
+                      (if uri = selected then [("", "selected"), "true"] else [])
                     in
-                    (Xtmpl.T ("option", atts, [Xtmpl.D ("  "^id)])) :: acc
+                    (Xtmpl.E (("", "option"), atts, [Xtmpl.D ("  "^id)])) :: acc
           in
           let f_chain modname acc chn =
             let name = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
@@ -1395,10 +1395,10 @@ let get_inst_chains ctx args =
             let acc =
               let uri = Rdf_uri.string uri in
               let atts =
-                ("value", uri) ::
-                (if uri = selected then ["selected", "true"] else [])
+                (("", "value"), uri) ::
+                (if uri = selected then [("", "selected"), "true"] else [])
               in
-              (Xtmpl.T ("option", atts,
+              (Xtmpl.E (("", "option"), atts,
                 [Xtmpl.D (Chn_types.string_of_chain_name name)])
               ) :: acc
             in
@@ -1429,7 +1429,7 @@ let get_inst_chains ctx args =
           let result =
             let f_version version =
               let name = Grdf_version.name ctx.ctx_rdf version in
-              Xtmpl.T ("option", ["value", Rdf_uri.string version], [Xtmpl.D ("  "^name)])
+              Xtmpl.E (("", "option"), [("", "value"), Rdf_uri.string version], [Xtmpl.D ("  "^name)])
             in
             let f tool =
               let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
@@ -1439,15 +1439,15 @@ let get_inst_chains ctx args =
               Printf.bprintf javascript
                 "  onToolChange('%s',document.getElementById('%s'));\n"
                 tool_name id;
-              Xtmpl.T ("div", ["class", "control-group"],
+              Xtmpl.E (("", "div"), [("class", ""), "control-group"],
                [
-                 Xtmpl.T ("label", ["for", id], [ Xtmpl.D tool_name ]) ;
-              Xtmpl.T ("div", ["class", "controls"],
+                 Xtmpl.E (("", "label"), [("", "for"), id], [ Xtmpl.D tool_name ]) ;
+              Xtmpl.E (("", "div"), [("", "class"), "controls"],
                   [
-                    Xtmpl.T ("select",
-                     ["name", id; "id", id ;
-                      "onChange", Printf.sprintf "onToolChange('%s',this, true)" tool_name],
-                     (Xtmpl.T ("option", ["value", ""], [])) :: options
+                    Xtmpl.E (("", "select"),
+                     [("", "name"), id; ("", "id"), id ;
+                      ("", "onChange"), Printf.sprintf "onToolChange('%s',this, true)" tool_name],
+                     (Xtmpl.E (("", "option"), [("", "value"), ""], [])) :: options
                     )
                   ]
                  )
@@ -1462,9 +1462,9 @@ let get_inst_chains ctx args =
         in
         Buffer.add_string javascript "filter();\n}\n";
         let env =
-           ("input_options", input_options) ::
-           ("chain_options", chain_options) ::
-           ("tools", tools) :: []
+           (("", "input_options"), input_options) ::
+           (("", "chain_options"), chain_options) ::
+           (("", "tools"), tools) :: []
         in
         let env = Xtmpl.env_of_list env in
         let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in

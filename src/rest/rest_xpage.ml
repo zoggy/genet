@@ -26,7 +26,7 @@
 (** Building xhtml pages. *)
 
 let fun_include tmpl_dir _env args subs =
-  match Xtmpl.get_arg args "file" with
+  match Xtmpl.get_arg args ("", "file") with
     None -> failwith "Missing 'file' argument for include command";
   | Some file ->
       let file =
@@ -37,16 +37,16 @@ let fun_include tmpl_dir _env args subs =
       in
       let xml = [Xtmpl.xml_of_string (Misc.string_of_file file)] in
       let args =
-        ("include-contents", String.concat "" (List.map Xtmpl.string_of_xml subs)) ::
+        (("", "include-contents"), String.concat "" (List.map Xtmpl.string_of_xml subs)) ::
         args
       in
-      [Xtmpl.T (Xtmpl.tag_env, args, xml)]
+      [Xtmpl.E (("", Xtmpl.tag_env), args, xml)]
 ;;
 let fun_image _env args legend =
-  let width = Xtmpl.opt_arg args "width" in
-  let src = Xtmpl.opt_arg args "src" in
+  let width = Xtmpl.opt_arg args ("", "width") in
+  let src = Xtmpl.opt_arg args ("", "src") in
   let cls = Printf.sprintf "img%s"
-    (match Xtmpl.get_arg args "float" with
+    (match Xtmpl.get_arg args ("", "float") with
        Some "left" -> "-float-left"
      | Some "right" -> "-float-right"
      | Some s -> failwith (Printf.sprintf "unhandled image position: %s" s)
@@ -54,11 +54,11 @@ let fun_image _env args legend =
     )
   in
   [
-    Xtmpl.T ("div", [ "class", cls ],
-     (Xtmpl.T ("img", [ "class", "img" ; "src", src; "width", width ], [])) ::
+    Xtmpl.E (("", "div"), [ ("", "class"), cls ],
+     (Xtmpl.E (("", "img"), [ ("", "class"), "img" ; ("", "src"), src; ("", "width"), width ], [])) ::
      (match legend with
         [] -> []
-      | xml -> [ Xtmpl.T ("div", ["class", "legend"], xml) ]
+      | xml -> [ Xtmpl.E (("", "div"), [("", "class"), "legend"], xml) ]
      )
     )
   ]
@@ -87,7 +87,7 @@ let fun_hcode ?(inline=false) ?lang _env args code =
     match lang with
       None ->
         (
-         let lang = Xtmpl.opt_arg args ~def: "txt" "lang" in
+         let lang = Xtmpl.opt_arg args ~def: "txt" ("", "lang") in
          match lang with
            "txt" -> (lang, None)
          | _ -> (lang, Some (Printf.sprintf "--syntax=%s" lang))
@@ -113,10 +113,10 @@ let fun_hcode ?(inline=false) ?lang _env args code =
         Xtmpl.xml_of_string code
   in
   if inline then
-    [ Xtmpl.T ("span", ["class","icode"], [xml_code]) ]
+    [ Xtmpl.E (("", "span"), [("", "class"),"icode"], [xml_code]) ]
   else
-    [ Xtmpl.T ("pre",
-       ["class", Printf.sprintf "code-%s" language], [xml_code])
+    [ Xtmpl.E (("", "pre"),
+       [("", "class"), Printf.sprintf "code-%s" language], [xml_code])
     ]
 ;;
 
@@ -126,17 +126,17 @@ let fun_icode = fun_hcode ~inline: true ;;
 
 let fun_section cls _env args body =
   let id =
-    match Xtmpl.get_arg args "name" with
+    match Xtmpl.get_arg args ("", "name") with
       None -> []
-    | Some name -> ["id", name]
+    | Some name -> [("", "id"), name]
   in
   let title =
-    match Xtmpl.get_arg args "title" with
+    match Xtmpl.get_arg args ("", "title") with
       None -> []
     | Some t ->
-        [Xtmpl.T ("div", ["class", cls^"-title"] @ id, [Xtmpl.xml_of_string t])]
+        [Xtmpl.E (("", "div"), [("", "class"), cls^"-title"] @ id, [Xtmpl.xml_of_string t])]
   in
-  [ Xtmpl.T ("div", ["class", cls], title @ body) ]
+  [ Xtmpl.E (("", "div"), [("", "class"), cls], title @ body) ]
 ;;
 
 let fun_subsection = fun_section "subsection";;
@@ -144,7 +144,7 @@ let fun_section = fun_section "section";;
 
 let fun_if env args subs =
   prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));
-  let pred (att, v) =
+  let pred ((_,att), v) =
     let s = Xtmpl.apply env (Printf.sprintf "<%s/>" att) in
     (*prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);*)
     s = v
@@ -175,17 +175,17 @@ let tmpl_file config file = Filename.concat (tmpl_dir config) file;;
 let default_commands config =
 
   [
-    "if", fun_if ;
-    "include", fun_include (tmpl_dir config);
-    "image", fun_image ;
-    "hcode", fun_hcode ~inline: false ?lang: None;
-    "icode", fun_icode ?lang: None;
-    "ocaml", fun_ocaml ~inline: false ;
-    "command-line", fun_command_line ~inline: false ;
-    "section", fun_section ;
-    "subsection", fun_subsection ;
-    "site-url", fun_site_url config;
-    "site-title", fun_site_title config ;
+    ("", "if"), fun_if ;
+    ("", "include"), fun_include (tmpl_dir config);
+    ("", "image"), fun_image ;
+    ("", "hcode"), fun_hcode ~inline: false ?lang: None;
+    ("", "icode"), fun_icode ?lang: None;
+    ("", "ocaml"), fun_ocaml ~inline: false ;
+    ("", "command-line"), fun_command_line ~inline: false ;
+    ("", "section"), fun_section ;
+    ("", "subsection"), fun_subsection ;
+    ("", "site-url"), fun_site_url config;
+    ("", "site-title"), fun_site_title config ;
     ]
 ;;
 
@@ -196,18 +196,18 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath="") ?(error=""
         None -> "function onPageLoad() { }"
       | Some code -> code
     in
-    [ Xtmpl.T ("script", ["type", "text/javascript"], [Xtmpl.D code]) ]
+    [ Xtmpl.E (("", "script"), [("", "type"), "text/javascript"], [Xtmpl.D code]) ]
   in
   let env = Xtmpl.env_of_list ?env
-    (("page-title", (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
-     ("window-title", (fun _ _ _ -> [Xtmpl.D wtitle])) ::
-     ("navpath", (fun _ _ _ -> [Xtmpl.xml_of_string navpath])) ::
-     ("error", (fun _ _  _ -> [Xtmpl.xml_of_string error])) ::
-     ("morehead", (fun _ _ _ -> morehead)) ::
+    ((("", "page-title"), (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
+     (("", "window-title"), (fun _ _ _ -> [Xtmpl.D wtitle])) ::
+     (("", "navpath"), (fun _ _ _ -> [Xtmpl.xml_of_string navpath])) ::
+     (("", "error"), (fun _ _  _ -> [Xtmpl.xml_of_string error])) ::
+     (("", "morehead"), (fun _ _ _ -> morehead)) ::
      (default_commands config))
   in
   let f env args body = contents in
-  let env = Xtmpl.env_of_list ~env ["contents", f] in
+  let env = Xtmpl.env_of_list ~env [("", "contents"), f] in
   let tmpl_file = tmpl_file config "page.tmpl" in
   Xtmpl .apply_from_file env tmpl_file
 ;;
@@ -222,7 +222,7 @@ class xhtml_ast_printer prefix =
       let link ftype =
         let href = Grdfs.uri_filetype ~prefix ftype in
         Xtmpl.string_of_xml
-        (Xtmpl.T ("a", ["href", Rdf_uri.string href], [Xtmpl.D ftype]))
+        (Xtmpl.E (("", "a"), [("", "href"), Rdf_uri.string href], [Xtmpl.D ftype]))
       in
       let ft = Grdf_port.string_of_port_type link p.p_ftype in
       Printf.sprintf "%s %s" ft p.p_name
@@ -230,8 +230,8 @@ class xhtml_ast_printer prefix =
     method string_of_op_origin = function
       Chain fullname ->
         Xtmpl.string_of_xml
-        (Xtmpl.T
-         ("a", ["href", Rdf_uri.string (Chn_types.uri_chain prefix fullname)],
+        (Xtmpl.E
+         (("", "a"), [("", "href"), Rdf_uri.string (Chn_types.uri_chain prefix fullname)],
           [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
     | Foreach (origin, port_ref) ->
         Printf.sprintf "foreach(%s, %s)"
@@ -243,15 +243,15 @@ class xhtml_ast_printer prefix =
             (Chn_types.uri_intf_of_interface_spec ~prefix s)
           in
           Xtmpl.string_of_xml
-          (Xtmpl.T
-           ("a", ["href", href], [Xtmpl.D (Printf.sprintf "%S" s)]))
+          (Xtmpl.E
+           (("", "a"), [("", "href"), href], [Xtmpl.D (Printf.sprintf "%S" s)]))
         with
           Failure s ->
-            Xtmpl.string_of_xml (Xtmpl.T ("i", [], [Xtmpl.D s]))
+            Xtmpl.string_of_xml (Xtmpl.E (("", "i"), [], [Xtmpl.D s]))
 
     method private kwd ?(cls="kwa")s =
       let cls = Printf.sprintf "hl %s" cls in
-      Xtmpl.string_of_xml (Xtmpl.T ("span",["class", cls], [Xtmpl.D s]))
+      Xtmpl.string_of_xml (Xtmpl.E (("", "span"),[("", "class"), cls], [Xtmpl.D s]))
 
     method string_of_operation op =
       Printf.sprintf "  %s %s : %s ;\n"

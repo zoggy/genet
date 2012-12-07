@@ -946,6 +946,8 @@ let _ = check_ocamlfind_package conf "nethttpd";;
 let _ = check_ocamlfind_package conf "pcre";;
 (*let _ = check_ocamlfind_package conf "yojson";;*)
 let _ = check_ocamlfind_package conf "xtmpl";;
+let _ = check_ocamlfind_package conf ~min_version: [2;16] "lablgtk2";;
+let _ = check_ocamlfind_package conf "lablgtk2-extras";;
 
 
 (*

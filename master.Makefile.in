@@ -96,6 +96,9 @@ GENET_CHAIN_BYTE=$(GENET_PREFIX)-chain.byte
 GENET_EXEC=$(GENET_PREFIX)-exec
 GENET_EXEC_BYTE=$(GENET_PREFIX)-exec.byte
 
+GENET_GUI=$(GENET_PREFIX)-gtk
+GENET_GUI_BYTE=$(GENET_PREFIX)-gtk.byte
+
 #shut up autconf @datarootdir@
 
 # Compilation
