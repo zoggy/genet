@@ -128,6 +128,26 @@ let get_dist_instances ctx uri_inst =
 
 let make_graph ctx uri_inst =
   let dists = get_dist_instances ctx uri_inst in
+  let edge_atts dist =
+    let for_tools =
+      if Urimap.is_empty dist.on_tools then
+        ""
+      else
+        (
+         let f_v = function
+           None -> "-"
+         | Some uri -> Grdf_version.name ctx.Chn_types.ctx_rdf uri
+         in
+         let f tool (v1, v2) acc =
+           Printf.sprintf "%s %s:%s/%s" acc
+             (Grdf_tool.name ctx.Chn_types.ctx_rdf tool)
+             (f_v v1) (f_v v2)
+         in
+         Urimap.fold f dist.on_tools ""
+        )
+     in
+     Printf.sprintf "label=%S" (Printf.sprintf "%d%s" dist.dist for_tools)
+  in
   let node_atts uri =
     match Chn_types.is_uri_ichain ctx.Chn_types.ctx_cfg.Config.rest_api uri with
       None -> assert false
@@ -142,11 +162,11 @@ let make_graph ctx uri_inst =
     Printf.bprintf b "N%s [%s];\n" (id uri) (node_atts uri);
     if d <> dist_zero then
       begin
-        Printf.bprintf b "N%s -- N%s [label=\"%d\"];\n"
-        (id uri_inst) (id uri) d.dist
+        Printf.bprintf b "N%s -> N%s [%s];\n"
+        (id uri_inst) (id uri) (edge_atts d)
       end
   in
-  Buffer.add_string b "graph g {\n";
+  Buffer.add_string b "digraph g {\n";
   List.iter print_node dists;
   Buffer.add_string b "}\n";
   Buffer.contents b
