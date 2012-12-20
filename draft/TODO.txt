@@ -17,7 +17,7 @@ Add information:
 Web interface:
 - version: show branch tree above the version
   in a b1 / b2 / ... way
-- rather than in/raw/ use /in/file?raw=true
+- rather than in/raw/ use /in/file?raw=true ?
 
 Ids:
 In ids: forbid '-' (as in filetype ids): else can't match between ids in
@@ -32,3 +32,6 @@ Chains:
 Filetypes:
 - allow '-' in filetype names (while parsing)
 
+Exec:
+- genet-exec should put the reporter messages in a file, and print
+  only the list of instanciated chains.

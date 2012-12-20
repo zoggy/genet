@@ -156,16 +156,19 @@ let print_filename_of_url config s =
       failwith (Printf.sprintf "%S does not correspond to an input or output file url" s)
 ;;
 
-let lookup_insts config s =
+let lookup_insts ctx s =
   let _uri_inst = Rdf_uri.uri s in
   []
 ;;
 
-let lookup_and_print_insts config s =
-  let insts = lookup_insts config s in
+let lookup_and_print_insts ctx s =
+  let insts = lookup_insts ctx s in
   List.iter
     (fun uri -> print_endline (Rdf_uri.string uri))
-    insts
+    insts;
+  let dot = Chn_lookup.make_graph ctx (Rdf_uri.uri s) in
+  let svg = Grdf_dot.dot_to_svg dot in
+  print_endline (Xtmpl.string_of_xmls svg)
 ;;
 
 let dot wld = print_endline (Grdf_dot.dot wld);;
@@ -228,7 +231,10 @@ let main () =
     | Some Dot -> dot rdf_wld
     | Some (Test n) -> test rdf_wld config n
     | Some (File s) -> print_filename_of_url config s
-    | Some (Inst s) -> lookup_and_print_insts config s
+    | Some (Inst s) ->
+        lookup_and_print_insts
+        { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None}
+        s
   end
 ;;
 
