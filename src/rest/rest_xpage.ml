@@ -145,7 +145,7 @@ let fun_section = fun_section "section";;
 let fun_if env args subs =
   prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));
   let pred ((_,att), v) =
-    let s = Xtmpl.apply env (Printf.sprintf "<%s/>" att) in
+    let s = Xtmpl.string_of_xmls (Xtmpl.apply_to_string env (Printf.sprintf "<%s/>" att)) in
     (*prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);*)
     s = v
   in
@@ -189,7 +189,7 @@ let default_commands config =
     ]
 ;;
 
-let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath="") ?(error="") contents =
+let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath=[]) ?(error="") contents =
   let morehead =
     let code =
       match javascript with
@@ -201,7 +201,7 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath="") ?(error=""
   let env = Xtmpl.env_of_list ?env
     ((("", "page-title"), (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
      (("", "window-title"), (fun _ _ _ -> [Xtmpl.D wtitle])) ::
-     (("", "navpath"), (fun _ _ _ -> [Xtmpl.xml_of_string navpath])) ::
+     (("", "navpath"), (fun _ _ _ -> navpath)) ::
      (("", "error"), (fun _ _  _ -> [Xtmpl.xml_of_string error])) ::
      (("", "morehead"), (fun _ _ _ -> morehead)) ::
      (default_commands config))
@@ -209,7 +209,7 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath="") ?(error=""
   let f env args body = contents in
   let env = Xtmpl.env_of_list ~env [("", "contents"), f] in
   let tmpl_file = tmpl_file config "page.tmpl" in
-  Xtmpl .apply_from_file env tmpl_file
+  Xtmpl .apply_to_file env tmpl_file
 ;;
 
 open Chn_ast;;
@@ -288,7 +288,7 @@ class xhtml_ast_printer prefix =
 
 let xhtml_of_chain prefix chain =
   let printer = new xhtml_ast_printer prefix in
-  printer#string_of_chain chain
+  [Xtmpl.xml_of_string (printer#string_of_chain chain)]
 ;;
 
 class xhtml_chain_dot_printer prefix =

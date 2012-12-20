@@ -35,9 +35,8 @@ let svg_dpi = 96. ;;
 let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
   let size = String.length dot in
   if size > 50_000 then
-    Xtmpl.string_of_xml
-    (Xtmpl.E (("", "div"), [("", "class"), "alert alert-warning"],
-      [Xtmpl.D "Dot graph would have been too big; it was not generated"]))
+    [Xtmpl.E (("", "div"), [("", "class"), "alert alert-warning"],
+      [Xtmpl.D "Dot graph would have been too big; it was not generated"])]
   else
     begin
       let w = (float svg_w) /. svg_dpi in
@@ -47,18 +46,17 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
         Grdf_dot.dot_to_svg ~options ~size: (svg_w,svg_h) dot
       with
         Failure msg ->
-          Xtmpl.string_of_xml
-            (Xtmpl.E (("", "div"), [("", "class"), "alert alert-error"], [Xtmpl.D msg]))
+          [Xtmpl.E (("", "div"), [("", "class"), "alert alert-error"], [Xtmpl.D msg])]
     end
 ;;
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
 let page ?(env=Xtmpl.env_empty) ctx ~title ?javascript ?wtitle ?navpath ?error contents =
-  let s = Rest_xpage.page ctx.ctx_cfg ~env
-    ~title ?javascript ?wtitle ?navpath ?error [Xtmpl.xml_of_string contents]
+  let xmls = Rest_xpage.page ctx.ctx_cfg ~env
+    ~title ?javascript ?wtitle ?navpath ?error contents
   in
-  Printf.sprintf "<!DOCTYPE html>\n%s\n" s
+  Printf.sprintf "<!DOCTYPE html>\n%s\n" (Xtmpl.string_of_xmls xmls)
 ;;
 
 let page_active v ?(env=Xtmpl.env_empty) =
@@ -90,40 +88,43 @@ let handle_page_error ?(page=home_page) ctx f x =
       in
       let title = "Error" in
       let error = Xtmpl.string_of_xml msg in
-      ([ctype ()], page ctx ~title ~error "")
+      ([ctype ()], page ctx ~title ~error [])
 ;;
 let handle_chain_error ctx = handle_page_error ~page: chain_page ctx;;
 let handle_outfile_error = handle_page_error ~page: out_page;;
 let handle_in_error = handle_page_error ~page: in_page;;
 
 let table ?heads rows =
-  let b = Buffer.create 256 in
-  Buffer.add_string b "<table class=\"table table-bordered table-striped\">";
-  begin
+  let heads =
     match heads with
-      None -> ()
+      None -> []
     | Some heads ->
-      Buffer.add_string b "<thead><tr>";
-      List.iter (fun s -> Printf.bprintf b "<th>%s</th>" s) heads;
-      Buffer.add_string b "</tr></thead>";
-  end;
-  let f s = Printf.bprintf b "<td>%s</td>" s in
-  let f_row l =
-    Printf.bprintf b "<tr>"; List.iter f l; Printf.bprintf b "</tr>"
+        let l =
+          List.map
+          (fun h -> Xtmpl.E (("","th"), [], [Xtmpl.D h]))
+          heads
+        in
+        [
+          Xtmpl.E (("","thead"), [],
+           [ Xtmpl.E (("","tr"), [], l) ])
+        ]
   in
-  List.iter f_row rows;
-  Buffer.add_string b "</table>";
-  Buffer.contents b
+  let td c = Xtmpl.E (("","td"), [], c) in
+  let tr l = Xtmpl.E (("","tr"), [], List.map td l) in
+  let rows = List.map tr rows in
+  Xtmpl.E
+  (("", "table"), [("","class"), "table table-bordered table-striped"],
+   (heads @ rows)
+  )
 ;;
 
 let ul l =
-  let l = List.map (fun s -> Printf.sprintf "<li>%s</li>" s) l in
-  Printf.sprintf "<ul>%s</ul>" (String.concat "" l)
+  let l = List.map (fun c -> Xtmpl.E (("","li"), [], c)) l in
+  Xtmpl.E (("","ul"), [], l)
 ;;
 
 let a ~href contents =
-  Xtmpl.string_of_xml
-  (Xtmpl.E (("", "a"), [("", "href"), (Rdf_uri.string href)], [Xtmpl.xml_of_string contents]))
+  (Xtmpl.E (("", "a"), [("", "href"), (Rdf_uri.string href)], contents))
 ;;
 
 let a_by_class ctx uri =
@@ -133,37 +134,39 @@ let a_by_class ctx uri =
     | Some cl -> Grdfs.string_of_class cl
   in
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
-  Printf.sprintf "%s%s"
-  (match cl with  "" -> "" | _ ->  cl^" ")
-  (a ~href: uri name)
+  [
+    Xtmpl.D (match cl with  "" -> "" | _ ->  cl^" ") ;
+    a ~href: uri [Xtmpl.D name]
+  ]
 ;;
 
 let a_filetypes ctx =
-  a ~href: (Grdfs.uri_filetypes ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_filetypes
+  a ~href: (Grdfs.uri_filetypes ctx.ctx_cfg.Config.rest_api)
+    [ Xtmpl.D Grdfs.suffix_filetypes]
 ;;
 
 let a_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
-  a ~href: uri name
+  a ~href: uri [ Xtmpl.D name ]
 ;;
 
 let a_tools ctx =
-  a ~href: (Grdfs.uri_tools ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_tools
+  a ~href: (Grdfs.uri_tools ctx.ctx_cfg.Config.rest_api) [Xtmpl.D Grdfs.suffix_tools]
 ;;
 
 let a_tool ctx uri =
   let name = Grdf_tool.name ctx.ctx_rdf uri in
-  a ~href: uri name
+  a ~href: uri [Xtmpl.D name]
 ;;
 
 let a_version ctx uri =
   let name = Grdf_version.name ctx.ctx_rdf uri in
-  a ~href: uri name
+  a ~href: uri [Xtmpl.D name]
 ;;
 
 let a_branch ctx uri =
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
-  a ~href: uri name
+  a ~href: uri [Xtmpl.D name]
 ;;
 
 let a_chain ctx ?(full=false) fullname =
@@ -174,19 +177,19 @@ let a_chain ctx ?(full=false) fullname =
     else
       Chn_types.string_of_chain_basename (Chn_types.chain_basename fullname)
   in
-  a ~href name
+  a ~href [Xtmpl.D name]
 ;;
 
 let a_chain_module ctx modname =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_chain_module prefix modname in
-  a ~href (Chn_types.string_of_chain_modname modname)
+  a ~href [Xtmpl.D (Chn_types.string_of_chain_modname modname)]
 ;;
 
 let a_fchain_module ctx modname =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_fchain_module prefix modname in
-  a ~href (Chn_types.string_of_chain_modname modname)
+  a ~href [Xtmpl.D (Chn_types.string_of_chain_modname modname)]
 ;;
 
 let a_fchain ctx ?label fullname =
@@ -196,27 +199,27 @@ let a_fchain ctx ?label fullname =
       None -> Chn_types.string_of_chain_basename (Chn_types.fchain_basename fullname)
     | Some s -> s
   in
-  a ~href label
+  a ~href [Xtmpl.D label]
 ;;
 
 let a_ichain ctx name =
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let href = Chn_types.uri_ichain prefix name in
-  a ~href (Chn_types.string_of_ichain_name name)
+  a ~href [Xtmpl.D (Chn_types.string_of_ichain_name name)]
 ;;
 
 let a_outfile ctx path =
   match List.rev path with
-    [] -> ""
+    [] -> Xtmpl.D ""
   | basename :: _ ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
       let href = Grdfs.uri_outfile_path prefix path in
-      a ~href basename
+      a ~href [Xtmpl.D basename]
 ;;
 
 let a_input ctx ?(full=true) path =
   match List.rev path with
-    [] -> ""
+    [] -> Xtmpl.D ""
   | h :: q ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
       let href= Grdfs.uri_input_path prefix path in
@@ -226,17 +229,17 @@ let a_input ctx ?(full=true) path =
         else
           h
       in
-      a ~href label
+      a ~href [Xtmpl.D label]
 ;;
 
 let a_input_file ctx path file_path =
   match List.rev path with
-    [] -> ""
+    [] -> Xtmpl.D ""
   | _ ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
       let href= Grdfs.uri_input_file_path prefix path file_path in
       let label = match file_path with [] -> assert false | s :: _ -> s in
-      a ~href label
+      a ~href [Xtmpl.D label]
 ;;
 
 let xhtml_of_ports ctx dir uri =
@@ -246,22 +249,33 @@ let xhtml_of_ports ctx dir uri =
     let uri_ftype = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
     Printf.sprintf "<a href=%S>%s</a>" (Rdf_uri.string uri_ftype) s
   in
-  Grdf_port.string_type_of_ports ctx.ctx_rdf
-    (Grdf_port.string_of_port_type f)
-    ~sep
-    ports
+  [Xtmpl.D
+    (Grdf_port.string_type_of_ports ctx.ctx_rdf
+     (Grdf_port.string_of_port_type f)
+     ~sep
+     ports
+    )
+  ]
 ;;
 
 let xhtml_of_intf_type ctx uri =
-  Printf.sprintf "%s -&gt; %s"
-    (xhtml_of_ports ctx Grdf_port.In uri)
-    (xhtml_of_ports ctx Grdf_port.Out uri)
+  (xhtml_of_ports ctx Grdf_port.In uri) @
+  [ Xtmpl.D  " -> " ] @
+  (xhtml_of_ports ctx Grdf_port.Out uri)
+;;
+
+let xhtml_concat sep l =
+  let rec iter acc = function
+    [] -> List.rev acc
+  | h :: q ->
+    let acc = h :: sep :: acc in
+    iter acc q
+  in
+  iter [] l
 ;;
 
 let xhtml_navpath_join_path path =
-  match path with
-    [] -> ""
-  | _ -> (String.concat " / " ("" :: path)) ^ " /"
+  (xhtml_concat (Xtmpl.D " / ") ((Xtmpl.D "") :: path)) @ [Xtmpl.D " /"]
 ;;
 
 let navpath_of_tool ctx = [ a_tools ctx ];;
@@ -275,7 +289,7 @@ let xhtml_navpath_of_filetype ctx uri =
 ;;
 
 let navpath_of_branch ctx ?(inc_uri=false) uri =
-  let link uri = a ~href: uri (Grdfs.name ctx.ctx_rdf (Uri uri)) in
+  let link uri = a ~href: uri [Xtmpl.D (Grdfs.name ctx.ctx_rdf (Uri uri))] in
   let rec iter acc = function
     None -> acc
   | Some (uri, is_tool) ->
@@ -283,7 +297,7 @@ let navpath_of_branch ctx ?(inc_uri=false) uri =
         if is_tool then
           (
            let href = Grdfs.uri_branches uri in
-           (link uri :: (a ~href Grdfs.suffix_branches) :: acc)
+           (link uri :: (a ~href [Xtmpl.D Grdfs.suffix_branches]) :: acc)
           )
         else
           link uri :: acc
@@ -305,7 +319,7 @@ let xhtml_navpath_of_branches ctx uri =
 
 let xhtml_navpath_of_version ctx ?inc_uri uri =
   (match Grdf_version.parent ctx.ctx_rdf uri with
-     None -> ""
+     None -> []
    | Some uri -> xhtml_navpath_of_branch ctx ~inc_uri: true uri
   )
 ;;
@@ -321,7 +335,7 @@ let xhtml_navpath_of_intf ctx uri =
   xhtml_navpath_join_path
   [ a_tools ctx ;
     (a_tool ctx tool) ;
-    a ~href: uri_intfs Grdfs.suffix_intfs ;
+    a ~href: uri_intfs [Xtmpl.D Grdfs.suffix_intfs] ;
   ]
 ;;
 
@@ -334,7 +348,7 @@ let xhtml_navpath_of_intfs ctx uri =
 
 let navpath_of_chain_module ctx =
   [
-    a ~href: (Grdfs.uri_chains ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_chains ;
+    a ~href: (Grdfs.uri_chains ctx.ctx_cfg.Config.rest_api) [Xtmpl.D Grdfs.suffix_chains] ;
   ]
 
 let xhtml_navpath_of_chain_module ctx =
@@ -355,7 +369,7 @@ let xhtml_navpath_of_chain ctx fullname =
 
 let navpath_of_fchain_module ctx =
   [
-    a ~href: (Grdfs.uri_fchains ctx.ctx_cfg.Config.rest_api) Grdfs.suffix_fchains ;
+    a ~href: (Grdfs.uri_fchains ctx.ctx_cfg.Config.rest_api) [Xtmpl.D Grdfs.suffix_fchains] ;
   ]
 
 let xhtml_navpath_of_fchain_module ctx =
@@ -405,17 +419,17 @@ let xhtml_navpath_of_ichain ctx uri =
 
 let xhtml_navpath_of_ichain_op ctx uri_ichain =
   match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_ichain with
-    None -> ""
+    None -> []
   | Some name ->
       let p = navpath_of_ichain ctx uri_ichain in
       let id = Chn_types.ichain_id name in
-      let path = p @ [Printf.sprintf "<a href=\"%s\">%s</a>" (Rdf_uri.string uri_ichain) id] in
+      let path = p @ [a ~href: uri_ichain [Xtmpl.D id]] in
       xhtml_navpath_join_path path
 ;;
 
 let xhtml_navpath_of_outfile ctx path =
   match List.rev path with
-    [] -> ""
+    [] -> []
   | _ :: q ->
       let f (acc, acc_path) name =
         (a_outfile ctx (List.rev (name :: acc_path)) :: acc,
@@ -426,7 +440,7 @@ let xhtml_navpath_of_outfile ctx path =
       let path = List.rev path in
       let out_link =
         let href = Grdfs.uri_outfile_path ctx.ctx_cfg.Config.rest_api [] in
-        a ~href Grdfs.suffix_out
+        a ~href [Xtmpl.D Grdfs.suffix_out]
       in
       let path = out_link :: path in
       xhtml_navpath_join_path path
@@ -446,7 +460,7 @@ let navpath_of_input ctx path =
       let path = List.rev path in
       let in_link =
         let href = Grdfs.uri_input_path ctx.ctx_cfg.Config.rest_api [] in
-        a ~href Grdfs.suffix_in
+        a ~href [Xtmpl.D Grdfs.suffix_in]
       in
       in_link :: path
 ;;
@@ -463,14 +477,14 @@ let xhtml_navpath_of_input_file ctx ~input path =
 let xhtml_navpath ctx = function
 | `Chains
 | `Flat_chains
-| `Tools -> ""
+| `Tools -> []
 | `Tool uri -> xhtml_navpath_of_tool ctx
 | `Branch uri -> xhtml_navpath_of_branch ctx uri
 | `Version uri -> xhtml_navpath_of_version ctx uri
 | `Intf uri -> xhtml_navpath_of_intf ctx uri
 | `Intfs uri -> xhtml_navpath_of_intfs ctx uri
 | `Filetype uri -> xhtml_navpath_of_filetype ctx uri
-| `Filetypes -> ""
+| `Filetypes -> []
 | `Versions uri -> xhtml_navpath_of_versions ctx uri
 | `Branches uri -> xhtml_navpath_of_branches ctx uri
 | `Chain_module modname -> xhtml_navpath_of_chain_module ctx
@@ -488,12 +502,12 @@ let xhtml_navpath ctx = function
 let intf_list ctx intfs =
   let heads = [ "Name" ; "Type" ] in
   let f intf =
-    [ a ~href: intf (Grdf_intf.name ctx.ctx_rdf intf) ;
-      Printf.sprintf "<code>%s</code>" (xhtml_of_intf_type ctx intf) ;
+    [ [ a ~href: intf [Xtmpl.D (Grdf_intf.name ctx.ctx_rdf intf)] ] ;
+      [ Xtmpl.E (("","code"), [], xhtml_of_intf_type ctx intf) ];
     ]
   in
   let rows = List.map f intfs in
-  table ~heads rows
+  [ table ~heads rows ]
 ;;
 
 let xhtml_of_intfs_of ctx uri =
@@ -505,39 +519,37 @@ let xhtml_of_intfs_of ctx uri =
   let inherited_intfs = intf_list ctx (Uriset.elements inherited) in
   prerr_endline "xhtml_of_intfs: inherited ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
-  let env = List.fold_left
-    (fun e (name, v) -> Xtmpl.env_add_att name v e)
-    Xtmpl.env_empty
+  let env = Xtmpl.env_of_list
     [
-      "has_intfs", (if Uriset.is_empty explicit then "" else "true") ;
-      "intfs", intfs ;
-      "has_inherited_intfs", (if Uriset.is_empty inherited then "" else "true") ;
-      "inherited_intfs", inherited_intfs ;
+      ("", "has_intfs"), (fun _ _ _ -> [if Uriset.is_empty explicit then Xtmpl.D "" else Xtmpl.D "true"])  ;
+      ("", "intfs"), (fun _ _ _ -> intfs) ;
+      ("", "has_inherited_intfs"), (fun _ _ _ -> [if Uriset.is_empty inherited then Xtmpl.D "" else Xtmpl.D "true"]) ;
+      ("", "inherited_intfs"), (fun _ _ _ -> inherited_intfs) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  Xtmpl.apply_from_file env tmpl
+  Xtmpl.apply_to_file env tmpl
 ;;
 
 let xhtml_of_branches_of ctx uri =
   let branches = Grdf_branch.subs ctx.ctx_rdf uri in
   match branches with
-    [] -> "No branch."
+    [] -> [Xtmpl.D "No branch."]
   | _ ->
       let heads = ["Branch"] in
-      let f br = [a_branch ctx br] in
+      let f br = [ [ a_branch ctx br ] ] in
       let branches = List.sort Rdf_uri.compare branches in
       let rows = List.map f branches in
-      table ~heads rows
+      [ table ~heads rows ]
 ;;
 
 let xhtml_of_versions_of ctx uri =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true uri in
   let versions = List.sort Rdf_uri.compare versions in
   let heads = ["Active" ; "Version" ; "Date"] in
-  let f version = ["" ; a_version ctx version ; ""] in
+  let f version = [ [Xtmpl.D ""] ; [a_version ctx version] ; [Xtmpl.D ""] ] in
   let rows = List.map f versions in
-  table ~heads rows
+  [ table ~heads rows ]
 ;;
 
 let get_tool ctx uri =
@@ -547,17 +559,15 @@ let get_tool ctx uri =
   let branches = xhtml_of_branches_of ctx uri in
   let intfs = xhtml_of_intfs_of ctx uri in
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "tool.tmpl" in
-  let env = List.fold_left
-    (fun e (name, v) -> Xtmpl.env_add_att name v e)
-    Xtmpl.env_empty
+  let env = Xtmpl.env_of_list
     [
-      "graph", svg ;
-      "branches", branches ;
-      "interfaces", intfs ;
+      ("", "graph"), (fun _ _ _ -> svg) ;
+      ("", "branches"), (fun _ _ _ -> branches) ;
+      ("", "interfaces"), (fun _ _ _ -> intfs) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_from_file env tmpl in
+  let contents = Xtmpl.apply_to_file env tmpl in
   let navpath = xhtml_navpath ctx (`Tool uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -575,16 +585,16 @@ let get_tools ctx =
     let n_intfs = Uriset.cardinal (Grdf_intf.intfs_of_tool wld uri) in
     let href_intfs = Grdfs.uri_intfs uri in
 
-    [ a ~href: uri (Grdf_tool.name wld uri) ;
-      a ~href: href_versions (string_of_int n_versions) ;
-      a ~href: href_branches (string_of_int n_branches);
-      a ~href: href_intfs (string_of_int n_intfs) ;
+    [ [ a ~href: uri [Xtmpl.D (Grdf_tool.name wld uri)] ] ;
+      [ a ~href: href_versions [Xtmpl.D (string_of_int n_versions)] ] ;
+      [ a ~href: href_branches [Xtmpl.D (string_of_int n_branches)] ] ;
+      [ a ~href: href_intfs [Xtmpl.D (string_of_int n_intfs)] ] ;
     ]
   in
   let heads = [ "Name" ; "Versions" ; "Branches" ; "Interfaces" ] in
   let tools = List.sort Rdf_uri.compare tools in
   let rows = List.map f_tool tools in
-  let contents = table ~heads rows in
+  let contents = [table ~heads rows] in
   ([ctype ()], tool_page ctx ~title: "Tools" contents)
 ;;
 
@@ -595,42 +605,43 @@ let get_intf ctx uri =
   let wtitle = Printf.sprintf "%s / %s" tool_name name in
   let typ =
     let of_dir label dir =
-      Printf.sprintf "<p><strong>%s:</strong> <code> %s </code></p>"
-        label (xhtml_of_ports ctx dir uri)
+      Xtmpl.E (("", "p"), [],
+       [ Xtmpl.E (("","strong"), [], [Xtmpl.D label]) ;
+         Xtmpl.E (("","code"), [],  (xhtml_of_ports ctx dir uri) );
+       ])
     in
-    Printf.sprintf "%s%s"
-    (of_dir "Input" Grdf_port.In)
-    (of_dir "Output" Grdf_port.Out)
+    [
+      of_dir "Input" Grdf_port.In ;
+      of_dir "Output" Grdf_port.Out ;
+    ]
   in
   let branches_yes =
     match Grdf_intf.implementors ctx.ctx_rdf uri with
-      [] -> prerr_endline "empty branches_yes"; ""
-    | l -> ul (List.map (a_by_class ctx) l)
+      [] -> prerr_endline "empty branches_yes"; []
+    | l -> [ ul (List.map (a_by_class ctx) l) ]
   in
   let branches_no =
     match Grdf_intf.not_implementors ctx.ctx_rdf uri with
-      [] -> prerr_endline "empty branches_no"; ""
-    | l -> ul (List.map (a_by_class ctx) l)
+      [] -> prerr_endline "empty branches_no"; []
+    | l -> [ ul (List.map (a_by_class ctx) l) ]
   in
-  let tool = a ~href: tool tool_name in
+  let tool = a ~href: tool [Xtmpl.D tool_name] in
   let path =
     Misc.string_of_opt (Grdf_intf.command_path ctx.ctx_rdf uri)
   in
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intf.tmpl" in
-  let env = List.fold_left
-    (fun e (name, v) -> Xtmpl.env_add_att name v e)
-    Xtmpl.env_empty
+  let env = Xtmpl.env_of_list
     [
-      "type", typ ;
-      "path", path ;
-      "tool", tool ;
-      "branches_yes", branches_yes ;
-      "branches_no", branches_no ;
+      ("", "type"), (fun _ _ _ -> typ) ;
+      ("", "path"), (fun _ _ _ -> [Xtmpl.D path]) ;
+      ("", "tool"), (fun _ _ _ -> [tool]) ;
+      ("", "branches_yes"), (fun _ _ _ -> branches_yes) ;
+      ("", "branches_no"), (fun _ _ _ -> branches_no) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let navpath = xhtml_navpath ctx (`Intf uri) in
-  let contents = Xtmpl.apply_from_file env tmpl in
+  let contents = Xtmpl.apply_to_file env tmpl in
   ([ctype ()], tool_page ctx ~title: name ~wtitle ~navpath contents)
 ;;
 
@@ -638,7 +649,7 @@ let get_intfs ctx uri =
   let pre = "Interfaces of " in
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   let wtitle = Printf.sprintf "%s %s" pre name in
-  let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
+  let title = Printf.sprintf "%s %s" pre (Xtmpl.string_of_xml (a ~href: uri [Xtmpl.D name])) in
   let contents = xhtml_of_intfs_of ctx uri in
   let navpath = xhtml_navpath ctx (`Intfs uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
@@ -646,7 +657,7 @@ let get_intfs ctx uri =
 
 let get_filetype ctx uri =
   let name = Grdf_ftype.name ctx.ctx_rdf uri in
-  let contents = name in
+  let contents = [Xtmpl.D name] in
   let navpath = xhtml_navpath ctx (`Filetype uri) in
   ([ctype ()], filetype_page ctx ~title: name ~navpath contents)
 ;;
@@ -656,20 +667,20 @@ let get_filetypes ctx =
   let heads = [ "Name" ; "Extension" ; "Description" ] in
   let wld = ctx.ctx_rdf in
   let f uri =
-    [ a_filetype ctx uri ;
-      Grdf_ftype.extension wld uri ;
-      Grdf_ftype.desc wld uri ;
+    [ [ a_filetype ctx uri ];
+      [ Xtmpl.D (Grdf_ftype.extension wld uri) ] ;
+      [ Xtmpl.D (Grdf_ftype.desc wld uri) ];
     ]
   in
   let rows = List.map f ftypes in
-  let contents = table ~heads rows in
+  let contents = [ table ~heads rows ] in
   ([ctype ()], filetype_page ctx ~title: "Filetypes" contents)
 ;;
 
 let get_version ctx uri =
   let wtitle = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   let name = Grdf_version.name ctx.ctx_rdf uri in
-  let title = a ~href: uri name in
+  let title = Xtmpl.string_of_xml (a ~href: uri [Xtmpl.D name]) in
   let contents = xhtml_of_intfs_of ctx uri in
   let navpath = xhtml_navpath ctx (`Version uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
@@ -696,18 +707,16 @@ let get_branch ctx uri =
   let versions = xhtml_of_versions_of ctx uri in
   prerr_endline "get_branch: versions ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "branch.tmpl" in
-  let env = List.fold_left
-    (fun e (name, v) -> Xtmpl.env_add_att name v e)
-    Xtmpl.env_empty
+  let env = Xtmpl.env_of_list
     [
-      "graph", svg ;
-      "branches", branches ;
-      "interfaces", intfs ;
-      "versions", versions ;
+      ("", "graph"), (fun _ _ _ -> svg) ;
+      ("", "branches"), (fun  _ _ _ -> branches) ;
+      ("", "interfaces"), (fun _ _ _ -> intfs) ;
+      ("", "versions"), (fun _ _ _ -> versions) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_from_file env tmpl in
+  let contents = Xtmpl.apply_to_file env tmpl in
   let navpath = xhtml_navpath ctx (`Branch uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -716,7 +725,7 @@ let get_branches ctx uri =
   let pre = "Branches of " in
   let name = Grdfs.remove_prefix ctx.ctx_cfg.Config.rest_api uri in
   let wtitle = Printf.sprintf "%s %s" pre name in
-  let title = Printf.sprintf "%s %s" pre (a ~href: uri name) in
+  let title = Printf.sprintf "%s %s" pre (Xtmpl.string_of_xml (a ~href: uri [Xtmpl.D name])) in
   let contents = xhtml_of_branches_of ctx uri in
   let navpath = xhtml_navpath ctx (`Branches uri) in
   ([ctype ()], tool_page ctx ~title ~wtitle ~navpath contents)
@@ -733,7 +742,7 @@ let get_chains ctx =
   let chain_files = Chn_io.chain_files ctx.ctx_cfg in
   let modules = List.map Chn_io.modname_of_file chain_files in
   let modules = List.sort Chn_types.compare_chain_modname modules in
-  let rows = List.map (fun m -> [a_chain_module ctx m]) modules in
+  let rows = List.map (fun m -> [[a_chain_module ctx m]]) modules in
   let heads = ["Chain module"] in
   let (deps, error) =
     let config = ctx.ctx_cfg in
@@ -751,10 +760,10 @@ let get_chains ctx =
     (svg, error)
   in
   let contents =
-    Printf.sprintf
-      "<section>%s</section><section title=\"Dependencies\">%s</section>"
-      (table ~heads rows)
-      deps
+    [
+      Xtmpl.E (("", "section"), [], [table ~heads rows]) ;
+      Xtmpl.E (("", "section"), [("","title"), "Dependencies"], deps) ;
+    ]
   in
   let title = "Modules" in
   ([ctype ()], chain_page ctx ~title ~error contents)
@@ -778,7 +787,7 @@ let get_chain_module ctx ?nav modname =
          (Chn_types.mk_fchain_name name "")
        in
        let text = string_of_int (List.length flats) in
-       [a_chain ctx name ; a ~href text]
+       [[a_chain ctx name] ; [a ~href [Xtmpl.D text]]]
     )
     (List.sort Pervasives.compare cmod.Chn_ast.cmod_chains)
   in
@@ -791,10 +800,10 @@ let get_chain_module ctx ?nav modname =
     dot_to_svg dot
   in
   let contents =
-    Printf.sprintf
-    "<section>%s</section><section title=\"Dependencies\">%s</section>"
-    (table ~heads rows)
-    deps
+    [
+      Xtmpl.E (("", "section"), [], [table ~heads rows]) ;
+      Xtmpl.E (("", "section"), [("","title"), "Dependencies"], deps) ;
+    ]
   in
   let navpath =
     let spec =
@@ -815,7 +824,7 @@ let get_chain ctx fullname =
   let basename = Chn_types.chain_basename fullname in
   let (code, svg) =
     match Chn_ast.get_chain cmod basename with
-      None -> ("No code found", "")
+      None -> ([Xtmpl.D "No code found"], [Xtmpl.D ""])
     | Some chn ->
         let prefix = config.Config.rest_api in
         let code = Rest_xpage.xhtml_of_chain prefix chn in
@@ -827,8 +836,10 @@ let get_chain ctx fullname =
   in
   let navpath = xhtml_navpath ctx (`Chain fullname) in
   let contents =
-    Printf.sprintf "<section>%s</section><section title=\"Source from %s\">%s</section>"
-      svg (Filename.quote file) code
+    [
+      Xtmpl.E (("", "section"), [], svg) ;
+      Xtmpl.E (("", "section"), [("","title"), "Source from "^(Filename.quote file)], code) ;
+    ]
   in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
 ;;
@@ -844,7 +855,7 @@ let get_fchain_list ctx fchain_name =
   let chain_name = Chn_types.fchain_chainname fchain_name in
   let s_chain_name = Chn_types.string_of_chain_name chain_name in
   let wtitle = Printf.sprintf "Flat chains from %s" s_chain_name in
-  let title = Printf.sprintf "Flat chains from %s" (a_chain ctx chain_name) in
+  let title = Printf.sprintf "Flat chains from %s" (Xtmpl.string_of_xml (a_chain ctx chain_name)) in
   let navpath = xhtml_navpath ctx (`Flat_chain_list fchain_name) in
   let flats = Chn_flat.flat_chains_of_chain ctx chain_name in
   let heads = [ "Commit id" ; "Flatten date" ] in
@@ -852,11 +863,11 @@ let get_fchain_list ctx fchain_name =
     (fun uri ->
        let id =
          match Chn_types.is_uri_fchain ctx uri with
-           None -> ""
+           None -> []
          | Some name ->
              match Chn_types.fchain_id name with
-               None -> ""
-             | Some id -> a ~href: uri id
+               None -> []
+             | Some id -> [a ~href: uri [Xtmpl.D id]]
        in
        let date = Misc.map_opt Netdate.since_epoch (Grdfs.creation_date_uri ctx.ctx_rdf uri) in
        (id, date)
@@ -873,12 +884,12 @@ let get_fchain_list ctx fchain_name =
   let rows = List.sort comp rows in
   let rows = List.map
     (fun (id, d) ->
-       let d = match d with None -> "" | Some d -> Netdate.mk_mail_date d in
+       let d = match d with None -> [] | Some d -> [Xtmpl.D (Netdate.mk_mail_date d)] in
        [ id ; d]
     )
     rows
   in
-  let contents = table ~heads rows in
+  let contents = [ table ~heads rows ] in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
@@ -892,10 +903,13 @@ let get_fchain ctx uri =
     let heads = [ "Module" ; "Commit id" ] in
     let versions = Chn_flat.fchain_chain_versions ctx uri in
     let rows = Chn_flat.Chain_versions.fold
-      (fun (mn, id) acc -> [ Chn_types.string_of_chain_modname mn ; id ]  :: acc) versions []
+      (fun (mn, id) acc ->
+         [ [ Xtmpl.D (Chn_types.string_of_chain_modname mn) ] ;
+           [ Xtmpl.D id ]
+         ] :: acc) versions []
     in
     let rows = List.sort Pervasives.compare rows in
-    table ~heads rows
+    [ table ~heads rows ]
   in
 
   let title = "" in
@@ -912,11 +926,20 @@ let get_fchain ctx uri =
 (*  let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in*)
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
   let contents =
-    Printf.sprintf
-       "<p><strong>Id:</strong> %s</p><p><strong>Creation date:</strong> %s</p><p><strong>Module ids:</strong>%s</p>%s\n"
-       (Misc.string_of_opt id) date
-       module_ids
-       svg
+    [
+      Xtmpl.E (("", "p"), [],
+       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Id:" ]);
+         Xtmpl.D (Misc.string_of_opt id) ;
+       ]) ;
+      Xtmpl.E (("", "p"), [],
+       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Creation date:" ]);
+         Xtmpl.D date ;
+       ]) ;
+      Xtmpl.E (("", "p"), [],
+       (Xtmpl.E (("","strong"), [], [ Xtmpl.D "Module ids:" ])) ::
+         module_ids
+       )
+    ] @ svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
@@ -943,42 +966,56 @@ let get_ichain_op ctx uri =
   let uri_from = Chn_flat.get_op_origin ctx uri in
   let interface =
     match Grdf_intf.intf_exists ctx.Chn_types.ctx_rdf uri_from with
-      None -> ""
+      None -> []
     | Some name ->
         let tool = Grdf_intf.tool_of_intf uri_from in
         let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
-        Printf.sprintf "<p><strong>Interface:</strong> <a href=\"%s\">%s</a></p>"
-        (Rdf_uri.string uri_from) name
+        [
+          Xtmpl.E (("", "p"), [],
+           [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Interface:" ]);
+             a ~href: uri_from [Xtmpl.D name] ;
+           ]) ;
+        ]
   in
   let return_code =
     match Chn_run.return_code ctx uri with
-      0 -> ""
-    | n -> Printf.sprintf "<p><strong>Return code:</strong> %d</p>" n
+      0 -> []
+    | n ->
+        [
+          Xtmpl.E (("","p"), [],
+            [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Return code:"]) ;
+              a_outfile ctx [string_of_int n] ;
+           ])
+        ]
   in
   let output =
     match Grdfs.object_literal ctx.ctx_rdf
       ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_commandoutput
     with
-      None -> ""
+      None -> []
     | Some md5 ->
-        let s =
-          Printf.sprintf "<p><strong>Output:</strong> %s</p>"
-          (a_outfile ctx [md5])
-        in
-        prerr_endline s;
-        s
+        [
+          Xtmpl.E (("","p"), [],
+            [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Output:"]) ;
+              a_outfile ctx [md5] ;
+           ])
+        ]
   in
   let svg =
     let dot = Rest_xpage.dot_of_ichain_op ctx uri in
     dot_to_svg ~svg_h: 600 dot
   in
   let contents =
-    Printf.sprintf
-       "<p><strong>Start date:</strong> %s</p>
-       <p><strong>Stop date:</strong> %s</p>
-       %s%s%s%s"
-       start_date stop_date
-       interface return_code output svg
+    [
+      Xtmpl.E (("", "p"), [],
+       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Start date:" ]);
+         Xtmpl.D start_date ;
+       ]) ;
+      Xtmpl.E (("", "p"), [],
+       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Stop date:" ]);
+         Xtmpl.D stop_date ;
+       ]) ;
+    ] @ interface @ return_code @ output @ svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
@@ -1005,55 +1042,69 @@ let get_ichain ctx uri =
     let heads = ["Tool" ; "Version"] in
     let rows = List.map
       (fun (tool, version) ->
-        [ a_tool ctx tool ; a_version ctx version ]
+        [ [ a_tool ctx tool ] ; [ a_version ctx version ] ]
       )
       l
     in
-    table ~heads rows
+    [ table ~heads rows ]
   in
   let input_info =
     match Chn_inst.inst_input ctx uri with
-      None -> "??"
-    | Some (name, id) -> Printf.sprintf "%s [%s]" name id
+      None -> [Xtmpl.D "??"]
+    | Some (name, id) ->
+        [ Xtmpl.D (Printf.sprintf "%s [%s]" name id) ]
   in
   let flat_uri =
     match Chn_inst.instance_source ctx uri with
-      None -> "?"
+      None -> [Xtmpl.D "?"]
     | Some uri ->
         match Chn_types.is_uri_fchain ctx uri with
-          None -> "?"
+          None -> [Xtmpl.D "?"]
         | Some flat_name ->
             let chain_name = Chn_types.fchain_chainname flat_name in
             let chain = Chn_types.string_of_chain_name chain_name in
             let label = Misc.string_of_opt (Chn_types.fchain_id flat_name) in
             let fchain = a_fchain ctx ~label flat_name in
-            Printf.sprintf "%s [%s]" chain fchain
+            [ Xtmpl.D chain ; Xtmpl.D " [" ; fchain ; Xtmpl.D "]" ]
   in
   let exec_error =
     match Grdfs.object_uri ctx.ctx_rdf
       ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_failedcommand
     with
-      None -> ""
+      None -> []
     | Some err_uri ->
         let s_uri = Rdf_uri.string err_uri in
-        Printf.sprintf
-        "<p class=\"alert alert-error\">
-        Failed while running <tt><a href=\"%s\">%s</a></tt></p>\n"
-        s_uri s_uri
+        [ Xtmpl.E (("","p"), [("","class"), "alert alert-error"],
+           [ Xtmpl.D "Failed while running " ;
+             Xtmpl.E (("","tt"), [],
+               [ a ~href: err_uri [Xtmpl.D s_uri] ])
+           ]
+          )
+        ]
   in
   let contents =
-    Printf.sprintf
-       "<p><strong>Creation date:</strong> %s</p>
-       <p><strong>Start date:</strong> %s</p>
-       <p><strong>Stop date:</strong> %s</p>
-       <p><strong>Input:</strong> %s</p>
-       <p><strong>Flat chain:</strong> %s</p>\n
-       %s%s%s"
-(*
-       <p><strong>Output:</strong></p>\n
-       <pre class=\"log\"><![CDATA[%s]]></pre>"*)
-       date start_date stop_date input_info flat_uri
-       exec_error tool_versions svg (*log*)
+    [ Xtmpl.E (("","p"), [],
+       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Creation date:"]) ;
+         Xtmpl.D date ;
+       ]) ;
+      Xtmpl.E (("","p"), [],
+       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Start date:"]) ;
+         Xtmpl.D start_date ;
+       ]) ;
+      Xtmpl.E (("","p"), [],
+       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Stop date:"]) ;
+         Xtmpl.D stop_date ;
+       ]) ;
+      Xtmpl.E (("","p"), [],
+       ( (Xtmpl.E (("","strong"), [], [Xtmpl.D "Input:"])) :: input_info)
+      );
+      Xtmpl.E (("","p"), [],
+       ( (Xtmpl.E (("","strong"), [], [Xtmpl.D "Flat chain:"])) :: flat_uri)
+      );
+    ]
+    @ exec_error
+    @ tool_versions
+    @svg
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
@@ -1087,7 +1138,7 @@ let xhtml_outdir_contents ctx path =
          (
           let base = Filename.basename file in
           let href = Grdfs.uri_outfile_path ~raw: false prefix (path@[base]) in
-          [a ~href base] :: acc
+          [ [ a ~href [Xtmpl.D base] ] ] :: acc
          )
     )
     []
@@ -1108,14 +1159,18 @@ let get_outfile ctx path raw =
       let kind = (Unix.lstat filename).Unix.st_kind in
       let raw_link =
         match kind with
-          Unix.S_DIR -> ""
+          Unix.S_DIR -> []
         | _ ->
             let href = Grdfs.uri_outfile_path ~raw: true prefix path in
-            Printf.sprintf " [%s]" (a ~href "raw")
+            [ Xtmpl.D " [";
+              a ~href [Xtmpl.D "raw"] ;
+              Xtmpl.D "]" ;
+            ]
       in
       let title =
         Printf.sprintf "%s%s"
-        (match List.rev path with [] -> assert false | s :: _ -> s) raw_link
+        (match List.rev path with [] -> assert false | s :: _ -> s)
+        (Xtmpl.string_of_xmls raw_link)
       in
       let file_contents =
         match kind with
@@ -1123,18 +1178,24 @@ let get_outfile ctx path raw =
             xhtml_outdir_contents ctx path
         | _ ->
             let file_contents = Misc.string_of_file filename in
-            Xtmpl.string_of_xml
-            (Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]))
+            Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents])
       in
-      let contents = Printf.sprintf
-        "<p><strong>Date:</strong> %s</p>
-         <p><div class=\"btn-group\">
-         <a class=\"btn\" href=\"%s\">Producers</a>
-         </div></p>
-         %s"
-        (file_date filename)
-        (Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
-        file_contents
+      let contents =
+        [ Xtmpl.E (("","p"), [],
+           [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Date:" ] ) ;
+             Xtmpl.D  (file_date filename) ;
+           ]) ;
+          Xtmpl.E (("","p"), [],
+           [ Xtmpl.E (("","div"), [("","class"), "btn-group"],
+              [ Xtmpl.E (("","a"),
+                 [(("","class"), "btn") ;
+                   (("","href"), Rdf_uri.string (Grdfs.uri_ichains_producers_of prefix path))
+                 ],
+                 [ Xtmpl.D "Producers" ])
+              ]);
+           ]);
+           file_contents
+        ]
       in
       let navpath = xhtml_navpath ctx (`Out_file path) in
       ([ctype ()], out_page ctx ~title ~wtitle ~navpath contents)
@@ -1175,16 +1236,16 @@ let xhtml_inst_list_of_ports ctx ports =
     | Some (port_name, inst) ->
         let a_inst =
           match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
-            None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst)
+            None -> Xtmpl.D (Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst))
           | Some uri -> a_ichain ctx uri
         in
-        [ a_inst ;
-          port_name ;
-          Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst) ;
+        [ [ a_inst ] ;
+          [ Xtmpl.D port_name ] ;
+          [ Xtmpl.D (Misc.string_of_opt (Chn_flat.fchain_creation_date ctx inst))] ;
         ] :: acc
   in
   let rows = List.fold_left f [] ports in
-  table ~heads rows
+  [ table ~heads rows ]
 ;;
 
 let get_inst_producers_of ctx path =
@@ -1197,7 +1258,7 @@ let get_inst_producers_of ctx path =
         ~obj: (Rdf_node.node_of_literal_string md5)
       in
       let table = xhtml_inst_list_of_ports ctx ports in
-      let title = Printf.sprintf "Producers of %s" (a_outfile ctx [md5]) in
+      let title = Printf.sprintf "Producers of %s" (Xtmpl.string_of_xml (a_outfile ctx [md5])) in
       let wtitle = Printf.sprintf "Producers of %s" md5 in
       ([ctype ()], chain_page ctx ~title ~wtitle table)
 ;;
@@ -1205,8 +1266,8 @@ let get_inst_producers_of ctx path =
 let get_inputs ctx =
   let inputs = Ind_io.list_inputs ctx.ctx_cfg in
   let heads = ["Input"] in
-  let rows = List.map (fun s -> [a_input ctx [s]] ) inputs in
-  let table = table ~heads rows in
+  let rows = List.map (fun s -> [ [a_input ctx [s]]] ) inputs in
+  let table = [ table ~heads rows ] in
   let title = "Inputs" in
   ([ctype ()], in_page ctx ~title table)
 ;;
@@ -1221,7 +1282,7 @@ let get_input ctx path =
   let in_table =
     let f (name, _) =
       let file_path = Misc.split_filename name in
-      [a_input_file ctx path file_path]
+      [ [ a_input_file ctx path file_path ] ]
     in
     let rows = List.map f spec.Ind_types.in_files in
     table rows
@@ -1229,18 +1290,21 @@ let get_input ctx path =
   let chains_table =
      let f name =
        let chain_name = Chn_types.chain_name_of_string name in
-       [a_chain ctx ~full:true chain_name]
+       [ [a_chain ctx ~full:true chain_name] ]
     in
     let rows = List.map f spec.Ind_types.chains in
     table rows
   in
-  let contents = Printf.sprintf
-        "<p><strong>Id:</strong> %s</p>
-        <h2>Inputs</h2>%s
-        <h2>Chains</h2>%s"
-        git_id
-        in_table
-        chains_table
+  let contents =
+    [ Xtmpl.E (("","p"), [],
+       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Id:"]) ;
+         Xtmpl.D git_id ;
+       ]) ;
+      Xtmpl.E (("","h2"), [], [Xtmpl.D "Inputs"]);
+      in_table ;
+      Xtmpl.E (("","h2"), [], [Xtmpl.D "Chains"]);
+      chains_table ;
+    ]
   in
   let navpath = xhtml_navpath ctx (`Input path) in
   ([ctype ()], in_page ctx ~title ~navpath contents)
@@ -1257,16 +1321,17 @@ let get_input_file ctx ~raw ~input file_path =
       ([ctype], file_contents)
   | false ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
-      let contents = Xtmpl.string_of_xml
-        (Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]))
+      let contents =
+        [Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents])]
       in
       let raw_link =
         let href = Grdfs.uri_input_file_path ~raw: true prefix input file_path in
-        a ~href "raw"
+        a ~href [Xtmpl.D "raw"]
       in
       let title =
         Printf.sprintf "%s [%s]"
-        (match List.rev file_path with [] -> assert false | s :: _ -> s) raw_link
+        (match List.rev file_path with [] -> assert false | s :: _ -> s)
+        (Xtmpl.string_of_xml raw_link)
       in
       let wtitle = Rdf_uri.string (Grdfs.uri_input_file_path prefix input file_path) in
       let navpath = xhtml_navpath ctx (`Input_file (input, file_path)) in
@@ -1284,14 +1349,14 @@ let xhtml_inst_list ctx list =
   let rows = List.map
     (fun (uri_inst, date) ->
        match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_inst with
-         None -> [ "bad ichain "^(Rdf_uri.string uri_inst) ; "" ]
+         None -> [ [Xtmpl.D ("bad ichain "^(Rdf_uri.string uri_inst))] ; [Xtmpl.D ""] ]
        | Some name ->
            let date =
              match date with
                None -> ""
              | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
            in
-           [ a_ichain ctx name ; date]
+           [ [a_ichain ctx name] ; [Xtmpl.D date]]
     )
     list
   in
@@ -1330,7 +1395,7 @@ let inst_chain_query_of_args args =
 let inst_chain_query ctx iq =
   let contents =
     match iq.Rest_types.iq_input, iq.Rest_types.iq_chain, Urimap.is_empty iq.Rest_types.iq_tools with
-      None, None, true -> "Please give at least one criterium"
+      None, None, true -> Xtmpl.D "Please give at least one criterium"
     | _ ->
         let inst_list = Chn_inst_query.query_instances ctx
           ?input: iq.Rest_types.iq_input ?chain: iq.Rest_types.iq_chain
@@ -1338,7 +1403,7 @@ let inst_chain_query ctx iq =
         in
         xhtml_inst_list ctx inst_list
   in
-  ([ctype ()], contents)
+  ([ctype ()], Xtmpl.string_of_xml contents)
 ;;
 
 let get_inst_chains ctx args =
@@ -1439,7 +1504,7 @@ let get_inst_chains ctx args =
               Printf.bprintf javascript
                 "  onToolChange('%s',document.getElementById('%s'));\n"
                 tool_name id;
-              Xtmpl.E (("", "div"), [("class", ""), "control-group"],
+              Xtmpl.E (("", "div"), [("", "class"), "control-group"],
                [
                  Xtmpl.E (("", "label"), [("", "for"), id], [ Xtmpl.D tool_name ]) ;
               Xtmpl.E (("", "div"), [("", "class"), "controls"],
@@ -1467,7 +1532,9 @@ let get_inst_chains ctx args =
            (("", "tools"), tools) :: []
         in
         let env = Xtmpl.env_of_list env in
-        let contents = "<include file=\"inst_chain_filter.tmpl\"/>" in
+        let contents =
+          [ Xtmpl.E (("","include"), [("","file"), "inst_chain_filter.tmpl"], []) ]
+        in
         ([ctype ()], out_page ctx ~env ~title ~javascript: (Buffer.contents javascript) contents)
       end
   | _ ->

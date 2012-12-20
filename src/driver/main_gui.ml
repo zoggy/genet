@@ -37,7 +37,7 @@ let main () =
   let opts = Options.parse options in
   let config = Config.read_config opts.Options.config_file in
   let rdf_wld = Grdf_init.open_graph config in
-  let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
+  let _ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
   ()
 
 ;;

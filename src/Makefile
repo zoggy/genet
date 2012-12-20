@@ -25,9 +25,9 @@
 
 include ../master.Makefile
 
-BASE_PACKAGES=unix,str,config-file,rdf.mysql,rdf.postgresql,menhirLib
+BASE_PACKAGES=unix,str,config-file,rdf.mysql,rdf.postgresql,xtmpl,menhirLib
 NET_PACKAGES=equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix
-REST_PACKAGES=xtmpl#,yojson
+REST_PACKAGES=#,yojson
 GUI_PACKAGES=lablgtk2.auto-init,lablgtk2-extras
 
 ALL_PACKAGES=$(BASE_PACKAGES),$(NET_PACKAGES),$(REST_PACKAGES),$(GUI_PACKAGES)

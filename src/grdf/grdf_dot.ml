@@ -205,7 +205,7 @@ let dot_to_svg ?(options="") ?size dot =
           xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n%s"
             w h w h svg
       in
-      svg
+      [Xtmpl.xml_of_string svg]
   | n ->
       let msg = Printf.sprintf "Execution failed (%d): %s" n com in
       failwith msg
