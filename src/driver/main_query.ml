@@ -35,6 +35,7 @@ type mode =
   | Filetypes
   | Dot
   | Test of int
+  | File of string
 
 let mode = ref None;;
 
@@ -54,6 +55,9 @@ let options =
 
   ("--filetypes", Arg.Unit (fun () -> mode := Some Filetypes),
    " print filetypes") ::
+
+  ("--file", Arg.String (fun s -> mode := Some (File s)),
+   "<url> print the filename corresponding to the given file url") ::
 
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
@@ -121,6 +125,33 @@ let list_filetypes wld =
   List.iter (fun ft -> prerr_endline (Grdf_ftype.string_of_filetype wld ft)) l
 ;;
 
+let print_filename_of_url config s =
+  let prefix = config.Config.rest_api in
+  let out_pref = Grdfs.uri_outfile_path prefix [] in
+  let out_pref_raw = Grdfs.uri_outfile_path ~raw: true prefix [] in
+  let in_pref = Grdfs.uri_input_path prefix [] in
+  let in_pref_raw = Grdfs.uri_input_path ~raw: true prefix  [] in
+  let out_dir = Config.out_dir config in
+  let in_dir = Config.data_dir config in
+  let prefixes = (* order matters as raw prefixes are prefix of "not raw" *)
+    [ out_pref_raw, out_dir ; out_pref, out_dir ;
+      in_pref_raw, in_dir ; in_pref, in_dir ;
+    ]
+  in
+  let rec f = function
+    [] -> raise Not_found
+  | (prefix, dir) :: q ->
+      try
+        let path = Misc.path_under ~parent: (Rdf_uri.string prefix) s in
+        Filename.concat dir path
+      with _ -> f q
+  in
+  try print_endline (f prefixes)
+  with
+    Not_found ->
+      failwith (Printf.sprintf "%S does not correspond to an input or output file url" s)
+;;
+
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
 let test wld config n =
@@ -180,6 +211,7 @@ let main () =
     | Some Filetypes -> list_filetypes rdf_wld
     | Some Dot -> dot rdf_wld
     | Some (Test n) -> test rdf_wld config n
+    | Some (File s) -> print_filename_of_url config s
   end
 ;;
 
