@@ -249,6 +249,7 @@ let create_flat_graph ctx uri_fchain =
 
 let do_instanciate ctx reporter uri_fchain input comb =
    let prefix = ctx.ctx_cfg.Config.rest_api in
+   reporter#push_context (Printf.sprintf "Running chain %S" (Rdf_uri.string uri_fchain));
   match Chn_types.is_uri_fchain ctx uri_fchain with
     None -> assert false
   | Some fchain_name ->
@@ -279,11 +280,7 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Misc.file_of_string ~file: "/tmp/inst.dot" dot;
 
       Chn_run.run ctx reporter ~inst: uri_inst ~fchain: uri_fchain input comb g ;
-      let output =
-        let messages = reporter#messages in
-        Reporter.string_of_msg_list messages
-      in
-      Grdfs.set_command_output ctx.ctx_rdf uri_inst output;
+      reporter#pop_context;
       uri_inst
 ;;
 

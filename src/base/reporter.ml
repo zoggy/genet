@@ -85,12 +85,28 @@ class reporter ?(context="") verb_level =
     method total_errors = total_errors
   end
 
+
+let prefix_lines pref s =
+  let lines = Misc.split_string s ['\n'] in
+  let lines =
+    match lines with
+      [] | [_] -> lines
+    | h :: q ->
+        let q = List.map (fun s -> pref^s) q in
+        h :: q
+  in
+  String.concat "\n" lines
+;;
+
 let rec string_of_msg pad label = function
   Error msg -> Printf.sprintf "%s%s[Error] %s"
-    pad (match label with "" -> "" | _ -> label^" ") msg
-| Msg msg -> Printf.sprintf "%s%s %s" pad label msg
+    pad (match label with "" -> "" | _ -> label^" ")
+    (prefix_lines pad msg)
+| Msg msg -> Printf.sprintf "%s%s %s" pad label
+    (prefix_lines pad msg)
 | Context (label,_,l) ->
-    string_of_msg_list ~pad: (pad^"  ") ~label l
+    Printf.sprintf "%s%s\n%s" pad label
+    (string_of_msg_list ~pad: (pad^"  ")  l)
 
 and string_of_msg_list ?(pad="") ?(label="") l =
   let l = List.rev_map (string_of_msg pad label) l in
