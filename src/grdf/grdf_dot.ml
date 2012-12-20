@@ -186,10 +186,10 @@ let dot_of_branch wld uri =
   Buffer.contents b
 ;;
 
-let dot_to_svg ?(options="") ?size dot =
+let dot_to_svg ?(program="dot") ?(options="") ?size dot =
   let temp_file = Filename.temp_file "genet" "svg" in
-  let com = Printf.sprintf "echo %s |dot %s -Tsvg | tail --lines=+%d > %s"
-    (Filename.quote dot) options
+  let com = Printf.sprintf "echo %s |%s %s -Tsvg | tail --lines=+%d > %s"
+    (Filename.quote dot) (Filename.quote program) options
     (match size with None -> 7 | Some _ -> 9)
     (Filename.quote temp_file)
   in

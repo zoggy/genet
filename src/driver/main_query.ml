@@ -167,7 +167,7 @@ let lookup_and_print_insts ctx s =
     (fun uri -> print_endline (Rdf_uri.string uri))
     insts;
   let dot = Chn_lookup.make_graph ctx (Rdf_uri.uri s) in
-  let svg = Grdf_dot.dot_to_svg dot in
+  let svg = Grdf_dot.dot_to_svg ~program: "circo" dot in
   print_endline (Xtmpl.string_of_xmls svg)
 ;;
 

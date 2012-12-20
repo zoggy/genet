@@ -116,8 +116,17 @@ let get_dist_instances ctx uri_inst =
   match Chn_inst.instance_source ctx uri_inst with
     None -> assert false
   | Some uri_fchain ->
-      let instances = Grdfs.subject_uris ctx.Chn_types.ctx_rdf
+      (*let instances = Grdfs.subject_uris ctx.Chn_types.ctx_rdf
         ~pred: Grdfs.genet_instanciate ~obj: (Rdf_node.Uri uri_fchain)
+      in*)
+      let instances =
+        let g = ctx.Chn_types.ctx_rdf.Grdf_types.wld_graph in
+        let l = g.Rdf_graph.find ~pred: (Rdf_node.Uri Grdfs.genet_instanciate) () in
+        let f acc = function
+          (Rdf_node.Uri uri, _, _) -> uri :: acc
+        | _ -> acc
+        in
+        List.fold_left f [] l
       in
       let infos = List.map (ichain_info ctx) instances in
       let info_inst = ichain_info ctx uri_inst in
@@ -146,13 +155,15 @@ let make_graph ctx uri_inst =
          Urimap.fold f dist.on_tools ""
         )
      in
-     Printf.sprintf "label=%S" (Printf.sprintf "%d%s" dist.dist for_tools)
+     Printf.sprintf "label=%S"
+      (Printf.sprintf "%d%s" dist.dist for_tools)
   in
   let node_atts uri =
     match Chn_types.is_uri_ichain ctx.Chn_types.ctx_cfg.Config.rest_api uri with
       None -> assert false
     | Some name ->
-        Printf.sprintf "label=%S, href=%S"
+        Printf.sprintf "%slabel=%S, href=%S"
+          (if Rdf_uri.equal uri uri_inst then "root=true, " else "")
           (Chn_types.string_of_ichain_name name)
           (Rdf_uri.string uri)
   in
@@ -166,7 +177,7 @@ let make_graph ctx uri_inst =
         (id uri_inst) (id uri) (edge_atts d)
       end
   in
-  Buffer.add_string b "digraph g {\n";
+  Buffer.add_string b "digraph g {\nranksep=\"5,4\";\n";
   List.iter print_node dists;
   Buffer.add_string b "}\n";
   Buffer.contents b
