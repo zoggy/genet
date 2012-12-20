@@ -249,7 +249,7 @@ let xhtml_of_ports ctx dir uri =
     let uri_ftype = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
     Printf.sprintf "<a href=%S>%s</a>" (Rdf_uri.string uri_ftype) s
   in
-  [Xtmpl.D
+  [Xtmpl.xml_of_string
     (Grdf_port.string_type_of_ports ctx.ctx_rdf
      (Grdf_port.string_of_port_type f)
      ~sep
@@ -275,7 +275,7 @@ let xhtml_concat sep l =
 ;;
 
 let xhtml_navpath_join_path path =
-  (xhtml_concat (Xtmpl.D " / ") ((Xtmpl.D "") :: path)) @ [Xtmpl.D " /"]
+  (xhtml_concat (Xtmpl.D " / ") (path)) @ [Xtmpl.D " /"]
 ;;
 
 let navpath_of_tool ctx = [ a_tools ctx ];;
