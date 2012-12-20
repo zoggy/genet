@@ -1083,6 +1083,11 @@ let get_ichain ctx uri =
           )
         ]
   in
+  let log =
+    match Grdfs.command_output ctx.ctx_rdf uri with
+      None -> []
+    | Some log -> [ Xtmpl.E (("","pre"), [], [Xtmpl.D log]) ]
+  in
   let contents =
     [ Xtmpl.E (("","p"), [],
        [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Creation date:"]) ;
@@ -1106,6 +1111,7 @@ let get_ichain ctx uri =
     @ exec_error
     @ tool_versions
     @svg
+    @log
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;

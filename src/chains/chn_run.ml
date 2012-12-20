@@ -220,7 +220,9 @@ let out_ports state node =
   )
 ;;
 
-let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files inst_out_ports out_files =
+let run_command ctx (reporter: Reporter.reporter)
+  state inst_chain tmp_dir inst_node path in_files inst_out_ports out_files =
+
   let out_file = Filename.temp_file "genet" "run_command.out" in
   let com = Printf.sprintf
     "(cd %s ; %s %s %s) > %s 2>&1"
@@ -230,9 +232,14 @@ let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files in
     (String.concat " " (List.map Filename.quote out_files))
     (Filename.quote out_file)
   in
-  dbg ~level: 2 (fun () -> Printf.sprintf "Running %s" com);
-  let link_output () = record_file ctx reporter
-    ~pred: (Grdfs.genet_commandoutput) out_file inst_node
+  let msg = "Running " ^ com in
+  dbg ~level: 2 (fun () -> msg);
+  reporter#msg msg;
+  let link_output ?(error=false) () =
+    record_file ctx reporter
+    ~pred: (Grdfs.genet_commandoutput) out_file inst_node;
+    let contents = Misc.string_of_file out_file in
+    if error then reporter#error contents else reporter#msg contents
   in
   match Sys.command com with
     0 ->
@@ -242,12 +249,13 @@ let run_command ctx reporter state inst_chain tmp_dir inst_node path in_files in
       inst_out_ports out_files;
       link_output ()
   | n ->
-      dbg ~level: 1 (fun () -> Printf.sprintf "command failed [%d]: %s" n com);
+      let msg = Printf.sprintf "command failed [%d]: %s" n com in
+      dbg ~level: 1 (fun () -> msg);
       Grdfs.add_triple ctx.ctx_rdf
         ~sub: (Rdf_node.Uri (uri_of_g_uri inst_node))
         ~pred: (Rdf_node.Uri Grdfs.genet_returncode)
         ~obj: (Rdf_node.node_of_literal_string ~typ: Grdfs.datatype_integer (string_of_int n));
-      link_output ();
+      link_output ~error: true ();
       raise (Exec_failed (state, inst_chain, inst_node, com, n))
 ;;
 let gen_file =
@@ -648,8 +656,14 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
 ;;
 
 let rec run_node ctx reporter inst tmp_dir state orig_node =
-  dbg ~level: 1
-    (fun () -> Printf.sprintf "run_node %S" (g_uri_string orig_node));
+  let msg = Printf.sprintf "run_node %S" (g_uri_string orig_node) in
+  dbg ~level: 1 (fun () -> msg);
+  reporter#push_context msg;
+
+  let error msg =
+    reporter#error msg;
+    failwith msg
+  in
 
   let orig_in_ports = in_ports state orig_node in
 
@@ -660,7 +674,7 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
 
   let test file =
      if not (Sys.file_exists file) then
-      failwith (Printf.sprintf "File %s does not exist" file)
+       error (Printf.sprintf "File %S does not exist" file)
   in
   List.iter test in_files;
 
@@ -677,8 +691,7 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
         | Some _ ->
             match Grdf_intf.command_path ctx.ctx_rdf uri_from with
               None ->
-                failwith
-                (Printf.sprintf "No path for interface %s" (Rdf_uri.string uri_from))
+                error ("No path for interface " ^ (Rdf_uri.string uri_from))
             | Some path ->
                 let (inst_node, port_map_in, port_map_out, state) =
                  (* FIXME: handled correctly in case of nested foreach *)
@@ -730,6 +743,7 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
                 let state = { state with g } in
                 set_node_as_run state inst_node
   in
+  reporter#pop_context;
   run_nodes ctx reporter inst tmp_dir state
 
 and run_nodes ctx reporter inst tmp_dir state =

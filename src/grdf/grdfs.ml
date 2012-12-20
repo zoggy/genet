@@ -587,6 +587,25 @@ let remove_stop_date_uri = remove_date_uri_ genet_stoppedon;;
 let set_stop_date_uri = set_date_uri_ genet_stoppedon;;
 let stop_date_uri = date_uri_ genet_stoppedon ;;
 
+let remove_command_output wld uri =
+  let sub = Uri uri in
+  let pred = Uri genet_commandoutput in
+  let l = wld.wld_graph.objects_of ~sub ~pred in
+  let f obj = rem_triple wld ~sub ~pred ~obj in
+  List.iter f l
+;;
+let command_output wld uri =
+  let sub = Uri uri in
+  let pred = genet_commandoutput in
+  object_literal wld ~sub ~pred
+;;
+let set_command_output wld uri s =
+   remove_command_output wld uri;
+   let sub = Uri uri in
+   let pred = Uri genet_commandoutput in
+   let obj = Rdf_node.node_of_literal_string s in
+   add_triple wld ~sub ~pred ~obj
+;;
 
 let remove_is_active_uri wld sub =
   let sub = Uri sub in

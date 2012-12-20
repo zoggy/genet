@@ -279,6 +279,11 @@ let do_instanciate ctx reporter uri_fchain input comb =
       Misc.file_of_string ~file: "/tmp/inst.dot" dot;
 
       Chn_run.run ctx reporter ~inst: uri_inst ~fchain: uri_fchain input comb g ;
+      let output =
+        let messages = reporter#messages in
+        Reporter.string_of_msg_list messages
+      in
+      Grdfs.set_command_output ctx.ctx_rdf uri_inst output;
       uri_inst
 ;;
 
