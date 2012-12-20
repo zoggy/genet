@@ -36,6 +36,7 @@ type mode =
   | Dot
   | Test of int
   | File of string
+  | Inst of string
 
 let mode = ref None;;
 
@@ -58,6 +59,9 @@ let options =
 
   ("--file", Arg.String (fun s -> mode := Some (File s)),
    "<url> print the filename corresponding to the given file url") ::
+
+  ("--inst", Arg.String (fun s -> mode := Some (Inst s)),
+   "<url> look for other executions 'almost' like the given one") ::
 
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
@@ -152,6 +156,18 @@ let print_filename_of_url config s =
       failwith (Printf.sprintf "%S does not correspond to an input or output file url" s)
 ;;
 
+let lookup_insts config s =
+  let _uri_inst = Rdf_uri.uri s in
+  []
+;;
+
+let lookup_and_print_insts config s =
+  let insts = lookup_insts config s in
+  List.iter
+    (fun uri -> print_endline (Rdf_uri.string uri))
+    insts
+;;
+
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
 let test wld config n =
@@ -212,6 +228,7 @@ let main () =
     | Some Dot -> dot rdf_wld
     | Some (Test n) -> test rdf_wld config n
     | Some (File s) -> print_filename_of_url config s
+    | Some (Inst s) -> lookup_and_print_insts config s
   end
 ;;
 
