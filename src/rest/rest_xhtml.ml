@@ -225,6 +225,7 @@ let a_input ctx ?(full=true) path =
       let href= Grdfs.uri_input_path prefix path in
       let label =
         if full then
+          let h = List.hd path and q = List.tl path in
           List.fold_left (fun acc s -> acc ^ "/" ^ s) h q
         else
           h
@@ -452,7 +453,7 @@ let navpath_of_input ctx path =
   | _ :: q ->
       let f (acc, acc_path) name =
          prerr_endline (Printf.sprintf "name=%s" name);
-        (a_input ctx (List.rev (name :: acc_path)) :: acc,
+        (a_input ctx ~full: false (List.rev (name :: acc_path)) :: acc,
          name :: acc_path
         )
       in
@@ -1122,14 +1123,13 @@ let file_date file =
   try Netdate.mk_mail_date (Unix.stat file).Unix.st_mtime
   with Unix.Unix_error _ -> ""
 ;;
-let xhtml_outdir_contents ctx path =
-  let dir = List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path in
+
+let xhtml_dir_contents f_uri dir =
   let entries = Find.find_list Find.Ignore [dir] [Find.Maxdepth 1] in
   let entries =
     (* sort in reverse order because of the fold_left below *)
     List.sort (fun f1 f2 -> Pervasives.compare f2 f1) entries
   in
-  let prefix = ctx.ctx_cfg.Config.rest_api in
   let rows =
     List.fold_left (fun acc file ->
        if file = dir then
@@ -1137,7 +1137,7 @@ let xhtml_outdir_contents ctx path =
        else
          (
           let base = Filename.basename file in
-          let href = Grdfs.uri_outfile_path ~raw: false prefix (path@[base]) in
+          let href = f_uri base in
           [ [ a ~href [Xtmpl.D base] ] ] :: acc
          )
     )
@@ -1145,6 +1145,26 @@ let xhtml_outdir_contents ctx path =
     entries
   in
   table rows
+;;
+
+let xhtml_outdir_contents ctx path =
+  let dir = List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path in
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let f_uri basename =
+    Grdfs.uri_outfile_path ~raw: false prefix (path@[basename])
+  in
+  xhtml_dir_contents f_uri dir
+;;
+
+let xhtml_inputdir_contents ctx input path =
+  let dir =
+    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) (input @ path)
+  in
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let f_uri basename =
+    Grdfs.uri_input_file_path ~raw: false prefix input (path@[basename])
+  in
+  xhtml_dir_contents f_uri dir
 ;;
 
 let get_outfile ctx path raw =
@@ -1314,24 +1334,36 @@ let get_input_file ctx ~raw ~input file_path =
   let filename =
     List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) (input @ file_path)
   in
-  let file_contents = Misc.string_of_file filename in
   match raw with
     true ->
+      let file_contents = Misc.string_of_file filename in
       let ctype = ctype ~t: (Misc.file_mimetype filename) () in
       ([ctype], file_contents)
   | false ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
+      let kind = (Unix.lstat filename).Unix.st_kind in
       let contents =
-        [Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents])]
+        match kind with
+          Unix.S_DIR ->
+            [ xhtml_inputdir_contents ctx input file_path ]
+        | _ ->
+            let file_contents = Misc.string_of_file filename in
+            [ Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]) ]
       in
       let raw_link =
-        let href = Grdfs.uri_input_file_path ~raw: true prefix input file_path in
-        a ~href [Xtmpl.D "raw"]
+        match kind with
+          Unix.S_DIR -> []
+        | _ ->
+            let href = Grdfs.uri_input_file_path ~raw: true prefix input file_path in
+            [ Xtmpl.D " [";
+              a ~href [Xtmpl.D "raw"] ;
+              Xtmpl.D "]" ;
+            ]
       in
       let title =
-        Printf.sprintf "%s [%s]"
+        Printf.sprintf "%s%s"
         (match List.rev file_path with [] -> assert false | s :: _ -> s)
-        (Xtmpl.string_of_xml raw_link)
+        (Xtmpl.string_of_xmls raw_link)
       in
       let wtitle = Rdf_uri.string (Grdfs.uri_input_file_path prefix input file_path) in
       let navpath = xhtml_navpath ctx (`Input_file (input, file_path)) in
