@@ -39,6 +39,25 @@ let instance_source ctx inst_uri =
     ~pred: Grdfs.genet_instanciate
 ;;
 
+let instport_file_uri ctx uri =
+  match Grdfs.object_literal ctx.Chn_types.ctx_rdf
+    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_filemd5
+  with
+  | Some md5 ->
+      Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
+  | None ->
+      match Chn_flat.port_producers ctx uri with
+        [] -> None
+      | p :: _ ->
+          match
+            Grdfs.object_literal ctx.Chn_types.ctx_rdf
+            ~sub: (Rdf_node.Uri p) ~pred: Grdfs.genet_filemd5
+                with
+          | Some md5 ->
+              Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
+          | None -> None
+;;
+
 let version_combinations ctx fchain =
   let intfs = Chn_flat.intfs_of_flat_chain ctx fchain in
   let intfs_by_tool = Uriset.fold

@@ -340,6 +340,7 @@ let dot_of_fchain ctx fchain_name =
   o#dot_of_fchain ctx fchain
 ;;
 
+
 class xhtml_ichain_dot_printer =
   let dotp = new Chn_ast.chain_dot_printer in
   let get_origin ctx uri =
@@ -365,24 +366,7 @@ class xhtml_ichain_dot_printer =
     method port_link_and_name ctx uri =
       let ptype = Grdf_port.port_type ctx.Chn_types.ctx_rdf (get_origin ctx uri) in
       let name = Grdf_port.string_of_port_type (fun x -> x) ptype in
-      let link =
-        match Grdfs.object_literal ctx.Chn_types.ctx_rdf
-          ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_filemd5
-        with
-        | Some md5 ->
-            Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
-        | None ->
-            match Chn_flat.port_producers ctx uri with
-              [] -> None
-            | p :: _ ->
-                match
-                  Grdfs.object_literal ctx.Chn_types.ctx_rdf
-                  ~sub: (Rdf_node.Uri p) ~pred: Grdfs.genet_filemd5
-                with
-                | Some md5 ->
-                    Some (Grdfs.uri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
-                | None -> None
-      in
+      let link = Chn_inst.instport_file_uri ctx uri in
       (link, name)
 
     method print_port_edges ctx b uri =
