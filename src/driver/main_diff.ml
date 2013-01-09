@@ -68,15 +68,19 @@ let mkdir config ports n =
 
 let diff ctx inst1 inst2 =
   let ports1 = Grdf_port.ports ctx.ctx_rdf inst1 Grdf_port.Out in
-  let ports2 = Grdf_port.ports ctx.ctx_rdf inst1 Grdf_port.Out in
+  let ports2 = Grdf_port.ports ctx.ctx_rdf inst2 Grdf_port.Out in
   let dir1 = mkdir ctx ports1 1 in
   let dir2 = mkdir ctx ports2 2 in
   let res = Filename.temp_file "genetdiff" "result" in
   let com = Printf.sprintf "diff -r %s %s > %s 2>&1"
     (Filename.quote dir1) (Filename.quote dir2) (Filename.quote res)
   in
-  let output = Misc.exec_command com in
-  output
+  match Sys.command com with
+    2 -> failwith (Printf.sprintf "Command failed: %s" com)
+  | _ ->
+      let result = Misc.string_of_file res in
+      Sys.remove res;
+      result
 ;;
 
 let usage =
