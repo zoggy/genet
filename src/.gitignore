@@ -5,6 +5,7 @@ genet
 genet.byte
 genet-genrdfs*
 genet-query*
+genet-diff*
 genet-rest*
 genet-exec*
 genet-gtk*
