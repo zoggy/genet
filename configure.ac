@@ -164,6 +164,8 @@ AC_SUBST(LIBDIR)
 AC_SUBST(SHAREDIR)
 AC_SUBST(ROOT)
 AC_SUBST(DEBUG_LEVEL)
+AC_SUBST(RDF_MYSQL)
+AC_SUBST(RDF_POSTGRESQL)
 
 ACFILES="master.Makefile src/base/version.ml src/base/install.ml"
 

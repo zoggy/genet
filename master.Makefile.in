@@ -105,6 +105,8 @@ GENET_GUI_BYTE=$(GENET_PREFIX)-gtk.byte
 #############
 
 ROOT=@ROOT@
+RDF_MYSQL=@RDF_MYSQL@
+RDF_POSTGRESQL=@RDF_POSTGRESQL@
 
 # generic rules :
 #################

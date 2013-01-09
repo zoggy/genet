@@ -941,7 +941,15 @@ let _ = add_subst "BIBTEX" bibtex;;
 
 let _ = check_ocamlfind_package conf "config-file";;
 let _ = check_ocamlfind_package conf "mysql";;
-let _ = check_ocamlfind_package conf "rdf.mysql";;
+
+let rdf_mysql = check_ocamlfind_package conf ~fail: false "rdf.mysql";;
+let rdf_postgresql = check_ocamlfind_package conf ~fail: false "rdf.postgresql";;
+let _ =
+  if not (rdf_mysql || rdf_postgresql) then
+    !fatal_error "At least one of the following packages must be installed: rdf.mysql, rdf.postgreql";;
+let () = if rdf_mysql then add_subst "RDF_MYSQL" "rdf.mysql";;
+let () = if rdf_postgresql then add_subst "RDF_POSTGRESQL" "rdf.postgresql";;
+
 let _ = check_ocamlfind_package conf "nethttpd";;
 let _ = check_ocamlfind_package conf "pcre";;
 (*let _ = check_ocamlfind_package conf "yojson";;*)
