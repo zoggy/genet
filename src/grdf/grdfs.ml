@@ -261,11 +261,11 @@ let is_uri_fchain_module prefix uri =
 ;;
 
 let is_uri_fchain prefix uri =
-  prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));
+  (*prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));*)
   match is_in_fchains prefix uri with
     None -> None
   | Some base ->
-      prerr_endline (Printf.sprintf "base=%s" base);
+      (*prerr_endline (Printf.sprintf "base=%s" base);*)
       match split_fchain_name base with
         `Fullname (fullname, id) -> Some (fullname, id)
       | _ -> None
@@ -308,11 +308,11 @@ let uri_ichain_in_file uri rank =
 let is_in_ichains = is_in_ uri_ichains;;
 
 let is_uri_ichain prefix uri =
-  prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));
+  (*prerr_endline (Printf.sprintf "is_uri_fchain %S" (Rdf_uri.string uri));*)
   match is_in_ichains prefix uri with
     None -> None
   | Some base ->
-      prerr_endline (Printf.sprintf "base=%s" base);
+      (*prerr_endline (Printf.sprintf "base=%s" base);*)
       match split_fchain_name base with
         `Fullname (fullname, id) -> Some (fullname, id)
       | _ -> None
