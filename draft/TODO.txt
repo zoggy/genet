@@ -35,3 +35,5 @@ Filetypes:
 Exec:
 - genet-exec should put the reporter messages in a file, and print
   only the list of instanciated chains.
+- handle a reference execution for each pair (input, chain) and used
+  it to compare next executions's results

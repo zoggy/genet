@@ -404,6 +404,12 @@ let remove_prefix prefix uri =
     uri
 ;;
 
+(** {3 Diffs} *)
+
+let suffix_diff = "diff";;
+
+
+
 (** Files and directories *)
 
 let suffix_out = "out";;

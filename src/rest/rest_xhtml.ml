@@ -70,6 +70,7 @@ let filetype_page = page_active "filetypes";;
 let chain_page = page_active "chains";;
 let in_page = page_active "in";;
 let out_page = page_active "out";;
+let diff_page = page_active "diff";;
 
 let handle_page_error ?(page=home_page) ctx f x =
   try f x
@@ -1574,6 +1575,28 @@ let get_inst_chains ctx args =
       inst_chain_query ctx iq
 ;;
 
+let get_diff_ichains ctx args =
+  let inst1 =
+    try Some (List.assoc "inst1" args)
+    with Not_found -> None
+  in
+  let inst2 =
+    try Some (List.assoc "inst2" args)
+    with Not_found -> None
+  in
+  match inst1, inst2 with
+    None, _
+  | _, None -> ([ctype ()], "forms not implemented yet!")
+  | Some inst1, Some inst2 ->
+      let inst1 = Rdf_uri.uri inst1 in
+      let inst2 = Rdf_uri.uri inst2 in
+      let diff = Chn_diff.diff ctx ~html: true ~fragment: true inst1 inst2 in
+      let page = diff_page ctx ~title: "diff"
+        [Xtmpl.E (("", "pre"),[], [Xtmpl.xml_of_string diff])]
+      in
+      ([ctype ()], page)
+;;
+
 let get ctx thing args =
   match thing with
   | Other _ -> get_root ctx
@@ -1604,6 +1627,7 @@ let get ctx thing args =
       handle_in_error ctx (get_input_file ctx ~raw ~input) file_path
   | Inst_chains -> get_inst_chains ctx args
   | Inst_chain_query iq -> inst_chain_query ctx iq
-  | Inst_chain_op uri -> handle_chain_error ctx(get_ichain_op ctx) uri
+  | Inst_chain_op uri -> handle_chain_error ctx (get_ichain_op ctx) uri
+  | Diff_inst_chains -> handle_chain_error ctx (get_diff_ichains ctx) args
 (*  | _ -> ([ctype ()], page ctx ~title: "Not implemented" "This page is not implemented yet")*)
 ;;

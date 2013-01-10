@@ -345,6 +345,12 @@ let read_path_in ctx uri = function
 | path -> read_path_in_path ctx false [] path
 ;;
 
+let read_path_diff ctx uri = function
+| h :: _ when h = Grdfs.suffix_ichains ->
+    Diff_inst_chains
+| _ -> Tools (* FIXME: show a menu for diffs ? *)
+;;
+
 let read_path =
   let next =
     [ Grdfs.suffix_tools, read_path_tools ;
@@ -354,6 +360,7 @@ let read_path =
       Grdfs.suffix_filetypes, read_path_filetypes ;
       Grdfs.suffix_out, read_path_out ;
       Grdfs.suffix_in, read_path_in ;
+      Grdfs.suffix_diff, read_path_diff ;
     ]
   in
   fun ctx uri -> function

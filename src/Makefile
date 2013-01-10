@@ -220,7 +220,8 @@ CHN_CMXFILES=chains/chn_types.cmx \
 	chains/chn_inst.cmx \
 	chains/chn_inst_query.cmx \
 	chains/chn_exec.cmx \
-	chains/chn_lookup.cmx
+	chains/chn_lookup.cmx \
+	chains/chn_diff.cmx
 
 CHN_CMOFILES=$(CHN_CMXFILES:.cmx=.cmo)
 CHN_CMIFILES=$(CHN_CMXFILES:.cmx=.cmi)

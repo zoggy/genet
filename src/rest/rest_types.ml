@@ -83,6 +83,7 @@ type thing =
   | Inst_chains
   | Inst_chain_query of inst_chain_query
   | Inst_chain_op of Rdf_uri.uri
+  | Diff_inst_chains
 ;;
 
 type response = arg list * string
