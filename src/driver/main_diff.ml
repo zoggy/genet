@@ -31,6 +31,8 @@ let usage =
   Printf.sprintf "Usage: %s [options] <instanciation1> <instanciation2>" Sys.argv.(0);;
 let html_output = ref false;;
 let diff_command = ref None;;
+let keep_files = ref false;;
+
 let options =
   Options.option_version "Genet-diff" ::
   Options.option_config ::
@@ -39,6 +41,8 @@ let options =
     com use com as diff command; default is diff -r -u" ;
 
     "--html", Arg.Set html_output, " output HTML instead of raw diff output" ;
+
+    "--keep-files", Arg.Set keep_files, " do not erase files after computing diffs";
   ]
 ;;
 
@@ -56,7 +60,11 @@ let main () =
       ctx_cfg = config ; ctx_user = None ;
     }
   in
-  let output = Chn_diff.diff ctx ~html: !html_output ?diff: !diff_command inst1 inst2 in
+  let output = Chn_diff.diff ctx
+    ~html: !html_output
+    ~keepfiles: !keep_files
+    ?diff: !diff_command inst1 inst2
+  in
   print_string output
 ;;
 

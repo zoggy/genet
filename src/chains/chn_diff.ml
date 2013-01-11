@@ -60,7 +60,7 @@ let mkdir config ports n =
   dir
 ;;
 
-let diff ctx ?(html=false) ?(fragment=false) ?(diff="diff -r -u") inst1 inst2 =
+let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r -u") inst1 inst2 =
   let ports1 = Grdf_port.ports ctx.ctx_rdf inst1 Grdf_port.Out in
   let ports2 = Grdf_port.ports ctx.ctx_rdf inst2 Grdf_port.Out in
   let dir1 = mkdir ctx ports1 1 in
@@ -81,6 +81,11 @@ let diff ctx ?(html=false) ?(fragment=false) ?(diff="diff -r -u") inst1 inst2 =
     2 -> failwith (Printf.sprintf "Command failed: %s" com)
   | _ ->
       let result = Misc.string_of_file res in
+      if not keepfiles then
+        (
+         let com = Printf.sprintf "rm -fr %s %s" (Filename.quote dir1) (Filename.quote dir2) in
+         (try ignore(Sys.command com) with _ -> ())
+        );
       Sys.remove res;
       result
 ;;
