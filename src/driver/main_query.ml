@@ -37,8 +37,18 @@ type mode =
   | Test of int
   | File of string
   | Inst of string
+  | Ref_inst_of_inst of string
+  | Ref_inst of string * string (* input * chain name *)
 
 let mode = ref None;;
+
+let set_ref_inst s =
+  match Misc.split_string s [','] with
+    [s1 ; s2 ] -> mode := Some (Ref_inst (s1, s2))
+  | _ ->
+    let msg = "option --ref-inst needs an argument of form <input name>,<chain fullname>" in
+    failwith msg
+;;
 
 let options =
   Options.option_version "Genet-query" ::
@@ -65,6 +75,12 @@ let options =
 
   ("--dot", Arg.Unit (fun () -> mode := Some Dot),
    " print graph in graphviz format") ::
+
+  ("--ref-inst-of-inst", Arg.String (fun s -> mode := Some (Ref_inst_of_inst s)),
+   "<url> print reference inst chain, if any, from given inst chain" ) ::
+
+  ("--ref-inst", Arg.String set_ref_inst,
+   "<url> print reference inst chain, if any, from given inst chain" ) ::
 
   ("--test", Arg.Int (fun n -> mode := Some (Test n)),
    " not documented (testing purpose)") ::
@@ -216,10 +232,25 @@ let test wld config n =
       end
 ;;
 
+let ref_inst_of_inst ctx s =
+  let uri = Rdf_uri.uri s in
+  match Chn_inst.reference_inst_of_inst ctx uri with
+    None -> ()
+  | Some uri -> print_endline (Rdf_uri.string uri)
+;;
+
+let ref_inst ctx input chain_name =
+  let chain_name = Chn_types.chain_name_of_string chain_name in
+  let chain = Chn_types.uri_chain ctx.Chn_types.ctx_cfg.Config.rest_api chain_name in
+  let l = Chn_inst.reference_insts ctx ~input ~chain in
+  List.iter (fun uri -> print_endline (Rdf_uri.string uri)) l
+;;
+
 let main () =
   let opts = Options.parse options in
   let config = Config.read_config opts.Options.config_file in
   let rdf_wld = Grdf_init.open_graph config in
+  let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None} in
   begin
     match !mode with
       None -> ()
@@ -231,10 +262,9 @@ let main () =
     | Some Dot -> dot rdf_wld
     | Some (Test n) -> test rdf_wld config n
     | Some (File s) -> print_filename_of_url config s
-    | Some (Inst s) ->
-        lookup_and_print_insts
-        { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None}
-        s
+    | Some (Inst s) -> lookup_and_print_insts ctx s
+    | Some (Ref_inst_of_inst s) -> ref_inst_of_inst ctx s
+    | Some (Ref_inst (input, chain_name)) -> ref_inst ctx input chain_name
   end
 ;;
 

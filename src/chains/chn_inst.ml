@@ -408,3 +408,19 @@ let add_reference_inst ctx ~input ~chain ~inst =
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: inst ~pred: Grdfs.genet_refinstfor ~obj: chain
 ;;
+
+let reference_inst_of_inst ctx inst =
+  match inst_input ctx inst with
+    None -> None
+  | Some (input, _) ->
+      match instance_source ctx inst with
+        None -> None
+      | Some inst_source ->
+          match Chn_types.is_uri_fchain ctx inst_source with
+            None -> None
+          | Some fchain_name ->
+              let chain_name = Chn_types.fchain_chainname fchain_name in
+              let chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api chain_name in
+              reference_inst ctx ~input ~chain
+;;
+

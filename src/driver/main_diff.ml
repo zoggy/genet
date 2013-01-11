@@ -50,21 +50,6 @@ let options =
   ]
 ;;
 
-let get_reference ctx uri =
-  match Chn_inst.inst_input ctx uri with
-    None -> None
-  | Some (input, _) ->
-      match Chn_inst.instance_source ctx uri with
-        None -> None
-      | Some inst_source ->
-          match Chn_types.is_uri_fchain ctx inst_source with
-            None -> None
-          | Some fchain_name ->
-              let chain_name = Chn_types.fchain_chainname fchain_name in
-              let chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api chain_name in
-              Chn_inst.reference_inst ctx ~input ~chain
-;;
-
 let main () =
   let opts = Options.parse options in
   let config = Config.read_config opts.Options.config_file in
@@ -79,7 +64,7 @@ let main () =
       [uri1] ->
         begin
           let uri1 = Rdf_uri.uri uri1 in
-          match get_reference ctx uri1 with
+          match Chn_inst.reference_inst_of_inst ctx uri1 with
             None ->
               let msg = Printf.sprintf
                 "No reference inst chain found for inst chain %S"
