@@ -28,10 +28,11 @@
 open Chn_types;;
 
 let usage =
-  Printf.sprintf "Usage: %s [options] <instanciation1> <instanciation2>" Sys.argv.(0);;
+  Printf.sprintf "Usage: %s [options] <instanciation1> [<instanciation2>]" Sys.argv.(0);;
 let html_output = ref false;;
 let diff_command = ref None;;
 let keep_files = ref false;;
+let url_if_diff = ref false;;
 
 let options =
   Options.option_version "Genet-diff" ::
@@ -43,22 +44,53 @@ let options =
     "--html", Arg.Set html_output, " output HTML instead of raw diff output" ;
 
     "--keep-files", Arg.Set keep_files, " do not erase files after computing diffs";
+
+    "--url-if-diff", Arg.Set keep_files,
+    " in case there are diffs, print url instead of diffs (useful for nightly reports";
   ]
+;;
+
+let get_reference ctx uri =
+  match Chn_inst.inst_input ctx uri with
+    None -> None
+  | Some (input, _) ->
+      match Chn_inst.instance_source ctx uri with
+        None -> None
+      | Some inst_source ->
+          match Chn_types.is_uri_fchain ctx inst_source with
+            None -> None
+          | Some fchain_name ->
+              let chain_name = Chn_types.fchain_chainname fchain_name in
+              let chain = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api chain_name in
+              Chn_inst.reference_inst ctx ~input ~chain
 ;;
 
 let main () =
   let opts = Options.parse options in
-  let (inst1, inst2) =
-    match opts.Options.args with
-      [uri1 ; uri2] -> (Rdf_uri.uri uri1, Rdf_uri.uri uri2)
-    | _ -> failwith usage
-  in
   let config = Config.read_config opts.Options.config_file in
   let rdf_wld = Grdf_init.open_graph config in
   let ctx = {
       Chn_types.ctx_rdf = rdf_wld ;
       ctx_cfg = config ; ctx_user = None ;
     }
+  in
+  let (inst1, inst2) =
+    match opts.Options.args with
+      [uri1] ->
+        begin
+          let uri1 = Rdf_uri.uri uri1 in
+          match get_reference ctx uri1 with
+            None ->
+              let msg = Printf.sprintf
+                "No reference inst chain found for inst chain %S"
+                (Rdf_uri.string uri1)
+              in
+              failwith msg
+          | Some uri2 ->
+              (uri2, uri1)
+        end
+    | [uri1 ; uri2] -> (Rdf_uri.uri uri1, Rdf_uri.uri uri2)
+    | _ -> failwith usage
   in
   let output = Chn_diff.diff ctx
     ~html: !html_output
