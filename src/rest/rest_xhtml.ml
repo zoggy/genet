@@ -1022,6 +1022,55 @@ let get_ichain_op ctx uri =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let xhtml_flat_chain_of_ichain ctx uri =
+  match Chn_inst.instance_source ctx uri with
+    None -> [Xtmpl.D "?"]
+  | Some uri ->
+      match Chn_types.is_uri_fchain ctx uri with
+        None -> [Xtmpl.D "?"]
+      | Some flat_name ->
+          let chain_name = Chn_types.fchain_chainname flat_name in
+          let chain = Chn_types.string_of_chain_name chain_name in
+          let label = Misc.string_of_opt (Chn_types.fchain_id flat_name) in
+          let fchain = a_fchain ctx ~label flat_name in
+          [ Xtmpl.D chain ; Xtmpl.D " [" ; fchain ; Xtmpl.D "]" ]
+;;
+
+let xhtml_input_of_ichain ctx uri =
+  match Chn_inst.inst_input ctx uri with
+    None -> [Xtmpl.D "??"]
+  | Some (name, id) ->
+      [ Xtmpl.D (Printf.sprintf "%s [%s]" name id) ]
+;;
+
+let xhtml_tools_of_ichain ctx ?(short=false) uri =
+  let map = Chn_inst.inst_versions ctx uri in
+  let l = Urimap.fold (fun tool v acc -> (tool, v) :: acc) map [] in
+  match short with
+    false ->
+      let heads = ["Tool" ; "Version"] in
+      let rows = List.map
+        (fun (tool, version) ->
+           [ [ a_tool ctx tool ] ; [ a_version ctx version ] ]
+        )
+        l
+      in
+      [ table ~heads rows ]
+  | true ->
+     let rec iter = function
+        [] -> []
+      | (tool, version) :: q ->
+          [ a_tool ctx tool ; Xtmpl.D " " ; a_version ctx version ] @
+          (match q with
+             [] -> []
+           |  _-> (Xtmpl.D ", ") :: (iter q)
+          )
+      in
+      iter l
+;;
+
+
+
 let get_ichain ctx uri =
   let ichain_name =
     match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
@@ -1038,37 +1087,9 @@ let get_ichain ctx uri =
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
   let start_date = Misc.string_of_opt (Chn_run.ichain_start_date ctx uri) in
   let stop_date = Misc.string_of_opt (Chn_run.ichain_stop_date ctx uri) in
-  let tool_versions =
-    let map = Chn_inst.inst_versions ctx uri in
-    let l = Urimap.fold (fun tool v acc -> (tool, v) :: acc) map [] in
-    let heads = ["Tool" ; "Version"] in
-    let rows = List.map
-      (fun (tool, version) ->
-        [ [ a_tool ctx tool ] ; [ a_version ctx version ] ]
-      )
-      l
-    in
-    [ table ~heads rows ]
-  in
-  let input_info =
-    match Chn_inst.inst_input ctx uri with
-      None -> [Xtmpl.D "??"]
-    | Some (name, id) ->
-        [ Xtmpl.D (Printf.sprintf "%s [%s]" name id) ]
-  in
-  let flat_uri =
-    match Chn_inst.instance_source ctx uri with
-      None -> [Xtmpl.D "?"]
-    | Some uri ->
-        match Chn_types.is_uri_fchain ctx uri with
-          None -> [Xtmpl.D "?"]
-        | Some flat_name ->
-            let chain_name = Chn_types.fchain_chainname flat_name in
-            let chain = Chn_types.string_of_chain_name chain_name in
-            let label = Misc.string_of_opt (Chn_types.fchain_id flat_name) in
-            let fchain = a_fchain ctx ~label flat_name in
-            [ Xtmpl.D chain ; Xtmpl.D " [" ; fchain ; Xtmpl.D "]" ]
-  in
+  let tool_versions = xhtml_tools_of_ichain ctx uri in
+  let input_info = xhtml_input_of_ichain ctx uri in
+  let flat_uri = xhtml_flat_chain_of_ichain ctx uri in
   let exec_error =
     match Grdfs.object_uri ctx.ctx_rdf
       ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_failedcommand
@@ -1540,7 +1561,7 @@ let get_inst_chains ctx args =
               Xtmpl.E (("", "div"), [("", "class"), "control-group"],
                [
                  Xtmpl.E (("", "label"), [("", "for"), id], [ Xtmpl.D tool_name ]) ;
-              Xtmpl.E (("", "div"), [("", "class"), "controls"],
+                 Xtmpl.E (("", "div"), [("", "class"), "controls"],
                   [
                     Xtmpl.E (("", "select"),
                      [("", "name"), id; ("", "id"), id ;
@@ -1575,26 +1596,75 @@ let get_inst_chains ctx args =
       inst_chain_query ctx iq
 ;;
 
+let ichain_digest ctx uri =
+  let tmpl_dir = Rest_xpage.tmpl_dir ctx.ctx_cfg in
+  let tmpl = Filename.concat tmpl_dir "inst_chain_digest.tmpl" in
+  let date =
+    match Grdfs.creation_date_uri ctx.ctx_rdf uri with
+      None -> "??"
+    | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
+  in
+  let fchain = xhtml_flat_chain_of_ichain ctx uri in
+  let tools = xhtml_tools_of_ichain ctx ~short: true uri in
+  let input = xhtml_input_of_ichain ctx uri in
+  let env = Xtmpl.env_of_list
+    [
+     ("","ichain"), (fun _ _ _ -> [Xtmpl.D (Rdf_uri.string uri)]) ;
+     ("","date"), (fun _ _ _ -> [Xtmpl.D date ]) ;
+     ("","fchain"), (fun _ _ _ -> fchain) ;
+     ("","input"), (fun _ _ _ -> input) ;
+     ("","tools"), (fun _ _ _ -> tools) ;
+    ]
+  in
+  Xtmpl.apply_to_file env tmpl
+;;
+
 let get_diff_ichains ctx args =
-  let inst1 =
-    try Some (List.assoc "inst1" args)
+  let get var =
+    try
+      let s = List.assoc var args in
+      Misc.opt_of_string (Misc.strip_string s)
     with Not_found -> None
   in
-  let inst2 =
-    try Some (List.assoc "inst2" args)
-    with Not_found -> None
+  let inst1 = get "inst1" in
+  let inst2 = get "inst2" in
+  let diff =
+    match inst1, inst2 with
+    | Some inst1, Some inst2 ->
+        let inst1 = Rdf_uri.uri inst1 in
+        let inst2 = Rdf_uri.uri inst2 in
+        Chn_diff.diff ctx ~html: true ~fragment: true inst1 inst2
+    | None, _
+    | _, None -> "Please give two urls."
   in
-  match inst1, inst2 with
-    None, _
-  | _, None -> ([ctype ()], "forms not implemented yet!")
-  | Some inst1, Some inst2 ->
-      let inst1 = Rdf_uri.uri inst1 in
-      let inst2 = Rdf_uri.uri inst2 in
-      let diff = Chn_diff.diff ctx ~html: true ~fragment: true inst1 inst2 in
-      let page = diff_page ctx ~title: "diff"
-        [Xtmpl.E (("", "pre"),[], [Xtmpl.xml_of_string diff])]
-      in
-      ([ctype ()], page)
+  let action =
+    let uri = Rdf_uri.concat ctx.ctx_cfg.Config.rest_api Grdfs.suffix_diff in
+    let uri = Rdf_uri.concat uri Grdfs.suffix_ichains in
+    Rdf_uri.string uri
+  in
+  let info = function
+    None -> []
+  | Some uri ->
+      let uri = Rdf_uri.uri uri in
+      ichain_digest ctx uri
+  in
+  let digest1 = info inst1 in
+  let digest2 = info inst2 in
+  let env = Xtmpl.env_of_list
+    [
+     (("", "inst1"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst1)])) ;
+     (("", "inst2"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst2)])) ;
+     (("", "diff"), (fun _ _ _ -> [Xtmpl.xml_of_string diff])) ;
+     (("", "action"), (fun _ _ _ -> [Xtmpl.D action])) ;
+     (("", "digest1"), (fun _ _ _ -> digest1)) ;
+     (("", "digest2"), (fun _ _ _ -> digest2))
+    ]
+  in
+  let contents =
+    [ Xtmpl.E (("","include"), [("","file"), "inst_chain_diff.tmpl"], []) ]
+  in
+  let page = diff_page ctx ~env ~title: "Diffs between instanciated chains" contents in
+  ([ctype ()], page)
 ;;
 
 let get ctx thing args =
