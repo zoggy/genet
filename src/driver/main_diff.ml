@@ -38,15 +38,15 @@ let options =
   Options.option_version "Genet-diff" ::
   Options.option_config ::
   [
-    "--diff", Arg.String (fun c -> diff_command := Some c), "
-    com use com as diff command; default is diff -r -u" ;
+    "--diff", Arg.String (fun c -> diff_command := Some c),
+    "<com> use com as diff command; default is diff -r -u" ;
 
     "--html", Arg.Set html_output, " output HTML instead of raw diff output" ;
 
     "--keep-files", Arg.Set keep_files, " do not erase files after computing diffs";
 
     "--url-if-diff", Arg.Set url_if_diff,
-    " in case there are diffs, print url instead of diffs (useful for nightly reports";
+    " if there are diffs, print url instead (useful for nightly reports)";
   ]
 ;;
 
