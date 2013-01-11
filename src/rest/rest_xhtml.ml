@@ -1413,8 +1413,8 @@ let xhtml_inst_list ctx list =
            let a_ichain =
              let link = a_ichain ctx name in
              match Chn_inst.inst_is_reference ctx uri_inst with
-               false -> [link]
-             | true -> [link ; Xtmpl.D " " ; Rest_xpage.star]
+               false ->  [link]
+             | true -> [link ; Xtmpl.D " " ; Rest_xpage.star ~label: "Reference instanciation chain" ()]
            in
            [ a_ichain ; [Xtmpl.D date]]
     )
@@ -1463,7 +1463,9 @@ let inst_chain_query ctx iq =
         in
         xhtml_inst_list ctx inst_list
   in
-  ([ctype ()], Xtmpl.string_of_xml contents)
+  let env = Xtmpl.env_of_list (Rest_xpage.default_commands ctx.ctx_cfg) in
+  let xml = Xtmpl.apply_to_xmls env [contents] in
+  ([ctype ()], Xtmpl.string_of_xmls xml)
 ;;
 
 let get_inst_chains ctx args =

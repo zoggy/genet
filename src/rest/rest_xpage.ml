@@ -25,10 +25,15 @@
 
 (** Building xhtml pages. *)
 
-let star = Xtmpl.E (("","star"), [], []);;
+let star ?label () =
+  let args = match label with
+      None -> []
+    | Some s -> [("","title"), s]
+  in
+  Xtmpl.E (("","star"), args, []);;
 
 let fun_star _ args _ =
-  let args = (("","width"), "32") :: (("", "src"), "<site-url/>/star.svg") :: args in
+  let args = (("","width"), "16") :: (("", "src"), "<site-url/>star.svg") :: args in
   [Xtmpl.E (("","img"), args, [])]
 ;;
 

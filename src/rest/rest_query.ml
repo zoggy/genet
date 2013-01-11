@@ -47,7 +47,10 @@ let allowed_files config =
   List.map
   (fun (f, t) ->
      (Rdf_uri.concat config.Config.rest_api f, (f, t)))
-  ["style.css", "text/css" ; "genet-logo.svg", "image/svg+xml"]
+  [ "style.css", "text/css" ;
+    "genet-logo.svg", "image/svg+xml" ;
+    "star.svg", "image/svg+xml" ;
+  ]
 ;;
 
 
