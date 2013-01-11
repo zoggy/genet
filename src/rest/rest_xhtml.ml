@@ -1410,7 +1410,13 @@ let xhtml_inst_list ctx list =
                None -> ""
              | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
            in
-           [ [a_ichain ctx name] ; [Xtmpl.D date]]
+           let a_ichain =
+             let link = a_ichain ctx name in
+             match Chn_inst.inst_is_reference ctx uri_inst with
+               false -> [link]
+             | true -> [link ; Xtmpl.D " " ; Rest_xpage.star]
+           in
+           [ a_ichain ; [Xtmpl.D date]]
     )
     list
   in

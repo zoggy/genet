@@ -25,6 +25,13 @@
 
 (** Building xhtml pages. *)
 
+let star = Xtmpl.E (("","star"), [], []);;
+
+let fun_star _ args _ =
+  let args = (("","width"), "32") :: (("", "src"), "<site-url/>/star.svg") :: args in
+  [Xtmpl.E (("","img"), args, [])]
+;;
+
 let fun_include tmpl_dir _env args subs =
   match Xtmpl.get_arg args ("", "file") with
     None -> failwith "Missing 'file' argument for include command";
@@ -181,6 +188,7 @@ let default_commands config =
     ("", "hcode"), fun_hcode ~inline: false ?lang: None;
     ("", "icode"), fun_icode ?lang: None;
     ("", "ocaml"), fun_ocaml ~inline: false ;
+    ("", "star"), fun_star ;
     ("", "command-line"), fun_command_line ~inline: false ;
     ("", "section"), fun_section ;
     ("", "subsection"), fun_subsection ;

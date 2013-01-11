@@ -116,6 +116,7 @@ let genet_hasimplode = genet_"hasImplode";;
 let genet_returncode = genet_"returnCode";;
 let genet_commandoutput = genet_"commandOutput";;
 let genet_failedcommand = genet_"failedCommand";;
+let genet_refinstfor = genet_"referenceInstFor";;
 
 let add_triple wld ~sub ~pred ~obj =
   wld.wld_graph.add_triple ~sub ~pred ~obj

@@ -318,4 +318,93 @@ let instanciate ctx reporter uri_fchain input comb =
           raise e
 ;;
 
+let reference_insts ctx ~input ~chain =
+  let input_refs = Grdfs.subject_uris ctx.ctx_rdf
+    ~pred: Grdfs.genet_refinstfor ~obj: (Rdf_node.node_of_literal_string input)
+  in
+  let chain_refs = Grdfs.subject_uris ctx.ctx_rdf
+    ~pred: Grdfs.genet_refinstfor ~obj: (Rdf_node.Uri chain)
+  in
+  let set_input = List.fold_left
+    (fun set uri -> Uriset.add uri set)
+    Uriset.empty input_refs
+  in
+  List.filter (fun uri -> Uriset.mem uri set_input) chain_refs
+;;
 
+let reference_inst ctx ~input ~chain =
+  match reference_insts ctx ~input ~chain with
+  | [] -> None
+  | h :: _ -> Some h
+;;
+
+let remove_ref_inst ctx ~input ~chain ~inst =
+  Grdfs.rem_triple ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri inst)
+    ~pred: (Rdf_node.Uri Grdfs.genet_refinstfor)
+    ~obj: (Rdf_node.node_of_literal_string input);
+  Grdfs.rem_triple_uris ctx.ctx_rdf
+    ~sub: inst ~pred: Grdfs.genet_refinstfor ~obj: chain
+;;
+
+let inst_is_reference ctx inst =
+  match Grdfs.objects ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri inst) ~pred: (Rdf_node.Uri Grdfs.genet_refinstfor)
+  with
+    [] -> false
+  | _ -> true
+;;
+
+let add_reference_inst ctx ~input ~chain ~inst =
+  (* test the inst chain is an instanciation of the given chain *)
+  let uri_chain =
+    let inst_source =
+      match instance_source ctx inst with
+        None ->
+          failwith
+          (Printf.sprintf "No source flat chaint for inst chain %S" (Rdf_uri.string inst))
+      | Some uri -> uri
+    in
+    let fchain_name =
+      match Chn_types.is_uri_fchain ctx inst_source with
+        None -> failwith (Printf.sprintf "Unknown flat chain %S" (Rdf_uri.string inst_source))
+      | Some n -> n
+    in
+    let chain_name = Chn_types.fchain_chainname fchain_name in
+    Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api chain_name
+  in
+  if not (Rdf_uri.equal uri_chain chain) then
+    (
+     let msg = Printf.sprintf
+       "Inst chain %S instanciates %S and cannot be used as reference for %S"
+       (Rdf_uri.string inst) (Rdf_uri.string uri_chain) (Rdf_uri.string chain)
+     in
+     failwith msg
+     );
+
+  (* test the inst chain uses the given input *)
+  begin
+    match inst_input ctx inst with
+      None ->
+        let msg = Printf.sprintf "Inst chain %S has no associated input."
+          (Rdf_uri.string inst)
+        in
+        failwith msg
+    | Some (name, _) ->
+        if name <> input then
+          let msg = Printf.sprintf
+            "Inst chain %S uses input %S and cannot be used as reference for %S"
+            (Rdf_uri.string inst) name input
+          in
+          failwith msg;
+  end;
+  List.iter
+    (fun inst -> remove_ref_inst ctx ~input ~chain ~inst)
+    (reference_insts ctx ~input ~chain);
+  Grdfs.add_triple ctx.ctx_rdf
+    ~sub: (Rdf_node.Uri inst)
+    ~pred: (Rdf_node.Uri Grdfs.genet_refinstfor)
+    ~obj: (Rdf_node.node_of_literal_string input);
+  Grdfs.add_triple_uris ctx.ctx_rdf
+    ~sub: inst ~pred: Grdfs.genet_refinstfor ~obj: chain
+;;

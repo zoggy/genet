@@ -157,6 +157,19 @@ let add_input config options =
   | _ -> failwith "Please give one and only one input name"
 ;;
 
+let add_ref_inst config wld options =
+  match options.args with
+    [input ; chainname ; inst_uri] ->
+      begin
+        let chain = Chn_types.chain_name_of_string chainname in
+        let chain = Chn_types.uri_chain config.Config.rest_api chain in
+        let inst = Rdf_uri.uri inst_uri in
+        let ctx =  { Chn_types.ctx_rdf = wld ; ctx_cfg = config ; ctx_user = None } in
+        Chn_inst.add_reference_inst ctx ~input ~chain ~inst
+      end
+  | _ -> failwith "Please give one input url, one chain url and one inst chain url"
+;;
+
 (** {2 Command-line specification} *)
 
 type mode =
@@ -172,6 +185,7 @@ type mode =
   | Add_port
   | Rem_port
   | Add_input
+  | Add_ref_inst
 ;;
 
 let mode = ref None;;
@@ -239,6 +253,12 @@ let com_add_input = {
   com_kind = Final (set_mode Add_input) ;
   }
 ;;
+
+let com_add_refinst = {
+    com_options = [] ; com_usage = "<input name> <chain fullname> <inst chain url>" ;
+    com_kind = Final (set_mode Add_ref_inst) ;
+}
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
@@ -247,6 +267,7 @@ let add_commands = [
     "filetype", com_add_filetype, "add new filetype" ;
     "port", com_add_port, "add new port" ;
     "input", com_add_input, "add new input";
+    "refinst", com_add_refinst, "set an instanciated chain as reference";
   ]
 ;;
 
@@ -413,6 +434,7 @@ let main () =
           | Rem_port -> rem_port config rdf_wld opts
           | Init_dir
           | Add_input -> assert false
+          | Add_ref_inst -> add_ref_inst config rdf_wld opts
         with
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);
