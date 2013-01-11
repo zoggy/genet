@@ -1,4 +1,5 @@
 <main_/>
+<if show-form="true">
 <form class="form-horizontal" action="&lt;action/&gt;" method="get">
   <fieldset>
    <div class="control-group">
@@ -20,7 +21,12 @@
    </div>
  </fieldset>
 </form>
-  <output name="result">
-    <pre><diff/></pre>
+<div>
+  <digest1/>
+  <digest2/>
+</div>
+</if>
+<output name="result">
+  <pre><diff/></pre>
   </output>
 </main_>

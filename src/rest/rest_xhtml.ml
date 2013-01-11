@@ -1650,8 +1650,16 @@ let get_diff_ichains ctx args =
   in
   let digest1 = info inst1 in
   let digest2 = info inst2 in
+  let show_form =
+    try
+      match List.assoc "form" args with
+        "false" -> "false"
+      | _ -> "true"
+    with Not_found -> "true"
+  in
   let env = Xtmpl.env_of_list
     [
+     (("", "show-form"), (fun _ _ _ -> [Xtmpl.D show_form])) ;
      (("", "inst1"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst1)])) ;
      (("", "inst2"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst2)])) ;
      (("", "diff"), (fun _ _ _ -> [Xtmpl.xml_of_string diff])) ;
