@@ -197,7 +197,7 @@ Then, we do the same to define the "average" tool with one inteface:
 
 </section>
 
-<section id="chains" title="Define a chain">
+<section id="chains" title="Defining a chain">
 <p>
 The next step is to define a chain, that is a data flow composed of interfaces,
 whose input will be a test case (see below).
@@ -210,7 +210,7 @@ of our Genet project.
 </p>
 <p>Here we define a <icode>Test</icode> module, with only one chain,
 called <icode>words_avg_length</icode>. The fullname of the chain is then
-<icode>Test.words_avg_lenght</icode>.
+<icode>Test.words_avg_length</icode>.
 To do so, we type the following code in the
 <icode>in/chains/test.gnt</icode> file:
 </p>
@@ -221,16 +221,150 @@ Revisions of chains are handled with git. So we add our chain file to git:
 <incsh id="gitaddchain"/>
 <p>
 We can check our chain by visiting its url
-<ext-a href="http://localhost:8082/chains/Test/words_avg_length"><icode>http://localhost:8082/chains/Test/words_avg_length</icode></ext-a>.
+<ext-a href="http://localhost:8082/chains/Test/words_avg_length"><icode>http://localhost:8082/chains/Test/words_avg_length</icode></ext-a> or just test the syntax with the following command:
 </p>
+<incsh id="testchain"/>
+</section>
+
+<section id="input" title="Defining an input">
+<p>An input is a set of data and a list of chains to apply to the data.
+A pair (data, chain) can be considered as a test case.
+</p>
+<p>
+Now we will define such an input. The data will be a simple text file.
+The chain to apply will be <icode>Test.words_avg_length</icode> we defined
+above.
+</p>
+<p>
+Inputs are placed in <icode>in/data/</icode>, with one directory by input.
+The input is described in the <icode>spec.in</icode> file. Other files
+and directories in the input directory can be referenced from the
+<icode>spec.in</icode> file to be used an input data for the chains to apply.
+</p>
+<p>
+Let's create a <icode>test1</icode> directory under <icode>in/data/</icode>:
+</p>
+<sh>$ mkdir in/data/test1</sh>
+<p>
+Then, let's copy a text file, for example
+<a href="example/in/data/test1/sue.txt">this one</a>. Next, we create
+the <icode>in/data/test1/spec.in</icode> file with the following
+contents:
+</p>
+<hcode lang-file="genet.lang" defer_="1"><include file="./example/in/data/test1/spec.in" raw="true"/></hcode>
+<p>
+Revisions of inputs are also handled by git, so we add these two files
+to git:
+</p>
+<incsh id="gitaddinput"/>
+</section>
+
+<section id="flattening" title="Flattening chains">
+<p>
+Before being able to apply a chain on an input, the chain must be flattened.
+Indeed, each chain operation can refer to an interface (as in our example) or
+another chain. So we need to flatten the chain to have only reference to interfaces.
+Moreover, flattening the chain will give us a stable reference to chain, associated
+to the git ids of the source chains it was built from.
+</p>
+<p>
+To flatten our <icode>Test.words_avg_length</icode> chain, let's just run
+the following command:
+</p>
+<incsh id="flattenchain"/>
+</section>
+
+<section id="inst" title="Executing chains">
+<p>
+Now that we have defined an input and flattened the chain it refers to,
+we can execute this flattened chain to obtained instanciated chains.
+</p>
+<p>
+Each flattened chain can give various instanciated chains. Each instanciated
+chain corresponds to a combination of versions of the tools used in the chain.
+So, if a chain uses interfaces from two different tools, T1 and T2, with
+T1 having three versions and T2 two versions, then 3 x 2 instanciated chains
+are possible.
+</p>
+<p>
+By now, we have only one version per tool, so we will get only one instanciation
+chain, by running the following command. We indicate to executed chains on
+the <icode>test1</icode> input:
+</p>
+<incsh id="execchain"/>
+<p>
+The flattened chain executed is the last chain flattened from the chain specified
+in the input. The instanciated chain can be browsed using the form at
+<ext-a href="http://localhost:8082/inst-chains"><icode>http://localhost:8082/inst-chains</icode></ext-a>.
+</p>
+<p>
+If we're satisfied with the result of the execution, we can set this
+instanciated chain as a reference for this input and this source chain:
+</p>
+<sh>$ genet add refinst test1 Test.words_avg_length \
+  http://localhost:8082/inst-chains/Test/words_avg_length/...
+</sh>
 </section>
 
 <section id="newwords" title="A new version of the words tool">
-
+<p>
+Now suppose we developped and installed a new version of the "words" tool, version 0.4,
+which lowercases all words. We want to re-run our <icode>test1</icode>.
+</p>
+<p>
+First, we add this new version:
+</p>
+<incsh id="addnewwords"/>
+<p>
+Since this version is under the 0.x branch, it means that the <icode>unique-words</icode>
+iinterface is provided by this new version. Then, we can execute our test, and this
+new version of the tool will be used when computing the combinations of tools
+to use to execute the last chain flattened from <icode>Test.words_avg_length</icode>:
+</p>
+<incsh id="execchain"/>
+<p>
+Then, we can compare this new instanciated chain with the reference instanciated chain:
+</p>
+<sh>$ genet-diff http://localhost:8082/inst-chains/Test/words_avg_length/...</sh>
+<p>
+The <icode>genet-diff</icode> can be given two instanciated chain urls to compare
+any instanciated chains. If only one is given, it compares against the reference
+instanciated chain, for the same input and source chain of the instanciated chain
+given on command line.
+</p>
+<p>
+The web interface provides a form to compare two executions:
+  <ext-a href="http://localhost:8082/diff/inst-chains"><icode>http://localhost:8082/diff/inst-chains</icode></ext-a>
+</p>
+<p>
+The <icode>--url-if-diff</icode> otpion of <icode>genet-diff</icode>
+prints a url to the comparison results if there is a difference. This is useful for example
+to nightly compare new executions with reference executions, and send an email with
+the url of differences, if any.
+</p>
 </section>
 
 <section id="newaverage" title="A new version of the average tool">
-
+<p>
+Now suppose we developped and installed a new version of our "average" tool,
+which remove the extrema values before computing the average.
+</p>
+<p>Let's add this new version:</p>
+<incsh id="addnewaverage"/>
+<p>
+Now, if we ask for execution of chains for the <icode>test1</icode> input, we will
+have 1 x 2 x 2 combinations of tool versions, i.e. 4 instanciated chains. Two have alreadu
+been executed, so the following command will trigger the execution of the two remaining
+combinations:
+</p>
+<incsh id="execchain"/>
+<p>
+<icode>genet-diff</icode> can also be used to compare not only execution final results, but also
+intermediate commands. In the web interface, when looking at an instanciated chain,
+you can click on a chain node to get its url.
+You can then give two of these urls to <icode>genet-diff</icode> to compare, for example,
+the outputs of the "words/unique-words" in two executions.
+</p>
 </section>
 
 </prepare-toc>

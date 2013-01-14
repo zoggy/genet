@@ -3,7 +3,7 @@
 export PATH=/home/guesdon/devel/genet/src:$PATH
 
 mkdir /tmp/tools
-for i in */*.x; do echo cp -f `dirname $i`/`basename $i .x` /tmp/tools/`dirname $i`; done
+for i in */*.x; do cp -f $i /tmp/tools/`dirname $i`; done
 
 #id=initdir
 genet init-dir /tmp/genet-example
@@ -11,6 +11,7 @@ cp config.txt /tmp/genet-example/
 git init /tmp/genet-example/in
 
 cp -f in/chains/test.gnt /tmp/genet-example/in/chains/
+cp -r in/data/test1 /tmp/genet-example/in/data/
 
 #id=initdb
 genet --config /tmp/genet-example/config.txt init-db
@@ -84,10 +85,31 @@ genet-query --interfaces
   git add test.gnt && \
   git commit -am"add test chain")
 
+#id=testchain
+genet-chain -t in/chains/test.gnt
+
+#id=gitaddinput
+(cd in/data && \
+  git add test1 && \
+  git commit -am"add input test1")
+
+#id=flattenchain
+genet-chain -f Test.words_avg_length
+ # Test.words_avg_length => http://localhost:8082/flat-chains/Test/words_avg_length/...
+
+#id=execchain
+genet-exec test1
+
+#id=addnewwords
 genet add version http://localhost:8082/tools/words \
   http://localhost:8082/tools/words/branches/0.x 0.4
   # http://localhost:8082/tools/words/versions/0.4
 
+genet-exec test1
+
+#id=addnewaverage
 genet add version http://localhost:8082/tools/average \
   http://localhost:8082/tools/average/branches/0.x 0.2
   # http://localhost:8082/tools/average/versions/0.2
+
+genet-exec test1

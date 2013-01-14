@@ -167,7 +167,7 @@ let add_ref_inst config wld options =
         let ctx =  { Chn_types.ctx_rdf = wld ; ctx_cfg = config ; ctx_user = None } in
         Chn_inst.add_reference_inst ctx ~input ~chain ~inst
       end
-  | _ -> failwith "Please give one input url, one chain url and one inst chain url"
+  | _ -> failwith "Please give one input name, one chain fullname and one inst chain url"
 ;;
 
 (** {2 Command-line specification} *)

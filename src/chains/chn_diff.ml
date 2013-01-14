@@ -46,11 +46,11 @@ let file_of_out_port ctx uri =
           failwith msg
 ;;
 
-let mkdir config ports main_dir n =
+let mkdir ctx ports main_dir n =
   let dir = Filename.concat main_dir (string_of_int n) in
   Misc.mkdir dir ;
   let make_link n port =
-    let file = file_of_out_port config port in
+    let file = file_of_out_port ctx port in
     try Unix.symlink file (Filename.concat dir (string_of_int n))
     with Unix.Unix_error (e,s1,s2) ->
       let msg = Printf.sprintf "%s: %s %s" (Unix.error_message e) s1 s2 in
@@ -79,6 +79,7 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r 
       )
       (Filename.quote res)
   in
+    prerr_endline com;
   match Sys.command com with
     2 -> failwith (Printf.sprintf "Command failed: %s" com)
   | _ ->
