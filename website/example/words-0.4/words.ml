@@ -1,3 +1,4 @@
+(** Same as words-0.2, but lowercase all words before adding to the set. *)
 
 (*c==v=[File.string_of_file]=1.0====*)
 let string_of_file name =
@@ -47,3 +48,27 @@ let split_string ?(keep_empty=false) s chars =
   iter "" 0
 (*/c==v=[String.split_string]=1.1====*)
 
+
+let usage = Printf.sprintf "Usage: %s infile outfile" Sys.argv.(0);;
+
+if Array.length Sys.argv <> 3 then
+  ( prerr_endline usage; exit 1 );;
+
+
+module Sset = Set.Make
+  (struct type t = string let compare = Pervasives.compare end)
+;;
+
+try
+  let words = split_string (string_of_file Sys.argv.(1)) ['\n'] in
+  let set = List.fold_right
+    (fun word set -> Sset.add (String.lowercase word) set)
+    words Sset.empty
+  in
+  let oc = open_out Sys.argv.(2) in
+  Sset.iter (fun word -> output_string oc (word^"\n")) set;
+  close_out oc;
+with
+  Failure msg
+| Sys_error msg  -> prerr_endline msg; exit 1
+;;
