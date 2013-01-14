@@ -73,7 +73,7 @@ genet add port ${INTF} "out" "average"
 
 #id=showinterfaces
 genet-query --interfaces
- # http://localhost:8082/tools/split-text/interfaces/split-in-words : text -> words</sh>
+ # http://localhost:8082/tools/split-text/interfaces/split-in-words : text -> words
 
 genet add version http://localhost:8082/tools/words \
   http://localhost:8082/tools/words/branches/0.x 0.2
