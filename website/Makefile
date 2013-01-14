@@ -21,3 +21,9 @@ genet_plugin.cmxs: genet_plugin.ml
 
 clean:
 	rm -f *.cmxs
+
+examples:
+	cd example && $(MAKE) all
+
+
+	

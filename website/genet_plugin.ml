@@ -58,24 +58,29 @@ let format_code ?prompt code =
 ;;
 
 let fun_from_shell _ _ elt env args subs =
-  let file =
-    match Xtmpl.get_arg args ("","file") with
-      None -> failwith "from_shell: missing file attribute"
-    | Some file -> file
-  in
-  let map = read_file elt file in
-  let id =
-    match Xtmpl.get_arg args ("","id") with
-    | None -> failwith "from_shell: missing id"
-    | Some id -> id
-  in
-  let code =
-    try Smap.find id map
-    with Not_found ->
-      failwith (Printf.sprintf "from_shell: id %S not found in file %S" id file)
-  in
-  let prompt = Xtmpl.get_arg args ("","prompt") in
-  [ Xtmpl.E (("","command-line"), [], [ Xtmpl.D (format_code ?prompt code) ]) ]
+  try
+    let file =
+      match Xtmpl.get_arg args ("","file") with
+        None -> failwith "from_shell: missing file attribute"
+      | Some file -> file
+    in
+    let map = read_file elt file in
+    let id =
+      match Xtmpl.get_arg args ("","id") with
+      | None -> failwith "from_shell: missing id"
+      | Some id -> id
+    in
+    let code =
+      try Smap.find id map
+      with Not_found ->
+          failwith (Printf.sprintf "from_shell: id %S not found in file %S" id file)
+    in
+    let prompt = Xtmpl.get_arg args ("","prompt") in
+    [ Xtmpl.E (("","command-line"), [], [ Xtmpl.D (format_code ?prompt code) ]) ]
+  with
+  Failure msg ->
+      Stog_msg.error msg;
+      []
 ;;
 
 

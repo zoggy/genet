@@ -9,7 +9,7 @@ cp config.txt /tmp/genet-example/
 #id=initdb
 genet --config /tmp/genet-example/config.txt init-db
 
-#id=changdir
+#id=changedir
 cd /tmp/genet-example
 
 #id=addfiletypes
