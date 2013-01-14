@@ -16,3 +16,6 @@ cd /tmp/genet-example
 genet add filetype "text" txt "Source text file"
 genet add filetype "words" txt "words, one per line"
 genet add filetype "average" avg "computed average length of words"
+
+#id=showfiletypes
+genet-query --filetypes

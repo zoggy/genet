@@ -26,7 +26,7 @@ let get_ids s =
           let map = Smap.add id code map in
           f map p3
         with Not_found ->
-          let code = String.sub s p2 (len - p2 - 1) in
+          let code = String.sub s p2 (len - p2) in
           Smap.add id code map
   in
   f Smap.empty 0
@@ -34,6 +34,7 @@ let get_ids s =
 
 let read_file elt file =
   let file = Filename.concat (Filename.dirname elt.elt_src) file in
+  Stog_plug.add_dep elt (Stog_plug.File file);
   try Smap.find file !files
   with Not_found ->
     let contents = Stog_misc.string_of_file file in
