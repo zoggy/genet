@@ -8,7 +8,9 @@ for i in */*.x; do echo cp -f `dirname $i`/`basename $i .x` /tmp/tools/`dirname 
 #id=initdir
 genet init-dir /tmp/genet-example
 cp config.txt /tmp/genet-example/
+git init /tmp/genet-example/in
 
+cp -f in/chains/test.gnt /tmp/genet-example/in/chains/
 
 #id=initdb
 genet --config /tmp/genet-example/config.txt init-db
@@ -56,6 +58,8 @@ genet add port http://localhost:8082/tools/split-text/interfaces/split-in-words 
 #id=addwords
 TOOL=`genet add tool words` # http://localhost:8082/tools/words
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/words/branches/0.x
+VERSION=`genet add version ${TOOL} ${BRANCH} 0.2`
+  # http://localhost:8082/tools/words/versions/0.2
 INTF=`genet add interface -p "/tmp/tools/words-%v" ${BRANCH} unique-words`
   # http://localhost:8082/tools/words/interfaces/unique-words
 genet add port ${INTF} "in" "words"
@@ -64,7 +68,7 @@ genet add port ${INTF} "out" "words"
 #id=addaverage
 TOOL=`genet add tool average` # http://localhost:8082/tools/average
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/average/branches/0.x
-genet add version ${TOOL} ${BRANCH} 0.1
+VERSION=`genet add version ${TOOL} ${BRANCH} 0.1`
   # http://localhost:8082/tools/average/versions/0.1
 INTF=`genet add interface -p "/tmp/tools/average-%v" ${BRANCH} line-length`
   # http://localhost:8082/tools/average/interfaces/line-length
@@ -75,9 +79,14 @@ genet add port ${INTF} "out" "average"
 genet-query --interfaces
  # http://localhost:8082/tools/split-text/interfaces/split-in-words : text -> words
 
+#id=gitaddchain
+(cd in/chains && \
+  git add test.gnt && \
+  git commit -am"add test chain")
+
 genet add version http://localhost:8082/tools/words \
-  http://localhost:8082/tools/words/branches/0.x 0.2
-  # http://localhost:8082/tools/words/versions/0.2
+  http://localhost:8082/tools/words/branches/0.x 0.4
+  # http://localhost:8082/tools/words/versions/0.4
 
 genet add version http://localhost:8082/tools/average \
   http://localhost:8082/tools/average/branches/0.x 0.2

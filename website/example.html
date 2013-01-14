@@ -61,7 +61,7 @@ Then we have to create the directory of our project, in <icode>/tmp/genet-exampl
 The structure of this directory is described
 <elt href="doc-user#setup:init-dir">here</elt>. To do so,
 we use the <icode>genet</icode> tool, then copy our configuration file
-into the project directory:
+into the project directory. At last, we make <icode>/tmp/genet-example/in</icode> a git repository:
 </p>
 <incsh id="initdir"/>
 </subsection>
@@ -181,13 +181,48 @@ By now, this will list the only interface we defined at this point:
 </subsection>
 
 <subsection id="words" title="Adding the words tool">
+<p>
+We define the "words" tool the same way as above, except that some commands below
+use the output of previous commands to avoid typing the urls of created items:
+</p>
 <incsh id="addwords"/>
 </subsection>
 
 <subsection id="average" title="Adding the average tool">
+<p>
+Then, we do the same to define the "average" tool with one inteface:
+</p>
 <incsh id="addaverage"/>
 </subsection>
 
+</section>
+
+<section id="chains" title="Define a chain">
+<p>
+The next step is to define a chain, that is a data flow composed of interfaces,
+whose input will be a test case (see below).
+For our project, we will define one chain using our three tools.
+</p>
+<p>
+A chain is defined in a chain module; a chain module is defined in a
+<icode>.gnt</icode> file, in the <icode>in/chains/</icode> directory
+of our Genet project.
+</p>
+<p>Here we define a <icode>Test</icode> module, with only one chain,
+called <icode>words_avg_length</icode>. The fullname of the chain is then
+<icode>Test.words_avg_lenght</icode>.
+To do so, we type the following code in the
+<icode>in/chains/test.gnt</icode> file:
+</p>
+<hcode lang-file="genet.lang" defer_="1"><include file="./example/in/chains/test.gnt" raw="true"/></hcode>
+<p>
+Revisions of chains are handled with git. So we add our chain file to git:
+</p>
+<incsh id="gitaddchain"/>
+<p>
+We can check our chain by visiting its url
+<ext-a href="http://localhost:8082/chains/Test/words_avg_length"><icode>http://localhost:8082/chains/Test/words_avg_length</icode></ext-a>.
+</p>
 </section>
 
 <section id="newwords" title="A new version of the words tool">
