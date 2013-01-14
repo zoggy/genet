@@ -196,6 +196,8 @@ let dot_to_svg ?(program="dot") ?(options="") ?size dot =
   match Sys.command com with
     0 ->
       let svg = Misc.string_of_file temp_file in
+      (* remove bad xlink:title="&lt;TABLE&gt;" in svg code *)
+      let svg = Misc.replace_in_string ~pat: "xlink:title=\"&lt;TABLE&gt;\"" ~subs: "" ~s: svg in
       Sys.remove temp_file;
       let svg =
         match size with

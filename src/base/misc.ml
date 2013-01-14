@@ -409,3 +409,31 @@ let list_diff ?(pred=(=)) l1 l2 =
     )
     l1 []
 (*/c==v=[List.list_diff]=1.0====*)
+
+(*c==v=[String.replace_in_string]=1.0====*)
+let replace_in_string ~pat ~subs ~s =
+  let len_pat = String.length pat in
+  let len = String.length s in
+  let b = Buffer.create len in
+  let rec iter pos =
+    if pos >= len then
+      ()
+    else
+      if pos + len_pat > len then
+        Buffer.add_string b (String.sub s pos (len - pos))
+      else
+        if String.sub s pos len_pat = pat then
+          (
+           Buffer.add_string b subs;
+           iter (pos+len_pat)
+          )
+        else
+          (
+           Buffer.add_char b s.[pos];
+           iter (pos+1);
+          )
+  in
+  iter 0;
+  Buffer.contents b
+(*/c==v=[String.replace_in_string]=1.0====*)
+

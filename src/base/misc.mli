@@ -194,3 +194,13 @@ val split_filename : string -> string list
 val list_diff : ?pred:('a8 -> 'a8 -> bool) -> 'a8 list -> 'a8 list -> 'a8 list
 (*/i==v=[List.list_diff]=1.0====*)
 
+
+(*i==v=[String.replace_in_string]=1.0====*)
+(** [replace_in_string ~pat ~subs ~s] replaces all occurences of
+   pattern [pat] by [subs] in string [s].
+@@author Maxence Guesdon
+@@version 1.0
+@@cgname String.replace_in_string*)
+val replace_in_string : pat:string -> subs:string -> s:string -> string
+(*/i==v=[String.replace_in_string]=1.0====*)
+
