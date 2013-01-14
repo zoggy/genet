@@ -1,0 +1,477 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : A small example</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.com/genet/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.com/genet">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.com/genet/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.com/genet/download.html">Download</a></li>
+    <li class="&lt;navbar-doc/&gt;"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.com/genet/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">A small example</div>
+</div>
+<span/>
+
+
+<p>
+This page describes the set up of a simple project, step by step.
+All required tools and files and available in the Genet distribution,
+in directory <span class="icode">website/example</span>.
+</p>
+
+<ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#init">Initialisation</a></li><li class="toc-section"><a href="#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="#tools">Adding tools</a></li><li class="toc-section"><a href="#chains">Defining a chain</a></li><li class="toc-section"><a href="#input">Defining an input</a></li><li class="toc-section"><a href="#flattening">Flattening chains</a></li><li class="toc-section"><a href="#inst">Executing chains</a></li><li class="toc-section"><a href="#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="#newaverage">A new version of the average tool</a></li></ul>
+<div class="section"><div class="section-title" id="intro">Introduction</div>
+<p>The example projet, called &quot;genet-example&quot;, defines three tools:
+</p>
+<ul>
+<li><span class="icode">split-text</span> to split text files into words,</li>
+<li><span class="icode">words</span> to keep only unique words,</li>
+<li><span class="icode">average</span> to compute the average length of a list of lines.</li>
+</ul>
+<p>
+These tools can be used together to compute the average length of words
+in texts (do not forget this is for an example project, for an pedagogical
+purpose).
+</p>
+<p>
+We will show how to use Genet to set up a continuous integration environment
+for our project.
+</p>
+<p class="alert alert-warning">
+The <span class="icode">genet*</span> tools must be in our path.
+The output of commands is not shown. You are encouraged to type
+the commands of the example to get familiar with Genet.
+</p>
+</div>
+
+<div class="section"><div class="section-title" id="init">Initialisation</div>
+<div class="subsection"><div class="subsection-title" id="createdb">Create the database</div>
+<p>The first thing to do is create the database. Here we use
+a MySQL database called <span class="icode">genet_example</span>:
+</p>
+<pre class="code-sh">$ mysql <span class="hl opt">-</span>u root <span class="hl opt">-</span>p
+mysq<span class="hl opt">&gt;</span> create database genet_example<span class="hl opt">;</span>
+mysql<span class="hl opt">&gt;</span> grant all privileges on genet_example.<span class="hl opt">*</span> to genet@localhost<span class="hl opt">;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="createconfig">Create the configuration file</div>
+<p>
+We also create the configuration file of our project, <span class="icode">config.txt</span>.
+It contains information regarding the project name, database connection and
+web interface:
+</p>
+<pre class="code-ocaml">project_name <span class="hl opt">=</span> <span class="hl str">&quot;Genet-example&quot;</span>
+project_id <span class="hl opt">=</span> <span class="hl str">&quot;genet-example&quot;</span>
+db <span class="hl opt">= {</span>
+  <span class="hl com">(* postgresql or mysql *)</span>
+  engine <span class="hl opt">=</span> mysql
+  name <span class="hl opt">=</span> <span class="hl str">&quot;genet_example&quot;</span>
+  user <span class="hl opt">=</span> genet
+  host <span class="hl opt">=</span> localhost
+  password <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
+<span class="hl opt">}</span>
+<span class="hl com">(* do not forget ending / *)</span>
+rest_api <span class="hl opt">=</span> <span class="hl str">&quot;http://localhost:8082/&quot;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="init-dir">Create the project directory</div>
+<p>
+Then we have to create the directory of our project, in <span class="icode">/tmp/genet-example</span>.
+The structure of this directory is described
+<a href="http://zoggy.github.com/genet/doc-user.html#setup:init-dir">here</a>. To do so,
+we use the <span class="icode">genet</span> tool, then copy our configuration file
+into the project directory. At last, we make <span class="icode">/tmp/genet-example/in</span> a git repository:
+</p>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example
+$ <span class="hl kwc">cp</span> config.txt <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>
+$ git init <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span><span class="hl kwa">in</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="init-db">Initialize the project database</div>
+<p>
+Next we initialize the database tables:
+</p>
+<pre class="code-sh">$ genet <span class="hl opt">--</span>config <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>config.txt init<span class="hl opt">-</span>db</pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="change-dir">Change to the project directory</div>
+<p>
+For the next operations, we change to the project directory, so that
+we do not have to use the <span class="icode">--config</span> option, as by default,
+the <span class="icode">config.txt</span> file of the current directory is used:
+</p>
+<pre class="code-sh">$ <span class="hl kwb">cd</span> <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example</pre>
+</div>
+
+<div class="alert alert-info">
+<p>
+At this point, you can launch the web server to browse your project. Just run
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>rest</pre>
+<p>and visit <span class="ext-a"><a href="http://localhost:8082/"><span class="icode">http://localhost:8082/</span></a></span>.
+</p>
+</div>
+</div>
+
+<div class="section"><div class="section-title" id="filetypes">Defining filetypes</div>
+<p>
+Then, we have to define filetypes, to represent the types of files
+read and produced by our project's tools. Each filetype has an id,
+a file extension and a description.Here, we have three filetypes:
+</p>
+<ul>
+<li>text files, with <span class="icode">.txt</span> extension,</li>
+<li>words files, with <span class="icode">.txt</span> extension, with a word on each line,</li>
+<li>avarage files, with <span class="icode">.avg</span> extension, containing only a string representing a float number.</li>
+</ul>
+<p>The following commands will create the filetypes:</p>
+<pre class="code-sh">$ genet add filetype <span class="hl str">&quot;text&quot;</span> txt <span class="hl str">&quot;Source text file&quot;</span>
+$ genet add filetype <span class="hl str">&quot;words&quot;</span> txt <span class="hl str">&quot;words, one per line&quot;</span>
+$ genet add filetype <span class="hl str">&quot;average&quot;</span> avg <span class="hl str">&quot;computed average length of words&quot;</span></pre>
+<p class="alert alert-info">
+<span class="icode">genet add</span> commands usually returns the url of the newly created item.
+Each item has its own unique url, used as identifier in other commands.
+Moreover, these urls can be used in the web interface to access the items,
+in a REST way.
+</p>
+<p>We can use the <span class="icode">genet-query</span> command to list filetypes:</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>query <span class="hl opt">--</span>filetypes</pre>
+</div>
+
+<div class="section"><div class="section-title" id="tools">Adding tools</div>
+<p>
+The next step is to define our three tools in our project.
+The term &quot;tool&quot; must be taken in the broad sense: it can be an executable or a whole
+software, project or package providing various tools (executables).
+For each tool, we can define branches, versions and interfaces. Interfaces are commands
+associated to a tool, a specific branch or a specific version. Interfaces
+are used to represent:
+</p>
+<ul>
+<li> the various behaviours of an executable depending on command line options,</li>
+<li> the various executables provided by a tool (where a &quot;tool&quot; or software is composed
+of various executables).</li>
+</ul>
+<p>Each interface has a command-line attached. This command will be run where executing
+a chain where this interface appears (see below). In the provided command line,
+<span class="icode">%v</span> will be replaced by the tool version. This allows to have various
+versions of a tool installed in places differing only by the version number in the
+command line path.
+</p>
+<p>
+For our example project, we'll act like if our three tools are developped separately,
+and so their version numbers are independent. Each of our tools is composed of only
+one executable.
+</p>
+<div class="subsection"><div class="subsection-title" id="splittext">Adding the split-text tool</div>
+<p>We start by defining our <span class="icode">split-text</span> tool. We show the ouput
+in comment, because it is used from one command to another:</p>
+<pre class="code-sh">$ genet add tool <span class="hl kwc">split</span><span class="hl opt">-</span>text
+ <span class="hl slc"># http://localhost:8082/tools/split-text</span></pre>
+<p>We then add a <span class="icode">O.x</span> branch:</p>
+<pre class="code-sh">$ genet add branch http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text <span class="hl num">0</span>.x
+ <span class="hl slc"># http://localhost:8082/tools/split-text/branches/0.x</span></pre>
+<p>In this branch, we define a <span class="icode">0.1</span> version:</p>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text \
+   http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x \
+   <span class="hl num">0.1</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/versions/0.1</span></pre>
+<p>Then, we define a new interface, associated to the tool, which means this intefarce
+will be supported by all versions of the tool. We could have defined the interface
+only for a branch; in this case, all the versions &quot;under&quot; the branch would have
+offered the interface. We could also associate an interface to a specific version.
+Note here the <span class="icode">-p</span> option used to provide the command line of this interface:
+</p>
+<pre class="code-sh">$ genet add interface <span class="hl opt">-</span>p <span class="hl str">&quot;/tmp/tools/split-text-%v&quot;</span> \
+  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text <span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl kwa">in</span><span class="hl opt">-</span>words
+  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-words</span></pre>
+<p>Next, we add two ports to this interface, one for input and one for output. Each port
+has an associated type, so that some controls will be done when defining treatment chains.
+</p>
+<p>
+Let's add an input port (&quot;in&quot;) for our interface, by giving a filetype id (&quot;text&quot;):
+</p>
+<pre class="code-sh">$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl kwa">in</span><span class="hl opt">-</span>words <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;text&quot;</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-words/in/1</span></pre>
+<p>
+Then we add an output port (&quot;out&quot;), with another filetype id (&quot;words&quot;).
+</p>
+<pre class="code-sh">$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl kwa">in</span><span class="hl opt">-</span>words <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;words&quot;</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-words/out/1</span></pre>
+<p>
+When the command associated to the interface will be run, it will be given, in this order,
+the list of input arguments (files and/or directories) and the list of output arguments
+(files and/or directories). Here our interface command will take two parameters: an
+input file and an output file.
+</p>
+<p>
+We can list the available interfaces with the following command.
+By now, this will list the only interface we defined at this point:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>query <span class="hl opt">--</span>interfaces
+ <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-words : text -&gt; words</span></pre>
+
+</div>
+
+<div class="subsection"><div class="subsection-title" id="words">Adding the words tool</div>
+<p>
+We define the &quot;words&quot; tool the same way as above, except that some commands below
+use the output of previous commands to avoid typing the urls of created items:
+</p>
+<pre class="code-sh">$ TOOL<span class="hl opt">=</span><span class="hl str">`genet add tool words`</span> <span class="hl slc"># http://localhost:8082/tools/words</span>
+$ BRANCH<span class="hl opt">=</span><span class="hl str">`genet add branch ${TOOL} 0.x`</span> <span class="hl slc"># http://localhost:8082/tools/words/branches/0.x</span>
+$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${TOOL} ${BRANCH} 0.2`</span>
+  <span class="hl slc"># http://localhost:8082/tools/words/versions/0.2</span>
+$ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/words-%v&quot; ${BRANCH} unique-words`</span>
+  <span class="hl slc"># http://localhost:8082/tools/words/interfaces/unique-words</span>
+$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;words&quot;</span>
+$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;words&quot;</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="average">Adding the average tool</div>
+<p>
+Then, we do the same to define the &quot;average&quot; tool with one inteface:
+</p>
+<pre class="code-sh">$ TOOL<span class="hl opt">=</span><span class="hl str">`genet add tool average`</span> <span class="hl slc"># http://localhost:8082/tools/average</span>
+$ BRANCH<span class="hl opt">=</span><span class="hl str">`genet add branch ${TOOL} 0.x`</span> <span class="hl slc"># http://localhost:8082/tools/average/branches/0.x</span>
+$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${TOOL} ${BRANCH} 0.1`</span>
+  <span class="hl slc"># http://localhost:8082/tools/average/versions/0.1</span>
+$ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/average-%v&quot; ${BRANCH} line-length`</span>
+  <span class="hl slc"># http://localhost:8082/tools/average/interfaces/line-length</span>
+$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;words&quot;</span>
+$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;average&quot;</span></pre>
+</div>
+
+</div>
+
+<div class="section"><div class="section-title" id="chains">Defining a chain</div>
+<p>
+The next step is to define a chain, that is a data flow composed of interfaces,
+whose input will be a test case (see below).
+For our project, we will define one chain using our three tools.
+</p>
+<p>
+A chain is defined in a chain module; a chain module is defined in a
+<span class="icode">.gnt</span> file, in the <span class="icode">in/chains/</span> directory
+of our Genet project.
+</p>
+<p>Here we define a <span class="icode">Test</span> module, with only one chain,
+called <span class="icode">words_avg_length</span>. The fullname of the chain is then
+<span class="icode">Test.words_avg_length</span>.
+To do so, we type the following code in the
+<span class="icode">in/chains/test.gnt</span> file:
+</p>
+<pre class="code-"><span class="hl kwa">chain</span> words_avg_length
+<span class="hl com">(*  This chains read a text file and output the average length of the different words used. *)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">in</span><span class="hl opt">:</span> text i1 <span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> average o1 <span class="hl opt">;</span>
+
+  <span class="hl com">(* operation &quot;split&quot; calls the interface &quot;split-in-words&quot; of tool &quot;split-text&quot; *)</span>
+  <span class="hl kwb">operation</span> split <span class="hl opt">:</span> <span class="hl str">&quot;/split-text/split-in-words&quot;</span> <span class="hl opt">;</span>
+
+  <span class="hl com">(* operaton &quot;words&quot; calls the interface &quot;unique-words&quot; of tool &quot;words&quot; *)</span>
+  <span class="hl kwb">operation</span> words <span class="hl opt">:</span> <span class="hl str">&quot;/words/unique-words&quot;</span> <span class="hl opt">;</span>
+
+  <span class="hl com">(* operation &quot;avg&quot; calls the interface &quot;line-length&quot; of tool &quot;average&quot; *)</span>
+  <span class="hl kwb">operation</span> avg <span class="hl opt">:</span> <span class="hl str">&quot;/average/line-length&quot;</span> <span class="hl opt">;</span>
+
+  <span class="hl com">(* add data flow *)</span>
+  i1 <span class="hl opt">-&gt;</span> split<span class="hl num">.1</span> <span class="hl opt">;</span><span class="hl com">(* first input of chain to first input of split *)</span>
+  split<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> words<span class="hl num">.1</span> <span class="hl opt">;</span> <span class="hl com">(* first output of split to first input of words *)</span>
+  words<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> avg<span class="hl num">.1</span> <span class="hl opt">;</span> <span class="hl com">(* first output of words to first input of avg *)</span>
+  avg<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> o1 <span class="hl opt">;</span> <span class="hl com">(* first output of avg to first output of chain *)</span>
+<span class="hl opt">}</span></pre>
+<p>
+Revisions of chains are handled with git. So we add our chain file to git:
+</p>
+<pre class="code-sh">$ <span class="hl opt">(</span><span class="hl kwb">cd</span> <span class="hl kwa">in</span><span class="hl opt">/</span>chains <span class="hl opt">&amp;&amp;</span> \
+  git add <span class="hl kwb">test</span>.gnt <span class="hl opt">&amp;&amp;</span> \
+  git commit <span class="hl opt">-</span>am<span class="hl str">&quot;add test chain&quot;</span><span class="hl opt">)</span></pre>
+<p>
+We can check our chain by visiting its url
+<span class="ext-a"><a href="http://localhost:8082/chains/Test/words_avg_length"><span class="icode">http://localhost:8082/chains/Test/words_avg_length</span></a></span> or just test the syntax with the following command:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>t <span class="hl kwa">in</span><span class="hl opt">/</span>chains<span class="hl opt">/</span><span class="hl kwb">test</span>.gnt</pre>
+</div>
+
+<div class="section"><div class="section-title" id="input">Defining an input</div>
+<p>An input is a set of data and a list of chains to apply to the data.
+A pair (data, chain) can be considered as a test case.
+</p>
+<p>
+Now we will define such an input. The data will be a simple text file.
+The chain to apply will be <span class="icode">Test.words_avg_length</span> we defined
+above.
+</p>
+<p>
+Inputs are placed in <span class="icode">in/data/</span>, with one directory by input.
+The input is described in the <span class="icode">spec.in</span> file. Other files
+and directories in the input directory can be referenced from the
+<span class="icode">spec.in</span> file to be used an input data for the chains to apply.
+</p>
+<p>
+Let's create a <span class="icode">test1</span> directory under <span class="icode">in/data/</span>:
+</p>
+<pre class="code-sh">$ mkdir <span class="hl kwa">in</span><span class="hl opt">/</span>data<span class="hl opt">/</span>test1</pre>
+<p>
+Then, let's copy a text file, for example
+<a href="example/in/data/test1/sue.txt">this one</a>. Next, we create
+the <span class="icode">in/data/test1/spec.in</span> file with the following
+contents:
+</p>
+<pre class="code-"><span class="hl com">(* Input files and directories; order matters *)</span>
+<span class="hl kwb">in</span> <span class="hl opt">= [</span><span class="hl str">&quot;sue.txt&quot;</span> <span class="hl opt">]</span>
+<span class="hl com">(* The chains to apply *)</span>
+chains <span class="hl opt">= [</span> <span class="hl str">&quot;Test.words_avg_length&quot;</span> <span class="hl opt">]</span></pre>
+<p>
+Revisions of inputs are also handled by git, so we add these two files
+to git:
+</p>
+<pre class="code-sh">$ <span class="hl opt">(</span><span class="hl kwb">cd</span> <span class="hl kwa">in</span><span class="hl opt">/</span>data <span class="hl opt">&amp;&amp;</span> \
+  git add test1 <span class="hl opt">&amp;&amp;</span> \
+  git commit <span class="hl opt">-</span>am<span class="hl str">&quot;add input test1&quot;</span><span class="hl opt">)</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="flattening">Flattening chains</div>
+<p>
+Before being able to apply a chain on an input, the chain must be flattened.
+Indeed, each chain operation can refer to an interface (as in our example) or
+another chain. So we need to flatten the chain to have only reference to interfaces.
+Moreover, flattening the chain will give us a stable reference to chain, associated
+to the git ids of the source chains it was built from.
+</p>
+<p>
+To flatten our <span class="icode">Test.words_avg_length</span> chain, let's just run
+the following command:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>f Test.words_avg_length
+ <span class="hl slc"># Test.words_avg_length =&gt; http://localhost:8082/flat-chains/Test/words_avg_length/...</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="inst">Executing chains</div>
+<p>
+Now that we have defined an input and flattened the chain it refers to,
+we can execute this flattened chain to obtained instanciated chains.
+</p>
+<p>
+Each flattened chain can give various instanciated chains. Each instanciated
+chain corresponds to a combination of versions of the tools used in the chain.
+So, if a chain uses interfaces from two different tools, T1 and T2, with
+T1 having three versions and T2 two versions, then 3 x 2 instanciated chains
+are possible.
+</p>
+<p>
+By now, we have only one version per tool, so we will get only one instanciation
+chain, by running the following command. We indicate to executed chains on
+the <span class="icode">test1</span> input:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<p>
+The flattened chain executed is the last chain flattened from the chain specified
+in the input. The instanciated chain can be browsed using the form at
+<span class="ext-a"><a href="http://localhost:8082/inst-chains"><span class="icode">http://localhost:8082/inst-chains</span></a></span>.
+</p>
+<p>
+If we're satisfied with the result of the execution, we can set this
+instanciated chain as a reference for this input and this source chain:
+</p>
+<pre class="code-sh">$ genet add refinst test1 Test.words_avg_length \
+  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>inst<span class="hl opt">-</span>chains<span class="hl opt">/</span>Test<span class="hl opt">/</span>words_avg_length<span class="hl opt">/</span>...</pre>
+</div>
+
+<div class="section"><div class="section-title" id="newwords">A new version of the words tool</div>
+<p>
+Now suppose we developped and installed a new version of the &quot;words&quot; tool, version 0.4,
+which lowercases all words. We want to re-run our <span class="icode">test1</span>.
+</p>
+<p>
+First, we add this new version:
+</p>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words \
+  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.4</span>
+  <span class="hl slc"># http://localhost:8082/tools/words/versions/0.4</span></pre>
+<p>
+Since this version is under the 0.x branch, it means that the <span class="icode">unique-words</span>
+iinterface is provided by this new version. Then, we can execute our test, and this
+new version of the tool will be used when computing the combinations of tools
+to use to execute the last chain flattened from <span class="icode">Test.words_avg_length</span>:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<p>
+Then, we can compare this new instanciated chain with the reference instanciated chain:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwc">diff</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>inst<span class="hl opt">-</span>chains<span class="hl opt">/</span>Test<span class="hl opt">/</span>words_avg_length<span class="hl opt">/</span>...</pre>
+<p>
+The <span class="icode">genet-diff</span> can be given two instanciated chain urls to compare
+any instanciated chains. If only one is given, it compares against the reference
+instanciated chain, for the same input and source chain of the instanciated chain
+given on command line.
+</p>
+<p>
+The web interface provides a form to compare two executions:
+  <span class="ext-a"><a href="http://localhost:8082/diff/inst-chains"><span class="icode">http://localhost:8082/diff/inst-chains</span></a></span>
+</p>
+<p>
+The <span class="icode">--url-if-diff</span> otpion of <span class="icode">genet-diff</span>
+prints a url to the comparison results if there is a difference. This is useful for example
+to nightly compare new executions with reference executions, and send an email with
+the url of differences, if any.
+</p>
+</div>
+
+<div class="section"><div class="section-title" id="newaverage">A new version of the average tool</div>
+<p>
+Now suppose we developped and installed a new version of our &quot;average&quot; tool,
+which remove the extrema values before computing the average.
+</p>
+<p>Let's add this new version:</p>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average \
+  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.2</span>
+  <span class="hl slc"># http://localhost:8082/tools/average/versions/0.2</span></pre>
+<p>
+Now, if we ask for execution of chains for the <span class="icode">test1</span> input, we will
+have 1 x 2 x 2 combinations of tool versions, i.e. 4 instanciated chains. Two have alreadu
+been executed, so the following command will trigger the execution of the two remaining
+combinations:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<p>
+<span class="icode">genet-diff</span> can also be used to compare not only execution final results, but also
+intermediate commands. In the web interface, when looking at an instanciated chain,
+you can click on a chain node to get its url.
+You can then give two of these urls to <span class="icode">genet-diff</span> to compare, for example,
+the outputs of the &quot;words/unique-words&quot; in two executions.
+</p>
+</div>
+
+
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+</body>
+</html>

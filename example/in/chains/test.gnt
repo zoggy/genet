@@ -1,0 +1,21 @@
+chain words_avg_length
+(*  This chains read a text file and output the average length of the different words used. *)
+{
+  in: text i1 ;
+  out: average o1 ;
+
+  (* operation "split" calls the interface "split-in-words" of tool "split-text" *)
+  operation split : "/split-text/split-in-words" ;
+
+  (* operaton "words" calls the interface "unique-words" of tool "words" *)
+  operation words : "/words/unique-words" ;
+
+  (* operation "avg" calls the interface "line-length" of tool "average" *)
+  operation avg : "/average/line-length" ;
+
+  (* add data flow *)
+  i1 -> split.1 ;(* first input of chain to first input of split *)
+  split.1 -> words.1 ; (* first output of split to first input of words *)
+  words.1 -> avg.1 ; (* first output of words to first input of avg *)
+  avg.1 -> o1 ; (* first output of avg to first output of chain *)
+}

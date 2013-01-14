@@ -39,7 +39,7 @@ This is a very short introduction to the use of Genet.
 
 Table of contents<ul class="toc"><li class="toc-section"><a href="#setup">Set up a new project</a><ul class="toc"><li class="toc-subsection"><a href="#setup:init-dir">Create your project directory</a></li><li class="toc-subsection"><a href="#setup:config-file">Edit the configuration file</a></li><li class="toc-subsection"><a href="#setup:create-db">Create the database</a></li><li class="toc-subsection"><a href="#setup:init-db">Initialize the database</a></li></ul></li><li class="toc-section"><a href="#server">Launch the web server</a></li><li class="toc-section"><a href="#filetypes">Define filetypes</a></li><li class="toc-section"><a href="#tools">Define tools, branches, versions, intefaces</a></li><li class="toc-section"><a href="#chains">Define treatment chains</a></li><li class="toc-section"><a href="#inputs">Define inputs</a></li><li class="toc-section"><a href="#flattening">Flatten chains</a></li><li class="toc-section"><a href="#executing">Execute chains</a></li></ul>
 <div class="alert alert-warning">
-We assume Genet was correctly installed (see <a href="http://zoggy.github.com/genet/doc-install.html#installation">&quot;Installation&quot;</a>)
+We assume Genet was correctly installed (see <a href="http://zoggy.github.com/genet/doc-install.html">Installation</a>)
 and the various <span class="icode">genet*</span> tools are in your <span class="icode">PATH</span>.
 </div>
 
@@ -72,14 +72,12 @@ needs to compute results, in addition to the contents of the database;
 The following command can create this directory struture (if no
 <span class="icode">[directory]</span> is provided, the structure is created in
 the current directory):
-<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">[</span>directory<span class="hl opt">]</span>
-</pre>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">[</span>directory<span class="hl opt">]</span></pre>
 </p>
 <p>
 If the <span class="icode">in</span> directory will be a git clone, you can specify
 the git repository to clone with the <span class="icode">-git</span> option:
-<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">-</span>git git@foo.bar<span class="hl opt">:</span>my<span class="hl opt">/</span>git<span class="hl opt">/</span>respository.git <span class="hl opt">[</span>directory<span class="hl opt">]</span>
-</pre>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">-</span>git git@foo.bar<span class="hl opt">:</span>my<span class="hl opt">/</span>git<span class="hl opt">/</span>respository.git <span class="hl opt">[</span>directory<span class="hl opt">]</span></pre>
 Required directories in the cloned repository are not created by the tool.
 </p>
 </div>
@@ -87,17 +85,18 @@ Required directories in the cloned repository are not created by the tool.
 <div class="subsection"><div class="subsection-title" id="setup:config-file">Edit the configuration file</div>
 <p>
 The generated configuration file has the following form:
-<pre class="code-ocaml">project_name <span class="hl opt">=</span> <span class="hl str">&quot;Genet-test&quot;</span>
-project_id <span class="hl opt">=</span> <span class="hl str">&quot;genet-test&quot;</span>
+<pre class="code-ocaml">project_name <span class="hl opt">=</span> <span class="hl kwd">Foo</span>
+project_id <span class="hl opt">=</span> foo
 db <span class="hl opt">= {</span>
-  engine <span class="hl opt">=</span> mysql
+  <span class="hl com">(* postgresql or mysql *)</span>
+  engine <span class="hl opt">=</span> postgresql
   name <span class="hl opt">=</span> genet
-  user <span class="hl opt">=</span> guesdon
+  user <span class="hl opt">=</span> genet
   host <span class="hl opt">=</span> localhost
   password <span class="hl opt">=</span> <span class="hl str">&quot;&quot;</span>
 <span class="hl opt">}</span>
-rest_api <span class="hl opt">=</span> <span class="hl str">&quot;http://localhost:8082/&quot;</span>
-</pre>
+<span class="hl com">(* do not forget ending / *)</span>
+rest_api <span class="hl opt">=</span> <span class="hl str">&quot;http://localhost:8082/&quot;</span></pre>
 Edit the generated file and adapt it to your project.
 </p>
 </div>
@@ -114,22 +113,19 @@ the user specified in the configuration file.
 With mysql as database backend:
 <pre class="code-sh">$ mysql <span class="hl opt">-</span>u root <span class="hl opt">-</span>p
 mysql<span class="hl opt">&gt;</span> create database <span class="hl opt">&lt;</span>db<span class="hl opt">&gt;;</span>
-mysql<span class="hl opt">&gt;</span> grant all privileges on <span class="hl opt">&lt;</span>db<span class="hl opt">&gt;</span>.<span class="hl opt">*</span> to <span class="hl opt">&lt;</span>dbuser<span class="hl opt">&gt;</span>@localhost identified by <span class="hl str">&quot;&lt;dbpasswd&gt;&quot;</span><span class="hl opt">;</span>
-</pre>
+mysql<span class="hl opt">&gt;</span> grant all privileges on <span class="hl opt">&lt;</span>db<span class="hl opt">&gt;</span>.<span class="hl opt">*</span> to <span class="hl opt">&lt;</span>dbuser<span class="hl opt">&gt;</span>@localhost identified by <span class="hl str">&quot;&lt;dbpasswd&gt;&quot;</span><span class="hl opt">;</span></pre>
 </p>
 
 </div>
 
 <div class="subsection"><div class="subsection-title" id="setup:init-db">Initialize the database</div>
 <p>
-<pre class="code-sh">$ genet init<span class="hl opt">-</span>db
-</pre>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>db</pre>
 </p>
 <p>
 If the configuration file is not <span class="icode">config.txt</span>, you can specify
 another with the <span class="icode">--config</span> option:
-<pre class="code-sh">$ genet init<span class="hl opt">-</span>db <span class="hl opt">--</span>config myfile.txt
-</pre>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>db <span class="hl opt">--</span>config myfile.txt</pre>
 </p>
 </div>
 </div>
@@ -142,8 +138,7 @@ Genet comes with a web server to browse the various elements defined
 <p>
 To launch the server, use the following command:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>rest <span class="hl opt">[--</span>config <span class="hl opt">/</span>path<span class="hl opt">/</span>to<span class="hl opt">/</span>your<span class="hl opt">/</span>project<span class="hl opt">/</span>config.txt<span class="hl opt">]</span>
-</pre>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>rest <span class="hl opt">[--</span>config <span class="hl opt">/</span>path<span class="hl opt">/</span>to<span class="hl opt">/</span>your<span class="hl opt">/</span>project<span class="hl opt">/</span>config.txt<span class="hl opt">]</span></pre>
 <p>
 The port to listen to is obtained from the <span class="icode">rest_api</span> field of
 your project configuration file.
@@ -161,15 +156,13 @@ you will use. Moreover, the way to compare two files can depend on their filetyp
 To define a filetype, use <span class="icode">genet</span> in the root directory of your project,
 where the file <span class="icode">config.txt</span> is with a command of the following form:
 </p>
-<pre class="code-sh">genet add filetype <span class="hl opt">&lt;</span>id<span class="hl opt">&gt; &lt;</span>extension<span class="hl opt">&gt; &lt;</span>description<span class="hl opt">&gt;</span>
-</pre>
+<pre class="code-sh">genet add filetype <span class="hl opt">&lt;</span>id<span class="hl opt">&gt; &lt;</span>extension<span class="hl opt">&gt; &lt;</span>description<span class="hl opt">&gt;</span></pre>
 <p>Here is an example to add a new filetype with id &quot;why&quot;, extension <span class="icode">why</span>
 and description &quot;why/alt-ergo file&quot;. The url identifying the filetype is printed
 if the filetype is added:
 </p>
 <pre class="code-sh">$ genet add filetype <span class="hl str">&quot;why&quot;</span>  why <span class="hl str">&quot;why/alt-ergo file&quot;</span>
-http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>filetypes<span class="hl opt">/</span>why
-</pre>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>filetypes<span class="hl opt">/</span>why</pre>
 <p>
 You can browse the url if the web server is running (see <a href="#server">here</a>).
 </p>
@@ -190,31 +183,27 @@ the created element is printed:
 <dt>Adding a tool:</dt>
 <dd><span class="icode">genet add tool &lt;id&gt;</span>
 <pre class="code-sh">$ genet add tool why3
-http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3
-</pre>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3</pre>
 </dd>
 
 <dt>Adding a branch to a tool or branch:</dt>
 <dd><span class="icode">genet add branch &lt;url of tool/branch&gt; &lt;id&gt;</span>
 <pre class="code-sh">$ genet add branch http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3 <span class="hl num">0</span>.x
-http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x
-</pre>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x</pre>
 </dd>
 
 <dt>Adding a version to a tool or branch:</dt>
 <dd><span class="icode">genet add version &lt;url of tool&gt; [url of branch] &lt;id&gt;</span>
 <pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3 \
   http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.1</span>
-http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span>
-</pre>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span></pre>
 </dd>
 
 <dt>Add an interface to a tool or branch:</dt>
 <dd><span class="icode">genet add interface -p &lt;command path&gt; &lt;url to tool/branch&gt; &lt;id&gt;</span>
 <pre class="code-sh">$ genet add interface <span class="hl opt">-</span>p <span class="hl str">&quot;/opt/why3-%v/bin/why3_split.sh&quot;</span> \
   http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo
-http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo
-</pre>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo</pre>
 The <span class="icode">%v</span> in the command path will be replaced by a version id of the tool
 when the command is executed.
 </dd>
@@ -222,8 +211,7 @@ when the command is executed.
 <dt>Adding a port to an interface:</dt>
 <dd><span class="icode">genet add port &lt;url of interface&gt; &lt;in|out&gt; &lt;filetype id&gt;</span>
 <pre class="code-sh">$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo <span class="hl kwa">in</span> why
-  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo<span class="hl opt">/</span><span class="hl kwa">in</span><span class="hl opt">/</span><span class="hl num">1</span>
-</pre>
+  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo<span class="hl opt">/</span><span class="hl kwa">in</span><span class="hl opt">/</span><span class="hl num">1</span></pre>
 <span class="icode">in</span> creates an input port, <span class="icode">out</span> creates an output port.
 The <span class="icode">-p n</span> option can be specified to insert the port at a given (1-based) position.
 Default is to append the new port.
@@ -267,8 +255,7 @@ Here is the syntax to define a chain:
   <span class="hl opt">&lt;</span><span class="hl kwb">operation</span> id<span class="hl opt">&gt;.&lt;</span>port number<span class="hl opt">&gt; -&gt; &lt;</span>port id<span class="hl opt">&gt; ;</span>
   <span class="hl opt">&lt;</span><span class="hl kwb">operation</span> id<span class="hl opt">&gt;.&lt;</span>port number<span class="hl opt">&gt; -&gt; &lt;</span><span class="hl kwb">operation</span> id<span class="hl opt">&gt;.&lt;</span>port number<span class="hl opt">&gt; ;</span>
   <span class="hl opt">...</span>
-<span class="hl opt">}</span>
-</pre>
+<span class="hl opt">}</span></pre>
 <p>
 <a href="http://zoggy.github.com/genet/chain_example.html">Here</a> is a complete example of a chain module.
 </p>
@@ -294,15 +281,13 @@ of chains to apply on these files.
 <pre class="code-ocaml"><span class="hl com">(* Input files and directories; order matters *)</span>
 <span class="hl kwa">in</span> <span class="hl opt">= [</span><span class="hl str">&quot;foo.v&quot;</span> <span class="hl opt">;</span> <span class="hl str">&quot;bar.ml&quot;</span> <span class="hl opt">]</span>
 <span class="hl com">(* The chains to apply *)</span>
-chains <span class="hl opt">= [</span> <span class="hl str">&quot;Mod1.my_chain&quot;</span> <span class="hl opt">;</span> <span class="hl str">&quot;Mod2.other_chain&quot;</span> <span class="hl opt">]</span>
-</pre>.
+chains <span class="hl opt">= [</span> <span class="hl str">&quot;Mod1.my_chain&quot;</span> <span class="hl opt">;</span> <span class="hl str">&quot;Mod2.other_chain&quot;</span> <span class="hl opt">]</span></pre>.
 <p>The <span class="icode">test1</span> input uses two files <span class="icode">foo.v</span>
 and <span class="icode">bar.ml</span> which must be present in the <span class="icode">in/data/test1</span>
 directory:
 </p>
 <pre class="code-sh">$ <span class="hl kwc">ls</span> <span class="hl kwa">in</span><span class="hl opt">/</span>data<span class="hl opt">/</span>test1
-bar.ml  foo.v  spec.<span class="hl kwa">in</span>
-</pre>
+bar.ml  foo.v  spec.<span class="hl kwa">in</span></pre>
 </div>
 
 <div class="section"><div class="section-title" id="flattening">Flatten chains</div>
@@ -318,8 +303,7 @@ The following command will flatten the current versions of the chains
 </p>
 <pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>f Mod1.my_chain <span class="hl opt">-</span>f Mod1.my_chain2
 Mod1.my_chain <span class="hl opt">=&gt;</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>flat<span class="hl opt">-</span>chains<span class="hl opt">/</span>Mod1<span class="hl opt">/</span>my_chain<span class="hl opt">/</span>c4be<span class="hl opt">-</span>fc5d<span class="hl opt">-</span>d901<span class="hl opt">-</span>a047
-Mod1.my_chain2 <span class="hl opt">=&gt;</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>flat<span class="hl opt">-</span>chains<span class="hl opt">/</span>Mod1<span class="hl opt">/</span>my_chain2<span class="hl opt">/</span>d2fe<span class="hl opt">-</span>c10d<span class="hl opt">-</span>d231<span class="hl opt">-</span>f98f
-</pre>
+Mod1.my_chain2 <span class="hl opt">=&gt;</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>flat<span class="hl opt">-</span>chains<span class="hl opt">/</span>Mod1<span class="hl opt">/</span>my_chain2<span class="hl opt">/</span>d2fe<span class="hl opt">-</span>c10d<span class="hl opt">-</span>d231<span class="hl opt">-</span>f98f</pre>
 <p>
 If any source file used by a chain is not commited, then the flat chain is not kept.
 It is useful to test before commiting.
@@ -338,8 +322,7 @@ command will run the chains <span class="icode">Mod1.my_chain</span> and <span c
 To do so, it will use <b>the last flattened chain</b> (according to its flattening date)
 for each specified chain name:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1
-</pre>
+<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
 <p>
 The two executions of the two chains can now be browsed in the web interface.
 </p>
