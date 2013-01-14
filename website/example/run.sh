@@ -56,22 +56,29 @@ genet add port http://localhost:8082/tools/split-text/interfaces/split-in-words 
 #id=addwords
 TOOL=`genet add tool words` # http://localhost:8082/tools/words
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/words/branches/0.x
-VERSION=`genet add version ${TOOL} ${BRANCH} 0.2`
-  # http://localhost:8082/tools/words/versions/0.2
-INTF=`genet add interface -p "/tmp/tools/words-%v" ${TOOL} unique-words`
+INTF=`genet add interface -p "/tmp/tools/words-%v" ${BRANCH} unique-words`
   # http://localhost:8082/tools/words/interfaces/unique-words
 genet add port ${INTF} "in" "words"
 genet add port ${INTF} "out" "words"
 
-#id=average
+#id=addaverage
 TOOL=`genet add tool average` # http://localhost:8082/tools/average
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/average/branches/0.x
-VERSION01=`genet add version ${TOOL} ${BRANCH} 0.1`
+genet add version ${TOOL} ${BRANCH} 0.1
   # http://localhost:8082/tools/average/versions/0.1
-VERSION02=`genet add version ${TOOL} ${BRANCH} 0.2`
-  # http://localhost:8082/tools/average/versions/0.2
 INTF=`genet add interface -p "/tmp/tools/average-%v" ${BRANCH} line-length`
   # http://localhost:8082/tools/average/interfaces/line-length
 genet add port ${INTF} "in" "words"
 genet add port ${INTF} "out" "average"
 
+#id=showinterfaces
+genet-query --interfaces
+ # http://localhost:8082/tools/split-text/interfaces/split-in-words : text -> words</sh>
+
+genet add version http://localhost:8082/tools/words \
+  http://localhost:8082/tools/words/branches/0.x 0.2
+  # http://localhost:8082/tools/words/versions/0.2
+
+genet add version http://localhost:8082/tools/average \
+  http://localhost:8082/tools/average/branches/0.x 0.2
+  # http://localhost:8082/tools/average/versions/0.2

@@ -11,8 +11,8 @@ We assume Genet was correctly installed (see <page href="doc-install"/>)
 and the various <icode>genet*</icode> tools are in your <icode>PATH</icode>.
 </div>
 
-<section name="setup" title="Set up a new project">
-<subsection name="setup:init-dir" title="Create your project directory">
+<section id="setup" title="Set up a new project">
+<subsection id="setup:init-dir" title="Create your project directory">
 <p>
 All data of your Genet project will reside in a single directory, with
 the following structure:
@@ -54,7 +54,7 @@ Required directories in the cloned repository are not created by the tool.
 </p>
 </subsection>
 
-<subsection name="setup:config-file" title="Edit the configuration file">
+<subsection id="setup:config-file" title="Edit the configuration file">
 <p>
 The generated configuration file has the following form:
 <hcode lang="ocaml" defer_="1"><include file="../src/config.txt"/>
@@ -63,7 +63,7 @@ Edit the generated file and adapt it to your project.
 </p>
 </subsection>
 
-<subsection name="setup:create-db" title="Create the database">
+<subsection id="setup:create-db" title="Create the database">
 <p>Genet uses a database to store a part of its information.</p>
 <p>
 You must now create the database you will use, that is the one
@@ -101,7 +101,7 @@ Refer to some <ext-a href="https://help.ubuntu.com/community/PostgreSQL">Postgre
 -->
 </subsection>
 
-<subsection name="setup:init-db" title="Initialize the database">
+<subsection id="setup:init-db" title="Initialize the database">
 <p>
 <command-line>
 $ genet init-db
@@ -117,7 +117,7 @@ $ genet init-db --config myfile.txt
 </subsection>
 </section>
 
-<section name="server" title="Launch the web server">
+<section id="server" title="Launch the web server">
 <p>
 Genet comes with a web server to browse the various elements defined
 (tools, branches, filetypes, chains, results, ..., see the next sections below).
@@ -133,7 +133,7 @@ The port to listen to is obtained from the <icode>rest_api</icode> field of
 your project configuration file.
 </p>
 </section>
-<section name="filetypes" title="Define filetypes">
+<section id="filetypes" title="Define filetypes">
 <p>
 The treatment chains will operate on files. To ensure that a file
 of one type, produced by a command, will not be consumed by
@@ -161,7 +161,7 @@ You can browse the url if the web server is running (see <a href="#server">here<
 </p>
 </section>
 
-<section name="tools" title="Define tools, branches, versions, intefaces">
+<section id="tools" title="Define tools, branches, versions, intefaces">
 <p>
 The next thing to do is to define your <i>tools</i> in the database. For each
 tool you have to define <i>branches</i> and <i>versions</i>.
@@ -221,7 +221,7 @@ to have a look at them.
 </p>
 </section>
 
-<section name="chains" title="Define treatment chains">
+<section id="chains" title="Define treatment chains">
 <p>
 The next step is to define treatment chains. These chains define a flow of data,
 based on commands (interfaces) consuming and producing files.
@@ -267,7 +267,7 @@ simple chains between more complex chains.
 <p>As other elements, you can browse your chains in the web interface.</p>
 </section>
 
-<section name="inputs" title="Define inputs">
+<section id="inputs" title="Define inputs">
 <p>An input is a file defining a list of input files and a list of chains whose
 instances will be executed using these files as input.
 </p>
@@ -293,7 +293,7 @@ bar.ml  foo.v  spec.in
 </command-line>
 </section>
 
-<section name="flattening" title="Flatten chains">
+<section id="flattening" title="Flatten chains">
 <p>
 To be applied, a chain has to be flattened first, that is a "flat" data flow is computed
 from the chain specification. A flat chain contains only calls to interfaces and no more
@@ -315,7 +315,7 @@ It is useful to test before commiting.
 <p>The list of available options is obtained with <icode>genet-chain --help</icode>.</p>
 </section>
 
-<section name="executing" title="Execute chains">
+<section id="executing" title="Execute chains">
 <p>
 The <icode>genet-exec</icode> tool "executes" an input, that is it applies available
 flat chains on the input files, according to the list of chains specified in the

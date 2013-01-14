@@ -3,40 +3,201 @@ with-contents="true"
 >
 <incsh prompt="$" id=""><from-shell prompt="&lt;prompt/&gt;" file="example/run.sh" id="&lt;id/&gt;"/></incsh>
 <contents>
+<p>
+This page describes the set up of a simple project, step by step.
+All required tools and files and available in the Genet distribution,
+in directory <icode>website/example</icode>.
+</p>
+<prepare-toc depth="1">
+<toc/>
+<section id="intro" title="Introduction">
+<p>The example projet, called "genet-example", defines three tools:
+</p>
+<ul>
+<li><icode>split-text</icode> to split text files into words,</li>
+<li><icode>words</icode> to keep only unique words,</li>
+<li><icode>average</icode> to compute the average length of a list of lines.</li>
+</ul>
+<p>
+These tools can be used together to compute the average length of words
+in texts (do not forget this is for an example project, for an pedagogical
+purpose).
+</p>
+<p>
+We will show how to use Genet to set up a continuous integration environment
+for our project.
+</p>
+<p class="alert alert-warning">
+The <icode>genet*</icode> tools must be in our path.
+The output of commands is not shown. You are encouraged to type
+the commands of the example to get familiar with Genet.
+</p>
+</section>
+
 <section id="init" title="Initialisation">
 <subsection id="createdb" title="Create the database">
+<p>The first thing to do is create the database. Here we use
+a MySQL database called <icode>genet_example</icode>:
+</p>
 <sh>
-mysql -u root -p
-</sh>
-<sh>create database genet_example;
-grant all privileges on genet_example.* to genet@localhost;
+$ mysql -u root -p
+mysq> create database genet_example;
+mysql> grant all privileges on genet_example.* to genet@localhost;
 </sh>
 </subsection>
 
-<subsection id="init-dir" title="Create genet directory">
+<subsection id="createconfig" title="Create the configuration file">
+<p>
+We also create the configuration file of our project, <icode>config.txt</icode>.
+It contains information regarding the project name, database connection and
+web interface:
+</p>
+<ocaml defer_="1"><include file="./example/config.txt" raw="true"/></ocaml>
+</subsection>
+
+<subsection id="init-dir" title="Create the project directory">
+<p>
+Then we have to create the directory of our project, in <icode>/tmp/genet-example</icode>.
+The structure of this directory is described
+<elt href="doc-user#setup:init-dir">here</elt>. To do so,
+we use the <icode>genet</icode> tool, then copy our configuration file
+into the project directory:
+</p>
 <incsh id="initdir"/>
 </subsection>
 
-<subsection id="init-db" title="Initialize genet database">
+<subsection id="init-db" title="Initialize the project database">
+<p>
+Next we initialize the database tables:
+</p>
 <incsh id="initdb"/>
 </subsection>
+
+<subsection id="change-dir" title="Change to the project directory">
+<p>
+For the next operations, we change to the project directory, so that
+we do not have to use the <icode>--config</icode> option, as by default,
+the <icode>config.txt</icode> file of the current directory is used:
+</p>
+<incsh id="changedir"/>
+</subsection>
+
+<div class="alert alert-info">
+<p>
+At this point, you can launch the web server to browse your project. Just run
+</p>
+<sh>$ genet-rest</sh>
+<p>and visit <ext-a href="http://localhost:8082/"><icode>http://localhost:8082/</icode></ext-a>.
+</p>
+</div>
 </section>
 
 <section id="filetypes" title="Defining filetypes">
-<incsh id="changedir"/>
+<p>
+Then, we have to define filetypes, to represent the types of files
+read and produced by our project's tools. Each filetype has an id,
+a file extension and a description.Here, we have three filetypes:
+</p>
+<ul>
+<li>text files, with <icode>.txt</icode> extension,</li>
+<li>words files, with <icode>.txt</icode> extension, with a word on each line,</li>
+<li>avarage files, with <icode>.avg</icode> extension, containing only a string representing a float number.</li>
+</ul>
+<p>The following commands will create the filetypes:</p>
 <incsh id="addfiletypes"/>
+<p class="alert alert-info">
+<icode>genet add</icode> commands usually returns the url of the newly created item.
+Each item has its own unique url, used as identifier in other commands.
+Moreover, these urls can be used in the web interface to access the items,
+in a REST way.
+</p>
+<p>We can use the <icode>genet-query</icode> command to list filetypes:</p>
 <incsh id="showfiletypes"/>
 </section>
 
-<section id="splittext" title="Adding the split-text tool">
+<section id="tools" title="Adding tools">
+<p>
+The next step is to define our three tools in our project.
+The term "tool" must be taken in the broad sense: it can be an executable or a whole
+software, project or package providing various tools (executables).
+For each tool, we can define branches, versions and interfaces. Interfaces are commands
+associated to a tool, a specific branch or a specific version. Interfaces
+are used to represent:
+</p>
+<ul>
+<li> the various behaviours of an executable depending on command line options,</li>
+<li> the various executables provided by a tool (where a "tool" or software is composed
+of various executables).</li>
+</ul>
+<p>Each interface has a command-line attached. This command will be run where executing
+a chain where this interface appears (see below). In the provided command line,
+<icode>%v</icode> will be replaced by the tool version. This allows to have various
+versions of a tool installed in places differing only by the version number in the
+command line path.
+</p>
+<p>
+For our example project, we'll act like if our three tools are developped separately,
+and so their version numbers are independent. Each of our tools is composed of only
+one executable.
+</p>
+<subsection id="splittext" title="Adding the split-text tool">
+<p>We start by defining our <icode>split-text</icode> tool. We show the ouput
+in comment, because it is used from one command to another:</p>
 <incsh id="addsplittexttool"/>
+<p>We then add a <icode>O.x</icode> branch:</p>
 <incsh id="addsplittextbranch"/>
+<p>In this branch, we define a <icode>0.1</icode> version:</p>
 <incsh id="addsplittextversion"/>
+<p>Then, we define a new interface, associated to the tool, which means this intefarce
+will be supported by all versions of the tool. We could have defined the interface
+only for a branch; in this case, all the versions "under" the branch would have
+offered the interface. We could also associate an interface to a specific version.
+Note here the <icode>-p</icode> option used to provide the command line of this interface:
+</p>
 <incsh id="addsplittextintf"/>
+<p>Next, we add two ports to this interface, one for input and one for output. Each port
+has an associated type, so that some controls will be done when defining treatment chains.
+</p>
+<p>
+Let's add an input port ("in") for our interface, by giving a filetype id ("text"):
+</p>
 <incsh id="addsplittextin"/>
+<p>
+Then we add an output port ("out"), with another filetype id ("words").
+</p>
 <incsh id="addsplittextout"/>
+<p>
+When the command associated to the interface will be run, it will be given, in this order,
+the list of input arguments (files and/or directories) and the list of output arguments
+(files and/or directories). Here our interface command will take two parameters: an
+input file and an output file.
+</p>
+<p>
+We can list the available interfaces with the following command.
+By now, this will list the only interface we defined at this point:
+</p>
+<incsh id="showinterfaces"/>
+
+</subsection>
+
+<subsection id="words" title="Adding the words tool">
+<incsh id="addwords"/>
+</subsection>
+
+<subsection id="average" title="Adding the average tool">
+<incsh id="addaverage"/>
+</subsection>
+
 </section>
 
+<section id="newwords" title="A new version of the words tool">
 
+</section>
+
+<section id="newaverage" title="A new version of the average tool">
+
+</section>
+
+</prepare-toc>
 </contents>
 </page>
