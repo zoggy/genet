@@ -1,0 +1,30 @@
+<page title="A small example"
+with-contents="true"
+>
+<incsh prompt="$" id=""><from-shell prompt="&lt;prompt/&gt;" file="example/run.sh" id="&lt;id/&gt;"/></incsh>
+<contents>
+<section id="init" title="Initialisation">
+<subsection id="createdb" title="Create the database">
+<sh>
+mysql -u root -p
+</sh>
+<sh>create database genet_example;
+grant all privileges on genet_example.* to genet@localhost;
+</sh>
+</subsection>
+
+<subsection id="init-dir" title="Create genet directory">
+<incsh id="initdir"/>
+</subsection>
+
+<subsection id="init-db" title="Initialize genet database">
+<incsh id="initdb"/>
+</subsection>
+
+</section>
+
+<section id="filetypes" title="Defining filetypes">
+<incsh id="addfiletypes"/>
+</section>
+</contents>
+</page>

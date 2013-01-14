@@ -351,6 +351,7 @@ let init_dir ?git_repo opts =
   mkdir dir;
   let config_file = Install.default_config_file in
   let config = Config.read_config config_file in
+  let config = { config with Config.root_dir = dir } in
   mkdir (Config.out_dir config);
   let in_dir = Config.in_dir config in
   begin
