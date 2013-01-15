@@ -12,6 +12,8 @@ build:
 site: genet_plugin.cmxs
 	$(STOG) $(STOG_OPTIONS) --plugin $< .
 	$(LESSC) less/style.less > $(DEST_DIR)/style.css
+	mkdir -p $(DEST_DIR)/refdoc
+	(cd ../src && make doc && cp -r ocamldoc/* $(DEST_DIR)/refdoc/ )
 
 test:
 	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site
