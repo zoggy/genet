@@ -1636,12 +1636,13 @@ let get_diff_ichains ctx args =
   in
   let inst1 = get "inst1" in
   let inst2 = get "inst2" in
+  let diffcmd = Misc.map_opt Misc.strip_string (get "diffcmd") in
   let diff =
     match inst1, inst2 with
     | Some inst1, Some inst2 ->
         let inst1 = Rdf_uri.uri inst1 in
         let inst2 = Rdf_uri.uri inst2 in
-        Chn_diff.diff ctx ~html: true ~fragment: true inst1 inst2
+        Chn_diff.diff ctx ~html: true ?diff: diffcmd ~fragment: true inst1 inst2
     | None, _
     | _, None -> "Please give two urls."
   in
@@ -1670,6 +1671,7 @@ let get_diff_ichains ctx args =
      (("", "show-form"), (fun _ _ _ -> [Xtmpl.D show_form])) ;
      (("", "inst1"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst1)])) ;
      (("", "inst2"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst2)])) ;
+     (("", "diffcmd"), (fun _ _ _ -> (match diffcmd  with None -> [] | Some s -> [Xtmpl.D s])));
      (("", "diff"), (fun _ _ _ -> [Xtmpl.xml_of_string diff])) ;
      (("", "action"), (fun _ _ _ -> [Xtmpl.D action])) ;
      (("", "digest1"), (fun _ _ _ -> digest1)) ;

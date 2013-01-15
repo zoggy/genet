@@ -17,6 +17,12 @@
     <digest2/>
    </div>
    <div class="control-group">
+    <label for="diffcmd" class="control-label">Diff command :</label>
+    <div class="controls">
+      <input type="text" name="diffcmd" id="diffcmd" value="&lt;diffcmd/&gt;"/>
+    </div>
+   </div>
+   <div class="control-group">
      <input type="submit" value="Show diffs"/>
    </div>
  </fieldset>
@@ -27,6 +33,7 @@
 </div>
 </if>
 <output name="result">
+  <p>Diff command : <icode defer_="1"><diffcmd/></icode></p>
   <pre><diff/></pre>
   </output>
 </main_>

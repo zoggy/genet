@@ -91,6 +91,7 @@ let main () =
          [ "form", "false" ;
            "inst1", Rdf_uri.string inst1 ;
            "inst2", Rdf_uri.string inst2 ;
+           "diffcmd", (Misc.string_of_opt !diff_command) ;
          ]
        in
        let url = Printf.sprintf "%s?%s" (Rdf_uri.string url) query in
