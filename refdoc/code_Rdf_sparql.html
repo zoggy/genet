@@ -1,0 +1,374 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rdf_sparql</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Genet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;2012-2013&nbsp;Institut&nbsp;National&nbsp;de&nbsp;Recherche&nbsp;en&nbsp;Informatique&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;en&nbsp;Automatique.&nbsp;All&nbsp;rights&nbsp;reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;later&nbsp;as&nbsp;published&nbsp;by&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;this&nbsp;program;&nbsp;if&nbsp;not,&nbsp;write&nbsp;to&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Inc.,&nbsp;59&nbsp;Temple&nbsp;Place,&nbsp;Suite&nbsp;330,&nbsp;Boston,&nbsp;MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;02111-1307&nbsp;&nbsp;USA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Contact:&nbsp;Maxence.Guesdon@inria.fr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+</code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">type</span>&nbsp;varname&nbsp;=&nbsp;string<br>
+<span class="keyword">type</span>&nbsp;projection&nbsp;=&nbsp;varname&nbsp;list<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** Variant constructors signification:<ul>
+<li><code class="code">`V</code>: Variable. The given name must no include the "?".</li>
+<li><code class="code">`I</code>: IRI. The string must not include the starting '&lt;' and ending '&gt;'.</li>
+<li><code class="code">`B_</code>: Blank node.</li>
+<li><code class="code">`B</code>: Blank node with an identifier. The given string must no
+  include the starting "_:"</li>
+<li><code class="code">`T</code>: Triple.</li>
+<li><code class="code">`L</code>: Literal. String literals must contains quotes, as
+  nothing is added to the given literal string.
+</li>
+</ul>
+*)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">type</span>&nbsp;var_iri&nbsp;=&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">V</span>&nbsp;<span class="keyword">of</span>&nbsp;varname&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;<span class="keyword">of</span>&nbsp;string]<br>
+<span class="keyword">type</span>&nbsp;var_iri_a&nbsp;=&nbsp;[&nbsp;var_iri&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">A</span>&nbsp;]<br>
+<br>
+<span class="keyword">type</span>&nbsp;node_obj&nbsp;=&nbsp;[&nbsp;var_iri&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B_</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B</span>&nbsp;<span class="keyword">of</span>&nbsp;varname&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">L</span>&nbsp;<span class="keyword">of</span>&nbsp;string]<br>
+<span class="keyword">type</span>&nbsp;node&nbsp;=&nbsp;[&nbsp;var_iri&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B_</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B</span>&nbsp;<span class="keyword">of</span>&nbsp;varname&nbsp;]<br>
+<span class="keyword">type</span>&nbsp;node_a&nbsp;=&nbsp;[&nbsp;var_iri_a&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B_</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B</span>&nbsp;<span class="keyword">of</span>&nbsp;varname]<br>
+<br>
+<span class="keyword">type</span>&nbsp;triple_obj&nbsp;=&nbsp;[&nbsp;&nbsp;node_obj&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">T</span>&nbsp;<span class="keyword">of</span>&nbsp;triple_pred&nbsp;list]<br>
+<span class="keyword">and</span>&nbsp;pred_node&nbsp;=&nbsp;[&nbsp;node_a&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">T</span>&nbsp;<span class="keyword">of</span>&nbsp;triple_pred&nbsp;list&nbsp;]<br>
+<span class="keyword">and</span>&nbsp;triple_pred&nbsp;=&nbsp;pred_node&nbsp;*&nbsp;triple_obj&nbsp;list<br>
+<br>
+<span class="keyword">type</span>&nbsp;triple&nbsp;=&nbsp;[&nbsp;node&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">T</span>&nbsp;<span class="keyword">of</span>&nbsp;triple_pred&nbsp;list&nbsp;]&nbsp;*&nbsp;triple_pred&nbsp;list<br>
+<br>
+<span class="keyword">type</span>&nbsp;group_or_union_graph_pattern&nbsp;=<br>
+&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Group</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Union</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern&nbsp;*&nbsp;group_graph_pattern&nbsp;]<br>
+<br>
+<span class="keyword">and</span>&nbsp;group_pattern_not_triples&nbsp;=<br>
+&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Optional</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Group</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Union</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern&nbsp;*&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Graph</span>&nbsp;<span class="keyword">of</span>&nbsp;var_iri&nbsp;*&nbsp;group_graph_pattern&nbsp;]<br>
+<br>
+<span class="keyword">and</span>&nbsp;filter&nbsp;=&nbsp;string<br>
+<span class="keyword">and</span>&nbsp;group_graph_pattern&nbsp;=<br>
+&nbsp;&nbsp;triple&nbsp;list&nbsp;*<br>
+&nbsp;&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Optional</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Group</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Union</span>&nbsp;<span class="keyword">of</span>&nbsp;group_graph_pattern&nbsp;*&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Graph</span>&nbsp;<span class="keyword">of</span>&nbsp;var_iri&nbsp;*&nbsp;group_graph_pattern<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Filter</span>&nbsp;<span class="keyword">of</span>&nbsp;filter&nbsp;]&nbsp;option<br>
+<br>
+<span class="keyword">and</span>&nbsp;quads_pattern&nbsp;=&nbsp;quads<br>
+<span class="keyword">and</span>&nbsp;quads&nbsp;=&nbsp;triples_template&nbsp;option&nbsp;*&nbsp;(quads_not_triples&nbsp;*&nbsp;triples_template&nbsp;option)&nbsp;list<br>
+<br>
+<span class="keyword">and</span>&nbsp;quads_not_triples&nbsp;=&nbsp;var_iri&nbsp;*&nbsp;triples_template&nbsp;option<br>
+<br>
+<span class="keyword">and</span>&nbsp;triples_template&nbsp;=&nbsp;triple&nbsp;list&nbsp;<span class="comment">(*&nbsp;even&nbsp;though&nbsp;this&nbsp;must&nbsp;not&nbsp;be&nbsp;an&nbsp;empty&nbsp;list&nbsp;*)</span><br>
+<br>
+<span class="keyword">type</span>&nbsp;select_query&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;select_proj&nbsp;:&nbsp;projection&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;select_distinct&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Distinct</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reduced</span>&nbsp;]&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;select_where&nbsp;:&nbsp;group_graph_pattern&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<span class="keyword">type</span>&nbsp;construct_query&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;construct_triples&nbsp;:&nbsp;triple&nbsp;list&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;construct_where&nbsp;:&nbsp;group_graph_pattern&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<br>
+<span class="keyword">type</span>&nbsp;ask_query&nbsp;=&nbsp;string<br>
+<span class="keyword">type</span>&nbsp;describe_query&nbsp;=&nbsp;string<br>
+<br>
+<span class="keyword">type</span>&nbsp;delete_where_query&nbsp;=&nbsp;quads_pattern<br>
+<br>
+<span class="keyword">type</span>&nbsp;delete_insert_query&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;delins_delete&nbsp;:&nbsp;quads_pattern&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;delins_insert&nbsp;:&nbsp;quads_pattern&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;delins_where&nbsp;:&nbsp;group_graph_pattern&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<br>
+<span class="keyword">type</span>&nbsp;query&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Select</span>&nbsp;<span class="keyword">of</span>&nbsp;select_query<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Construct</span>&nbsp;<span class="keyword">of</span>&nbsp;construct_query<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ask</span>&nbsp;<span class="keyword">of</span>&nbsp;ask_query<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Describe</span>&nbsp;<span class="keyword">of</span>&nbsp;describe_query<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Delete_where</span>&nbsp;<span class="keyword">of</span>&nbsp;delete_where_query<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Delete_insert</span>&nbsp;<span class="keyword">of</span>&nbsp;delete_insert_query<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_var_iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">V</span>&nbsp;var&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"?%s"</span>&nbsp;var<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;%s&gt;"</span>&nbsp;iri<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_var_iri_a&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">A</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"a"</span><br>
+<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">V</span>&nbsp;_)&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;_)&nbsp;<span class="keyword">as</span>&nbsp;k&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_var_iri&nbsp;k<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_projection&nbsp;l&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;((^)&nbsp;<span class="string">"?"</span>)&nbsp;l);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;string_of_node&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">V</span>&nbsp;_)&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;_)&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">A</span>&nbsp;<span class="keyword">as</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_var_iri_a&nbsp;v<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B_</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"[]"</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"_:%s"</span>&nbsp;s<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">T</span>&nbsp;preds&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"[&nbsp;%s&nbsp;]"</span>&nbsp;(string_of_triple_preds&nbsp;preds)<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_node_obj&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">L</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
+<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">V</span>&nbsp;_)&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="keywordsign">`</span><span class="constructor">I</span>&nbsp;_)&nbsp;<span class="keyword">as</span>&nbsp;v&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_var_iri&nbsp;v<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B_</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"[]"</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">B</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"_:%s"</span>&nbsp;s<br>
+<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">T</span>&nbsp;preds&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"[&nbsp;%s&nbsp;]"</span>&nbsp;(string_of_triple_preds&nbsp;preds)<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_triple_preds&nbsp;(preds&nbsp;:&nbsp;triple_pred&nbsp;list)&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;;&nbsp;"</span><br>
+&nbsp;&nbsp;(<span class="constructor">List</span>.map<br>
+&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(pred,&nbsp;objs)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;%s"</span>&nbsp;(string_of_node&nbsp;pred)&nbsp;(string_of_triple_objs&nbsp;objs)<br>
+&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;preds<br>
+&nbsp;&nbsp;)<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_triple_objs&nbsp;objs&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;,&nbsp;"</span><br>
+&nbsp;&nbsp;(<span class="constructor">List</span>.map&nbsp;string_of_node_obj&nbsp;objs)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_triple&nbsp;(sub,&nbsp;preds)=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;%s"</span><br>
+&nbsp;&nbsp;(string_of_node&nbsp;(sub&nbsp;:&gt;&nbsp;pred_node))<br>
+&nbsp;&nbsp;(string_of_triple_preds&nbsp;preds)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_triples&nbsp;(l&nbsp;:&nbsp;triple&nbsp;list)&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;.&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;string_of_triple&nbsp;l)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;string_of_ggp&nbsp;(triples,&nbsp;rest)&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;triples,&nbsp;rest&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[],&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;triples,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_triples&nbsp;triples<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;triples,&nbsp;<span class="constructor">Some</span>&nbsp;rest&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_triples&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;triples&nbsp;<span class="keyword">with</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(string_of_triples&nbsp;triples)^<span class="string">"&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s2&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;rest&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Optional</span>&nbsp;ggp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"OPTIONAL&nbsp;{&nbsp;%s&nbsp;}"</span>&nbsp;(string_of_ggp&nbsp;ggp)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Group</span>&nbsp;ggp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"{&nbsp;%s&nbsp;}"</span>&nbsp;(string_of_ggp&nbsp;ggp)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Union</span>&nbsp;(ggp1,&nbsp;ggp2)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"{&nbsp;%s&nbsp;}&nbsp;UNION&nbsp;{&nbsp;%s&nbsp;}"</span>&nbsp;(string_of_ggp&nbsp;ggp1)&nbsp;(string_of_ggp&nbsp;ggp2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Graph</span>&nbsp;(var_iri,&nbsp;ggp)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"GRAPH&nbsp;%s&nbsp;{&nbsp;%s&nbsp;}"</span>&nbsp;(string_of_var_iri&nbsp;var_iri)&nbsp;(string_of_ggp&nbsp;ggp)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Filter</span>&nbsp;filter&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"FILTER&nbsp;%s"</span>&nbsp;filter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;%s"</span>&nbsp;s_triples&nbsp;s2<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_quads_pattern&nbsp;quads&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"{&nbsp;%s&nbsp;}"</span>&nbsp;(string_of_quads&nbsp;quads)<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_quads&nbsp;=<br>
+&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;qnt,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_quads_not_triples&nbsp;qnt<br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;qnt,&nbsp;<span class="constructor">Some</span>&nbsp;tpl_tmpl&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;.&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_quads_not_triples&nbsp;qnt)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_triples_template&nbsp;tpl_tmpl)<br>
+&nbsp;<span class="keyword">in</span><br>
+&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="constructor">None</span>,&nbsp;l)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;f&nbsp;l)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="constructor">Some</span>&nbsp;tpl_tmpl,&nbsp;l)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_triples_template&nbsp;tpl_tmpl)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;f&nbsp;l))<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_triples_template&nbsp;l&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;.&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;string_of_triple&nbsp;l)<br>
+<br>
+<span class="keyword">and</span>&nbsp;string_of_quads_not_triples&nbsp;(var_iri,&nbsp;tpl_tmpl)&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"GRAPH&nbsp;%s&nbsp;{&nbsp;%s&nbsp;}"</span><br>
+&nbsp;&nbsp;(string_of_var_iri&nbsp;var_iri)<br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;tpl_tmpl&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;tpl_tmpl&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_triples_template&nbsp;tpl_tmpl)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_select&nbsp;q&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"SELECT&nbsp;%s%s&nbsp;WHERE&nbsp;{&nbsp;%s&nbsp;}"</span><br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;q.select_distinct&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Distinct</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"DISTINCT&nbsp;"</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Reduced</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"REDUCED&nbsp;"</span>)<br>
+&nbsp;&nbsp;(string_of_projection&nbsp;q.select_proj)<br>
+&nbsp;&nbsp;(string_of_ggp&nbsp;q.select_where)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_construct&nbsp;q&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"CONSTRUCT&nbsp;{&nbsp;%s&nbsp;}&nbsp;WHERE&nbsp;{&nbsp;%s&nbsp;}"</span><br>
+&nbsp;&nbsp;(string_of_triples&nbsp;q.construct_triples)<br>
+&nbsp;&nbsp;(string_of_ggp&nbsp;q.construct_where)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_ask&nbsp;q&nbsp;=&nbsp;<span class="string">""</span><br>
+<span class="keyword">let</span>&nbsp;string_of_describe&nbsp;q&nbsp;=&nbsp;<span class="string">""</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_delete_where&nbsp;q&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"DELETE&nbsp;WHERE&nbsp;%s"</span>&nbsp;(string_of_quads_pattern&nbsp;q)<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_delete_insert&nbsp;q&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s%sWHERE&nbsp;%s"</span><br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;q.delins_delete&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"DELETE&nbsp;%s&nbsp;"</span>&nbsp;(string_of_quads_pattern&nbsp;q)<br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;q.delins_insert&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"INSERT&nbsp;%s&nbsp;"</span>&nbsp;(string_of_quads_pattern&nbsp;q)<br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;(string_of_ggp&nbsp;q.delins_where)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_query&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Select</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_select&nbsp;q<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Construct</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_construct&nbsp;q<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ask</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_ask&nbsp;q<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Describe</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_describe&nbsp;q<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Delete_where</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_delete_where&nbsp;q<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Delete_insert</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_delete_insert&nbsp;q<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;exec&nbsp;world&nbsp;model&nbsp;query&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;query&nbsp;=&nbsp;string_of_query&nbsp;query&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"exec&nbsp;query=%s"&nbsp;query);*)</span><br>
+&nbsp;&nbsp;<span class="comment">(*Rdf_query.new_query&nbsp;~name:&nbsp;"sparql"&nbsp;world&nbsp;~query*)</span><br>
+&nbsp;&nbsp;failwith&nbsp;(<span class="string">"Query&nbsp;not&nbsp;implemented:&nbsp;"</span>^query)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;select_and_fold&nbsp;world&nbsp;model&nbsp;query&nbsp;f&nbsp;acc&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;query&nbsp;=&nbsp;string_of_select&nbsp;query&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;query;*)</span><br>
+&nbsp;&nbsp;failwith&nbsp;(<span class="string">"query&nbsp;not&nbsp;implemented:&nbsp;"</span>^query)<br>
+&nbsp;&nbsp;<span class="comment">(*<br>
+&nbsp;&nbsp;let&nbsp;q&nbsp;=&nbsp;Rdf_query.new_query&nbsp;~name:&nbsp;"sparql"&nbsp;world&nbsp;~query&nbsp;in<br>
+&nbsp;&nbsp;try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;qr&nbsp;=&nbsp;Rdf_model.query_execute&nbsp;model&nbsp;q&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;rec&nbsp;iter&nbsp;acc&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;finished&nbsp;=&nbsp;Rdf_query_results.finished&nbsp;qr&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"coucou,&nbsp;finished=%b"&nbsp;finished);*)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;finished&nbsp;then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;acc&nbsp;=&nbsp;f&nbsp;acc&nbsp;qr&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(Rdf_query_results.next&nbsp;qr);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;acc<br>
+&nbsp;&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Rdf_query_results.Query_results_creation_failed&nbsp;_&nbsp;-&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;("Query&nbsp;failed:&nbsp;"^query)*)</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;exec_construct&nbsp;world&nbsp;model&nbsp;query&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;query&nbsp;=&nbsp;string_of_construct&nbsp;query&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;failwith&nbsp;(<span class="string">"query&nbsp;not&nbsp;implemented:&nbsp;"</span>^query)<br>
+&nbsp;&nbsp;<span class="comment">(*let&nbsp;q&nbsp;=&nbsp;Rdf_query.new_query&nbsp;~name:&nbsp;"sparql"&nbsp;world&nbsp;~query&nbsp;in<br>
+&nbsp;&nbsp;try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;qr&nbsp;=&nbsp;Rdf_model.query_execute&nbsp;model&nbsp;q&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;Rdf_query_results.is_graph&nbsp;qr&nbsp;then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rdf_query_results.as_stream&nbsp;qr<br>
+&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assert&nbsp;false<br>
+&nbsp;&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Rdf_query_results.Query_results_creation_failed&nbsp;_&nbsp;-&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;("Query&nbsp;failed:&nbsp;"^query)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+;;<br>
+</code></body></html>

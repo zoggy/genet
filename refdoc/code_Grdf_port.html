@@ -1,0 +1,342 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_port</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Genet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;2012-2013&nbsp;Institut&nbsp;National&nbsp;de&nbsp;Recherche&nbsp;en&nbsp;Informatique&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;en&nbsp;Automatique.&nbsp;All&nbsp;rights&nbsp;reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;later&nbsp;as&nbsp;published&nbsp;by&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;this&nbsp;program;&nbsp;if&nbsp;not,&nbsp;write&nbsp;to&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Inc.,&nbsp;59&nbsp;Temple&nbsp;Place,&nbsp;Suite&nbsp;330,&nbsp;Boston,&nbsp;MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;02111-1307&nbsp;&nbsp;USA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Contact:&nbsp;Maxence.Guesdon@inria.fr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+</code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Grdf_types</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;<span class="constructor">Misc</span>.create_log_fun<br>
+&nbsp;&nbsp;~prefix:&nbsp;<span class="string">"Chn_flat"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"GENET_GRDF_PORT_DEBUG_LEVEL"</span><br>
+;;<br>
+<span class="keyword">type</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">In</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out</span>&nbsp;;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;pred_of_dir&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.genet_consumes<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.genet_produces<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;dir_of_string&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="string">"in"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">In</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="string">"out"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Out</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;direction&nbsp;%S"</span>&nbsp;s)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;string_of_dir&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"in"</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"out"</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;port_name&nbsp;wld&nbsp;port&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.name&nbsp;wld&nbsp;(<span class="constructor">Uri</span>&nbsp;port);;<br>
+<span class="keyword">let</span>&nbsp;port_rank&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.port_rank&nbsp;;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;port_dir&nbsp;port&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.port_dir_string&nbsp;port&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;dir_of_string&nbsp;s<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;map_port_type&nbsp;f&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Var</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Var</span>&nbsp;s<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">T</span>&nbsp;(f&nbsp;a)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Set</span>&nbsp;(map_port_type&nbsp;f&nbsp;s)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;(map_port_type&nbsp;f)&nbsp;l)<br>
+;;<br>
+<br>
+<span class="keyword">exception</span>&nbsp;<span class="constructor">Invalid_type</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+<span class="keyword">exception</span>&nbsp;<span class="constructor">Invalid_type_id</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+<br>
+<span class="keyword">let</span>&nbsp;parse_port_type&nbsp;str&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_parser</span>.port_type&nbsp;<span class="constructor">Lexer</span>.main&nbsp;lexbuf<br>
+&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_parser</span>.<span class="constructor">Error</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;loc&nbsp;=&nbsp;{&nbsp;<span class="constructor">Loc</span>.loc_start&nbsp;=&nbsp;pos&nbsp;;&nbsp;<span class="constructor">Loc</span>.loc_end&nbsp;=&nbsp;pos&nbsp;}&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Loc</span>.raise_problem&nbsp;loc&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;type:&nbsp;%s"</span>&nbsp;str)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_port_type&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;f&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Var</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"'%s"</span>&nbsp;s<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;s<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;set"</span>&nbsp;(iter&nbsp;f&nbsp;t)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"(%s)"</span>&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;*&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;(iter&nbsp;f)&nbsp;l))<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;iter<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;port_type&nbsp;wld&nbsp;port&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_literal&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;port)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;s_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;parse_port_type&nbsp;s_type<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;type&nbsp;for&nbsp;port&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;port))<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;port_file_type_uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;prefix&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Var</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdfs</span>.uri_filetype&nbsp;prefix&nbsp;s)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iter&nbsp;prefix&nbsp;t<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;(h::_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iter&nbsp;prefix&nbsp;h<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;iter<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;sort_ports&nbsp;l&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.sort&nbsp;(<span class="keyword">fun</span>&nbsp;p1&nbsp;p2&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;(port_rank&nbsp;p1)&nbsp;(port_rank&nbsp;p2))<br>
+&nbsp;&nbsp;l<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;ports&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;sort_ports&nbsp;(<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;intf)&nbsp;~pred)<br>
+;;<br>
+<br>
+<br>
+<span class="keyword">let</span>&nbsp;unset_port_type&nbsp;wld&nbsp;port&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;port&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
+&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj)<br>
+&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.objects&nbsp;wld&nbsp;~sub&nbsp;~pred)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;set_port_type&nbsp;wld&nbsp;port&nbsp;typ&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;str&nbsp;=&nbsp;string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;typ&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;unset_port_type&nbsp;wld&nbsp;port;<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;pred)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;str)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_intf_port_of_dir&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.uri_intf_in_port<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.uri_intf_out_port<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;insert_port&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;(n,&nbsp;typ,&nbsp;name)&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;(uri_intf_port_of_dir&nbsp;dir)&nbsp;intf&nbsp;n&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj;<br>
+&nbsp;&nbsp;set_port_type&nbsp;wld&nbsp;uri&nbsp;typ;<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;name&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;delete_ports&nbsp;wld&nbsp;uri&nbsp;dir&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir_pred&nbsp;=&nbsp;pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;dir_pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
+&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;dir_pred)&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;obj))<br>
+&nbsp;&nbsp;ports;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;port&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;port)&nbsp;~pred&nbsp;~obj)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.objects&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;port)&nbsp;~pred:&nbsp;pred)<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;ports<br>
+;;<br>
+<span class="comment">(*<br>
+let&nbsp;delete_ports&nbsp;wld&nbsp;dir&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;pred&nbsp;=&nbsp;pred_of_dir&nbsp;dir&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;query&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;triples1&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(`I&nbsp;uri,&nbsp;[&nbsp;`I&nbsp;pred,&nbsp;[`V&nbsp;"seq"]&nbsp;]&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(`V&nbsp;"seq",&nbsp;[&nbsp;`V&nbsp;"seq_index",&nbsp;[`V&nbsp;"uri"]&nbsp;])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;triples2&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;(`V&nbsp;"uri",&nbsp;[&nbsp;`I&nbsp;Grdfs.genet_listof,&nbsp;[&nbsp;`V&nbsp;"uri2"]])&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;Rdf_sparql.delins_insert&nbsp;=&nbsp;None&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delins_delete&nbsp;=&nbsp;Some&nbsp;(Some&nbsp;(triples1&nbsp;@&nbsp;triples2),&nbsp;[])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delins_where&nbsp;=&nbsp;(triples1,&nbsp;Some&nbsp;(`Optional&nbsp;(triples2,&nbsp;None)))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;query&nbsp;=&nbsp;Rdf_sparql.Delete_insert&nbsp;query&nbsp;in<br>
+&nbsp;&nbsp;ignore&nbsp;(Rdf_sparql.exec&nbsp;wld.wld_world&nbsp;wld.wld_model&nbsp;query)<br>
+;;<br>
+*)</span><br>
+<span class="keyword">let</span>&nbsp;set_ports&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;ports&nbsp;=<br>
+&nbsp;&nbsp;delete_ports&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(insert_port&nbsp;wld&nbsp;intf&nbsp;dir)&nbsp;ports<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;delete_port&nbsp;wld&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;port_dir&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.subject_uri&nbsp;wld&nbsp;~pred&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;sub&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;ports&nbsp;wld&nbsp;sub&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">List</span>.filter&nbsp;(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_uri</span>.equal&nbsp;p&nbsp;uri))&nbsp;ports&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;m&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;p&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ftype&nbsp;=&nbsp;port_type&nbsp;wld&nbsp;p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;port_name&nbsp;wld&nbsp;p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;(m+1)&nbsp;((m,ftype,<span class="constructor">Some</span>&nbsp;name)::acc)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;iter&nbsp;1&nbsp;[]&nbsp;ports&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_ports&nbsp;wld&nbsp;sub&nbsp;dir&nbsp;ports<br>
+;;<br>
+<br>
+<br>
+<span class="keyword">let</span>&nbsp;copy_ports&nbsp;wld&nbsp;~src&nbsp;~dst&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:2&nbsp;~loc:<span class="string">"copy_ports"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"src=%s&nbsp;dst=%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;src)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;dst));<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(port_rank&nbsp;uri,&nbsp;port_type&nbsp;wld&nbsp;uri,&nbsp;<span class="constructor">Some</span>&nbsp;(port_name&nbsp;wld&nbsp;uri))<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_dir&nbsp;dir&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src_ports&nbsp;=&nbsp;ports&nbsp;wld&nbsp;src&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;set_ports&nbsp;wld&nbsp;dst&nbsp;dir&nbsp;(<span class="constructor">List</span>.map&nbsp;map&nbsp;src_ports);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dst_ports&nbsp;=&nbsp;ports&nbsp;wld&nbsp;dst&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left2&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;p1&nbsp;p2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Urimap</span>.add&nbsp;p1&nbsp;p2&nbsp;acc)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Urimap</span>.empty&nbsp;src_ports&nbsp;dst_ports<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_in&nbsp;=&nbsp;f_dir&nbsp;<span class="constructor">In</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_out&nbsp;=&nbsp;f_dir&nbsp;<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(map_in,&nbsp;map_out)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_port&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;?(pos=max_int)&nbsp;?name&nbsp;filetype&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;max&nbsp;1&nbsp;pos&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prev_ports&nbsp;=&nbsp;ports&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prev_ports&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(port_rank&nbsp;uri,&nbsp;port_type&nbsp;wld&nbsp;uri,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.opt_of_string&nbsp;(port_name&nbsp;wld&nbsp;uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prev_ports<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;inserted&nbsp;m&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;acc&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;inserted&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(m,&nbsp;filetype,&nbsp;name)&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.rev&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(_,&nbsp;hftype,hname)&nbsp;<span class="keyword">as</span>&nbsp;h&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;pos&nbsp;&lt;=&nbsp;m&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;not&nbsp;inserted&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;<span class="keyword">true</span>&nbsp;(m+1)&nbsp;((m,&nbsp;filetype,&nbsp;name)::acc)&nbsp;(h&nbsp;::&nbsp;q)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;inserted&nbsp;(m+1)&nbsp;((m,hftype,hname)&nbsp;::&nbsp;acc)&nbsp;q<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_ports&nbsp;=&nbsp;iter&nbsp;<span class="keyword">false</span>&nbsp;1&nbsp;[]&nbsp;prev_ports&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;(<span class="constructor">List</span>.length&nbsp;new_ports&nbsp;&gt;&nbsp;<span class="constructor">List</span>.length&nbsp;prev_ports);<br>
+&nbsp;&nbsp;set_ports&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;new_ports<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_uri_port_type&nbsp;wld&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">Grdf_ftype</span>.extension&nbsp;wld&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;string_of_port_type&nbsp;f&nbsp;t<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_type_of_ports&nbsp;wld&nbsp;f&nbsp;~sep&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"()"</span><br>
+<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;sep<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;(port_type&nbsp;wld&nbsp;p))&nbsp;l)<br>
+;;<br>
+<br>
+<br>
+&nbsp;&nbsp;</code></body></html>

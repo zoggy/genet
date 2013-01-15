@@ -1,0 +1,759 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdfs</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Genet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;2012-2013&nbsp;Institut&nbsp;National&nbsp;de&nbsp;Recherche&nbsp;en&nbsp;Informatique&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;en&nbsp;Automatique.&nbsp;All&nbsp;rights&nbsp;reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;later&nbsp;as&nbsp;published&nbsp;by&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;this&nbsp;program;&nbsp;if&nbsp;not,&nbsp;write&nbsp;to&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Inc.,&nbsp;59&nbsp;Temple&nbsp;Place,&nbsp;Suite&nbsp;330,&nbsp;Boston,&nbsp;MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;02111-1307&nbsp;&nbsp;USA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Contact:&nbsp;Maxence.Guesdon@inria.fr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+</code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Grdf_types</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_graph</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;<span class="constructor">Misc</span>.create_log_fun<br>
+&nbsp;&nbsp;~prefix:&nbsp;<span class="string">"Grdfs"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"GENET_GRDFS_DEBUG_LEVEL"</span><br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h2 id="2_Vocabulary">Vocabulary</h2> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;genet&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"https://raw.github.com/zoggy/genet/master/doc/genet.ttl"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.set_fragment&nbsp;genet;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;rdf_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.set_fragment&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://www.w3.org/1999/02/22-rdf-syntax-ns"</span>);;<br>
+<span class="keyword">let</span>&nbsp;rdfs_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.set_fragment&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://www.w3.org/2000/01/rdf-schema"</span>);;<br>
+<span class="keyword">let</span>&nbsp;dc_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://purl.org/dc/elements/1.1"</span>);;<br>
+<span class="keyword">let</span>&nbsp;owl_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.set_fragment&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://www.w3.org/2002/07/owl"</span>);;<br>
+<span class="keyword">let</span>&nbsp;xsd_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.set_fragment&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://www.w3.org/2001/XMLSchema"</span>);;<br>
+<span class="keyword">let</span>&nbsp;foaf_&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="string">"http://xmlns.com/foaf/0.1"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;datatype_integer&nbsp;=&nbsp;xsd_<span class="string">"integer"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;namespaces&nbsp;=&nbsp;[&nbsp;genet_<span class="string">""</span>,&nbsp;<span class="string">"genet"</span>&nbsp;;&nbsp;rdfs_<span class="string">""</span>,&nbsp;<span class="string">"rdfs"</span>&nbsp;;&nbsp;dc_<span class="string">""</span>,&nbsp;<span class="string">"dc"</span>&nbsp;;&nbsp;xsd_<span class="string">""</span>,&nbsp;<span class="string">"xsd"</span>&nbsp;]<br>
+<br>
+<span class="keyword">let</span>&nbsp;li_&nbsp;n&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;n&nbsp;&lt;=&nbsp;0&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(<span class="constructor">Invalid_argument</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"li:&nbsp;n=%d&nbsp;&lt;=&nbsp;0"</span>&nbsp;n))<br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;rdf_&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"li%n"</span>&nbsp;n)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;rdf_type&nbsp;=&nbsp;rdf_<span class="string">"type"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;genet_tool&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Tool"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_branch&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Branch"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_intf&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Interface"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_version&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Version"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_filetype&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Filetype"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_chain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Chain"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_flatchain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Flatchain"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_instchain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Instchain"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_instopn&nbsp;=&nbsp;genet_&nbsp;<span class="string">"InstOperation"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_implode&nbsp;=&nbsp;genet_<span class="string">"Implode"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_explode&nbsp;=&nbsp;genet_<span class="string">"Explode"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_subgraph&nbsp;=&nbsp;genet_<span class="string">"Subgraph"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;string_of_class&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_tool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"tool"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_branch&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"branch"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_intf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"interface"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_version&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"version"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_filetype&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"filetype"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"chain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_flatchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatchain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instchain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instopn"</span><br>
+<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;genet_name&nbsp;=&nbsp;genet_<span class="string">"name"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_desc&nbsp;=&nbsp;dc_<span class="string">"description"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_file_ext&nbsp;=&nbsp;genet_<span class="string">"file-extension"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hasbranch&nbsp;=&nbsp;genet_<span class="string">"hasBranch"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_nointf&nbsp;=&nbsp;genet_<span class="string">"noInterface"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_haspath&nbsp;=&nbsp;genet_<span class="string">"hasPath"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_usetool&nbsp;=&nbsp;genet_<span class="string">"useTool"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hasversion&nbsp;=&nbsp;genet_<span class="string">"hasVersion"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_consumes&nbsp;=&nbsp;genet_<span class="string">"consumes"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_produces&nbsp;=&nbsp;genet_<span class="string">"produces"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hasdiffcom&nbsp;=&nbsp;genet_<span class="string">"hasDiffCommand"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hasintf&nbsp;=&nbsp;genet_<span class="string">"hasInterface"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hastype&nbsp;=&nbsp;genet_<span class="string">"hasFiletype"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_versionid&nbsp;=&nbsp;genet_<span class="string">"versionId"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_flattenedto&nbsp;=&nbsp;genet_<span class="string">"flattenedTo"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_opfrom&nbsp;=&nbsp;genet_<span class="string">"operationFrom"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_containsop&nbsp;=&nbsp;genet_<span class="string">"containsOperation"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_createdon&nbsp;=&nbsp;genet_<span class="string">"createdOn"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_startedon&nbsp;=&nbsp;genet_<span class="string">"startedOn"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_stoppedon&nbsp;=&nbsp;genet_<span class="string">"stoppedOn"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_isactive&nbsp;=&nbsp;genet_<span class="string">"isActive"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_instanciate&nbsp;=&nbsp;genet_<span class="string">"instanciate"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hascommitid&nbsp;=&nbsp;genet_<span class="string">"hasCommitId"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_useinput&nbsp;=&nbsp;genet_<span class="string">"useInput"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_useinputcommitid&nbsp;=&nbsp;genet_<span class="string">"useInputCommitId"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_useversion&nbsp;=&nbsp;genet_<span class="string">"useVersion"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_filemd5&nbsp;=&nbsp;genet_<span class="string">"fileMd5"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_hasimplode&nbsp;=&nbsp;genet_<span class="string">"hasImplode"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_returncode&nbsp;=&nbsp;genet_<span class="string">"returnCode"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_commandoutput&nbsp;=&nbsp;genet_<span class="string">"commandOutput"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_failedcommand&nbsp;=&nbsp;genet_<span class="string">"failedCommand"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_refinstfor&nbsp;=&nbsp;genet_<span class="string">"referenceInstFor"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;wld.wld_graph.add_triple&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;wld.wld_graph.rem_triple&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;rdf_type&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_triple_uris&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;pred)&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;obj)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;rem_triple_uris&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;rem_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;pred)&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;obj)<br>
+;;<br>
+<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h2 id="2_Urisofmanipulatedelements">Uris of manipulated elements</h2> *)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Tools">Tools</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_tools&nbsp;=&nbsp;<span class="string">"tools"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_tools&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_tools;;<br>
+<span class="keyword">let</span>&nbsp;uri_tool&nbsp;~prefix&nbsp;~tool&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_tools&nbsp;prefix)&nbsp;tool;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Chains">Chains</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_chains&nbsp;=&nbsp;<span class="string">"chains"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_chains&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_chains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;concat_chain_name&nbsp;modname&nbsp;name&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s.%s"</span>&nbsp;modname&nbsp;name;;<br>
+<span class="keyword">let</span>&nbsp;split_chain_name&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Misc</span>.split_string&nbsp;s&nbsp;[<span class="string">'/'</span>])&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Invalid&nbsp;name&nbsp;"</span>^s)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;name&nbsp;::&nbsp;rest&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Misc</span>.is_capitalized&nbsp;name&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Modname</span>&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;rest&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Chainname</span>&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;rest),&nbsp;name)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_chain_module&nbsp;~prefix&nbsp;modname&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_chains&nbsp;prefix)&nbsp;modname;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_chain&nbsp;~prefix&nbsp;~modname&nbsp;name&nbsp;&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_chain_module&nbsp;~prefix&nbsp;modname)&nbsp;name<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_in_&nbsp;f_prefix&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(f_prefix&nbsp;prefix)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Misc</span>.is_prefix&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;prefix&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base&nbsp;=&nbsp;<span class="constructor">String</span>.sub&nbsp;uri&nbsp;len&nbsp;(<span class="constructor">String</span>.length&nbsp;uri&nbsp;-&nbsp;len)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_in_chains&nbsp;=&nbsp;is_in_&nbsp;uri_chains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_chain_module&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_in_chains&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;base&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;split_chain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Modname</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;modname<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_chain&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_in_chains&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;base&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;split_chain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;fullname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;fullname<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;chain_module_of_uri&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_uri_chain_module&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;modname<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;chain&nbsp;module&nbsp;uri"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Flatchains">Flat chains</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_fchains&nbsp;=&nbsp;<span class="string">"flat-chains"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_fchains&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_fchains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_fchain_module&nbsp;~prefix&nbsp;modname&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_fchains&nbsp;prefix)&nbsp;modname;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;split_fchain_name&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;s&nbsp;[<span class="string">'/'</span>]&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Invalid&nbsp;name&nbsp;"</span>^s)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;acc,&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Misc</span>.is_capitalized&nbsp;s&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;(s&nbsp;::&nbsp;acc)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.rev&nbsp;acc,&nbsp;s&nbsp;::&nbsp;q)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(modname,&nbsp;rest)&nbsp;=&nbsp;iter&nbsp;[]&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;rest&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Modname</span>&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[name]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;((modname,&nbsp;name),&nbsp;<span class="string">""</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[name&nbsp;;&nbsp;id]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;((modname,&nbsp;name),&nbsp;id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;name&nbsp;::&nbsp;id&nbsp;::&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fchain_op</span>&nbsp;((modname,&nbsp;name),&nbsp;id,&nbsp;path)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;uri_fchain&nbsp;~prefix&nbsp;~modname&nbsp;?id&nbsp;~name&nbsp;&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_fchain_module&nbsp;~prefix&nbsp;modname)&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;id&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;uri&nbsp;id<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;&nbsp;uri_fchain_op&nbsp;fchain&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;fchain&nbsp;path<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_in_fchains&nbsp;=&nbsp;is_in_&nbsp;uri_fchains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_fchain_module&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_in_fchains&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;base&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;split_fchain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Modname</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;modname<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_fchain&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"is_uri_fchain&nbsp;%S"&nbsp;(Rdf_uri.string&nbsp;uri));*)</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_in_fchains&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;base&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"base=%s"&nbsp;base);*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;split_fchain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;(fullname,&nbsp;id)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(fullname,&nbsp;id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Instanciatedchains">Instanciated chains</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_ichains&nbsp;=&nbsp;<span class="string">"inst-chains"</span>;;<br>
+<span class="keyword">let</span>&nbsp;suffix_producers_of&nbsp;=&nbsp;<span class="string">"producers-of"</span>;;<br>
+<span class="keyword">let</span>&nbsp;suffix_consumers_of&nbsp;=&nbsp;<span class="string">"consumers-of"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichains&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_ichains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichain_module&nbsp;~prefix&nbsp;modname&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_ichains&nbsp;prefix)&nbsp;modname;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichain&nbsp;~prefix&nbsp;~modname&nbsp;~name&nbsp;~id&nbsp;&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_ichain_module&nbsp;~prefix&nbsp;modname)&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;uri&nbsp;id<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichain_file&nbsp;inst_uri&nbsp;file&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;inst_uri&nbsp;[&nbsp;<span class="string">"files"</span>&nbsp;;&nbsp;file&nbsp;]<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;ichain_in_file_rank&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;uri)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"inchain_in_file:&nbsp;empty&nbsp;uri"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;n&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;int_of_string&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Bad&nbsp;in_file&nbsp;uri:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichain_in_file&nbsp;uri&nbsp;rank&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.concat&nbsp;uri&nbsp;<span class="string">"input"</span>)&nbsp;(string_of_int&nbsp;rank)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_in_ichains&nbsp;=&nbsp;is_in_&nbsp;uri_ichains;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_ichain&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"is_uri_fchain&nbsp;%S"&nbsp;(Rdf_uri.string&nbsp;uri));*)</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;is_in_ichains&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;base&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"base=%s"&nbsp;base);*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;split_fchain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;(fullname,&nbsp;id)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(fullname,&nbsp;id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichains_producers_of&nbsp;prefix&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix<br>
+&nbsp;&nbsp;(suffix_ichains&nbsp;::&nbsp;suffix_producers_of&nbsp;::&nbsp;path)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_ichains_consumers_of&nbsp;prefix&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix<br>
+&nbsp;&nbsp;(suffix_ichains&nbsp;::&nbsp;suffix_consumers_of&nbsp;::&nbsp;path)<br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Versions">Versions</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_versions&nbsp;=&nbsp;<span class="string">"versions"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_versions&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_versions;;<br>
+<span class="keyword">let</span>&nbsp;uri_version&nbsp;~tool&nbsp;~version&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_versions&nbsp;tool)&nbsp;version;;<br>
+<span class="keyword">let</span>&nbsp;uri_tool_of_version&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri);;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Interfaces">Interfaces</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_intfs&nbsp;=&nbsp;<span class="string">"interfaces"</span><br>
+<span class="keyword">let</span>&nbsp;uri_intfs&nbsp;~tool&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;tool&nbsp;suffix_intfs;;<br>
+<span class="keyword">let</span>&nbsp;uri_intf&nbsp;~tool&nbsp;~intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_intfs&nbsp;tool)&nbsp;intf;;<br>
+<span class="keyword">let</span>&nbsp;uri_tool_of_intf&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri);;<br>
+<span class="keyword">let</span>&nbsp;uri_intf_in&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;intf&nbsp;<span class="string">"in"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_intf_out&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;intf&nbsp;<span class="string">"out"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_intf_in_port&nbsp;intf&nbsp;n&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_intf_in&nbsp;intf)&nbsp;(string_of_int&nbsp;n)<br>
+<span class="keyword">let</span>&nbsp;uri_intf_out_port&nbsp;intf&nbsp;n&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_intf_out&nbsp;intf)&nbsp;(string_of_int&nbsp;n)<br>
+<span class="keyword">let</span>&nbsp;port_rank&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;uri)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Invalid&nbsp;port&nbsp;uri:&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;n&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;int_of_string&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Invalid&nbsp;port&nbsp;number&nbsp;in&nbsp;uri:&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;port_dir_string&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri))&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Bad&nbsp;port&nbsp;uri;&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;is_a_port&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;ignore(port_rank&nbsp;uri)&nbsp;;&nbsp;ignore(port_dir_string&nbsp;uri)&nbsp;;&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span><br>
+;;<br>
+<span class="keyword">let</span>&nbsp;port_container&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(is_a_port&nbsp;uri)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;port"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri)<br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Filetypes">Filetypes</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_filetypes&nbsp;=&nbsp;<span class="string">"filetypes"</span>&nbsp;;;<br>
+<span class="keyword">let</span>&nbsp;uri_filetypes&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_filetypes;;<br>
+<span class="keyword">let</span>&nbsp;uri_filetype&nbsp;~prefix&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_filetypes&nbsp;prefix)&nbsp;name;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Branches">Branches</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_branches&nbsp;=&nbsp;<span class="string">"branches"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_branches&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;parent&nbsp;suffix_branches;;<br>
+<span class="keyword">let</span>&nbsp;uri_branch_from_parent_branch&nbsp;parent&nbsp;name&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;parent&nbsp;name;;<br>
+<span class="keyword">let</span>&nbsp;uri_branch_from_parent_tool&nbsp;parent&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.concat&nbsp;parent&nbsp;suffix_branches)&nbsp;name;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_prefix&nbsp;prefix&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;prefix&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Misc</span>.is_prefix&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len_uri&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len_prefix&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;prefix&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len_prefix&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;len_prefix&nbsp;&gt;&nbsp;0&nbsp;<span class="keywordsign">&amp;&amp;</span>&nbsp;prefix.[len_prefix&nbsp;-&nbsp;1]&nbsp;=&nbsp;<span class="string">'/'</span>&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;len_prefix&nbsp;-&nbsp;1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;len_prefix<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">String</span>.sub&nbsp;uri&nbsp;len_prefix&nbsp;(len_uri&nbsp;-&nbsp;len_prefix)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;uri<br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Diffs">Diffs</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_diff&nbsp;=&nbsp;<span class="string">"diff"</span>;;<br>
+<br>
+<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** Files and directories *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_out&nbsp;=&nbsp;<span class="string">"out"</span>;;<br>
+<span class="keyword">let</span>&nbsp;suffix_in&nbsp;=&nbsp;<span class="string">"in"</span>;;<br>
+<span class="keyword">let</span>&nbsp;suffix_raw&nbsp;=&nbsp;<span class="string">"raw"</span>;;<br>
+<span class="keyword">let</span>&nbsp;uri_outfile_path&nbsp;?(raw=<span class="keyword">false</span>)&nbsp;prefix&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;raw&nbsp;<span class="keyword">then</span>&nbsp;suffix_out&nbsp;::&nbsp;suffix_raw&nbsp;::&nbsp;path&nbsp;<span class="keyword">else</span>&nbsp;suffix_out&nbsp;::&nbsp;path)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_input_path&nbsp;?(raw=<span class="keyword">false</span>)&nbsp;prefix&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix<br>
+&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;raw&nbsp;<span class="keyword">then</span>&nbsp;suffix_in&nbsp;::&nbsp;suffix_raw&nbsp;::&nbsp;path&nbsp;<span class="keyword">else</span>&nbsp;suffix_in&nbsp;::&nbsp;path)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_input_file_path&nbsp;?(raw=<span class="keyword">false</span>)&nbsp;prefix&nbsp;path&nbsp;file_path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix<br>
+&nbsp;&nbsp;((<span class="keyword">if</span>&nbsp;raw&nbsp;<span class="keyword">then</span>&nbsp;suffix_in&nbsp;::&nbsp;suffix_raw&nbsp;::&nbsp;path&nbsp;<span class="keyword">else</span>&nbsp;suffix_in&nbsp;::&nbsp;path)&nbsp;@&nbsp;file_path)<br>
+;;<br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** <h2 id="2_Utilities">Utilities</h2> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;uri_basename&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;uri)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_a&nbsp;wld&nbsp;~sub&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdfs.is_a"</span>);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;rdf_type&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"contains_statement&nbsp;?"</span>);<br>
+&nbsp;&nbsp;wld.wld_graph.exists_t&nbsp;(sub,&nbsp;pred,&nbsp;obj)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_a_&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;wld&nbsp;sub&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdfs.is_a_&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;sub&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_a&nbsp;wld&nbsp;~sub&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_a_tool&nbsp;=&nbsp;is_a_&nbsp;genet_tool;;<br>
+<span class="keyword">let</span>&nbsp;is_a_branch&nbsp;=&nbsp;is_a_&nbsp;genet_branch;;<br>
+<span class="keyword">let</span>&nbsp;is_a_version&nbsp;=&nbsp;is_a_&nbsp;genet_version;;<br>
+<span class="keyword">let</span>&nbsp;is_a_intf&nbsp;=&nbsp;is_a_&nbsp;genet_intf;;<br>
+<span class="keyword">let</span>&nbsp;is_a_filetype&nbsp;=&nbsp;is_a_&nbsp;genet_filetype;;<br>
+<span class="keyword">let</span>&nbsp;is_a_instopn&nbsp;=&nbsp;is_a_&nbsp;genet_instopn;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_for_&nbsp;f_is&nbsp;string&nbsp;wld&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;uri_basename&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;s&nbsp;=&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;f_is&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_tool_&nbsp;=&nbsp;is_uri_for_&nbsp;is_a_tool;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_tool_versions&nbsp;=&nbsp;is_uri_tool_&nbsp;<span class="string">"versions"</span>;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_tool_interfaces&nbsp;=&nbsp;is_uri_tool_&nbsp;<span class="string">"interfaces"</span>;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_tool_branches&nbsp;=&nbsp;is_uri_tool_&nbsp;<span class="string">"branches"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_branch_&nbsp;=&nbsp;is_uri_for_&nbsp;is_a_branch;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_branch_versions&nbsp;=&nbsp;is_uri_branch_&nbsp;<span class="string">"versions"</span>;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_branch_interfaces&nbsp;=&nbsp;is_uri_branch_&nbsp;<span class="string">"interfaces"</span>;;<br>
+<span class="keyword">let</span>&nbsp;is_uri_branch_branches&nbsp;=&nbsp;is_uri_branch_&nbsp;<span class="string">"branches"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_uri_version_interfaces&nbsp;=&nbsp;is_uri_for_&nbsp;is_a_version&nbsp;<span class="string">"interfaces"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_name&nbsp;wld&nbsp;sub&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_desc&nbsp;wld&nbsp;sub&nbsp;desc&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_desc&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;desc&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;object_literals&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Literal</span>&nbsp;lit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;lit.lit_value&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;l<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;object_literal&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;object_literals&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;s<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;name&nbsp;wld&nbsp;source&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(object_literal&nbsp;wld&nbsp;source&nbsp;genet_name)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;name_of_uri_string&nbsp;wld&nbsp;source&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_uri_string&nbsp;source&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;name&nbsp;wld&nbsp;uri<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;desc&nbsp;wld&nbsp;source&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(object_literal&nbsp;wld&nbsp;source&nbsp;genet_desc)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;subjects&nbsp;wld&nbsp;~pred&nbsp;~obj&nbsp;=&nbsp;wld.wld_graph.subjects_of&nbsp;~pred&nbsp;~obj;;<br>
+<span class="keyword">let</span>&nbsp;objects&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;subject_uris&nbsp;wld&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.subjects_of&nbsp;~pred&nbsp;~obj&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;l<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;subject_uri&nbsp;wld&nbsp;~pred&nbsp;~obj&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;subject_uris&nbsp;wld&nbsp;~pred&nbsp;~obj&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;uri&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;object_uris&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;l<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;object_uri&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;object_uris&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;uri&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_date_uri_&nbsp;pred&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;sub&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;obj&nbsp;=&nbsp;rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;l<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;set_date_uri_&nbsp;pred&nbsp;wld&nbsp;sub&nbsp;?d&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;remove_date_uri_&nbsp;pred&nbsp;wld&nbsp;sub;<br>
+&nbsp;&nbsp;add_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;pred)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_datetime&nbsp;?d&nbsp;())<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;date_uri_&nbsp;pred&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;wld.wld_graph.objects_of&nbsp;~sub:(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred:&nbsp;uri_pred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="constructor">Literal</span>&nbsp;lit]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Rdf_node</span>.datetime_of_literal&nbsp;lit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;%s&nbsp;object"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;pred))<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_creation_date_uri&nbsp;=&nbsp;remove_date_uri_&nbsp;genet_createdon;;<br>
+<span class="keyword">let</span>&nbsp;set_creation_date_uri&nbsp;=&nbsp;set_date_uri_&nbsp;genet_createdon;;<br>
+<span class="keyword">let</span>&nbsp;creation_date_uri&nbsp;=&nbsp;date_uri_&nbsp;genet_createdon&nbsp;;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_start_date_uri&nbsp;=&nbsp;remove_date_uri_&nbsp;genet_startedon;;<br>
+<span class="keyword">let</span>&nbsp;set_start_date_uri&nbsp;=&nbsp;set_date_uri_&nbsp;genet_startedon;;<br>
+<span class="keyword">let</span>&nbsp;start_date_uri&nbsp;=&nbsp;date_uri_&nbsp;genet_startedon&nbsp;;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_stop_date_uri&nbsp;=&nbsp;remove_date_uri_&nbsp;genet_stoppedon;;<br>
+<span class="keyword">let</span>&nbsp;set_stop_date_uri&nbsp;=&nbsp;set_date_uri_&nbsp;genet_stoppedon;;<br>
+<span class="keyword">let</span>&nbsp;stop_date_uri&nbsp;=&nbsp;date_uri_&nbsp;genet_stoppedon&nbsp;;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_command_output&nbsp;wld&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_commandoutput&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;obj&nbsp;=&nbsp;rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;l<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;command_output&nbsp;wld&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;genet_commandoutput&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;object_literal&nbsp;wld&nbsp;~sub&nbsp;~pred<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;set_command_output&nbsp;wld&nbsp;uri&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;remove_command_output&nbsp;wld&nbsp;uri;<br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_commandoutput&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_is_active_uri&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;sub&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_isactive&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;wld.wld_graph.objects_of&nbsp;~sub&nbsp;~pred&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;obj&nbsp;=&nbsp;rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;l<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;set_is_active_uri&nbsp;wld&nbsp;sub&nbsp;b&nbsp;=<br>
+&nbsp;&nbsp;remove_is_active_uri&nbsp;wld&nbsp;sub;<br>
+&nbsp;&nbsp;add_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;genet_isactive)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_bool&nbsp;b)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;is_active_uri&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_isactive&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;wld.wld_graph.objects_of&nbsp;~sub:(<span class="constructor">Uri</span>&nbsp;sub)&nbsp;~pred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="constructor">Literal</span>&nbsp;lit]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_node</span>.bool_of_literal&nbsp;lit<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Invalid&nbsp;isactive&nbsp;object"</span><br>
+;;<br>
+<br>
+<span class="comment">(*<br>
+let&nbsp;fold_target_sequence&nbsp;f&nbsp;acc&nbsp;wld&nbsp;~source&nbsp;~pred&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;sparql&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;Rdf_sparql.select_proj&nbsp;=&nbsp;[&nbsp;"seq_index"&nbsp;;&nbsp;"uri"&nbsp;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select_distinct&nbsp;=&nbsp;None&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select_where&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(`I&nbsp;source,&nbsp;[&nbsp;`I&nbsp;pred,&nbsp;[`V&nbsp;"seq"]&nbsp;])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(`V&nbsp;"seq",&nbsp;[&nbsp;`V&nbsp;"seq_index",&nbsp;[`V&nbsp;"uri"]&nbsp;])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],&nbsp;None)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;qf&nbsp;acc&nbsp;qr&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;match<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rdf_query_results.get_binding_value_by_name&nbsp;qr&nbsp;"seq_index",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rdf_query_results.get_binding_value_by_name&nbsp;qr&nbsp;"uri"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;None,&nbsp;_&nbsp;|&nbsp;_,&nbsp;None&nbsp;-&gt;&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Some&nbsp;index_node,&nbsp;Some&nbsp;uri_node&nbsp;-&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let&nbsp;n&nbsp;=&nbsp;Rdf_node.get_li_ordinal&nbsp;index_node&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;acc&nbsp;n&nbsp;uri_node<br>
+&nbsp;&nbsp;in<br>
+&nbsp;&nbsp;Rdf_sparql.select_and_fold&nbsp;wld.wld_world&nbsp;wld.wld_model&nbsp;sparql&nbsp;qf&nbsp;acc<br>
+;;<br>
+*)</span><br>
+<br>
+<br>
+<span class="keyword">let</span>&nbsp;delete_from_sparql&nbsp;wld&nbsp;query&nbsp;=<br>
+&nbsp;&nbsp;prerr_endline<br>
+&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"delete&nbsp;from&nbsp;sparql&nbsp;query=%s"</span>&nbsp;(<span class="constructor">Rdf_sparql</span>.string_of_construct&nbsp;query));<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_stream&nbsp;=&nbsp;<span class="constructor">Rdf_sparql</span>.exec_construct&nbsp;wld&nbsp;query&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;<span class="comment">(*Rdf_stream.iter<br>
+&nbsp;&nbsp;(fun&nbsp;st&nbsp;-&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(Rdf_statement.to_string&nbsp;st);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rdf_model.remove_statement&nbsp;wld.wld_model&nbsp;st<br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;stream*)</span><br>
+;;<br>
+<br>
+<br>
+<span class="keyword">let</span>&nbsp;class_of&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;object_uri&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;rdf_type;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;class_of_uri_string&nbsp;wld&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;class_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_node</span>.node_of_uri_string&nbsp;uri)<br>
+;;<br>
+<br>
+<br>
+</code></body></html>

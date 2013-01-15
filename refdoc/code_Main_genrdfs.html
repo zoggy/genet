@@ -1,0 +1,248 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_genrdfs</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Genet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;2012-2013&nbsp;Institut&nbsp;National&nbsp;de&nbsp;Recherche&nbsp;en&nbsp;Informatique&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;en&nbsp;Automatique.&nbsp;All&nbsp;rights&nbsp;reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;later&nbsp;as&nbsp;published&nbsp;by&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;this&nbsp;program;&nbsp;if&nbsp;not,&nbsp;write&nbsp;to&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Inc.,&nbsp;59&nbsp;Temple&nbsp;Place,&nbsp;Suite&nbsp;330,&nbsp;Boston,&nbsp;MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;02111-1307&nbsp;&nbsp;USA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Contact:&nbsp;Maxence.Guesdon@inria.fr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
+</code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
+<br>
+</code><table><tr><td></td><td><span class="comment">(** Main module of the program generating the RDFschema of genet. *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_triple&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.add_triple;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_label&nbsp;wld&nbsp;sub&nbsp;label&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"label"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_comment&nbsp;wld&nbsp;sub&nbsp;label&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"comment"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_type&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.add_type;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_istype_class&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Class"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_istype_property&nbsp;wld&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Property"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_property&nbsp;wld<br>
+&nbsp;&nbsp;~label&nbsp;~comment&nbsp;~definedby&nbsp;?domain&nbsp;?range&nbsp;sub&nbsp;=<br>
+&nbsp;&nbsp;add_istype_property&nbsp;wld&nbsp;sub;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;sub&nbsp;label;<br>
+&nbsp;&nbsp;add_comment&nbsp;wld&nbsp;sub&nbsp;comment;<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj:&nbsp;definedby;<br>
+<br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;domain&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"domain"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;);<br>
+<br>
+&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;range&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"range"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_tool_class&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_tool&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_tool&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_tool;<br>
+&nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_tool;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_tool&nbsp;<span class="string">"Tool"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_branch_class&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_branch&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_branch;<br>
+&nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_branch;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_branch&nbsp;<span class="string">"Branch"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_intf_class&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_intf;<br>
+&nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_intf;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_intf&nbsp;<span class="string">"Interface"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_version_class&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_version&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_version;<br>
+&nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_version;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_version&nbsp;<span class="string">"Version"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_filetype_class&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_ft&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_ft;<br>
+&nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_ft;<br>
+&nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_ft&nbsp;<span class="string">"Filetype"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_vocabulary&nbsp;wld&nbsp;=<br>
+&nbsp;&nbsp;add_tool_class&nbsp;wld;<br>
+&nbsp;&nbsp;add_branch_class&nbsp;wld;<br>
+&nbsp;&nbsp;add_intf_class&nbsp;wld;<br>
+&nbsp;&nbsp;add_version_class&nbsp;wld;<br>
+&nbsp;&nbsp;add_filetype_class&nbsp;wld;<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_literal&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Literal"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_branch&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_intf&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_version&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_filetype&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_seq&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdf_<span class="string">"Seq"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;props&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_name,&nbsp;<span class="string">"has&nbsp;name"</span>,&nbsp;<span class="string">"Name"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_literal)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_hasbranch,&nbsp;<span class="string">"has&nbsp;branch"</span>,&nbsp;<span class="string">"Has&nbsp;a&nbsp;branch"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_branch)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_nointf,&nbsp;<span class="string">"has&nbsp;no&nbsp;interface"</span>,&nbsp;<span class="string">"Does&nbsp;not&nbsp;implement&nbsp;the&nbsp;interface"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_hasintf,&nbsp;<span class="string">"has&nbsp;interface"</span>,&nbsp;<span class="string">"Implement&nbsp;the&nbsp;interface"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_haspath,&nbsp;<span class="string">"has&nbsp;path"</span>,&nbsp;<span class="string">"The&nbsp;path&nbsp;of&nbsp;the&nbsp;command"</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf,&nbsp;<span class="constructor">Some</span>&nbsp;node_literal)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_hasdiffcom,&nbsp;<span class="string">"has&nbsp;diff&nbsp;command"</span>,&nbsp;<span class="string">"The&nbsp;path&nbsp;of&nbsp;the&nbsp;command&nbsp;to&nbsp;compute&nbsp;diffs"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;node_filetype,&nbsp;<span class="constructor">Some</span>&nbsp;node_literal)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_hasversion,&nbsp;<span class="string">"has&nbsp;version"</span>,&nbsp;<span class="string">"Has&nbsp;version"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_version)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_consumes,&nbsp;<span class="string">"consumes"</span>,&nbsp;<span class="string">"Filetypes&nbsp;consumed,&nbsp;ordered"</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf,&nbsp;<span class="constructor">Some</span>&nbsp;node_seq);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_produces,&nbsp;<span class="string">"produces"</span>,&nbsp;<span class="string">"Filetypes&nbsp;produced,&nbsp;ordered"</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf,&nbsp;<span class="constructor">Some</span>&nbsp;node_seq);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;definedby&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
+&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(uri,&nbsp;label,&nbsp;comment,&nbsp;domain,&nbsp;range)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_property&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~label&nbsp;~comment&nbsp;~definedby&nbsp;?domain&nbsp;?range<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)<br>
+&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;props<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;output_format&nbsp;=&nbsp;ref&nbsp;<span class="string">"rdfxml"</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;options&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Options</span>.option_version&nbsp;<span class="string">"Genet-genrdfs"</span>::<br>
+&nbsp;&nbsp;(<span class="string">"--ntriples"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;output_format&nbsp;:=&nbsp;<span class="string">"ntriples"</span>),&nbsp;<span class="string">"&nbsp;output&nbsp;in&nbsp;ntriples&nbsp;format"</span>)&nbsp;::<br>
+&nbsp;&nbsp;(<span class="string">"--turtle"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;output_format&nbsp;:=&nbsp;<span class="string">"turtle"</span>),&nbsp;<span class="string">"&nbsp;output&nbsp;in&nbsp;turtle&nbsp;format"</span>)&nbsp;::<br>
+&nbsp;&nbsp;[]<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;main&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_options&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;failwith&nbsp;<span class="string">"not&nbsp;implemented&nbsp;yet"</span><br>
+<span class="comment">(*<br>
+&nbsp;&nbsp;let&nbsp;storage&nbsp;=&nbsp;Rdf_storage.new_storage&nbsp;world&nbsp;~factory:&nbsp;"memory"&nbsp;~name:&nbsp;"test"&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;model&nbsp;=&nbsp;Rdf_model.new_model&nbsp;world&nbsp;storage&nbsp;in<br>
+&nbsp;&nbsp;add_vocabulary&nbsp;wld;<br>
+&nbsp;&nbsp;match&nbsp;Rdf_model.to_string&nbsp;model&nbsp;~name:&nbsp;!output_format&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;-&gt;&nbsp;failwith&nbsp;"Failed&nbsp;to&nbsp;serialize&nbsp;model"<br>
+&nbsp;&nbsp;|&nbsp;Some&nbsp;string&nbsp;-&gt;&nbsp;print_string&nbsp;string<br>
+&nbsp;&nbsp;*)</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;_&nbsp;=&nbsp;<span class="constructor">Misc</span>.safe_main&nbsp;main;;</code></body></html>

@@ -1,0 +1,101 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.get</title>
+</head>
+<body>
+<code class="code"><span class="keyword">let</span>&nbsp;get&nbsp;ctx&nbsp;thing&nbsp;args&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;thing&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Other</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_root&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Static_file</span>&nbsp;(f,&nbsp;t)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;([ctype&nbsp;~t&nbsp;()],&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;f)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_tool&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tools</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_tools&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branch</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branch&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_version&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intf&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intfs&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_filetype&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetypes</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_filetypes&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_versions&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branches&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_chains&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain_module</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_chain_module&nbsp;?nav:&nbsp;<span class="constructor">None</span>&nbsp;ctx)&nbsp;modname<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain</span>&nbsp;fullname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_chain&nbsp;ctx)&nbsp;fullname<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchains&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_module</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchain_module&nbsp;ctx&nbsp;modname<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_fchain&nbsp;ctx)&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_list</span>&nbsp;fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchain_list&nbsp;ctx&nbsp;fchain_name<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_ichain&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out_file</span>&nbsp;(path,&nbsp;raw)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_outfile_error&nbsp;ctx&nbsp;(get_outfile&nbsp;ctx&nbsp;path)&nbsp;raw<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_producers_of</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inst_producers_of&nbsp;ctx&nbsp;path<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inputs</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inputs&nbsp;ctx<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Input</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_in_error&nbsp;ctx&nbsp;(get_input&nbsp;ctx)&nbsp;path<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Input_file</span>&nbsp;(input,&nbsp;file_path,&nbsp;raw)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handle_in_error&nbsp;ctx&nbsp;(get_input_file&nbsp;ctx&nbsp;~raw&nbsp;~input)&nbsp;file_path<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inst_chains&nbsp;ctx&nbsp;args<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_query</span>&nbsp;iq&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;inst_chain_query&nbsp;ctx&nbsp;iq<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_ichain_op&nbsp;ctx)&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Diff_inst_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_diff_ichains&nbsp;ctx)&nbsp;args</code></body></html>

@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Rest_query.html">
+<link rel="next" href="Rest_xhtml.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_types</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Rest_query.html" title="Rest_query">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Rest_xhtml.html" title="Rest_xhtml">Next</a>
+</div>
+<h1>Module <a href="type_Rest_types.html">Rest_types</a> (<a href="code_Rest_types.html">.ml</a>)</h1>
+<pre><span class="keyword">module</span> Rest_types: <code class="code">sig</code> <a href="Rest_types.html">..</a> <code class="code">end</code></pre><div class="info">
+Types for REST API.<br>
+</div>
+<hr width="100%">
+<pre><span id="TYPEarg"><span class="keyword">type</span> <code class="type"></code>arg</span> = <code class="type">string * string</code> </pre>
+
+<pre><span id="VALget_arg"><span class="keyword">val</span> <a href="code_VALRest_types.get_arg.html">get_arg</a></span> : <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list -> string -> string</code></pre><pre><span id="TYPEuri"><span class="keyword">type</span> <code class="type"></code>uri</span> = <code class="type"><a href="Grdf_types.html#TYPEuri">Grdf_types.uri</a></code> </pre>
+
+<pre><span id="TYPEpath"><span class="keyword">type</span> <code class="type"></code>path</span> = <code class="type">string</code> </pre>
+
+<pre><span id="TYPEjson"><span class="keyword">type</span> <code class="type"></code>json</span> = <code class="type">string</code> </pre>
+
+<pre><code><span id="TYPEmet"><span class="keyword">type</span> <code class="type"></code>met</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmet.Get"><span class="constructor">Get</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEpath">path</a> * <a href="Rest_types.html#TYPEarg">arg</a> list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmet.Delete"><span class="constructor">Delete</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEpath">path</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmet.Post"><span class="constructor">Post</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEpath">path</a> * <a href="Rest_types.html#TYPEjson">json</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTmet.Put"><span class="constructor">Put</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEpath">path</a> * <a href="Rest_types.html#TYPEjson">json</a></code></code></td>
+
+</tr></table>
+
+
+<pre><code><span id="TYPEcontent_type"><span class="keyword">type</span> <code class="type"></code>content_type</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type.Xhtml"><span class="constructor">Xhtml</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type.Json"><span class="constructor">Json</span></span></code></td>
+
+</tr></table>
+
+
+<pre><code><span id="TYPEinst_chain_query"><span class="keyword">type</span> <code class="type"></code>inst_chain_query</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTinst_chain_query.iq_chain">iq_chain</span>&nbsp;:<code class="type">Rdf_uri.uri option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTinst_chain_query.iq_tools">iq_tools</span>&nbsp;:<code class="type">Rdf_uri.uri Urimap.t</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTinst_chain_query.iq_input">iq_input</span>&nbsp;:<code class="type">(string list * string option) option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >input path * git id option</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+<pre><code><span id="TYPEthing"><span class="keyword">type</span> <code class="type"></code>thing</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Tool"><span class="constructor">Tool</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Branch"><span class="constructor">Branch</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Version"><span class="constructor">Version</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Intf"><span class="constructor">Intf</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Filetype"><span class="constructor">Filetype</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Tools"><span class="constructor">Tools</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Branches"><span class="constructor">Branches</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Versions"><span class="constructor">Versions</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Intfs"><span class="constructor">Intfs</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Filetypes"><span class="constructor">Filetypes</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Static_file"><span class="constructor">Static_file</span></span> <span class="keyword">of</span> <code class="type">string * string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Other"><span class="constructor">Other</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Chains"><span class="constructor">Chains</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Chain_module"><span class="constructor">Chain_module</span></span> <span class="keyword">of</span> <code class="type"><a href="Chn_types.html#TYPEchain_modname">Chn_types.chain_modname</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Chain"><span class="constructor">Chain</span></span> <span class="keyword">of</span> <code class="type"><a href="Chn_types.html#TYPEchain_name">Chn_types.chain_name</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Flat_chains"><span class="constructor">Flat_chains</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Flat_chain_module"><span class="constructor">Flat_chain_module</span></span> <span class="keyword">of</span> <code class="type"><a href="Chn_types.html#TYPEchain_modname">Chn_types.chain_modname</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Flat_chain"><span class="constructor">Flat_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Flat_chain_list"><span class="constructor">Flat_chain_list</span></span> <span class="keyword">of</span> <code class="type"><a href="Chn_types.html#TYPEfchain_name">Chn_types.fchain_name</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inst_chain"><span class="constructor">Inst_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Out_file"><span class="constructor">Out_file</span></span> <span class="keyword">of</span> <code class="type">string list * bool</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >true = raw access</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inst_producers_of"><span class="constructor">Inst_producers_of</span></span> <span class="keyword">of</span> <code class="type">string list</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >inst ports producing file path</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inputs"><span class="constructor">Inputs</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Input"><span class="constructor">Input</span></span> <span class="keyword">of</span> <code class="type">string list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Input_file"><span class="constructor">Input_file</span></span> <span class="keyword">of</span> <code class="type">string list * string list * bool</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >true = raw access</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inst_chains"><span class="constructor">Inst_chains</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inst_chain_query"><span class="constructor">Inst_chain_query</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEinst_chain_query">inst_chain_query</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Inst_chain_op"><span class="constructor">Inst_chain_op</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTthing.Diff_inst_chains"><span class="constructor">Diff_inst_chains</span></span></code></td>
+
+</tr></table>
+
+
+<pre><span id="TYPEresponse"><span class="keyword">type</span> <code class="type"></code>response</span> = <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list * string</code> </pre>
+
+<pre><span id="TYPEuser"><span class="keyword">type</span> <code class="type"></code>user</span> = <code class="type"><a href="Chn_types.html#TYPEuser">Chn_types.user</a></code> </pre>
+
+<pre><span id="TYPEcontext"><span class="keyword">type</span> <code class="type"></code>context</span> = <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a></code> = {</pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontext.ctx_rdf">ctx_rdf</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontext.ctx_cfg">ctx_cfg</span>&nbsp;:<code class="type"><a href="Config.html#TYPEt">Config.t</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontext.ctx_user">ctx_user</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEuser">user</a> option</code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><span id="TYPEget_handler"><span class="keyword">type</span> <code class="type"></code>get_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEarg">arg</a> list -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
+<pre><span id="TYPEdelete_handler"><span class="keyword">type</span> <code class="type"></code>delete_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -> <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
+<pre><span id="TYPEpost_handler"><span class="keyword">type</span> <code class="type"></code>post_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEjson">json</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
+<pre><span id="TYPEput_handler"><span class="keyword">type</span> <code class="type"></code>put_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEjson">json</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
+<pre><code><span id="TYPEcontent_type_handlers"><span class="keyword">type</span> <code class="type"></code>content_type_handlers</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type_handlers.h_get">h_get</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEget_handler">get_handler</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type_handlers.h_del">h_del</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEdelete_handler">delete_handler</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type_handlers.h_post">h_post</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEpost_handler">post_handler</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcontent_type_handlers.h_put">h_put</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEput_handler">put_handler</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+</body></html>

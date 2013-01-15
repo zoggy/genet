@@ -1,0 +1,281 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Lexer.__ocaml_lex_main_rec</title>
+</head>
+<body>
+<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;main&nbsp;lexbuf&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;__ocaml_lex_main_rec&nbsp;lexbuf&nbsp;0<br>
+<span class="keyword">and</span>&nbsp;__ocaml_lex_main_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;36&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.reset&nbsp;string_buffer;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;234&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;37&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.reset&nbsp;string_buffer;&nbsp;comment&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;239&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;39&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;&lt;-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;pos&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">L</span>.pos_lnum&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_lnum&nbsp;+&nbsp;1&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos_bol&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_cnum&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;main&nbsp;lexbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+#&nbsp;253&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;49&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;main&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;258&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;4&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;50&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;var&nbsp;=&nbsp;<span class="constructor">String</span>.sub&nbsp;lexeme&nbsp;1&nbsp;(<span class="constructor">String</span>.length&nbsp;lexeme&nbsp;-&nbsp;1)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Var</span>&nbsp;var<br>
+&nbsp;&nbsp;)<br>
+#&nbsp;267&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;5&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;55&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">List</span>.assoc&nbsp;(<span class="constructor">String</span>.lowercase&nbsp;lexeme)&nbsp;keywords<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ident</span>&nbsp;lexeme<br>
+&nbsp;&nbsp;)<br>
+#&nbsp;276&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;6&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;60&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">List</span>.assoc&nbsp;(<span class="constructor">String</span>.lowercase&nbsp;lexeme)&nbsp;keywords<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CapIdent</span>&nbsp;lexeme<br>
+&nbsp;&nbsp;)<br>
+#&nbsp;286&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;7&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;66&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">DOT</span>&nbsp;)<br>
+#&nbsp;291&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;8&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;67&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">LBRACE</span>&nbsp;)<br>
+#&nbsp;296&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;9&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;68&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RBRACE</span>&nbsp;)<br>
+#&nbsp;301&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;10&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;69&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">LPAR</span>&nbsp;)<br>
+#&nbsp;306&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;11&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;70&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RPAR</span>&nbsp;)<br>
+#&nbsp;311&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;12&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;71&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">STAR</span>&nbsp;)<br>
+#&nbsp;316&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;13&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;72&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">SEMICOLON</span>&nbsp;)<br>
+#&nbsp;321&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;14&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;73&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">COLON</span>&nbsp;)<br>
+#&nbsp;326&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;15&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;74&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">COMMA</span>&nbsp;)<br>
+#&nbsp;331&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;16&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;75&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Int</span>&nbsp;(int_of_string&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf))&nbsp;)<br>
+#&nbsp;336&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;17&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;76&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RIGHTARROW</span>&nbsp;)<br>
+#&nbsp;341&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;18&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;77&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">EOF</span>&nbsp;)<br>
+#&nbsp;346&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;19&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;78&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;character&nbsp;%s"</span>&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf))&nbsp;)<br>
+#&nbsp;351&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;__ocaml_lex_state&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;lexbuf.<span class="constructor">Lexing</span>.refill_buff&nbsp;lexbuf;&nbsp;__ocaml_lex_main_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state<br>
+<br>
+<span class="keyword">and</span>&nbsp;string&nbsp;lexbuf&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;__ocaml_lex_string_rec&nbsp;lexbuf&nbsp;23<br>
+<span class="keyword">and</span>&nbsp;__ocaml_lex_string_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;81&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_char&nbsp;string_buffer&nbsp;<span class="string">'"'</span>;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;362&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;82&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_char&nbsp;string_buffer&nbsp;<span class="string">'\\'</span>;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;367&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;83&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">String</span>&nbsp;(<span class="constructor">Buffer</span>.contents&nbsp;string_buffer)&nbsp;)<br>
+#&nbsp;372&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;84&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;&lt;-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;pos&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">L</span>.pos_lnum&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_lnum&nbsp;+&nbsp;1&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos_bol&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_cnum&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;lexbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+#&nbsp;387&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;4&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;95&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);&nbsp;string&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;392&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;5&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;96&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;<span class="string">"String&nbsp;not&nbsp;terminated."</span>&nbsp;)<br>
+#&nbsp;397&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;__ocaml_lex_state&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;lexbuf.<span class="constructor">Lexing</span>.refill_buff&nbsp;lexbuf;&nbsp;__ocaml_lex_string_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state<br>
+<br>
+<span class="keyword">and</span>&nbsp;comment&nbsp;lexbuf&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;__ocaml_lex_comment_rec&nbsp;lexbuf&nbsp;31<br>
+<span class="keyword">and</span>&nbsp;__ocaml_lex_comment_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;99&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Misc</span>.strip_string&nbsp;(<span class="constructor">Buffer</span>.contents&nbsp;string_buffer)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Comment</span>&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+#&nbsp;411&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;103&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;&lt;-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;pos&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">L</span>.pos_lnum&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_lnum&nbsp;+&nbsp;1&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos_bol&nbsp;=&nbsp;pos.<span class="constructor">L</span>.pos_cnum&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;comment&nbsp;lexbuf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+#&nbsp;426&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;114&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);&nbsp;comment&nbsp;lexbuf&nbsp;)<br>
+#&nbsp;431&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
+#&nbsp;115&nbsp;"base/lexer.mll"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;<span class="string">"Comment&nbsp;not&nbsp;terminated."</span>&nbsp;)<br>
+#&nbsp;436&nbsp;"base/lexer.ml"<br>
+<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;__ocaml_lex_state&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;lexbuf.<span class="constructor">Lexing</span>.refill_buff&nbsp;lexbuf;&nbsp;__ocaml_lex_comment_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state</code></body></html>
