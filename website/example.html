@@ -5,7 +5,7 @@ with-contents="true"
 <contents>
 <p>
 This page describes the set up of a simple project, step by step.
-All required tools and files and available in the Genet distribution,
+All required tools and files are available in the Genet distribution,
 in directory <icode>website/example</icode>.
 </p>
 <prepare-toc depth="1">
@@ -20,9 +20,12 @@ in directory <icode>website/example</icode>.
 </ul>
 <p>
 These tools can be used together to compute the average length of words
-in texts (do not forget this is for an example project, for an pedagogical
-purpose).
+in texts (do not forget this is for an example project, for a pedagogical
+purpose):
 </p>
+<img src="example-flow.svg"
+  title="Data flow for our example"
+  alt="Data flow for our example" width="700"/>
 <p>
 We will show how to use Genet to set up a continuous integration environment
 for our project.
@@ -41,7 +44,7 @@ a MySQL database called <icode>genet_example</icode>:
 </p>
 <sh>
 $ mysql -u root -p
-mysq> create database genet_example;
+mysql> create database genet_example;
 mysql> grant all privileges on genet_example.* to genet@localhost;
 </sh>
 </subsection>
@@ -76,7 +79,7 @@ Next we initialize the database tables:
 <subsection id="change-dir" title="Change to the project directory">
 <p>
 For the next operations, we change to the project directory, so that
-we do not have to use the <icode>--config</icode> option, as by default,
+we do not have to use the <icode>--config</icode> option, as by default
 the <icode>config.txt</icode> file of the current directory is used:
 </p>
 <incsh id="changedir"/>
@@ -101,15 +104,15 @@ a file extension and a description.Here, we have three filetypes:
 <ul>
 <li>text files, with <icode>.txt</icode> extension,</li>
 <li>words files, with <icode>.txt</icode> extension, with a word on each line,</li>
-<li>avarage files, with <icode>.avg</icode> extension, containing only a string representing a float number.</li>
+<li>average files, with <icode>.avg</icode> extension, containing only a string representing a float number.</li>
 </ul>
 <p>The following commands will create the filetypes:</p>
 <incsh id="addfiletypes"/>
 <p class="alert alert-info">
 <icode>genet add</icode> commands usually returns the url of the newly created item.
 Each item has its own unique url, used as identifier in other commands.
-Moreover, these urls can be used in the web interface to access the items,
-in a REST way.
+Moreover, these urls can be used in the web interface to access the items; the items
+are resources, which can be refered to in RDF graphs, for example.
 </p>
 <p>We can use the <icode>genet-query</icode> command to list filetypes:</p>
 <incsh id="showfiletypes"/>
@@ -129,7 +132,7 @@ are used to represent:
 <li> the various executables provided by a tool (where a "tool" or software is composed
 of various executables).</li>
 </ul>
-<p>Each interface has a command-line attached. This command will be run where executing
+<p>Each interface has a command-line attached. This command will be run when executing
 a chain where this interface appears (see below). In the provided command line,
 <icode>%v</icode> will be replaced by the tool version. This allows to have various
 versions of a tool installed in places differing only by the version number in the
@@ -141,14 +144,14 @@ and so their version numbers are independent. Each of our tools is composed of o
 one executable.
 </p>
 <subsection id="splittext" title="Adding the split-text tool">
-<p>We start by defining our <icode>split-text</icode> tool. We show the ouput
+<p>We start by defining our <icode>split-text</icode> tool. We show the output
 in comment, because it is used from one command to another:</p>
 <incsh id="addsplittexttool"/>
 <p>We then add a <icode>O.x</icode> branch:</p>
 <incsh id="addsplittextbranch"/>
 <p>In this branch, we define a <icode>0.1</icode> version:</p>
 <incsh id="addsplittextversion"/>
-<p>Then, we define a new interface, associated to the tool, which means this intefarce
+<p>Then, we define a new interface, associated to the tool, which means this interface
 will be supported by all versions of the tool. We could have defined the interface
 only for a branch; in this case, all the versions "under" the branch would have
 offered the interface. We could also associate an interface to a specific version.
@@ -190,7 +193,7 @@ use the output of previous commands to avoid typing the urls of created items:
 
 <subsection id="average" title="Adding the average tool">
 <p>
-Then, we do the same to define the "average" tool with one inteface:
+Then, we do the same to define the "average" tool with one interface:
 </p>
 <incsh id="addaverage"/>
 </subsection>

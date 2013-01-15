@@ -503,12 +503,15 @@ ul.toc {
   li.toc-subsection { font-size: 80%; }
 }
 
-.code-sh { background-color: darken(#f7f7f9,15); }
+.code-sh { background-color: darken(#f7f7f9,10); }
 span.icode {
    #font > #family > .monospace;
   font-size: @baseFontSize - 1;
   color: @grayDark;
+  background-color: darken(#f7f7f9, 3);
   padding: 0;
+  .border-radius(3px);
+
 }
 // releases
 table.release {
