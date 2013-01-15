@@ -1,5 +1,5 @@
 chain words_avg_length
-(*  This chains read a text file and output the average length of the different words used. *)
+(*  This chain reads a text file and output the average length of the different words used. *)
 {
   in: text i1 ;
   out: average o1 ;

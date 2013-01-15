@@ -2010,10 +2010,10 @@ pre.hl {
   color: #ca4ae2;
 }
 .hl.slc {
-  color: #24c714;
+  color: #249614;
 }
 .hl.com {
-  color: #24c714;
+  color: #249614;
 }
 .hl.dir {
   color: #1480b0;
@@ -2174,13 +2174,17 @@ ul.toc li.toc-subsection {
   font-size: 80%;
 }
 .code-sh {
-  background-color: #cbcbd8;
+  background-color: #dadae3;
 }
 span.icode {
   font-family: Menlo, Monaco, "Courier New", monospace;
   font-size: 11pt;
   color: #333333;
+  background-color: #eeeef2;
   padding: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 table.release {
   padding: 0 3px 2px;

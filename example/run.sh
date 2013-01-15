@@ -112,4 +112,7 @@ genet add version http://localhost:8082/tools/average \
   http://localhost:8082/tools/average/branches/0.x 0.2
   # http://localhost:8082/tools/average/versions/0.2
 
+#id=setactive
+genet set active http://localhost:8082/tools/words/versions/0.2 false
+
 genet-exec test1
