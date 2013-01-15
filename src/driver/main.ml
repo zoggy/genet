@@ -170,6 +170,22 @@ let add_ref_inst config wld options =
   | _ -> failwith "Please give one input name, one chain fullname and one inst chain url"
 ;;
 
+let set_active config wld options =
+  let (url, active) =
+    match options.args with
+      [ url_version ] -> (url_version, true)
+    | [ url_version ; "true" ] -> (url_version, true)
+    | [ url_version ; "false" ] -> (url_version, false)
+    | _ ->
+      let msg = Printf.sprintf "Usage: %s set active <url of version> [true|false]" Sys.argv.(0) in
+      failwith msg
+  in
+  let uri = Rdf_uri.uri url in
+  match Grdf_version.version_exists wld uri with
+    None -> failwith (Printf.sprintf "Unknown version %S" (Rdf_uri.string uri))
+  | Some _ -> Grdfs.set_is_active_uri wld uri active
+;;
+
 (** {2 Command-line specification} *)
 
 type mode =
@@ -186,6 +202,7 @@ type mode =
   | Rem_port
   | Add_input
   | Add_ref_inst
+  | Set_active
 ;;
 
 let mode = ref None;;
@@ -259,6 +276,11 @@ let com_add_refinst = {
     com_kind = Final (set_mode Add_ref_inst) ;
 }
 
+let com_set_active = {
+  com_options = [] ; com_usage = "<url of tool version> [true|false]" ;
+  com_kind = Final (set_mode Set_active) ;
+}
+
 let add_commands = [
     "tool", com_add_tool, "add new tool" ;
     "branch", com_add_branch, "add new branch" ;
@@ -277,6 +299,15 @@ let com_add = {
   }
 ;;
 
+let set_commands = [
+  "active", com_set_active, "set a tool version as active or not"
+  ]
+;;
+
+let com_set = {
+  com_options = [] ; com_usage = "" ;
+  com_kind = Commands set_commands ;
+}
 
 let remove_commands = [
     "port", com_rem_port, "remove port" ;
@@ -332,6 +363,7 @@ let commands = [
     "import-rdf", com_import, "import rdf model";
     "add", com_add, "add elements to rdf model" ;
     "remove", com_remove, "remove elements from rdf model" ;
+    "set", com_set, "set flags" ;
   ];;
 
 let command = {
@@ -436,6 +468,7 @@ let main () =
           | Init_dir
           | Add_input -> assert false
           | Add_ref_inst -> add_ref_inst config rdf_wld opts
+          | Set_active -> set_active config rdf_wld opts
         with
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);

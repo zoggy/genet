@@ -291,7 +291,7 @@ are possible.
 </p>
 <p>
 By now, we have only one version per tool, so we will get only one instanciation
-chain, by running the following command. We indicate to executed chains on
+chain, by running the following command. We indicate to execute chains on
 the <icode>test1</icode> input:
 </p>
 <incsh id="execchain"/>
@@ -320,7 +320,7 @@ First, we add this new version:
 <incsh id="addnewwords"/>
 <p>
 Since this version is under the 0.x branch, it means that the <icode>unique-words</icode>
-iinterface is provided by this new version. Then, we can execute our test, and this
+interface is provided by this new version. Then, we can execute our test, and this
 new version of the tool will be used when computing the combinations of tools
 to use to execute the last chain flattened from <icode>Test.words_avg_length</icode>:
 </p>
@@ -330,8 +330,8 @@ Then, we can compare this new instanciated chain with the reference instanciated
 </p>
 <sh>$ genet-diff http://localhost:8082/inst-chains/Test/words_avg_length/...</sh>
 <p>
-The <icode>genet-diff</icode> can be given two instanciated chain urls to compare
-any instanciated chains. If only one is given, it compares against the reference
+<icode>genet-diff</icode> can be given two instanciated chain urls to compare
+the output of any instanciated chains. If only one is given, it compares against the reference
 instanciated chain, for the same input and source chain of the instanciated chain
 given on command line.
 </p>
@@ -340,7 +340,7 @@ The web interface provides a form to compare two executions:
   <ext-a href="http://localhost:8082/diff/inst-chains"><icode>http://localhost:8082/diff/inst-chains</icode></ext-a>
 </p>
 <p>
-The <icode>--url-if-diff</icode> otpion of <icode>genet-diff</icode>
+The <icode>--url-if-diff</icode> option of <icode>genet-diff</icode>
 prints a url to the comparison results if there is a difference. This is useful for example
 to nightly compare new executions with reference executions, and send an email with
 the url of differences, if any.
@@ -350,23 +350,59 @@ the url of differences, if any.
 <section id="newaverage" title="A new version of the average tool">
 <p>
 Now suppose we developped and installed a new version of our "average" tool,
-which remove the extrema values before computing the average.
+which removes the extrema values before computing the average.
 </p>
 <p>Let's add this new version:</p>
 <incsh id="addnewaverage"/>
 <p>
 Now, if we ask for execution of chains for the <icode>test1</icode> input, we will
-have 1 x 2 x 2 combinations of tool versions, i.e. 4 instanciated chains. Two have alreadu
+have 1 x 2 x 2 combinations of tool versions, i.e. 4 instanciated chains. Two have already
 been executed, so the following command will trigger the execution of the two remaining
 combinations:
 </p>
 <incsh id="execchain"/>
 <p>
 <icode>genet-diff</icode> can also be used to compare not only execution final results, but also
-intermediate commands. In the web interface, when looking at an instanciated chain,
+intermediate command results. In the web interface, when looking at an instanciated chain,
 you can click on a chain node to get its url.
 You can then give two of these urls to <icode>genet-diff</icode> to compare, for example,
 the outputs of the "words/unique-words" in two executions.
+</p>
+</section>
+
+<section id="activeversion" title="Active versions">
+<p>
+With time, the number of tool versions will increase, and so the number
+of combinations of versions used to execute chains. If a new versions of each
+tool is added each night to perform tests with last changes, this can lead to
+a lot of executions stored in database, most of them not being relevant.
+</p>
+<p>
+To prevent this problem, a tool version can be flagged as active or not.
+By default, it is active, i.e. it is used when computing the various tool
+version combinations to use. A command can be used to set a version as inactive,
+for example here we set version 0.2 of <icode>words</icode> as inactive:
+</p>
+<incsh id="setactive"/>
+<p>
+If we have scripts adding new versions each night to run our tests, we
+can use the following algorithm in these scripts:
+</p>
+<ol>
+<li>checkout, compile and install new versions of our tools,</li>
+<li>add new versions of tools in Genet, for example using the git id
+  as version number,</li>
+<li>run the tests, i.e. create instanciated chains with the new combinations
+of tool versions (as we did with <icode>genet-exec test1</icode>),</li>
+<li>set the new versions of tools as inactive, so that they won't be used
+next night.</li>
+</ol>
+</section>
+
+<section id="scripts" title="Using scripts">
+<p>
+The various <icode>genet*</icode> tools can be used in scripts to perform
+nightly actions. See the page of each tool in the reference documentation.
 </p>
 </section>
 

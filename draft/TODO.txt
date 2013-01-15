@@ -2,9 +2,6 @@
 - function to build a rdf graph from such a schema structure
 - add to schema: genet_file_ext, genet_desc
 
-- read database kind in configuration file (mysql|postgresql)
-  use this information when opening the storage
-
 - configure: detect ocamlnet libraries
 
 Add information:
@@ -13,6 +10,7 @@ Add information:
 - instanciated chains
 - a class and resources for /tools/xxx/interfaces/yyy/input
 - a class and resources for /tools/xxx/interfaces/yyy/output
+- active versions
 
 Web interface:
 - version: show branch tree above the version
@@ -35,5 +33,6 @@ Filetypes:
 Exec:
 - genet-exec should put the reporter messages in a file, and print
   only the list of instanciated chains.
-- handle a reference execution for each pair (input, chain) and used
-  it to compare next executions's results
+
+Diff:
+- handle diff command argument in form & url
