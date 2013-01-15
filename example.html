@@ -469,14 +469,14 @@ the outputs of the &quot;words/unique-words&quot; in two executions.
 <div class="section"><div class="section-title" id="activeversion">Active versions</div>
 <p>
 With time, the number of tool versions will increase, and so the number
-of combinations of versions used to execute chains. If a new versions of each
+of combinations of versions used to execute chains. If a new version of each
 tool is added each night to perform tests with last changes, this can lead to
 a lot of executions stored in database, most of them not being relevant.
 </p>
 <p>
 To prevent this problem, a tool version can be flagged as active or not.
 By default, it is active, i.e. it is used when computing the various tool
-version combinations to use. A command can be used to set a version as inactive,
+version combinations to use. A command allows to set a version as inactive,
 for example here we set version 0.2 of <span class="icode">words</span> as inactive:
 </p>
 <pre class="code-sh">$ genet <span class="hl kwb">set</span> active http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.2</span> false</pre>
