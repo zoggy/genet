@@ -10,7 +10,6 @@ Add information:
 - instanciated chains
 - a class and resources for /tools/xxx/interfaces/yyy/input
 - a class and resources for /tools/xxx/interfaces/yyy/output
-- active versions
 
 Web interface:
 - version: show branch tree above the version
