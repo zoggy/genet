@@ -549,7 +549,10 @@ let xhtml_of_versions_of ctx uri =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true uri in
   let versions = List.sort Rdf_uri.compare versions in
   let heads = ["Active" ; "Version" ; "Date"] in
-  let f version = [ [Xtmpl.D ""] ; [a_version ctx version] ; [Xtmpl.D ""] ] in
+  let f version =
+    let active = if Grdfs.is_active_uri ctx.ctx_rdf version then "yes" else "no" in
+    [ [Xtmpl.D active] ; [a_version ctx version] ; [Xtmpl.D ""] ]
+  in
   let rows = List.map f versions in
   [ table ~heads rows ]
 ;;

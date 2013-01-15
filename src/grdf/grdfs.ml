@@ -633,7 +633,7 @@ let set_is_active_uri wld sub b =
 let is_active_uri wld sub =
   let pred = Uri genet_isactive in
   match wld.wld_graph.objects_of ~sub:(Uri sub) ~pred with
-    [] -> false
+    [] -> true
   | [Literal lit] -> Rdf_node.bool_of_literal lit
   | _ -> failwith "Invalid isactive object"
 ;;

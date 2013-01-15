@@ -34,5 +34,3 @@ Exec:
 - genet-exec should put the reporter messages in a file, and print
   only the list of instanciated chains.
 
-Diff:
-- handle diff command argument in form & url
