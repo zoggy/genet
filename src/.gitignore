@@ -24,3 +24,6 @@ grdf/grdf_parser.ml
 grdf/grdf_parser.mli
 grdf/grdf_parser.conflics
 genet-chain*
+gui/gui_base.ml
+gui/gui_install.ml
+
