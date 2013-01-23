@@ -957,11 +957,6 @@ let _ = check_ocamlfind_package conf "xtmpl";;
 let _ = check_ocamlfind_package conf ~min_version: [2;16] "lablgtk2";;
 let _ = check_ocamlfind_package conf "lablgtk2-extras";;
 
-
-(*
-let _ = check_ocamlfind_package conf "lalgtk2";;
-let _ = check_ocamlfind_package conf "lalgtk2-extras";;
-
 let _ =
   let lablgladecc =
     try ocaml_prog "lablgladecc2"
@@ -972,7 +967,7 @@ let _ =
 	exit 1
   in
   add_subst "LABLGLADECC" lablgladecc
-*)
+
 let _ = !print "\n###\n"
 
 let _ = add_conf_variables conf

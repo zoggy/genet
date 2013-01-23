@@ -49,8 +49,8 @@ INCLUDES= \
 	$(MY_INCLUDES) \
 	$(SYSTEM_INCLUDES)
 
-COMPFLAGS=$(INCLUDES)
-LINKFLAGS=$(INCLUDES) -linkall
+COMPFLAGS=$(INCLUDES) -thread # -thread for postgresql
+LINKFLAGS=$(INCLUDES) -thread -linkall
 LINKFLAGS_BYTE=$(INCLUDES) -linkall
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
@@ -304,6 +304,8 @@ GENET_EXEC_CMIFILES=$(GENET_EXEC_CMXFILES:.cmx=.cmi)
 
 # Genet-gui files
 GENET_GUI_CMXFILES=\
+	gui/gui_install.cmx \
+	gui/gui_base.cmx \
 	driver/options.cmx \
 	driver/main_gui.cmx
 GENET_GUI_CMOFILES=$(GENET_GUI_CMXFILES:.cmx=.cmo)
@@ -376,13 +378,16 @@ $(GENET_EXEC_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_
 	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
 	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
 
-$(GENET_GUI): $(LIB_BASE)	$(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(LIBS_GUI) $(GENET_GUI_CMXFILES)
+$(GENET_GUI): $(GENET_GUI_CMIFILES) $(LIB_BASE)	$(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(LIBS_GUI) $(GENET_GUI_CMXFILES)
 	$(OCAMLFIND) ocamlopt -verbose -package $(BASE_PACKAGES),$(GUI_PACKAGES) -linkpkg \
-	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) $^
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS) \
+	$(LIB_BASE)	$(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(LIBS_GUI) $(GENET_GUI_CMXFILES)
 
-$(GENET_GUI_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(LIBS_GUI_BYTE)	$(GENET_GUI_CMOFILES)
+$(GENET_GUI_BYTE): $(GENET_GUI_CMIFILES) $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) \
+						$(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(LIBS_GUI_BYTE)	$(GENET_GUI_CMOFILES)
 	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES),$(GUI_PACKAGES) -linkpkg \
-	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
+	$(OCAMLCFLAGS) -o $@ $(LINKFLAGS) $(SYSTEM_LIBS_BYTE) \
+	$(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(LIBS_GUI_BYTE)	$(GENET_GUI_CMOFILES)
 
 
 $(LIB_BASE): $(BASE_CMIFILES) $(BASE_CMXFILES)
@@ -485,7 +490,7 @@ clean: dummy
 	(cd indata && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd chains && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 	(cd rest && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
-
+	(cd gui && $(RM) *~ \#*\# *.cmo *.cmi *.cmx *.a *.o *.cma *.cmxa *.annot *.odoc)
 
 .depend depend:
 	$(RM) .depend
@@ -528,8 +533,9 @@ distrib: all
 install: install-web-files install-bin
 
 install-bin:
-	$(MKDIR) $(BINDIR)
+	$(MKDIR) $(BINDIR) $(GLADEDIR)
 	$(CP) $(TOOLS) $(TOOLS_BYTE) $(BINDIR)/
+	$(CP) gui/genet.glade $(GLADEDIR)/
 
 install-web-files:
 	$(MKDIR) $(SHAREDIR)/web
@@ -552,3 +558,6 @@ grdf/grdf_parser.ml grdf/grdf_parser.mli: base/tokens.mly grdf/grdf_parser.mly
 
 base/tokens.ml base/tokens.mli: base/tokens.mly
 	$(MENHIR) $<
+
+gui/gui_base.ml: gui/genet.glade
+	$(LABLGLADECC) -hide-default $< > $@

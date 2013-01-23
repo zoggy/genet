@@ -38,8 +38,12 @@ let main () =
   let config = Config.read_config opts.Options.config_file in
   let rdf_wld = Grdf_init.open_graph config in
   let _ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
-  ()
-
+  let gui = new Gui_base.win_main
+      ~file: Gui_install.glade_file
+      ~autoconnect:false ()
+  in
+  ignore(gui#menuquit GMain.Main.quit);
+  GMain.Main.main()
 ;;
 
 let () = Misc.safe_main main;;

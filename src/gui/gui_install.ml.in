@@ -1,0 +1,4 @@
+(** *)
+
+let glade_dir = "@GLADEDIR@";;
+let glade_file = Filename.concat glade_dir "genet.glade";;

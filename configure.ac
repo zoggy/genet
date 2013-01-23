@@ -103,6 +103,7 @@ INSTALLDIR=$prefix
 BINDIR=$bindir
 SHAREDIR=$datadir
 LIBDIR=$libdir
+GLADEDIR=$datadir/glade
 
 ############################
 # Flags
@@ -153,6 +154,7 @@ AC_SUBST(OCAMLFIND)
 AC_SUBST(OCAMLDOC)
 AC_SUBST(OCAMLDOC_OPT)
 AC_SUBST(OCAMLDOC_PLUGINSDIR)
+AC_SUBST(LABLGLADECC)
 AC_SUBST(MENHIR)
 AC_SUBST(HEVEA)
 AC_SUBST(HACHA)
@@ -162,17 +164,19 @@ AC_SUBST(INSTALLDIR)
 AC_SUBST(BINDIR)
 AC_SUBST(LIBDIR)
 AC_SUBST(SHAREDIR)
+AC_SUBST(GLADEDIR)
 AC_SUBST(ROOT)
 AC_SUBST(DEBUG_LEVEL)
 AC_SUBST(RDF_MYSQL)
 AC_SUBST(RDF_POSTGRESQL)
 
-ACFILES="master.Makefile src/base/version.ml src/base/install.ml"
+ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
 
 AC_OUTPUT($ACFILES)
 chmod a-w master.Makefile
 chmod a-w src/base/version.ml
 chmod a-w src/base/install.ml
+chmod a-w src/gui/gui_install.ml
 
 # List values
 echo "
@@ -181,6 +185,7 @@ echo "
 Binaries will be installed in ${BINDIR}
 Libraries will be installed in ${LIBDIR}
 Shared files will be installed in ${SHAREDIR}
+Glade file will be installed in ${GLADEDIR}
 
 Debug level is set to $DEBUG_LEVEL
 
