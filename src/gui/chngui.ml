@@ -2,6 +2,16 @@
 
 open Chn_types
 
+let location_of_iter iter =
+  let char = iter#offset in
+  let line_start = (iter#set_line_offset 0)#offset in
+  (iter#line, char - line_start)
+;;
+let location_in_buffer (b : GSourceView2.source_buffer) =
+  let iter = b#get_iter `INSERT in
+  location_of_iter iter
+;;
+
 class mod_box ctx ~on_select ~on_unselect =
   object(self)
     inherit [string] Gmylist.plist `SINGLE
@@ -38,7 +48,7 @@ class fig_box ctx =
   object(self)
     method box = image#coerce
     method display_file file = image#set_file file
-
+    method reset = image#clear
   end
 ;;
 
@@ -91,27 +101,49 @@ class box ctx =
         files;
       mod_box#update_data files
 
-    method show_fig chn_mod =
+    method show_fig chn =
       let p = new Chn_ast.chain_dot_printer in
-      let chn =
-        match chn_mod.Chn_ast.cmod_chains with
-          [] -> failwith "No chain in module"
-        | chn :: _ -> chn
-      in
       let dot = p#dot_of_chain ~prefix: ctx.ctx_cfg.Config.rest_api chn in
       let svg = Grdf_dot.dot_to_svg dot in
       Misc.file_of_string ~file: svg_tmp (Xtmpl.string_of_xmls svg) ;
       fig_box#display_file svg_tmp;
       (try Sys.remove svg_tmp with _ -> ())
 
+    method update_fig () =
+      match mod_box#selection with
+        [] -> fig_box#reset ()
+      | file :: _ ->
+          try
+            let chn_mod = Chn_io.chn_module_of_file file in
+            let buf = Smap.find file buffers in
+            let (line, char) = location_in_buffer buf#source_buffer in
+            let chn =
+              List.find
+                (fun chn ->
+                  let loc = chn.Chn_ast.chn_loc in
+                  line >= loc.Loc.loc_start.Lexing.pos_lnum &&
+                  line <= loc.Loc.loc_end.Lexing.pos_lnum
+                )
+                chn_mod.Chn_ast.cmod_chains
+            in
+            self#show_fig chn
+          with
+            e ->
+              let msg =
+                match e with
+                  Sys_error s | Failure s -> s
+                | Loc.Problem pb -> Loc.string_of_problem pb
+                | _ -> Printexc.to_string e
+              in
+              prerr_endline msg
+
+
     method on_mod_select file =
       try
         let b = Smap.find file buffers in
         code_box#set_buffer (b#source_buffer :> GText.buffer);
-        let chn_mod = Chn_io.chn_module_of_file file in
-        try self#show_fig chn_mod
-        with Failure s -> prerr_endline s
       with Not_found -> assert false
+
     method on_mod_unselect s = ()
 
     initializer
@@ -123,6 +155,8 @@ class box ctx =
       paned2#add1 code_box#box ;
       paned2#add2 fig_box#box ;
       paned#set_position 120 ;
+      ignore(GMain.Timeout.add ~ms:2000 ~callback:(fun () -> self#update_fig(); true));
+
 
   end
 
