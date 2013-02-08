@@ -26,6 +26,7 @@
 (** Main module of genet gui. *)
 
 open Options;;
+GMain.Main.init();;
 
 let options =
   Options.option_config ::
@@ -42,8 +43,8 @@ let main () =
       ~file: Gui_install.glade_file
       ~autoconnect:false ()
   in
-  ignore(gui#menuquit GMain.Main.quit);
-  GMain.Main.main()
+  ignore(gui#menuquit#connect#activate GMain.Main.quit);
+  ignore(GMain.Main.main())
 ;;
 
 let () = Misc.safe_main main;;

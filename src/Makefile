@@ -28,7 +28,7 @@ include ../master.Makefile
 BASE_PACKAGES=unix,str,config-file,$(RDF_MYSQL),$(RDF_POSTGRESQL),xtmpl,menhirLib
 NET_PACKAGES=equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix
 REST_PACKAGES=#,yojson
-GUI_PACKAGES=lablgtk2.auto-init,lablgtk2-extras
+GUI_PACKAGES=lablgtk2.auto-init,lablgtk2-extras,lablgtk2.glade
 
 ALL_PACKAGES=$(BASE_PACKAGES),$(NET_PACKAGES),$(REST_PACKAGES),$(GUI_PACKAGES)
 OF_FLAGS=-package $(ALL_PACKAGES)
