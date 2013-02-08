@@ -49,6 +49,16 @@ let input_chn_module name lexbuf =
       Loc.raise_problem loc "Syntax error"
 ;;
 
+let chn_module_of_string modname str =
+  let lexbuf = Lexing.from_string str in
+  let lexbuf =
+    { lexbuf with
+      Lexing.lex_curr_p = { lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = "" }
+    }
+  in
+  input_chn_module modname lexbuf
+;;
+
 let chn_module_of_file file =
   let ic = open_in file in
   let lexbuf = Lexing.from_channel ic in

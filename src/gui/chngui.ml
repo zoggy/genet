@@ -110,32 +110,34 @@ class box ctx =
       (try Sys.remove svg_tmp with _ -> ())
 
     method update_fig () =
-      match mod_box#selection with
-        [] -> fig_box#reset ()
-      | file :: _ ->
-          try
-            let chn_mod = Chn_io.chn_module_of_file file in
+      try
+        match mod_box#selection with
+          [] -> raise Not_found
+        | file :: _ ->
             let buf = Smap.find file buffers in
+            let modname = Chn_io.modname_of_file file in
+            let code = buf#source_buffer#get_text () in
+            let chn_mod = Chn_io.chn_module_of_string modname code in
             let (line, char) = location_in_buffer buf#source_buffer in
             let chn =
               List.find
                 (fun chn ->
                   let loc = chn.Chn_ast.chn_loc in
-                  line >= loc.Loc.loc_start.Lexing.pos_lnum &&
-                  line <= loc.Loc.loc_end.Lexing.pos_lnum
+                   line >= loc.Loc.loc_start.Lexing.pos_lnum &&
+                     line <= loc.Loc.loc_end.Lexing.pos_lnum
                 )
                 chn_mod.Chn_ast.cmod_chains
             in
             self#show_fig chn
-          with
-            e ->
-              let msg =
-                match e with
-                  Sys_error s | Failure s -> s
-                | Loc.Problem pb -> Loc.string_of_problem pb
-                | _ -> Printexc.to_string e
-              in
-              prerr_endline msg
+      with
+        e ->
+          (*let msg =
+            match e with
+              Sys_error s | Failure s -> s
+            | Loc.Problem pb -> Loc.string_of_problem pb
+            | _ -> Printexc.to_string e
+          in*)
+          fig_box#reset ()
 
 
     method on_mod_select file =
