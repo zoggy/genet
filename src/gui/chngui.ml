@@ -32,6 +32,16 @@ class buffer ctx file =
   end
 ;;
 
+class fig_box ctx =
+  let image = GMisc.image () in
+
+  object(self)
+    method box = image#coerce
+    method display_file file = image#set_file file
+
+  end
+;;
+
 class code_box ctx =
   let wscroll = GBin.scrolled_window
     ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC ()
@@ -62,8 +72,10 @@ class box ctx =
     ~on_unselect: (fun s -> !on_mod_unselect s)
   in
   let code_box = new code_box ctx in
+  let fig_box = new fig_box ctx in
   object(self)
     val mutable buffers = Smap.empty
+    val svg_tmp = Filename.temp_file "genetgui" ".svg"
 
     method coerce = paned#coerce
 
@@ -79,10 +91,26 @@ class box ctx =
         files;
       mod_box#update_data files
 
+    method show_fig chn_mod =
+      let p = new Chn_ast.chain_dot_printer in
+      let chn =
+        match chn_mod.Chn_ast.cmod_chains with
+          [] -> failwith "No chain in module"
+        | chn :: _ -> chn
+      in
+      let dot = p#dot_of_chain ~prefix: ctx.ctx_cfg.Config.rest_api chn in
+      let svg = Grdf_dot.dot_to_svg dot in
+      Misc.file_of_string ~file: svg_tmp (Xtmpl.string_of_xmls svg) ;
+      fig_box#display_file svg_tmp;
+      (try Sys.remove svg_tmp with _ -> ())
+
     method on_mod_select file =
       try
         let b = Smap.find file buffers in
-        code_box#set_buffer (b#source_buffer :> GText.buffer)
+        code_box#set_buffer (b#source_buffer :> GText.buffer);
+        let chn_mod = Chn_io.chn_module_of_file file in
+        try self#show_fig chn_mod
+        with Failure s -> prerr_endline s
       with Not_found -> assert false
     method on_mod_unselect s = ()
 
@@ -91,7 +119,11 @@ class box ctx =
       on_mod_unselect := self#on_mod_unselect ;
       self#update_module_list ;
       paned#add1 mod_box#box ;
-      paned#add2 code_box#box
+      let paned2 = GPack.paned `VERTICAL ~packing: paned#add2 () in
+      paned2#add1 code_box#box ;
+      paned2#add2 fig_box#box ;
+      paned#set_position 120 ;
+
   end
 
 
