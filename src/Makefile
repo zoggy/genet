@@ -228,11 +228,11 @@ CHN_CMIFILES=$(CHN_CMXFILES:.cmx=.cmi)
 
 CHN_LIBS=$(LIB_CHN) $(LIB_CHN_BYTE) $(LIB_CHN_CMI) $(LIB_CHN_A)
 
-CHN_GUI_CMXFILES=
+CHN_GUI_CMXFILES=gui/chngui.cmx
 CHN_GUI_CMIFILES=$(CHN_GUI_CMXFILES:.cmx=.cmi)
 CHN_GUI_CMOFILES=$(CHN_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_CHN_GUI=chains/chainsgui.cmxa
+LIB_CHN_GUI=gui/chainsgui.cmxa
 LIB_CHN_GUI_BYTE=$(LIB_CHN_GUI:.cmxa=.cma)
 LIB_CHN_GUI_CMI=$(LIB_CHN_GUI:.cmxa=.cmi)
 LIB_CHN_GUI_A=$(LIB_CHN_GUI:.cmxa=.a)
@@ -306,6 +306,7 @@ GENET_EXEC_CMIFILES=$(GENET_EXEC_CMXFILES:.cmx=.cmi)
 GENET_GUI_CMXFILES=\
 	gui/gui_install.cmx \
 	gui/gui_base.cmx \
+	gui/gui_main.cmx \
 	driver/options.cmx \
 	driver/main_gui.cmx
 GENET_GUI_CMOFILES=$(GENET_GUI_CMXFILES:.cmx=.cmo)
@@ -501,7 +502,8 @@ clean: dummy
 	indata/*.ml indata/*.mli \
 	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
-	  > .depend
+	gui/*.ml gui/*.mli \
+	 > .depend
 
 alldepend: $(GENERATED_FILES)
 	$(MAKE) depend
