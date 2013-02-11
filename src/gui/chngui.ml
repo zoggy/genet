@@ -62,7 +62,7 @@ class code_box ctx =
   object(self)
     method box = wscroll#coerce
     method set_buffer buf = view#set_buffer buf
-
+    method event = view#event
     initializer
       Gtksv_utils.set_source_style_scheme
         (Gtksv_utils.read_style_scheme_selection ());
@@ -85,6 +85,8 @@ class box ctx =
   let fig_box = new fig_box ctx in
   object(self)
     val mutable buffers = Smap.empty
+    val mutable update_fig_cb_id = None
+
     val svg_tmp = Filename.temp_file "genetgui" ".svg"
 
     method coerce = paned#coerce
@@ -157,7 +159,24 @@ class box ctx =
       paned2#add1 code_box#box ;
       paned2#add2 fig_box#box ;
       paned#set_position 120 ;
-      ignore(GMain.Timeout.add ~ms:2000 ~callback:(fun () -> self#update_fig(); true));
+      ignore(code_box#event#connect#focus_in
+        (fun _ ->
+          prerr_endline "focus in!";
+          match update_fig_cb_id with
+            None ->
+                let id = GMain.Timeout.add ~ms:2000 ~callback:(fun () -> self#update_fig(); true) in
+                update_fig_cb_id <- Some id; false
+            | Some _ -> false
+         )
+      );
+      ignore(code_box#event#connect#focus_out
+        (fun _ ->
+          prerr_endline "focus out!";
+          match update_fig_cb_id with
+            None -> false
+          | Some id -> GMain.Timeout.remove id; update_fig_cb_id <- None; false
+         )
+      )
 
 
   end
