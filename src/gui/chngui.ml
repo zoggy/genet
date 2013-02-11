@@ -179,8 +179,6 @@ class box ctx =
         files;
       mod_box#update_data files
 
-
-
     method on_mod_select file =
       try
         let b = Smap.find file buffers in

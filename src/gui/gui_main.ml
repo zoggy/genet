@@ -8,15 +8,22 @@ class main ctx =
   in
   let wnote = main#wnote in
   let chnbox = new Chngui.box ctx in
+  let toolbox = new Toolgui.box ctx in
   object(self)
 
     initializer
       List.iter (fun _ -> wnote#remove_page 0) wnote#children;
-      ignore(
-       wnote#append_page
-         ~tab_label: (GMisc.label ~text: "Chains"())#coerce
-         chnbox#coerce
-      );
+      let add_tab (text, b) =
+        ignore(
+         wnote#append_page
+           ~tab_label: (GMisc.label ~text())#coerce
+           b
+        )
+      in
+      List.iter add_tab
+          [ "Tools", toolbox#coerce ;
+            "Chains", chnbox#coerce ;
+          ];
 
       ignore(main#menuquit#connect#activate GMain.Main.quit);
       ignore(main#win_main#connect#destroy GMain.Main.quit);
