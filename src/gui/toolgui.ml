@@ -4,10 +4,23 @@ open Chn_types;;
 
 type kind = [`Tool | `Branch | `Intf | `Version]
 
+let string_of_kind = function
+  `Tool -> "T"
+| `Branch -> "B"
+| `Intf -> "I"
+| `Version -> "V"
+;;
+
 type elt = kind * Rdf_uri.uri
 
 let tools ctx () =
   List.map (fun uri -> (`Tool, uri)) (Grdf_tool.tools ctx.ctx_rdf)
+;;
+
+let get_name ctx uri =
+  match Grdfs.name ctx.ctx_rdf (Rdf_node.Uri uri) with
+    "" -> Rdf_uri.string uri
+  | s -> s
 ;;
 
 let uriset_to_elt_list k set =
@@ -27,16 +40,21 @@ let children ctx = function
 | `Version, _ -> []
 ;;
 
-class tool_tree ctx =
+
+class tool_tree ctx wuri =
   let f_roots = tools ctx in
   let f_children = children ctx in
   let f_contents = function
-    (_, uri) -> [`String (Grdfs.name ctx.ctx_rdf (Rdf_node.Uri uri))]
+    (k, uri) -> [`String (get_name ctx uri)]
   in
   let box = GPack.vbox () in
   object(self)
     inherit [elt] Gmytree.tree_edit ~f_roots ~f_children ~f_contents [`String ""]
     method coerce = box#coerce
+
+    method on_select (_,uri) = wuri#set_text (Rdf_uri.string uri)
+    method on_unselect _ = wuri#set_text ""
+
 
     initializer
       self#view#misc#reparent box#coerce
@@ -46,10 +64,15 @@ class tool_tree ctx =
 
 class box ctx =
   let paned = GPack.paned `HORIZONTAL () in
-  let treebox = new tool_tree ctx in
+  let vbox = GPack.vbox () in
+  let wuri = GMisc.label ~xalign: 0. ~text: "" ~packing: (vbox#pack ~expand: false ~fill: true) () in
+  let treebox = new tool_tree ctx wuri in
   object(self)
     method coerce = paned#coerce
 
     initializer
-      paned#add1 treebox#coerce
+      paned#add1 treebox#coerce;
+      paned#add2 vbox#coerce;
+      paned#set_position 120;
+
   end;;
