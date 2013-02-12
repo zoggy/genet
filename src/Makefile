@@ -228,7 +228,9 @@ CHN_CMIFILES=$(CHN_CMXFILES:.cmx=.cmi)
 
 CHN_LIBS=$(LIB_CHN) $(LIB_CHN_BYTE) $(LIB_CHN_CMI) $(LIB_CHN_A)
 
-CHN_GUI_CMXFILES=gui/chngui.cmx
+CHN_GUI_CMXFILES= \
+	gui/chngui.cmx \
+	gui/instgui.cmx
 CHN_GUI_CMIFILES=$(CHN_GUI_CMXFILES:.cmx=.cmi)
 CHN_GUI_CMOFILES=$(CHN_GUI_CMXFILES:.cmx=.cmo)
 

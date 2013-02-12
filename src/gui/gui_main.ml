@@ -9,6 +9,7 @@ class main ctx =
   let wnote = main#wnote in
   let chnbox = new Chngui.box ctx in
   let toolbox = new Toolgui.box ctx in
+  let instbox = new Instgui.box ctx in
   object(self)
 
     initializer
@@ -21,9 +22,10 @@ class main ctx =
         )
       in
       List.iter add_tab
-          [ "Tools", toolbox#coerce ;
-            "Chains", chnbox#coerce ;
-          ];
+        [ "Tools", toolbox#coerce ;
+          "Chains", chnbox#coerce ;
+          "Inst chains", instbox#coerce ;
+        ];
 
       ignore(main#menuquit#connect#activate GMain.Main.quit);
       ignore(main#win_main#connect#destroy GMain.Main.quit);
