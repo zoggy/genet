@@ -1,6 +1,7 @@
 (** Gui elements to display instanciated chains. *)
 
-open Chn_types;;
+open Chn_types ;;
+open Chn_ast ;;
 
 class tool_version_selection ctx uri =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur:true uri in
@@ -75,7 +76,15 @@ class input_selection ctx =
   in
   object(self)
     method coerce = wcombo#coerce
-    method selection = (None : string option)
+    method selection =
+      match wcombo#entry#text with
+        "" -> None
+      | s -> Some s
+
+    initializer
+      let inputs = Ind_io.list_inputs ctx.ctx_cfg in
+      let inputs = List.sort Pervasives.compare inputs in
+      wcombo#set_popdown_strings ("" :: inputs)
   end
 ;;
 
@@ -88,8 +97,54 @@ class fchain_selection ctx =
     ()
   in
   object(self)
+    val mutable map = Smap.empty
     method coerce = wcombo#coerce
-    method selection = (None : Rdf_uri.uri option)
+    method selection =
+      match wcombo#entry#text with
+        "" -> None
+      | s ->
+          try Some (Smap.find s map)
+          with Not_found -> None
+
+    initializer
+      let f_fchain acc uri =
+        match Chn_types.is_uri_fchain ctx uri with
+        | None -> acc
+        | Some name ->
+            match Chn_types.fchain_id name with
+              None -> acc
+            | Some id ->
+                let s = " "^id in
+                map <- Smap.add s uri map;
+                s :: acc
+      in
+      let f_chain modname acc chn =
+        let name = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
+        let uri = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api name in
+        let s_name = Chn_types.string_of_chain_name name in
+        map <- Smap.add s_name uri map ;
+        let acc = s_name :: acc in
+        let flats = Chn_flat.flat_chains_of_chain ctx name in
+        List.fold_left f_fchain acc flats
+      in
+      let f_mod acc m =
+        let chains = List.sort
+          (fun c1 c2 -> Pervasives.compare c1.chn_name c2.chn_name)
+            m.cmod_chains
+        in
+        List.fold_left (f_chain m.cmod_name) acc chains
+      in
+
+      let chain_files = Chn_io.chain_files ctx.ctx_cfg in
+      let modules = List.map Chn_io.chn_module_of_file chain_files in
+      let modules = List.sort
+        (fun m1 m2 ->
+           Chn_types.compare_chain_modname
+             m1.cmod_name m2.cmod_name)
+           modules
+      in
+      let choices = List.rev (List.fold_left f_mod [] modules) in
+      wcombo#set_popdown_strings ("" :: choices)
   end
 ;;
 
