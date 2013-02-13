@@ -1282,7 +1282,7 @@ let xhtml_inst_list_of_ports ctx ports =
         let a_inst =
           match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api inst with
             None -> Xtmpl.D (Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string inst))
-          | Some uri -> a_ichain ctx uri
+          | Some icname -> a_ichain ctx icname
         in
         [ [ a_inst ] ;
           [ Xtmpl.D port_name ] ;

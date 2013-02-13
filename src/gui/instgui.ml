@@ -3,7 +3,7 @@
 open Chn_types ;;
 open Chn_ast ;;
 
-class tool_version_selection ctx uri =
+class tool_version_selection ctx uri on_change =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur:true uri in
   let map = List.fold_left
     (fun acc uri ->
@@ -33,11 +33,12 @@ class tool_version_selection ctx uri =
     initializer
       let choices = Smap.fold (fun name _ acc -> name :: acc) map [] in
       let choices = "" :: (List.rev choices) in
-      wcombo#set_popdown_strings choices
+      wcombo#set_popdown_strings choices;
+      ignore(wcombo#entry#connect#changed on_change)
   end
 ;;
 
-class tool_selection ctx =
+class tool_selection ctx on_change =
   let tools = Grdf_tool.tools ctx.ctx_rdf in
   let wtable = GPack.table ~columns: 2 ~rows: (List.length tools) () in
   object
@@ -58,7 +59,7 @@ class tool_selection ctx =
         let name = Grdf_tool.name ctx.ctx_rdf uri in
         let label = GMisc.label ~xpad: 3 ~xalign: 1. ~text: name () in
         wtable#attach ~left: 0 ~top: i label#coerce;
-        let version_sel = new tool_version_selection ctx uri in
+        let version_sel = new tool_version_selection ctx uri on_change in
         wtable#attach ~left: 1 ~top: i ~expand: `X version_sel#coerce;
         version_sel
       in
@@ -66,7 +67,7 @@ class tool_selection ctx =
   end
 ;;
 
-class input_selection ctx =
+class input_selection ctx on_change =
   let wcombo = GEdit.combo
     ~enable_arrow_keys: true
     ~value_in_list: true
@@ -84,11 +85,12 @@ class input_selection ctx =
     initializer
       let inputs = Ind_io.list_inputs ctx.ctx_cfg in
       let inputs = List.sort Pervasives.compare inputs in
-      wcombo#set_popdown_strings ("" :: inputs)
+      wcombo#set_popdown_strings ("" :: inputs);
+      ignore(wcombo#entry#connect#changed on_change)
   end
 ;;
 
-class fchain_selection ctx =
+class fchain_selection ctx on_change =
   let wcombo = GEdit.combo
     ~enable_arrow_keys: true
     ~value_in_list: true
@@ -144,10 +146,42 @@ class fchain_selection ctx =
            modules
       in
       let choices = List.rev (List.fold_left f_mod [] modules) in
-      wcombo#set_popdown_strings ("" :: choices)
+      wcombo#set_popdown_strings ("" :: choices);
+      ignore(wcombo#entry#connect#changed on_change)
   end
 ;;
 
+let inst_chain_date ctx uri =
+  match Grdfs.creation_date_uri ctx.ctx_rdf uri with
+    None -> "??"
+  | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
+;;
+
+let inst_chain_name ctx uri =
+  match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
+    None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string uri)
+  | Some icname -> Chn_types.string_of_ichain_name icname
+;;
+
+class inst_list ctx on_sel_change =
+  object(self)
+    inherit [Rdf_uri.uri] Gmylist.plist `SINGLE
+      [ None, Gmylist.String (inst_chain_name ctx);
+        None, Gmylist.String (inst_chain_date ctx) ;
+      ]
+      false
+    method coerce = self#box
+    method on_select _ = on_sel_change ()
+    method on_deselect _ = on_sel_change ()
+  end
+;;
+
+class inst_fig ctx =
+  let vbox = GPack.vbox () in
+  object(self)
+    method coerce = vbox#coerce
+  end
+;;
 
 type inst_filter =
   { filt_input : string option ;
@@ -155,14 +189,16 @@ type inst_filter =
     filt_tools : (Rdf_uri.uri * Rdf_uri.uri) list ;
   }
 
-class inst_chain_box ctx =
+class inst_chain_box ctx on_sel_change =
   let vbox = GPack.vbox () in
   let wtable = GPack.table ~columns: 2 ~rows: 3 () in
-
+  let inst_list = new inst_list ctx on_sel_change in
+  let inst_fig = new inst_fig ctx in
+  let on_filter_change = ref (fun () -> ()) in
   object(self)
-    val mutable input_sel = new input_selection ctx
-    val mutable fchain_sel = new fchain_selection ctx
-    val mutable tool_sel = new tool_selection ctx
+    val mutable input_sel = new input_selection ctx (fun () -> !on_filter_change())
+    val mutable fchain_sel = new fchain_selection ctx (fun () -> !on_filter_change())
+    val mutable tool_sel = new tool_selection ctx (fun () -> !on_filter_change())
 
     method coerce = vbox#coerce
 
@@ -184,23 +220,95 @@ class inst_chain_box ctx =
         filt_tools = tool_sel#selection ;
       }
 
+    method selected =
+      match inst_list#selection with
+        [] -> None
+      | i :: _ -> Some i
+
     initializer
       vbox#pack ~expand: false ~fill: true wtable#coerce;
-      self#fill_table
+      let paned = GPack.paned
+        `VERTICAL ~packing: (vbox#pack ~expand: true ~fill: true) ()
+      in
+      paned#add1 inst_list#coerce;
+      paned#add2 inst_fig#coerce;
+      paned#set_position 150;
+
+      self#fill_table;
+
+      let filter_change () =
+        let filter = self#selection in
+        let input =
+          match filter.filt_input with
+            None -> None
+          | Some s -> Some (Misc.split_filename s, None)
+        in
+        let tools = List.fold_left
+          (fun map (tool, version) -> Urimap.add tool version map)
+          Urimap.empty filter.filt_tools
+        in
+        let list = Chn_inst_query.query_instances ctx
+          ?input: input
+            ?chain: filter.filt_fchain
+            ~tools
+        in
+        inst_list#update_data list
+      in
+      on_filter_change := filter_change
   end
 ;;
+
+class diff_box ctx =
+  let vbox = GPack.vbox () in
+  let wscroll = GBin.scrolled_window
+    ~hpolicy: `AUTOMATIC ~vpolicy: `AUTOMATIC
+    ~packing: (vbox#pack ~expand: true ~fill: true)
+    ()
+  in
+  let view = GSourceView2.source_view
+    ~show_line_numbers: true
+    ~packing: wscroll#add_with_viewport ()
+  in
+  object(self)
+    method coerce = vbox#coerce
+    method display_diff diff =
+      let b = view#source_buffer in
+      b#delete ~start: b#start_iter ~stop: b#end_iter;
+      b#insert diff
+
+    initializer
+      view#source_buffer#set_language
+        (Gtksv_utils.source_language_by_name "Diff");
+      Gtksv_utils.set_source_style_scheme
+        (Gtksv_utils.read_style_scheme_selection ());
+
+      Gtksv_utils.register_source_view view;
+      Gtksv_utils.apply_sourceview_props view (Gtksv_utils.read_sourceview_props ()) ;
+  end
+
 
 class box ctx =
   let paned = GPack.paned `VERTICAL () in
   let hbox = GPack.hbox () in
-  let diffbox = GPack.vbox () in
-  let instbox1 = new inst_chain_box ctx in
-  let instbox2 = new inst_chain_box ctx in
+  let on_inst_sel_change = ref (fun () -> ()) in
+  let instbox1 = new inst_chain_box ctx (fun () -> !on_inst_sel_change ()) in
+  let instbox2 = new inst_chain_box ctx (fun () -> !on_inst_sel_change ()) in
+  let diffbox = new diff_box ctx in
   object(self)
 
     method coerce = paned#coerce
 
+    method update_diff () =
+      match instbox1#selected, instbox2#selected with
+        None, _
+      | _, None -> diffbox#display_diff ""
+      | Some i1, Some i2->
+          let diff = Chn_diff.diff ctx i1 i2 in
+          diffbox#display_diff diff
+
+
     initializer
+      on_inst_sel_change := self#update_diff;
       let wf1 = GBin.frame ~label: "Instanciation 1" () in
       hbox#pack ~expand: true ~fill: true wf1#coerce;
       wf1#add instbox1#coerce;
@@ -212,5 +320,7 @@ class box ctx =
       paned#add1 hbox#coerce ;
       paned#add2 diffbox#coerce ;
       paned#set_position 400;
+
+
   end;;
   
