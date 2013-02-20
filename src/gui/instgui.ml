@@ -176,10 +176,42 @@ class inst_list ctx on_sel_change =
   end
 ;;
 
+let empty_dot_graph =
+  {
+    Odot.strict = false ;
+    kind = Odot.Digraph ;
+    id = None ;
+    stmt_list = [] ;
+  }
+
 class inst_fig ctx =
-  let vbox = GPack.vbox () in
   object(self)
-    method coerce = vbox#coerce
+    inherit Odot_gtk.box ~tmp_hash: "genetinstgui" ()
+    val mutable graph = empty_dot_graph
+
+    method coerce = self#box#coerce
+    method build_graph = graph
+
+    method refresh_data = ()
+    method on_button1_press ~x ~y _ = ()
+    method set_dot dot_code =
+      try
+        graph <- Odot.parse_string dot_code;
+        self#refresh ()
+      with
+        Odot.Parse_error (line, char) ->
+          failwith (Printf.sprintf "Dot parse error line %d, character %d" line char)
+
+    method display_inst = function
+      None -> graph <- empty_dot_graph ; self#refresh ()
+    | Some uri ->
+        let ichain_name =
+          match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
+            None -> failwith (Printf.sprintf "Not an instanciated chain uri: %S" (Rdf_uri.string uri))
+          | Some n -> n
+        in
+        let dot = Rest_xpage.dot_of_ichain ctx ichain_name in
+        self#set_dot dot
   end
 ;;
 
@@ -192,8 +224,9 @@ type inst_filter =
 class inst_chain_box ctx on_sel_change =
   let vbox = GPack.vbox () in
   let wtable = GPack.table ~columns: 2 ~rows: 3 () in
-  let inst_list = new inst_list ctx on_sel_change in
+  let on_selection_changed = ref (fun () -> ()) in
   let inst_fig = new inst_fig ctx in
+  let inst_list = new inst_list ctx (fun () -> !on_selection_changed ()) in
   let on_filter_change = ref (fun () -> ()) in
   object(self)
     val mutable input_sel = new input_selection ctx (fun () -> !on_filter_change())
@@ -254,7 +287,13 @@ class inst_chain_box ctx on_sel_change =
         in
         inst_list#update_data list
       in
-      on_filter_change := filter_change
+      on_filter_change := filter_change;
+
+      let selection_changed () =
+        inst_fig#display_inst self#selected ;
+        on_sel_change ();
+      in
+      on_selection_changed := selection_changed ;
   end
 ;;
 
@@ -276,6 +315,7 @@ class diff_box ctx =
       b#delete ~start: b#start_iter ~stop: b#end_iter;
       b#insert diff
 
+
     initializer
       view#source_buffer#set_language
         (Gtksv_utils.source_language_by_name "Diff");
@@ -286,6 +326,10 @@ class diff_box ctx =
       Gtksv_utils.apply_sourceview_props view (Gtksv_utils.read_sourceview_props ()) ;
   end
 
+let escape_amp =
+  Str.global_replace (Str.regexp_string "&") "&amp;"
+;;
+
 
 class box ctx =
   let paned = GPack.paned `VERTICAL () in
@@ -293,6 +337,14 @@ class box ctx =
   let on_inst_sel_change = ref (fun () -> ()) in
   let instbox1 = new inst_chain_box ctx (fun () -> !on_inst_sel_change ()) in
   let instbox2 = new inst_chain_box ctx (fun () -> !on_inst_sel_change ()) in
+  let vbox_diff = GPack.vbox () in
+  let hbox_url = GPack.hbox ~packing: (vbox_diff#pack ~expand: false ~fill: true) () in
+  let _ = GMisc.label ~text: "URL:" ~xpad: 3
+    ~packing: (hbox_url#pack ~expand: false ~fill: true) ()
+  in
+  let wurl = GMisc.label ~selectable: true ~markup: ""
+     ~packing: (hbox_url#pack ~expand: true ~fill: true) ()
+  in
   let diffbox = new diff_box ctx in
   object(self)
 
@@ -301,9 +353,15 @@ class box ctx =
     method update_diff () =
       match instbox1#selected, instbox2#selected with
         None, _
-      | _, None -> diffbox#display_diff ""
-      | Some i1, Some i2->
-          let diff = Chn_diff.diff ctx i1 i2 in
+      | _, None ->
+          wurl#set_text "";
+          diffbox#display_diff ""
+      | Some inst1, Some inst2->
+          let url = Chn_diff.diff_url ctx ~inst1 ~inst2 () in
+          let url = escape_amp url in
+          wurl#set_text (Printf.sprintf "<a href=%S>%s</a>" url url);
+          wurl#set_use_markup true;
+          let diff = Chn_diff.diff ctx inst1 inst2 in
           diffbox#display_diff diff
 
 
@@ -318,8 +376,10 @@ class box ctx =
       wf2#add instbox2#coerce;
 
       paned#add1 hbox#coerce ;
-      paned#add2 diffbox#coerce ;
+      paned#add2 vbox_diff#coerce ;
       paned#set_position 400;
+
+      vbox_diff#pack ~expand: true ~fill: true diffbox#coerce;
 
 
   end;;

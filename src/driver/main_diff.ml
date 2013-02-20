@@ -85,16 +85,9 @@ let main () =
   if !url_if_diff then
     if output <> "" then
       (
-       let url = Rdf_uri.concat config.Config.rest_api Grdfs.suffix_diff in
-       let url = Rdf_uri.concat url Grdfs.suffix_ichains in
-       let query = Netencoding.Url.mk_url_encoded_parameters
-         [ "form", "false" ;
-           "inst1", Rdf_uri.string inst1 ;
-           "inst2", Rdf_uri.string inst2 ;
-           "diffcmd", (Misc.string_of_opt !diff_command) ;
-         ]
+       let url = Chn_diff.diff_url ctx
+         ?diff_command: !diff_command ~inst1 ~inst2 ()
        in
-       let url = Printf.sprintf "%s?%s" (Rdf_uri.string url) query in
        print_endline url
       )
     else

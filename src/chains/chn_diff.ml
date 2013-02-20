@@ -92,3 +92,17 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r 
       Sys.remove res;
       result
 ;;
+
+let diff_url ctx ?(form=false) ?diff_command ~inst1 ~inst2 () =
+  let config = ctx.ctx_cfg in
+  let url = Rdf_uri.concat config.Config.rest_api Grdfs.suffix_diff in
+  let url = Rdf_uri.concat url Grdfs.suffix_ichains in
+  let query = Netencoding.Url.mk_url_encoded_parameters
+    [ "form", (if form then "true" else "false") ;
+      "inst1", Rdf_uri.string inst1 ;
+      "inst2", Rdf_uri.string inst2 ;
+      "diffcmd", (Misc.string_of_opt diff_command) ;
+    ]
+  in
+  Printf.sprintf "%s?%s" (Rdf_uri.string url) query
+;;
