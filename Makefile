@@ -70,6 +70,13 @@ config.status: configure master.Makefile.in src/base/version.ml.in
 configure: configure.ac
 	autoconf
 
+# Archive :
+###########
+archive:
+	git archive --prefix=genet-`echo $(VERSION) | cut -d'+' -f 1`/ HEAD \
+		 | gzip > ../genet-gh-pages/genet-`echo $(VERSION) | cut -d'+' -f 1`.tar.gz
+
+
 # headers :
 ###########
 HEADFILES= configure.ac configure \
