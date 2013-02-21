@@ -8,10 +8,12 @@ LESSC=lessc
 build:
 	$(MAKE) site
 
+style.css: less/*.less
+	$(LESSC) less/style.less > $@
 
-site: genet_plugin.cmxs
+site: genet_plugin.cmxs style.css
 	$(STOG) $(STOG_OPTIONS) --plugin $< .
-	$(LESSC) less/style.less > $(DEST_DIR)/style.css
+	$(CP) style.css $(DEST_DIR)/style.css
 	mkdir -p $(DEST_DIR)/refdoc
 	(cd ../src && make doc && cp -r ocamldoc/* $(DEST_DIR)/refdoc/ )
 

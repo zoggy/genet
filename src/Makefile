@@ -513,24 +513,6 @@ dummy:
 
 include .depend
 
-
-# distribution
-# by now just a tar to allow alpha/beta-testing
-DISTRIB_DIR=/tmp/syndex-distrib
-DISTRIB_TAR=/tmp/syndex-$(VERSION).tar.gz
-distrib: all
-	$(RM) $(DISTRIB_DIR)
-	$(MKDIR) $(DISTRIB_DIR)/manual
-	$(MKDIR) $(DISTRIB_DIR)/manual/illustrations
-	$(CP) $(TOOLS) */*.glade $(DISTRIB_DIR)/
-	$(CP) $(ROOT)/doc/syndex_manual.pdf \
-	$(ROOT)/doc/syndex_manual*.html \
-	$(ROOT)/doc/ocamldoc_style.css \
-	$(DISTRIB_DIR)/manual/
-	$(CP) $(ROOT)/doc/illustrations/*.png $(DISTRIB_DIR)/manual/illustrations/
-	(cd `dirname $(DISTRIB_DIR)` && tar cvfz $(DISTRIB_TAR) `basename $(DISTRIB_DIR)`)
-
-
 #################
 # Installation
 #################
@@ -542,10 +524,19 @@ install-bin:
 	$(CP) gui/genet.glade $(GLADEDIR)/
 
 install-web-files:
-	$(MKDIR) $(SHAREDIR)/web
-	$(CP) -r tmpl $(SHAREDIR)/web/
-	$(CP) $(ROOT)/website/genet-logo.svg $(ROOT)/website/star.svg $(SHAREDIR)/web/
-	$(LESSC) $(ROOT)/website/less/style.less > $(SHAREDIR)/web/style.css
+	$(MKDIR) $(SHAREDIR)/genet-web
+	$(CP) -r tmpl $(SHAREDIR)/genet-web/
+	$(CP) $(ROOT)/website/genet-logo.svg $(ROOT)/website/star.svg $(SHAREDIR)/genet-web/
+	$(CP) $(ROOT)/website/style.css $(SHAREDIR)/genet-web/style.css
+
+uninstall: uninstall-web-files uninstall-bin
+
+uninstall-bin:
+	for i in $(TOOLS) $(TOOLS_BYTE); do $(RM) $(BINDIR)/$$i; done
+	$(RM) $(GLADEDIR)/genet.glade
+
+uninstall-web-files:
+	$(RM) -fr $(SHAREDIR)/genet-web
 
 ###########################
 # additional dependencies

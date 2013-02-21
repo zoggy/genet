@@ -34,7 +34,7 @@ IMAGES=
 
 work: utils src
 
-all: work srcdoc doc
+all: work
 
 src: dummy
 	cd src && $(MAKE) all
@@ -46,7 +46,7 @@ re : depend clean all
 
 help:
 	@echo "work:      utils src"
-	@echo "all:       work srcdoc doc"
+	@echo "all:       work"
 	@echo "src:       src/all"
 	@echo "utils:     utils/all"
 	@echo "re:        depend clean all"
@@ -143,7 +143,7 @@ codecount:
 install: dummy #installimages
 	cd src && $(MAKE) install
 #	$(MAKE) installspecsfiles
-	$(MAKE) installdoc
+#	$(MAKE) installdoc
 
 installspecsfiles:
 	$(MKDIR) $(LANGUAGESSPECSDIR)
@@ -157,6 +157,10 @@ installimages: dummy $(IMAGES)
 	$(CP) $(IMAGES) $(PIXMAPSDIR)
 
 installscripts: dummy
+
+uninstall: dummy
+	cd src && $(MAKE) uninstall
+
 #	$(MKDIR) $(DIR_UTILS)
 #	$(CP) $(SCRIPTS) $(DIR_UTILS)
 
