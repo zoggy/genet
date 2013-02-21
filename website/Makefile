@@ -4,6 +4,7 @@ DEST_DIR=/home/guesdon/devel/genet-gh-pages
 BASE_URL_OPTION=
 STOG_OPTIONS=-d $(DEST_DIR) $(BASE_URL_OPTION)
 LESSC=lessc
+CP=cp -f
 
 build:
 	$(MAKE) site
