@@ -114,27 +114,6 @@ alldepend: dummy
 
 dummy:
 
-#################
-# code count
-#################
-codecount:
-	(cd src && wc -l `ls */*.ml */*.mli \
-	| grep -v adeq/adeq_durations_parser.ml \
-	| grep -v base/tokens.ml \
-  | grep -v algo/algo_lang_parser.ml \
-  | grep -v sdxparser/sdx_parser.ml \
-  | grep -v arch/arch_lang_parser.ml \
-  | grep -v base/lexer.ml \
-  | grep -v sdxparser/sdx_lexer.ml ` \
-  adeq/adeq_durations_parser.mly \
-  base/tokens.mly \
-  algo/algo_lang_parser.mly \
-  sdxparser/sdx_parser.mly \
-  arch/arch_lang_parser.mly \
-  base/lexer.mll \
-  sdxparser/sdx_lexer.mll \
-  )
-
 
 #################
 # installation
