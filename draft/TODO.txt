@@ -29,8 +29,5 @@ Exec:
   only the list of instanciated chains.
 
 
-Configure:
-  take --prefix into account
-
 Filetypes:
-  allow various extensions for each filetype  
+- allow various extensions for each filetype  
