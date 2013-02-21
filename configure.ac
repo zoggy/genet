@@ -59,11 +59,8 @@ OCAMLLEX="ocamllex.opt"
 OCAML="ocaml"
 OCAMLOPT="ocamlopt.opt"
 OCAMLMKLIB="ocamlmklib"
-OCAMLVERSION="3.11.0"
+OCAMLVERSION="4.00.0"
 MENHIR="menhir"
-HEVEA="hevea"
-HACHA="hacha"
-BIBTEX="bibtex"
 LABLGLADECC="lablgladecc2"
 ' > ./ocaml_config.sh
 else
@@ -76,8 +73,9 @@ fi;
 echo "ocaml library path is $OCAMLLIB"
 
 # set the default prefix to the ocaml directory
-prefix=/opt/genet
-exec_prefix=$prefix
+if test "$prefix" = "NONE" ; then
+  prefix=`dirname $OCAMLBIN`
+fi
 
 
 if test "$bindir" = "\${exec_prefix}/bin" ; then
@@ -156,9 +154,6 @@ AC_SUBST(OCAMLDOC_OPT)
 AC_SUBST(OCAMLDOC_PLUGINSDIR)
 AC_SUBST(LABLGLADECC)
 AC_SUBST(MENHIR)
-AC_SUBST(HEVEA)
-AC_SUBST(HACHA)
-AC_SUBST(BIBTEX)
 AC_SUBST(EXEC_PREFIX)
 AC_SUBST(INSTALLDIR)
 AC_SUBST(BINDIR)

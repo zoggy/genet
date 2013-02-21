@@ -930,15 +930,6 @@ let _ = !print "\n### checking required tools and libraries ###\n"
 let menhir = ocaml_prog "menhir";;
 let _ = add_subst "MENHIR" menhir;;
 
-let hevea = ocaml_prog "hevea";;
-let _ = add_subst "HEVEA" hevea;;
-
-let hacha = ocaml_prog "hacha";;
-let _ = add_subst "HACHA" hacha;;
-
-let bibtex = ocaml_prog "bibtex";;
-let _ = add_subst "BIBTEX" bibtex;;
-
 let _ = check_ocamlfind_package conf "config-file";;
 let _ = check_ocamlfind_package conf "mysql";;
 

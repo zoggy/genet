@@ -594,9 +594,6 @@ LIBDIR
 BINDIR
 INSTALLDIR
 EXEC_PREFIX
-BIBTEX
-HACHA
-HEVEA
 MENHIR
 LABLGLADECC
 OCAMLDOC_PLUGINSDIR
@@ -1741,11 +1738,8 @@ OCAMLLEX="ocamllex.opt"
 OCAML="ocaml"
 OCAMLOPT="ocamlopt.opt"
 OCAMLMKLIB="ocamlmklib"
-OCAMLVERSION="3.11.0"
+OCAMLVERSION="4.00.0"
 MENHIR="menhir"
-HEVEA="hevea"
-HACHA="hacha"
-BIBTEX="bibtex"
 LABLGLADECC="lablgladecc2"
 ' > ./ocaml_config.sh
 else
@@ -1758,8 +1752,9 @@ fi;
 echo "ocaml library path is $OCAMLLIB"
 
 # set the default prefix to the ocaml directory
-prefix=/opt/genet
-exec_prefix=$prefix
+if test "$prefix" = "NONE" ; then
+  prefix=`dirname $OCAMLBIN`
+fi
 
 
 if test "$bindir" = "\${exec_prefix}/bin" ; then
@@ -1820,9 +1815,6 @@ fi
 
 #############################
 # substitutions to perform
-
-
-
 
 
 
