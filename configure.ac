@@ -26,8 +26,9 @@
 # check for one particular file of the sources
 AC_INIT(master.Makefile.in)
 
-REVISION=`git log | head -n 1 | cut -d' ' -f 2`
-VERSION=0.1+$REVISION
+REVISION=`(git log | head -n 1 | cut -d' ' -f 2) 2>/dev/null || echo`
+if test "${REVISION}" != "" ; then ADD_REVISION=+${REVISION}; fi
+VERSION=0.1${ADD_REVISION}
 
 # The root directory where we will compile
 ROOT=`pwd`
