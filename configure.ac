@@ -165,6 +165,7 @@ AC_SUBST(ROOT)
 AC_SUBST(DEBUG_LEVEL)
 AC_SUBST(RDF_MYSQL)
 AC_SUBST(RDF_POSTGRESQL)
+AC_SUBST(MT_FLAGS)
 
 ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
 

@@ -584,6 +584,7 @@ PACKAGE_URL=
 ac_unique_file="master.Makefile.in"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+MT_FLAGS
 RDF_POSTGRESQL
 RDF_MYSQL
 DEBUG_LEVEL
@@ -1816,6 +1817,7 @@ fi
 
 #############################
 # substitutions to perform
+
 
 
 

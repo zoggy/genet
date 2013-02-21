@@ -471,7 +471,7 @@ dot: all dump.odoc
 # backup, clean and depend :
 ############################
 
-GENERATED_FILES=
+GENERATED_FILES=base/lexer.ml base/lexer.mli base/tokens.ml base/tokens.mli
 
 cleanocamldoc:
 	$(RM) -r ocamldoc
@@ -546,7 +546,7 @@ chains/chn_parser.ml chains/chn_parser.mli: base/tokens.mly grdf/grdf_parser.mly
 
 base/lexer.ml base/lexer.mli: base/lexer.mll
 	$(OCAMLLEX) $<
-	$(OCAMLFIND) ocamlc $(OF_FLAGS) -rectypes $(INCLUDES) -i base/lexer.ml > base/lexer.mli
+	$(OCAMLFIND) ocamlc $(OF_FLAGS) $(OCAMLCFLAGS) -rectypes $(INCLUDES) -i base/lexer.ml > base/lexer.mli
 
 grdf/grdf_parser.ml grdf/grdf_parser.mli: base/tokens.mly grdf/grdf_parser.mly
 	$(MENHIR) --base grdf/grdf_parser --external-tokens Tokens $^
