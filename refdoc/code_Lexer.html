@@ -67,32 +67,7 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Lexer</title>
 </head>
 <body>
-<code class="code"></code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Genet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(C)&nbsp;2012-2013&nbsp;Institut&nbsp;National&nbsp;de&nbsp;Recherche&nbsp;en&nbsp;Informatique&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;et&nbsp;en&nbsp;Automatique.&nbsp;All&nbsp;rights&nbsp;reserved.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;free&nbsp;software;&nbsp;you&nbsp;can&nbsp;redistribute&nbsp;it&nbsp;and/or&nbsp;modify&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;under&nbsp;the&nbsp;terms&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;version&nbsp;3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;later&nbsp;as&nbsp;published&nbsp;by&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;program&nbsp;is&nbsp;distributed&nbsp;in&nbsp;the&nbsp;hope&nbsp;that&nbsp;it&nbsp;will&nbsp;be&nbsp;useful,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;but&nbsp;WITHOUT&nbsp;ANY&nbsp;WARRANTY;&nbsp;without&nbsp;even&nbsp;the&nbsp;implied&nbsp;warranty&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;MERCHANTABILITY&nbsp;or&nbsp;FITNESS&nbsp;FOR&nbsp;A&nbsp;PARTICULAR&nbsp;PURPOSE.&nbsp;&nbsp;See&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;for&nbsp;more&nbsp;details.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;should&nbsp;have&nbsp;received&nbsp;a&nbsp;copy&nbsp;of&nbsp;the&nbsp;GNU&nbsp;General&nbsp;Public&nbsp;License&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;along&nbsp;with&nbsp;this&nbsp;program;&nbsp;if&nbsp;not,&nbsp;write&nbsp;to&nbsp;the&nbsp;Free&nbsp;Software&nbsp;Foundation,&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Inc.,&nbsp;59&nbsp;Temple&nbsp;Place,&nbsp;Suite&nbsp;330,&nbsp;Boston,&nbsp;MA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;02111-1307&nbsp;&nbsp;USA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;Contact:&nbsp;Maxence.Guesdon@inria.fr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
-</code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
-<br>
-#&nbsp;1&nbsp;"base/lexer.mll"<br>
+<code class="code">#&nbsp;26&nbsp;"base/lexer.mll"<br>
 &nbsp;<br>
 </code><table><tr><td></td><td><span class="comment">(** Common lexer. *)</span></td></tr></table><code class="code"><br>
 <br>
@@ -146,17 +121,17 @@
 <span class="keyword">and</span>&nbsp;__ocaml_lex_main_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;36&nbsp;"base/lexer.mll"<br>
+#&nbsp;61&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.reset&nbsp;string_buffer;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;234&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;37&nbsp;"base/lexer.mll"<br>
+#&nbsp;62&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.reset&nbsp;string_buffer;&nbsp;comment&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;239&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;39&nbsp;"base/lexer.mll"<br>
+#&nbsp;64&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
@@ -170,12 +145,12 @@
 #&nbsp;253&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;49&nbsp;"base/lexer.mll"<br>
+#&nbsp;74&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;main&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;258&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;4&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;50&nbsp;"base/lexer.mll"<br>
+#&nbsp;75&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;var&nbsp;=&nbsp;<span class="constructor">String</span>.sub&nbsp;lexeme&nbsp;1&nbsp;(<span class="constructor">String</span>.length&nbsp;lexeme&nbsp;-&nbsp;1)&nbsp;<span class="keyword">in</span><br>
@@ -184,7 +159,7 @@
 #&nbsp;267&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;5&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;55&nbsp;"base/lexer.mll"<br>
+#&nbsp;80&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">List</span>.assoc&nbsp;(<span class="constructor">String</span>.lowercase&nbsp;lexeme)&nbsp;keywords<br>
@@ -193,7 +168,7 @@
 #&nbsp;276&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;6&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;60&nbsp;"base/lexer.mll"<br>
+#&nbsp;85&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexeme&nbsp;=&nbsp;<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">List</span>.assoc&nbsp;(<span class="constructor">String</span>.lowercase&nbsp;lexeme)&nbsp;keywords<br>
@@ -203,67 +178,67 @@
 #&nbsp;286&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;7&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;66&nbsp;"base/lexer.mll"<br>
+#&nbsp;91&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">DOT</span>&nbsp;)<br>
 #&nbsp;291&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;8&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;67&nbsp;"base/lexer.mll"<br>
+#&nbsp;92&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">LBRACE</span>&nbsp;)<br>
 #&nbsp;296&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;9&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;68&nbsp;"base/lexer.mll"<br>
+#&nbsp;93&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RBRACE</span>&nbsp;)<br>
 #&nbsp;301&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;10&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;69&nbsp;"base/lexer.mll"<br>
+#&nbsp;94&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">LPAR</span>&nbsp;)<br>
 #&nbsp;306&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;11&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;70&nbsp;"base/lexer.mll"<br>
+#&nbsp;95&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RPAR</span>&nbsp;)<br>
 #&nbsp;311&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;12&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;71&nbsp;"base/lexer.mll"<br>
+#&nbsp;96&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">STAR</span>&nbsp;)<br>
 #&nbsp;316&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;13&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;72&nbsp;"base/lexer.mll"<br>
+#&nbsp;97&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">SEMICOLON</span>&nbsp;)<br>
 #&nbsp;321&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;14&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;73&nbsp;"base/lexer.mll"<br>
+#&nbsp;98&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">COLON</span>&nbsp;)<br>
 #&nbsp;326&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;15&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;74&nbsp;"base/lexer.mll"<br>
+#&nbsp;99&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">COMMA</span>&nbsp;)<br>
 #&nbsp;331&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;16&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;75&nbsp;"base/lexer.mll"<br>
+#&nbsp;100&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Int</span>&nbsp;(int_of_string&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf))&nbsp;)<br>
 #&nbsp;336&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;17&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;76&nbsp;"base/lexer.mll"<br>
+#&nbsp;101&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">RIGHTARROW</span>&nbsp;)<br>
 #&nbsp;341&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;18&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;77&nbsp;"base/lexer.mll"<br>
+#&nbsp;102&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">EOF</span>&nbsp;)<br>
 #&nbsp;346&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;19&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;78&nbsp;"base/lexer.mll"<br>
+#&nbsp;103&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;character&nbsp;%s"</span>&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf))&nbsp;)<br>
 #&nbsp;351&nbsp;"base/lexer.ml"<br>
 <br>
@@ -274,22 +249,22 @@
 <span class="keyword">and</span>&nbsp;__ocaml_lex_string_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;81&nbsp;"base/lexer.mll"<br>
+#&nbsp;106&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_char&nbsp;string_buffer&nbsp;<span class="string">'"'</span>;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;362&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;82&nbsp;"base/lexer.mll"<br>
+#&nbsp;107&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_char&nbsp;string_buffer&nbsp;<span class="string">'\\'</span>;&nbsp;string&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;367&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;83&nbsp;"base/lexer.mll"<br>
+#&nbsp;108&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">String</span>&nbsp;(<span class="constructor">Buffer</span>.contents&nbsp;string_buffer)&nbsp;)<br>
 #&nbsp;372&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;84&nbsp;"base/lexer.mll"<br>
+#&nbsp;109&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
@@ -304,12 +279,12 @@
 #&nbsp;387&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;4&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;95&nbsp;"base/lexer.mll"<br>
+#&nbsp;120&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);&nbsp;string&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;392&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;5&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;96&nbsp;"base/lexer.mll"<br>
+#&nbsp;121&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;<span class="string">"String&nbsp;not&nbsp;terminated."</span>&nbsp;)<br>
 #&nbsp;397&nbsp;"base/lexer.ml"<br>
 <br>
@@ -320,7 +295,7 @@
 <span class="keyword">and</span>&nbsp;__ocaml_lex_comment_rec&nbsp;lexbuf&nbsp;__ocaml_lex_state&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Lexing</span>.engine&nbsp;__ocaml_lex_tables&nbsp;__ocaml_lex_state&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;99&nbsp;"base/lexer.mll"<br>
+#&nbsp;124&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Misc</span>.strip_string&nbsp;(<span class="constructor">Buffer</span>.contents&nbsp;string_buffer)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Comment</span>&nbsp;s<br>
@@ -328,7 +303,7 @@
 #&nbsp;411&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;1&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;103&nbsp;"base/lexer.mll"<br>
+#&nbsp;128&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">L</span>&nbsp;=&nbsp;<span class="constructor">Lexing</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">L</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
@@ -343,12 +318,12 @@
 #&nbsp;426&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;114&nbsp;"base/lexer.mll"<br>
+#&nbsp;139&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;string_buffer&nbsp;(<span class="constructor">Lexing</span>.lexeme&nbsp;lexbuf);&nbsp;comment&nbsp;lexbuf&nbsp;)<br>
 #&nbsp;431&nbsp;"base/lexer.ml"<br>
 <br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;3&nbsp;<span class="keywordsign">-&gt;</span><br>
-#&nbsp;115&nbsp;"base/lexer.mll"<br>
+#&nbsp;140&nbsp;"base/lexer.mll"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;error&nbsp;lexbuf&nbsp;<span class="string">"Comment&nbsp;not&nbsp;terminated."</span>&nbsp;)<br>
 #&nbsp;436&nbsp;"base/lexer.ml"<br>
 <br>
