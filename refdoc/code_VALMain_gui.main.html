@@ -71,5 +71,5 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;()</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Gui_main</span>.make_gui&nbsp;ctx</code></body></html>

@@ -118,6 +118,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Loc</span>.raise_problem&nbsp;loc&nbsp;<span class="string">"Syntax&nbsp;error"</span><br>
 ;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;chn_module_of_string&nbsp;?(file=<span class="string">""</span>)&nbsp;modname&nbsp;str&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lexing</span>.lex_curr_p&nbsp;=&nbsp;{&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Lexing</span>.pos_fname&nbsp;=&nbsp;file&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;input_chn_module&nbsp;modname&nbsp;lexbuf<br>
+;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;chn_module_of_file&nbsp;file&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ic&nbsp;=&nbsp;open_in&nbsp;file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_channel&nbsp;ic&nbsp;<span class="keyword">in</span><br>

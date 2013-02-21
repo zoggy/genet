@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"><channel><title>Genet: release</title><link>http://zoggy.github.com/genet/kw_release.html</link><description></description><managingEditor>foo@bar.com</managingEditor><pubDate>21 Feb 2013 08:00:00 +0000</pubDate><lastBuildDate>21 Feb 2013 08:00:00 +0000</lastBuildDate><generator>Stog</generator><image><url>http://zoggy.github.com/genet/</url><title>Genet</title><link>http://zoggy.github.com/genet</link></image><item><title>First release: 0.1</title><link>http://zoggy.github.com/genet/posts/release-0.1.html</link><description>
+&lt;p&gt;
+A first release of Genet is available from the &lt;elt href=&quot;download&quot;/&gt; page.
+Everything is not done yet, but you can already give it a try, following &lt;elt href=&quot;example&quot;/&gt;.
+&lt;/p&gt;
+</description><pubDate>21 Feb 2013 08:00:00 +0000</pubDate><category>release</category><guid isPermaLink="true">http://zoggy.github.com/genet/posts/release-0.1.html</guid></item></channel></rss>

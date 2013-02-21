@@ -95,6 +95,7 @@
 </code><table><tr><td></td><td><span class="comment">(** Main module of genet gui. *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Options</span>;;<br>
+<span class="constructor">GMain</span>.<span class="constructor">Main</span>.init();;<br>
 <br>
 <span class="keyword">let</span>&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Options</span>.option_config&nbsp;::<br>
@@ -106,9 +107,8 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;()<br>
-<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Gui_main</span>.make_gui&nbsp;ctx<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;()&nbsp;=&nbsp;<span class="constructor">Misc</span>.safe_main&nbsp;main;;</code></body></html>
