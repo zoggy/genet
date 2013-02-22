@@ -204,10 +204,11 @@ type mode =
   | Add_ref_inst
   | Set_active
   | Diff
+  | Query
 ;;
 
+(*
 let mode = ref None;;
-
 let set_mode m () = mode := Some m;;
 
 let com_add_tool = {
@@ -350,19 +351,15 @@ let com_init_db = {
   }
 ;;
 
-let com_diff = {
-    com_options = Main_diff.options ;
+
+
+let com_query = {
+    com_options = Main_query.options ;
     com_usage = "[options] <instanciation1> [<instanciation2>]" ;
     com_kind = Final (set_mode Diff) ;
   }
 ;;
 
-let common_options =
-  Options.option_version "Genet" ::
-  Options.option_config ::
-  Options.option_verbose ::
-  []
-;;
 
 let commands = [
     "init-dir", com_init_dir, "init directory" ;
@@ -372,13 +369,20 @@ let commands = [
     "add", com_add, "add elements to rdf model" ;
     "remove", com_remove, "remove elements from rdf model" ;
     "set", com_set, "set flags" ;
-    "diff", com_diff, "compute differences between executions" ;
   ];;
+*)
+
+let common_options =
+  Options.option_version "Genet" ::
+  Options.option_config ::
+  Options.option_verbose ::
+  []
+;;
 
 let command = {
   com_options = common_options ;
   com_usage = "<command> [arguments]" ;
-  com_kind = Commands commands
+  com_kind = Commands (Main_cmd.subcommands()) ;
   }
 
 let init_dir ?git_repo opts =
@@ -427,6 +431,9 @@ let init_dir ?git_repo opts =
 
 let main () =
   let opts = Options.parse_command command in
+  Main_cmd.call_final_fun opts
+;;
+(*
   match !mode with
     None -> ()
   | Some Init_dir -> init_dir ?git_repo: !git_repo opts
@@ -479,11 +486,12 @@ let main () =
           | Add_ref_inst -> add_ref_inst config rdf_wld opts
           | Set_active -> set_active config rdf_wld opts
           | Diff -> Main_diff.diff config rdf_wld opts
+          | Query -> Main_query.query config rdf_wld opts
         with
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);
             exit 1
       end
-;;
+*)
 
 let () = Misc.safe_main main;;

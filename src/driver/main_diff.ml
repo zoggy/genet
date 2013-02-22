@@ -50,12 +50,7 @@ let options =
 ;;
 
 
-let diff config rdf_wld opts =
-  let ctx = {
-      Chn_types.ctx_rdf = rdf_wld ;
-      ctx_cfg = config ; ctx_user = None ;
-    }
-  in
+let diff ctx opts =
   let (inst1, inst2) =
     match opts.Options.args with
       [uri1] ->
@@ -93,3 +88,11 @@ let diff config rdf_wld opts =
     print_string output
 ;;
 
+let command = {
+    com_options = options ;
+    com_usage = "<instanciation1> [<instanciation2>]" ;
+    com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun diff) ;
+  }
+;;
+
+Main_cmd.register_subcommand "diff" command "compute differences between executions" ;;

@@ -34,7 +34,6 @@ type mode =
   | Interfaces
   | Filetypes
   | Dot
-  | Test of int
   | File of string
   | Inst of string
   | Ref_inst_of_inst of string
@@ -51,41 +50,36 @@ let set_ref_inst s =
 ;;
 
 let options =
-  Options.option_version "Genet-query" ::
-  Options.option_config ::
-  ("--tools", Arg.Unit (fun () -> mode := Some Tools), " print tools") ::
+  [
+    ("--tools", Arg.Unit (fun () -> mode := Some Tools), " print tools") ;
 
-  ("--branches", Arg.Unit (fun () -> mode := Some Branches),
-   " print branches (all or only the ones of the given parents)") ::
+    ("--branches", Arg.Unit (fun () -> mode := Some Branches),
+     " print branches (all or only the ones of the given parents)") ;
 
-  ("--versions", Arg.Unit (fun () -> mode := Some Versions),
-   " print versions (all or only the ones of the given tools or branches)") ::
+    ("--versions", Arg.Unit (fun () -> mode := Some Versions),
+     " print versions (all or only the ones of the given tools or branches)") ;
 
-  ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
-   " print interfaces (all or only the ones of the given tools or branches)") ::
+    ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
+     " print interfaces (all or only the ones of the given tools or branches)") ;
 
-  ("--filetypes", Arg.Unit (fun () -> mode := Some Filetypes),
-   " print filetypes") ::
+    ("--filetypes", Arg.Unit (fun () -> mode := Some Filetypes),
+     " print filetypes") ;
 
-  ("--file", Arg.String (fun s -> mode := Some (File s)),
-   "<url> print the filename corresponding to the given file url") ::
+    ("--file", Arg.String (fun s -> mode := Some (File s)),
+     "<url> print the filename corresponding to the given file url") ;
 
-  ("--inst", Arg.String (fun s -> mode := Some (Inst s)),
-   "<url> look for other executions 'almost' like the given one") ::
+    ("--inst", Arg.String (fun s -> mode := Some (Inst s)),
+     "<url> look for other executions 'almost' like the given one") ;
 
-  ("--dot", Arg.Unit (fun () -> mode := Some Dot),
-   " print graph in graphviz format") ::
+    ("--dot", Arg.Unit (fun () -> mode := Some Dot),
+     " print graph in graphviz format") ;
 
-  ("--ref-inst-of-inst", Arg.String (fun s -> mode := Some (Ref_inst_of_inst s)),
-   "<url> print reference inst chain, if any, from given inst chain" ) ::
+    ("--ref-inst-of-inst", Arg.String (fun s -> mode := Some (Ref_inst_of_inst s)),
+     "<url> print reference inst chain, if any, from given inst chain" ) ;
 
-  ("--ref-inst", Arg.String set_ref_inst,
-   "<url> print reference inst chain, if any, from given inst chain" ) ::
-
-  ("--test", Arg.Int (fun n -> mode := Some (Test n)),
-   " not documented (testing purpose)") ::
-
-  []
+    ("--ref-inst", Arg.String set_ref_inst,
+     "<url> print reference inst chain, if any, from given inst chain" ) ;
+  ]
 ;;
 
 let pruri_endline uri = print_endline (Rdf_uri.string uri);;
@@ -189,49 +183,6 @@ let lookup_and_print_insts ctx s =
 
 let dot wld = print_endline (Grdf_dot.dot wld);;
 
-let test wld config n =
-  match n with
-  | 2 ->
-      begin
-        let chain_files = Chn_io.chain_files config in
-        List.iter prerr_endline chain_files
-      end
-  | _  ->
-      begin
-        let intfs = Grdf_intf.intfs wld in
-        if Uriset.is_empty intfs then
-          failwith "no interfaces to use to test";
-
-        match Grdf_ftype.filetypes wld with
-          [] -> failwith "no filetype to use to test"
-        | filetypes ->
-            let filetypes = Array.of_list filetypes in
-            prerr_endline (Printf.sprintf "%d filetypes" (Array.length filetypes));
-            let n = Array.length filetypes in
-            (*          Grdf_intf.delete_ports wld Grdf_intf.In intf;*)
-
-            Random.self_init();
-            let dir = if Random.int 2 = 0 then Grdf_port.In else Grdf_port.Out in
-            let ftype = Grdf_ftype.name wld filetypes.(Random.int n) in
-            let port =
-              if Random.int 1 = 0 then Grdf_types.Set (Grdf_types.T ftype) else Grdf_types.T ftype
-            in
-            let _intfs = Uriset.elements intfs in
-
-            let intf = Rdf_uri.uri
-             "http://localhost:8082/tools/altergo/interfaces/ae-prove"
-            (*  List.nth intfs (Random.int (List.length intfs))*)
-            in
-
-            prerr_endline (Grdf_intf.string_of_intf wld intf);
-            Grdf_port.add_port wld intf dir port;
-            prerr_endline (Grdf_intf.string_of_intf wld intf);
-
-(*            Grdf_port.delete_ports wld intf Grdf_port.In ;*)
-            prerr_endline (Grdf_intf.string_of_intf wld intf);
-      end
-;;
-
 let ref_inst_of_inst ctx s =
   let uri = Rdf_uri.uri s in
   match Chn_inst.reference_inst_of_inst ctx uri with
@@ -246,10 +197,7 @@ let ref_inst ctx input chain_name =
   List.iter (fun uri -> print_endline (Rdf_uri.string uri)) l
 ;;
 
-let main () =
-  let opts = Options.parse options in
-  let config = Config.read_config opts.Options.config_file in
-  let rdf_wld = Grdf_init.open_graph config in
+let query config rdf_wld opts =
   let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None} in
   begin
     match !mode with
@@ -260,12 +208,9 @@ let main () =
     | Some Interfaces -> list_interfaces rdf_wld opts
     | Some Filetypes -> list_filetypes rdf_wld
     | Some Dot -> dot rdf_wld
-    | Some (Test n) -> test rdf_wld config n
     | Some (File s) -> print_filename_of_url config s
     | Some (Inst s) -> lookup_and_print_insts ctx s
     | Some (Ref_inst_of_inst s) -> ref_inst_of_inst ctx s
     | Some (Ref_inst (input, chain_name)) -> ref_inst ctx input chain_name
   end
 ;;
-
-let () = Misc.safe_main main;;

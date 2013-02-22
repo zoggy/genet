@@ -261,6 +261,7 @@ REST_LIBS=$(LIB_REST) $(LIB_REST_BYTE) $(LIB_REST_CMI) $(LIB_REST_A)
 
 # Genet files
 GENET_CMXFILES=	driver/options.cmx \
+	driver/main_cmd.cmx \
 	driver/main_diff.cmx \
 	driver/main.cmx
 GENET_CMOFILES=$(GENET_CMXFILES:.cmx=.cmo)
