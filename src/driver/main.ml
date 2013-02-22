@@ -203,6 +203,7 @@ type mode =
   | Add_input
   | Add_ref_inst
   | Set_active
+  | Diff
 ;;
 
 let mode = ref None;;
@@ -349,6 +350,13 @@ let com_init_db = {
   }
 ;;
 
+let com_diff = {
+    com_options = Main_diff.options ;
+    com_usage = "[options] <instanciation1> [<instanciation2>]" ;
+    com_kind = Final (set_mode Diff) ;
+  }
+;;
+
 let common_options =
   Options.option_version "Genet" ::
   Options.option_config ::
@@ -364,6 +372,7 @@ let commands = [
     "add", com_add, "add elements to rdf model" ;
     "remove", com_remove, "remove elements from rdf model" ;
     "set", com_set, "set flags" ;
+    "diff", com_diff, "compute differences between executions" ;
   ];;
 
 let command = {
@@ -469,6 +478,7 @@ let main () =
           | Add_input -> assert false
           | Add_ref_inst -> add_ref_inst config rdf_wld opts
           | Set_active -> set_active config rdf_wld opts
+          | Diff -> Main_diff.diff config rdf_wld opts
         with
           Grdf_types.Error e ->
             prerr_endline (Grdf_types.string_of_error e);

@@ -25,18 +25,17 @@
 
 (** Main module of the genet-diff program.*)
 
+open Cmdline;;
 open Chn_types;;
 
 let usage =
-  Printf.sprintf "Usage: %s [options] <instanciation1> [<instanciation2>]" Sys.argv.(0);;
+  Printf.sprintf "Usage: %s diff [options] <instanciation1> [<instanciation2>]" Sys.argv.(0);;
 let html_output = ref false;;
 let diff_command = ref None;;
 let keep_files = ref false;;
 let url_if_diff = ref false;;
 
 let options =
-  Options.option_version "Genet-diff" ::
-  Options.option_config ::
   [
     "--diff", Arg.String (fun c -> diff_command := Some c),
     "<com> use com as diff command; default is diff -r -u" ;
@@ -50,10 +49,8 @@ let options =
   ]
 ;;
 
-let main () =
-  let opts = Options.parse options in
-  let config = Config.read_config opts.Options.config_file in
-  let rdf_wld = Grdf_init.open_graph config in
+
+let diff config rdf_wld opts =
   let ctx = {
       Chn_types.ctx_rdf = rdf_wld ;
       ctx_cfg = config ; ctx_user = None ;
@@ -96,4 +93,3 @@ let main () =
     print_string output
 ;;
 
-let () = Misc.safe_main main;;
