@@ -27,6 +27,57 @@
 
 open Grdf_tool;;
 
+let pruri_endline uri = print_endline (Rdf_uri.string uri);;
+
+let list_tools _ wld _ =
+  let tools = Grdf_tool.tools wld in
+  List.iter pruri_endline tools
+;;
+let com_tools = {
+  Cmdline.com_options = [] ;
+  com_usage = "" ;
+  com_kind = Main_cmd.mk_final_fun list_tools ;
+  }
+;;
+let com_tools = ("tools", com_tools, "print tools") ;;
+
+let list_branches _ wld options =
+  let branches =
+    match options.Options.args with
+      [] -> List.map (fun b -> b.Grdf_branch.bch_uri) (Grdf_branch.branches wld)
+    | l ->
+        let add set elt = Uriset.add elt set in
+        let f set s_uri =
+          List.fold_left add set (Grdf_branch.subs wld (Rdf_uri.uri s_uri))
+        in
+        let set = List.fold_left f Uriset.empty l in
+        Uriset.elements set
+  in
+  List.iter pruri_endline branches
+;;
+let com_branches = {
+  Cmdline.com_options = [] ;
+  com_usage = "[anscestor uris]" ;
+  com_kind = Main_cmd.mk_final_fun list_branches ;
+  }
+;;
+let com_branches = ("branches", com_branches, "list branches");;
+
+let command =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_kind = Cmdline.Commands
+      [
+        com_tools ;
+        com_branches ;
+      ];
+  }
+;;
+
+Main_cmd.register_subcommand "query" command "query information";;
+
+(*
+
 type mode =
   | Tools
   | Branches
@@ -82,27 +133,11 @@ let options =
   ]
 ;;
 
-let pruri_endline uri = print_endline (Rdf_uri.string uri);;
 
-let list_tools wld =
-  let tools = Grdf_tool.tools wld in
-  List.iter pruri_endline tools
-;;
 
-let list_branches wld options =
-  let branches =
-    match options.Options.args with
-      [] -> List.map (fun b -> b.Grdf_branch.bch_uri) (Grdf_branch.branches wld)
-    | l ->
-        let add set elt = Uriset.add elt set in
-        let f set s_uri =
-          List.fold_left add set (Grdf_branch.subs wld (Rdf_uri.uri s_uri))
-        in
-        let set = List.fold_left f Uriset.empty l in
-        Uriset.elements set
-  in
-  List.iter pruri_endline branches
-;;
+
+
+
 
 let list_versions wld options =
   let versions =
@@ -214,3 +249,4 @@ let query config rdf_wld opts =
     | Some (Ref_inst (input, chain_name)) -> ref_inst ctx input chain_name
   end
 ;;
+*)

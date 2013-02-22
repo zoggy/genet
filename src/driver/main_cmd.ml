@@ -10,8 +10,8 @@ let register_subcommand name com desc =
 
 let subcommands () = !subcommands;;
 
-let final_fun = ref
-  (None: (Options.option_values -> unit) option);;
+let final_fun = ref (None: (Options.option_values -> unit) option);;
+
 let mk_final_fun f =
   let g opts =
     let config = Config.read_config opts.Options.config_file in
@@ -19,6 +19,7 @@ let mk_final_fun f =
     f config rdf_wld opts
   in
   Cmdline.Final (fun () -> final_fun := Some g);;
+
 let call_final_fun opts =
   match !final_fun with
     None -> failwith "No final fun set!"
