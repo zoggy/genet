@@ -1,3 +1,3 @@
 Next release:
 mod: genet-diff is replaced by subcommand diff of genet
-mod: genet-query is replaced by subcommand diff of genet
+mod: genet-query is replaced by subcommand query of genet
