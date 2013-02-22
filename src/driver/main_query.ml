@@ -234,72 +234,9 @@ Main_cmd.register_subcommand "query" command "query information";;
 
 (*
 
-type mode =
-  | Tools
-  | Branches
-  | Versions
-  | Interfaces
-  | Filetypes
-  | Dot
-  | File of string
-  | Inst of string
-  | Ref_inst_of_inst of string
-  | Ref_inst of string * string (* input * chain name *)
-
-let mode = ref None;;
-
-let set_ref_inst s =
-  match Misc.split_string s [','] with
-    [s1 ; s2 ] -> mode := Some (Ref_inst (s1, s2))
-  | _ ->
-    let msg = "option --ref-inst needs an argument of form <input name>,<chain fullname>" in
-    failwith msg
-;;
-
 let options =
-  [
-    ("--tools", Arg.Unit (fun () -> mode := Some Tools), " print tools") ;
-
-    ("--branches", Arg.Unit (fun () -> mode := Some Branches),
-     " print branches (all or only the ones of the given parents)") ;
-
-    ("--versions", Arg.Unit (fun () -> mode := Some Versions),
-     " print versions (all or only the ones of the given tools or branches)") ;
-
-    ("--interfaces", Arg.Unit (fun () -> mode := Some Interfaces),
-     " print interfaces (all or only the ones of the given tools or branches)") ;
-
-    ("--filetypes", Arg.Unit (fun () -> mode := Some Filetypes),
-     " print filetypes") ;
-
-    ("--file", Arg.String (fun s -> mode := Some (File s)),
-     "<url> print the filename corresponding to the given file url") ;
-
     ("--inst", Arg.String (fun s -> mode := Some (Inst s)),
      "<url> look for other executions 'almost' like the given one") ;
-
-    ("--dot", Arg.Unit (fun () -> mode := Some Dot),
-     " print graph in graphviz format") ;
-
-    ("--ref-inst-of-inst", Arg.String (fun s -> mode := Some (Ref_inst_of_inst s)),
-     "<url> print reference inst chain, if any, from given inst chain" ) ;
-
-    ("--ref-inst", Arg.String set_ref_inst,
-     "<url> print reference inst chain, if any, from given inst chain" ) ;
-  ]
-;;
-
-
-
-
-
-
-
-let l
-
-l
-
-
 
 let lookup_insts ctx s =
   let _uri_inst = Rdf_uri.uri s in
@@ -316,26 +253,4 @@ let lookup_and_print_insts ctx s =
   print_endline (Xtmpl.string_of_xmls svg)
 ;;
 
-
-
-
-
-
-let query config rdf_wld opts =
-  let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None} in
-  begin
-    match !mode with
-      None -> ()
-    | Some Tools -> list_tools rdf_wld
-    | Some Branches -> list_branches rdf_wld opts
-    | Some Versions -> list_versions rdf_wld opts
-    | Some Interfaces -> list_interfaces rdf_wld opts
-    | Some Filetypes -> list_filetypes rdf_wld
-    | Some Dot -> dot rdf_wld
-    | Some (File s) -> print_filename_of_url config s
-    | Some (Inst s) -> lookup_and_print_insts ctx s
-    | Some (Ref_inst_of_inst s) -> ref_inst_of_inst ctx s
-    | Some (Ref_inst (input, chain_name)) -> ref_inst ctx input chain_name
-  end
-;;
 *)
