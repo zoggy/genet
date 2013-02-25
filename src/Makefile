@@ -55,9 +55,9 @@ LINKFLAGS_BYTE=$(INCLUDES) -linkall
 
 #OCAMLPP=-pp "$(OCAMLBIN)/camlp4o "
 
-TOOLS=$(GENET) $(GENRDFS) $(GENET_REST) $(GENET_GUI)
+TOOLS=$(GENET) $(GENRDFS) $(GENET_REST) $(GENET_CHEAT) $(GENET_GUI)
 TOOLS_BYTE=$(GENET_BYTE) $(GENRDFS_BYTE) \
-	$(GENET_REST_BYTE) $(GENET_GUI_BYTE)
+	$(GENET_REST_BYTE) $(GENET_CHEAT_BYTE) $(GENET_GUI_BYTE)
 
 SYSTEM_LIBS=
 SYSTEM_LIBS_BYTE=
@@ -259,7 +259,8 @@ REST_CMIFILES=$(REST_CMXFILES:.cmx=.cmi)
 REST_LIBS=$(LIB_REST) $(LIB_REST_BYTE) $(LIB_REST_CMI) $(LIB_REST_A)
 
 # Genet files
-GENET_CMXFILES=	driver/options.cmx \
+GENET_CMDCMXFILES= \
+	driver/options.cmx \
 	driver/main_cmd.cmx \
 	driver/main_diff.cmx \
 	driver/main_query.cmx \
@@ -267,10 +268,18 @@ GENET_CMXFILES=	driver/options.cmx \
 	driver/main_exec.cmx \
 	driver/main_init.cmx \
 	driver/main_rdf.cmx \
-	driver/main_edit.cmx \
+	driver/main_edit.cmx
+GENET_CMXFILES= \
+	$(GENET_CMDCMXFILES) \
 	driver/main.cmx
 GENET_CMOFILES=$(GENET_CMXFILES:.cmx=.cmo)
 GENET_CMIFILES=$(GENET_CMXFILES:.cmx=.cmi)
+
+GENET_CHEAT_CMXFILES= \
+	$(GENET_CMDCMXFILES) \
+	driver/main_cheat.cmx
+GENET_CHEAT_CMOFILES=$(GENET_CHEAT_CMXFILES:.cmx=.cmo)
+GENET_CHEAT_CMIFILES=$(GENET_CHEAT_CMXFILES:.cmx=.cmi)
 
 # Genet-genrdfs files
 GENRDFS_CMXFILES= driver/options.cmx \
@@ -310,6 +319,16 @@ $(GENET): $(LIB_BASE)	$(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(GENET_CMXFILES)
 	$(LINKFLAGS) $(SYSTEM_LIBS) $^
 
 $(GENET_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(GENET_CMOFILES)
+	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS) -o $@ \
+	$(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^
+
+$(GENET_CHEAT): $(LIB_BASE)	$(LIB_GRDF) $(LIB_IND) $(LIB_CHN) $(GENET_CHEAT_CMXFILES)
+	$(OCAMLFIND) ocamlopt -package $(BASE_PACKAGES) -linkpkg \
+	$(OCAMLCFLAGS)-o $@ \
+	$(LINKFLAGS) $(SYSTEM_LIBS) $^
+
+$(GENET_CHEAT_BYTE): $(LIB_BASE_BYTE)	$(LIB_GRDF_BYTE) $(LIB_IND_BYTE) $(LIB_CHN_BYTE) $(GENET_CHEAT_CMOFILES)
 	$(OCAMLFIND) ocamlc -package $(BASE_PACKAGES) -linkpkg \
 	$(OCAMLCFLAGS) -o $@ \
 	$(LINKFLAGS) $(SYSTEM_LIBS_BYTE) $^

@@ -40,8 +40,6 @@ let command = {
   com_kind = Commands (Main_cmd.subcommands()) ;
   }
 
-
-
 let main () =
   let opts = Options.parse_command command in
   try
