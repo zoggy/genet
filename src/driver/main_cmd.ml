@@ -11,6 +11,7 @@ let register_subcommand name com desc =
 let subcommands () = !subcommands;;
 
 let final_fun = ref (None: (Options.option_values -> unit) option);;
+let set_final_fun f = final_fun := Some f;;
 
 let mk_final_fun f =
   let g opts =
@@ -18,7 +19,7 @@ let mk_final_fun f =
     let rdf_wld = Grdf_init.open_graph config in
     f config rdf_wld opts
   in
-  Cmdline.Final (fun () -> final_fun := Some g);;
+  Cmdline.Final (fun () -> set_final_fun g);;
 
 let call_final_fun opts =
   match !final_fun with

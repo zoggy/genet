@@ -334,16 +334,6 @@ let com_import = {
   }
 ;;
 
-let git_repo = ref None;;
-let com_init_dir = {
-    com_options = [
-      "--git", Arg.String (fun s -> git_repo := Some s),
-      "<repo> will create the 'in' directory by cloning the repository" ;
-    ] ;
-    com_usage = "[<directory>]" ;
-    com_kind = Final (set_mode Init_dir) ;
-  }
-;;
 
 let com_init_db = {
   com_options = [] ; com_usage = "" ;
@@ -385,49 +375,7 @@ let command = {
   com_kind = Commands (Main_cmd.subcommands()) ;
   }
 
-let init_dir ?git_repo opts =
-  let dir =
-    match opts.Options.args with
-      [] -> Filename.current_dir_name
-    | dir :: _ -> dir
-  in
-  let verbose = opts.Options.verb_level > 0 in
-  let mkdir = Misc.mkdir ~verbose in
-  mkdir dir;
-  let config_file = Install.default_config_file in
-  let config = Config.read_config config_file in
-  let config = { config with Config.root_dir = dir } in
-  mkdir (Config.out_dir config);
-  let in_dir = Config.in_dir config in
-  begin
-    match git_repo with
-      None ->
-        List.iter mkdir [Config.chains_dir config; Config.data_dir config];
-        let web_dir = Config.web_dir config in
-        begin
-          let com = Printf.sprintf "cp -r %s %s"
-            (Filename.quote Install.share_web_dir)
-            (Filename.quote web_dir)
-          in
-          if verbose then
-            print_endline
-            (Printf.sprintf "copying %s to %s"
-             Install.share_web_dir web_dir);
-          match Sys.command com with
-            0 -> ()
-          | _ -> failwith (Printf.sprintf "Command failed: %s" com)
-        end
-    | Some repo ->
-        let com = Printf.sprintf "git clone %s %s"
-          (Filename.quote repo) (Filename.quote in_dir)
-        in
-        if verbose then
-          print_endline (Printf.sprintf "Cloning %s into %s" repo in_dir);
-        match Sys.command com with
-          0 -> ()
-        | _ -> failwith (Printf.sprintf "Command failed: %s" com)
-  end;
-;;
+
 
 let main () =
   let opts = Options.parse_command command in
