@@ -8,7 +8,7 @@ This is a very short introduction to the use of Genet.
 <toc>Table of contents</toc>
 <div class="alert alert-warning">
 We assume Genet was correctly installed (see <page href="doc-install"/>)
-and the various <icode>genet*</icode> tools are in your <icode>PATH</icode>.
+and the various <icode>genet</icode> tools are in your <icode>PATH</icode>.
 </div>
 
 <section id="setup" title="Set up a new project">
@@ -304,7 +304,7 @@ associated to the version ids of the source files used in the chain definition.
 The following command will flatten the current versions of the chains
 <icode>Mod1.my_chain</icode> and <icode>Mod1.my_chain2</icode>:
 </p>
-<command-line>$ genet-chain -f Mod1.my_chain -f Mod1.my_chain2
+<command-line>$ genet flatten Mod1.my_chain Mod1.my_chain2
 Mod1.my_chain => http://localhost:8082/flat-chains/Mod1/my_chain/c4be-fc5d-d901-a047
 Mod1.my_chain2 => http://localhost:8082/flat-chains/Mod1/my_chain2/d2fe-c10d-d231-f98f
 </command-line>
@@ -312,12 +312,11 @@ Mod1.my_chain2 => http://localhost:8082/flat-chains/Mod1/my_chain2/d2fe-c10d-d23
 If any source file used by a chain is not commited, then the flat chain is not kept.
 It is useful to test before commiting.
 </p>
-<p>The list of available options is obtained with <icode>genet-chain --help</icode>.</p>
 </section>
 
 <section id="executing" title="Execute chains">
 <p>
-The <icode>genet-exec</icode> tool "executes" an input, that is it applies available
+The <icode>genet exec</icode> subcommand "executes" an input, that is it applies available
 flat chains on the input files, according to the list of chains specified in the
 <icode>spec.in</icode> file of the input (see <a href="#inputs">this section</a>).
 </p>
@@ -326,7 +325,7 @@ command will run the chains <icode>Mod1.my_chain</icode> and <icode>Mod2.other_c
 To do so, it will use <b>the last flattened chain</b> (according to its flattening date)
 for each specified chain name:
 </p>
-<command-line>$ genet-exec test1
+<command-line>$ genet exec test1
 </command-line>
 <p>
 The two executions of the two chains can now be browsed in the web interface.
