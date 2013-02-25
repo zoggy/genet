@@ -65,6 +65,10 @@ let make_help_msg path options com_usage = function
     in
     Arg.usage_string (Arg.align options) usage
 | Commands coms ->
+    let coms = List.sort
+      (fun (s1, _, _) (s2, _ ,_) -> Pervasives.compare s1 s2)
+      coms
+    in
     let usage = Printf.sprintf
       "Usage: %s [options] <command>\nwhere command can be:\n%s\n\nand options are:"
       (String.concat " " path)
