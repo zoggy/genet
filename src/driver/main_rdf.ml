@@ -23,74 +23,51 @@
 (*                                                                               *)
 (*********************************************************************************)
 
-(** Initialization of genet directory and database. *)
+(** RDF import/export for the command line tool. *)
 
 open Cmdline;;
 
-let git_repo = ref None;;
+let verbose opts ?(level=1) msg =
+  if opts.Options.verb_level >= level then
+    prerr_endline msg
+;;
 
-
-let init_dir opts =
-  let dir =
-    match opts.Options.args with
-      [] -> Filename.current_dir_name
-    | dir :: _ -> dir
+let export_rdf config rdf_wld opts =
+  let s = Rdf_xml.to_string
+    ~namespaces: ((config.Config.rest_api, "project") :: Grdfs.namespaces)
+      rdf_wld.Grdf_types.wld_graph
   in
-  let verbose = opts.Options.verb_level > 0 in
-  let mkdir = Misc.mkdir ~verbose in
-  mkdir dir;
-  let config_file = Install.default_config_file in
-  let config = Config.read_config config_file in
-  let config = { config with Config.root_dir = dir } in
-  mkdir (Config.out_dir config);
-  let in_dir = Config.in_dir config in
-  begin
-    match !git_repo with
-      None ->
-        List.iter mkdir [Config.chains_dir config; Config.data_dir config];
-        let web_dir = Config.web_dir config in
-        begin
-          let com = Printf.sprintf "cp -r %s %s"
-            (Filename.quote Install.share_web_dir)
-            (Filename.quote web_dir)
-          in
-          if verbose then
-            print_endline
-            (Printf.sprintf "copying %s to %s"
-             Install.share_web_dir web_dir);
-          match Sys.command com with
-            0 -> ()
-          | _ -> failwith (Printf.sprintf "Command failed: %s" com)
-        end
-    | Some repo ->
-        let com = Printf.sprintf "git clone %s %s"
-          (Filename.quote repo) (Filename.quote in_dir)
-        in
-        if verbose then
-          print_endline (Printf.sprintf "Cloning %s into %s" repo in_dir);
-        match Sys.command com with
-          0 -> ()
-        | _ -> failwith (Printf.sprintf "Command failed: %s" com)
-  end
+  print_string s
 ;;
 
-let com_init_dir = {
-    com_options = [
-      "--git", Arg.String (fun s -> git_repo := Some s),
-      "<repo> will create the 'in' directory by cloning the repository" ;
-    ] ;
-    com_usage = "[<directory>]" ;
-    com_kind = Final (fun () -> Main_cmd.set_final_fun init_dir) ;
-  }
-;;
-
-let init_db _  = ();;
-let com_init_db = {
+let com_export_rdf = {
     com_options = [] ;
     com_usage = "" ;
-    com_kind = Final (fun () -> Main_cmd.set_final_fun init_db);
+    com_kind = Main_cmd.mk_final_fun export_rdf;
   }
 ;;
 
-Main_cmd.register_subcommand "init-dir" com_init_dir "initialize directory";;
-Main_cmd.register_subcommand "init-db" com_init_db "initialize database";;
+let import_rdf config rdf_wld opts =
+  let f_import file =
+    verbose opts (Printf.sprintf "Import file %S..." file);
+    let base =
+      let uri = Printf.sprintf "file://%s"
+        (Filename.concat (Sys.getcwd()) file)
+      in
+      Rdf_uri.uri uri
+    in
+    Rdf_xml.from_file rdf_wld.Grdf_types.wld_graph ~base file;
+    verbose opts " ok"
+  in
+  List.iter f_import opts.Options.args
+;;
+
+let com_import_rdf = {
+    com_options = [] ;
+    com_usage = "<rdf files>" ;
+    com_kind = Main_cmd.mk_final_fun import_rdf;
+  }
+;;
+
+Main_cmd.register_subcommand "export-rdf" com_export_rdf "export RDF graph";;
+Main_cmd.register_subcommand "import-rdf" com_import_rdf "import RDF graph";;
