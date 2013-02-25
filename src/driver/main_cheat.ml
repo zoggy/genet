@@ -45,5 +45,9 @@ let () =
   if len < 3 then
     exit 0
   else
-    Cmdline.bash_completion (Array.sub Sys.argv 1 (len - 2)) command
+    begin
+      let stop = int_of_string Sys.argv.(1) in
+      let args = Array.sub Sys.argv 2 (len - 2) in
+      Cmdline.bash_completion stop args command
+    end
 ;;

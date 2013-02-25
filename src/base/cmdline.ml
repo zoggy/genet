@@ -138,6 +138,60 @@ let parse ?(args=Sys.argv) com =
       failwith (Printf.sprintf "%s: please give a subcommand" (String.concat " " path))
 ;;
 
-let bash_completion args com =
-  print_string "completion not available yet"
+let bash_completion stop args com =
+  let len = Array.length args in
+  let mk_choices options com =
+    let f (s,_,_) = s in
+    (List.map f options) @
+      (match com.com_kind with
+         Final _ -> []
+       | Commands l -> List.map f l
+      )
+  in
+  let rec iter_option_param pos options com =
+    if pos >= len then
+      []
+    else
+      if pos = stop then
+        []
+      else
+        iter (pos+1) options com
+  and iter pos options com =
+    if pos >= len then
+      mk_choices options com
+    else
+        if pos = stop then
+          mk_choices options com
+        else
+          let arg = args.(pos) in
+          try
+            let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
+            match k with
+            | Arg.String _
+            | Arg.Int _
+            | Arg.Float _
+            | Arg.Symbol _ -> iter_option_param (pos+1) options com
+            | Arg.Tuple _ -> (* FIXME: Arg.Tuple not handled *)
+                []
+            | Arg.Rest _ ->
+                []
+            | _ ->
+                iter (pos+1) options com
+          with
+            Not_found ->
+              match com.com_kind with
+                Final _ -> []
+              | Commands coms ->
+                  try
+                    let (_,com,_) = List.find (fun (s, _, _) -> s=arg) coms in
+                    let options = merge_options ~options ~more: com.com_options in
+                    iter (pos+1) options com
+                  with
+                    Not_found ->
+                      []
+  in
+  let choices = iter 1 com.com_options com in
+  let s = String.concat " " choices in
+  (*prerr_endline ("choices: "^s);*)
+  print_string s
 ;;
