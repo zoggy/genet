@@ -267,6 +267,7 @@ GENET_CMXFILES=	driver/options.cmx \
 	driver/main_exec.cmx \
 	driver/main_init.cmx \
 	driver/main_rdf.cmx \
+	driver/main_edit.cmx \
 	driver/main.cmx
 GENET_CMOFILES=$(GENET_CMXFILES:.cmx=.cmo)
 GENET_CMIFILES=$(GENET_CMXFILES:.cmx=.cmi)
