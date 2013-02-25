@@ -23,7 +23,10 @@
 (*                                                                               *)
 (*********************************************************************************)
 
-(** *)
+(** Execution of chains from command line tool. *)
+
+open Chn_types;;
+open Cmdline;;
 
 let verbose opts ?(level=1) msg =
   if opts.Options.verb_level >= level then
@@ -54,33 +57,20 @@ let exec_one opts reporter input =
 ;;
 
 let all = ref false;;
+let option_all = ("--all", Arg.Set all, " Execute all inputs");;
 
-let options =
-  Options.option_config ::
-  Options.option_verbose ::
-  [
-   "--all", Arg.Set all, " Execute all inputs" ;
-  ]
-;;
-
-let main () =
-  let opts = Options.parse options in
+let com_exec ctx opts =
   let reporter = new Reporter.reporter opts.Options.verb_level in
   let inputs =
-    match opts.Options.args with
-      [] ->
-        begin
-          match !all with
-            false -> failwith "Please give the name of one input or --all"
-          | true ->
-              let config = Config.read_config opts.Options.config_file in
-              Ind_io.list_inputs config
-        end
-    | inputs ->
-        inputs
+    if !all then
+      Ind_io.list_inputs ctx.ctx_cfg
+    else
+      match opts.Options.args with
+        [] -> failwith "Please give the name of at least one input or --all"
+      | l -> l
   in
   List.iter (exec_one opts reporter) inputs;
-  let errors = reporter#total_errors in
+ let errors = reporter#total_errors in
   print_endline (Reporter.string_of_msg_list reporter#messages);
   if errors > 0 then
     prerr_endline
@@ -88,4 +78,12 @@ let main () =
   exit errors
 ;;
 
-let () = Misc.safe_main main;;
+let com_exec = {
+    com_options = [ option_all ] ;
+    com_usage = "[<input name1> [<input name2> ...]]" ;
+    com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun com_exec) ;
+  }
+;;
+
+Main_cmd.register_subcommand "exec" com_exec "execute inputs";;
+
