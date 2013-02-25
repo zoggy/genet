@@ -25,7 +25,7 @@ genet add filetype "words" txt "words, one per line"
 genet add filetype "average" avg "computed average length of words"
 
 #id=showfiletypes
-genet-query --filetypes
+genet query filetypes
 
 
 
@@ -77,7 +77,7 @@ genet add port ${INTF} "in" "words"
 genet add port ${INTF} "out" "average"
 
 #id=showinterfaces
-genet-query --interfaces
+genet query interfaces
  # http://localhost:8082/tools/split-text/interfaces/split-in-words : text -> words
 
 #id=gitaddchain
@@ -86,7 +86,7 @@ genet-query --interfaces
   git commit -am"add test chain")
 
 #id=testchain
-genet-chain -t in/chains/test.gnt
+genet chain test in/chains/test.gnt
 
 #id=gitaddinput
 (cd in/data && \
@@ -94,18 +94,18 @@ genet-chain -t in/chains/test.gnt
   git commit -am"add input test1")
 
 #id=flattenchain
-genet-chain -f Test.words_avg_length
+genet flatten Test.words_avg_length
  # Test.words_avg_length => http://localhost:8082/flat-chains/Test/words_avg_length/...
 
 #id=execchain
-genet-exec test1
+genet exec test1
 
 #id=addnewwords
 genet add version http://localhost:8082/tools/words \
   http://localhost:8082/tools/words/branches/0.x 0.4
   # http://localhost:8082/tools/words/versions/0.4
 
-genet-exec test1
+genet exec test1
 
 #id=addnewaverage
 genet add version http://localhost:8082/tools/average \
@@ -115,4 +115,4 @@ genet add version http://localhost:8082/tools/average \
 #id=setactive
 genet set active http://localhost:8082/tools/words/versions/0.2 false
 
-genet-exec test1
+genet exec test1
