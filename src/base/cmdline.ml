@@ -86,9 +86,9 @@ exception My_help of string;;
 exception Missing_command of string list;;
 exception Stop_parse of (unit -> unit);;
 
-let parse com =
+let parse ?(args=Sys.argv) com =
   let remaining = ref [] in
-  let rec iter ?(path=[]) ?(options=[]) ?(argv=Sys.argv) com =
+  let rec iter ?(path=[]) ?(options=[]) ?(argv=args) com =
     let current = ref 0 in
     let path = path @ [argv.(0)] in
 (*
@@ -121,13 +121,14 @@ let parse com =
             Arg.parse_argv ~current argv options anon_fun com.com_usage;
             raise (Missing_command path)
           with
-            Stop_parse f -> f ()
+            Stop_parse f ->
+              f ()
     with
       Arg.Help _ ->
         let msg = make_help_msg path options com.com_usage com.com_kind in
         raise (My_help msg)
   in
-  try iter com; !remaining
+  try iter ~argv: args com; !remaining
   with
     Arg.Bad s -> failwith s
   | My_help s -> prerr_endline s; exit 0
@@ -137,3 +138,6 @@ let parse com =
       failwith (Printf.sprintf "%s: please give a subcommand" (String.concat " " path))
 ;;
 
+let bash_completion args com =
+  print_string "completion not available yet"
+;;
