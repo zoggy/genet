@@ -25,7 +25,8 @@
 
 (** *)
 
-type completion_fun = (unit -> string list) option
+type compl_kind = Choices of string list | Files of string option
+type completion_fun = (unit -> compl_kind) option
 
 type spec =
   | Unit of (unit -> unit)
@@ -177,24 +178,38 @@ let parse ?(args=Sys.argv) com =
       failwith (Printf.sprintf "%s: please give a subcommand" (String.concat " " path))
 ;;
 
-let bash_completion stop args com =
+let completion stop args com =
   let len = Array.length args in
   let mk_choices options com =
     let f (s,_,_) = s in
-    (List.map f options) @
-      (match com.com_kind with
-         Final _ -> []
-       | Commands l -> List.map f l
-      )
+    Choices (
+     (List.map f options) @
+       (match com.com_kind with
+          Final _ -> []
+        | Commands l -> List.map f l)
+    )
   in
-  let rec iter_option_param pos options com =
+  let rec iter_option_param pos options com op_spec =
     if pos >= len then
-      []
+      Choices []
     else
-      if pos = stop then
-        []
-      else
-        iter (pos+1) options com
+      match op_spec with
+      | String (Some f, _)
+      | Set_string (Some f, _)
+      | Int (Some f, _)
+      | Set_int (Some f, _)
+      | Float (Some f, _)
+      | Set_float (Some f, _) ->
+          f ()
+      | Symbol (l, _) ->
+          Choices l
+      | Tuple _ -> (* FIXME: Arg.Tuple not handled *)
+          Choices []
+      | Rest _ ->
+          Choices []
+      | _ ->
+          iter (pos+1) options com
+
   and iter pos options com =
     if pos >= len then
       mk_choices options com
@@ -205,21 +220,11 @@ let bash_completion stop args com =
           let arg = args.(pos) in
           try
             let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
-            match k with
-            | String _
-            | Int _
-            | Float _
-            | Symbol _ -> iter_option_param (pos+1) options com
-            | Tuple _ -> (* FIXME: Arg.Tuple not handled *)
-                []
-            | Rest _ ->
-                []
-            | _ ->
-                iter (pos+1) options com
+            iter_option_param (pos+1) options com k
           with
             Not_found ->
               match com.com_kind with
-                Final _ -> []
+                Final _ -> Choices []
               | Commands coms ->
                   try
                     let (_,com,_) = List.find (fun (s, _, _) -> s=arg) coms in
@@ -227,10 +232,7 @@ let bash_completion stop args com =
                     iter (pos+1) options com
                   with
                     Not_found ->
-                      []
+                      Choices []
   in
-  let choices = iter 1 com.com_options com in
-  let s = String.concat " " choices in
-  (*prerr_endline ("choices: "^s);*)
-  print_string s
+  iter 1 com.com_options com
 ;;

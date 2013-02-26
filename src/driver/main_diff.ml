@@ -37,7 +37,8 @@ let url_if_diff = ref false;;
 
 let options =
   [
-    "--diff", Cmdline.String (None, fun c -> diff_command := Some c),
+    "--diff", Cmdline.String
+    (Some (fun () -> Cmdline.Files None), fun c -> diff_command := Some c),
     "<com> use com as diff command; default is diff -r -u" ;
 
     "--html", Cmdline.Set html_output, " output HTML instead of raw diff output" ;

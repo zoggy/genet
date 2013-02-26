@@ -32,9 +32,10 @@ let mk_ctx_fun f config rdf_wld opts =
   f ctx opts
 ;;
 
-let compl_toolname () = [];;
+let compl_toolname () = Cmdline.Choices [];;
 
 let compl_tool () =
-  try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
-  with _ -> []
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
+     with _ -> [])
 ;;

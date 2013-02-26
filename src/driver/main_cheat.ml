@@ -48,6 +48,14 @@ let () =
     begin
       let stop = int_of_string Sys.argv.(1) in
       let args = Array.sub Sys.argv 2 (len - 2) in
-      Cmdline.bash_completion stop args command
+      let res =
+        match Cmdline.completion stop args command with
+          Cmdline.Choices choices ->
+            let s = String.concat " " choices in
+            Printf.sprintf "-W %S -- " s
+        | Cmdline.Files None -> "-f"
+        | Cmdline.Files (Some pattern) -> Printf.sprintf "-f -X %S" pattern
+      in
+      print_endline res
     end
 ;;
