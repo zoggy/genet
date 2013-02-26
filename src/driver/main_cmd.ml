@@ -31,3 +31,10 @@ let mk_ctx_fun f config rdf_wld opts =
   let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None} in
   f ctx opts
 ;;
+
+let compl_toolname () = [];;
+
+let compl_tool () =
+  try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
+  with _ -> []
+;;

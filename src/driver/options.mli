@@ -25,7 +25,7 @@
 
 (** Common options for drivers. *)
 
-type option_spec = string * Arg.spec * string
+type option_spec = string * Cmdline.spec * string
 
 (** [option_version prefix] returns an option spec to print
    the given prefix followed by " version ...". *)

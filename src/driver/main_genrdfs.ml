@@ -158,8 +158,8 @@ let output_format = ref "rdfxml";;
 
 let options =
   Options.option_version "Genet-genrdfs"::
-  ("--ntriples", Arg.Unit (fun () -> output_format := "ntriples"), " output in ntriples format") ::
-  ("--turtle", Arg.Unit (fun () -> output_format := "turtle"), " output in turtle format") ::
+  ("--ntriples", Cmdline.Unit (fun () -> output_format := "ntriples"), " output in ntriples format") ::
+  ("--turtle", Cmdline.Unit (fun () -> output_format := "turtle"), " output in turtle format") ::
   []
 ;;
 

@@ -31,7 +31,7 @@ open Cmdline;;
 
 let gendot = ref (None : string option);;
 let option_dot =
-  ("--dot", Arg.String (fun file -> gendot := Some file), "<prefix> generate dot file(s) using <prefix>");;
+  ("--dot", Cmdline.String (None, fun file -> gendot := Some file), "<prefix> generate dot file(s) using <prefix>");;
 
 let gen_chain_dot file chain =
   let dot = (new Chn_ast.chain_dot_printer)#dot_of_chain chain in

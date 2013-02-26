@@ -57,7 +57,7 @@ let exec_one opts reporter input =
 ;;
 
 let all = ref false;;
-let option_all = ("--all", Arg.Set all, " Execute all inputs");;
+let option_all = ("--all", Cmdline.Set all, " Execute all inputs");;
 
 let com_exec ctx opts =
   let reporter = new Reporter.reporter opts.Options.verb_level in

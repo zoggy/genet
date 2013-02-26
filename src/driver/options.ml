@@ -25,7 +25,7 @@
 
 (** *)
 
-type option_spec = string * Arg.spec * string
+type option_spec = string * Cmdline.spec * string
 
 let print_version pref () =
   Printf.printf "%s version %s\n" pref Version.version;
@@ -33,25 +33,25 @@ let print_version pref () =
 ;;
 
 let option_version pref =
-  "--version", Arg.Unit (print_version pref),
+  "--version", Cmdline.Unit (print_version pref),
   " Print version number and exit"
 ;;
 
 let config_file = ref Install.default_config_file;;
 let option_config =
-  "--config", Arg.Set_string config_file,
+  "--config", Cmdline.Set_string (None, config_file),
   "<file> use <file> as config file instead of "^ !config_file
 ;;
 
 let verb_level = ref 0;;
 let option_verbose =
-  "-v", Arg.Unit (fun () -> incr verb_level),
+  "-v", Cmdline.Unit (fun () -> incr verb_level),
   " increase verbosity level"
 ;;
 
 let rdf_output_format = ref "turtle";;
 let mk_rdf_output_format f =
-  "--"^f, Arg.Unit (fun () -> rdf_output_format := f),
+  "--"^f, Cmdline.Unit (fun () -> rdf_output_format := f),
   " set rdf output format to "^f^" instead of "^ !rdf_output_format
 ;;
 
@@ -76,6 +76,7 @@ let build_option_values () =
 ;;
 
 let parse options =
+  let options = Cmdline.specs_to_arg_specs options in
   Arg.parse (Arg.align options) (fun s -> remaining := s :: !remaining)
     (Printf.sprintf "Usage: %s [options] [arguments]" Sys.argv.(0));
   build_option_values ()

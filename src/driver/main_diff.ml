@@ -37,14 +37,14 @@ let url_if_diff = ref false;;
 
 let options =
   [
-    "--diff", Arg.String (fun c -> diff_command := Some c),
+    "--diff", Cmdline.String (None, fun c -> diff_command := Some c),
     "<com> use com as diff command; default is diff -r -u" ;
 
-    "--html", Arg.Set html_output, " output HTML instead of raw diff output" ;
+    "--html", Cmdline.Set html_output, " output HTML instead of raw diff output" ;
 
-    "--keep-files", Arg.Set keep_files, " do not erase files after computing diffs";
+    "--keep-files", Cmdline.Set keep_files, " do not erase files after computing diffs";
 
-    "--url-if-diff", Arg.Set url_if_diff,
+    "--url-if-diff", Cmdline.Set url_if_diff,
     " if there are diffs, print url instead (useful for nightly reports)";
   ]
 ;;

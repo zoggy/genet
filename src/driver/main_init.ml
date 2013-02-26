@@ -76,7 +76,7 @@ let init_dir opts =
 
 let com_init_dir = {
     com_options = [
-      "--git", Arg.String (fun s -> git_repo := Some s),
+      "--git", Cmdline.String (None, fun s -> git_repo := Some s),
       "<repo> will create the 'in' directory by cloning the repository" ;
     ] ;
     com_usage = "[<directory>]" ;

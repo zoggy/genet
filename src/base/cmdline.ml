@@ -25,7 +25,45 @@
 
 (** *)
 
-type option_spec = string * Arg.spec * string;;
+type completion_fun = (unit -> string list) option
+
+type spec =
+  | Unit of (unit -> unit)
+  | Bool of (bool -> unit)
+  | Set of bool Pervasives.ref
+  | Clear of bool Pervasives.ref
+  | String of completion_fun * (string -> unit)
+  | Set_string of completion_fun * string Pervasives.ref
+  | Int of completion_fun * (int -> unit)
+  | Set_int of completion_fun * int Pervasives.ref
+  | Float of completion_fun * (float -> unit)
+  | Set_float of completion_fun * float Pervasives.ref
+  | Tuple of Arg.spec list
+  | Symbol of string list * (string -> unit)
+  | Rest of (string -> unit)
+
+let spec_to_arg_spec = function
+| Unit f -> Arg.Unit f
+| Bool f -> Arg.Bool f
+| Set r -> Arg.Set r
+| Clear r -> Arg.Clear r
+| String (_, f) -> Arg.String f
+| Set_string (_, r) -> Arg.Set_string r
+| Int (_, f) -> Arg.Int f
+| Set_int (_, r) -> Arg.Set_int r
+| Float (_, f) -> Arg.Float f
+| Set_float (_, r) -> Arg.Set_float r
+| Tuple l -> Arg.Tuple l
+| Symbol (l, f) -> Arg.Symbol (l, f)
+| Rest f -> Arg.Rest f
+;;
+
+let specs_to_arg_specs =
+  let f (s1, spec, s2) = (s1, spec_to_arg_spec spec, s2) in
+  List.map f
+;;
+
+type option_spec = string * spec * string;;
 
 type command_kind =
 | Final of (unit -> unit)
@@ -99,11 +137,12 @@ let parse ?(args=Sys.argv) com =
     prerr_endline (Printf.sprintf "current=%d" !current);
 *)
     let options = merge_options ~options ~more: com.com_options in
+    let arg_options = specs_to_arg_specs options in
     try
       match com.com_kind with
         Final f ->
           let anon_fun s = remaining := s :: !remaining in
-          Arg.parse_argv ~current argv options anon_fun com.com_usage;
+          Arg.parse_argv ~current argv arg_options anon_fun com.com_usage;
           f ()
         | Commands subs ->
           let anon_fun s =
@@ -118,14 +157,14 @@ let parse ?(args=Sys.argv) com =
                 raise (No_such_command (path @ [s]))
           in
           try
-            Arg.parse_argv ~current argv options anon_fun com.com_usage;
+            Arg.parse_argv ~current argv arg_options anon_fun com.com_usage;
             raise (Missing_command path)
           with
             Stop_parse f ->
               f ()
     with
       Arg.Help _ ->
-        let msg = make_help_msg path options com.com_usage com.com_kind in
+        let msg = make_help_msg path arg_options com.com_usage com.com_kind in
         raise (My_help msg)
   in
   try iter ~argv: args com; !remaining
@@ -167,13 +206,13 @@ let bash_completion stop args com =
           try
             let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
             match k with
-            | Arg.String _
-            | Arg.Int _
-            | Arg.Float _
-            | Arg.Symbol _ -> iter_option_param (pos+1) options com
-            | Arg.Tuple _ -> (* FIXME: Arg.Tuple not handled *)
+            | String _
+            | Int _
+            | Float _
+            | Symbol _ -> iter_option_param (pos+1) options com
+            | Tuple _ -> (* FIXME: Arg.Tuple not handled *)
                 []
-            | Arg.Rest _ ->
+            | Rest _ ->
                 []
             | _ ->
                 iter (pos+1) options com
