@@ -49,19 +49,27 @@ let () =
     begin
       let stop = int_of_string Sys.argv.(1) in
       let args = Array.sub Sys.argv 2 (len - 2) in
+      (*prerr_endline (Printf.sprintf "stop=%d in %d args" stop (Array.length args));*)
+(*      let escape s =
+        String.concat "\\:" (Misc.split_string s [':'])
+      in
+*)      let to_w choices =
+        let choices = List.map Filename.quote choices in
+        let s = String.concat " " choices in
+        Printf.sprintf "-W %S" s
+      in
       let res =
         match Cmdline.completion stop args command with
         | Cmdline.Choices [] -> "-f"
         | Cmdline.Choices choices ->
-            let s = String.concat " " choices in
-            Printf.sprintf "-W %S -- " s
+            Printf.sprintf "%s -- " (to_w choices)
         | Cmdline.Files ([], None) -> "-f"
         | Cmdline.Files (choices, None) ->
-            Printf.sprintf "-f -W %S -- " (String.concat " " choices)
+            Printf.sprintf "-f %s -- " (to_w choices)
         | Cmdline.Files ([], Some pattern) ->
             Printf.sprintf "-f -X %S" pattern
         | Cmdline.Files (choices, Some pattern) ->
-            Printf.sprintf "-f -W %S -X %S -- " (String.concat " " choices) pattern
+            Printf.sprintf "-f %s-X %S -- " (to_w choices) pattern
       in
       print_endline res
     end

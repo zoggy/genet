@@ -7,6 +7,7 @@ _genet()
   cur=${COMP_WORDS[COMP_CWORD]}
   #echo ${COMP_WORDS[@]} >> log
   res=`genet-cheat ${COMP_CWORD} ${COMP_WORDS[@]}`
+  #echo $res
   COMPREPLY=($( eval compgen ${res} "$cur"))
   #COMPREPLY=($( eval compgen -f "$cur"))
   return 0
