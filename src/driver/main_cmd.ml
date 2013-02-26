@@ -32,6 +32,7 @@ let mk_ctx_fun f config rdf_wld opts =
   f ctx opts
 ;;
 
+let compl_file () = Cmdline.Files None;;
 let compl_toolname () = Cmdline.Choices [];;
 
 let compl_tool () =

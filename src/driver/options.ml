@@ -39,7 +39,8 @@ let option_version pref =
 
 let config_file = ref Install.default_config_file;;
 let option_config =
-  "--config", Cmdline.Set_string (None, config_file),
+  "--config", Cmdline.Set_string
+  (Some (fun ()-> Cmdline.Files None), config_file),
   "<file> use <file> as config file instead of "^ !config_file
 ;;
 

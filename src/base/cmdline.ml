@@ -190,25 +190,30 @@ let completion stop args com =
     )
   in
   let rec iter_option_param pos options com op_spec =
-    if pos >= len then
-      Choices []
+    if pos = stop then
+        match op_spec with
+        | String (Some f, _)
+        | Set_string (Some f, _)
+        | Int (Some f, _)
+        | Set_int (Some f, _)
+        | Float (Some f, _)
+        | Set_float (Some f, _) -> f ()
+        | Bool _ -> Choices ["true" ; "false"]
+        | Symbol (l, _) -> Choices l
+        | Tuple _ -> Choices [] (* FIXME: Arg.Tuple not handled *)
+        | _ -> iter pos options com
     else
-      match op_spec with
-      | String (Some f, _)
-      | Set_string (Some f, _)
-      | Int (Some f, _)
-      | Set_int (Some f, _)
-      | Float (Some f, _)
-      | Set_float (Some f, _) ->
-          f ()
-      | Symbol (l, _) ->
-          Choices l
-      | Tuple _ -> (* FIXME: Arg.Tuple not handled *)
-          Choices []
-      | Rest _ ->
-          Choices []
-      | _ ->
-          iter (pos+1) options com
+      if pos >= len then
+        iter pos options com
+      else
+        match op_spec with
+        | String _ | Set_string _
+        | Int _ | Set_int _
+        | Float _ | Set_float _
+        | Bool _ | Tuple _ | Symbol _ ->
+            iter (pos+1) options com
+        | _ ->
+            iter pos options com
 
   and iter pos options com =
     if pos >= len then

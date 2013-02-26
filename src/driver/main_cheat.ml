@@ -50,7 +50,8 @@ let () =
       let args = Array.sub Sys.argv 2 (len - 2) in
       let res =
         match Cmdline.completion stop args command with
-          Cmdline.Choices choices ->
+        | Cmdline.Choices [] -> "-f"
+        | Cmdline.Choices choices ->
             let s = String.concat " " choices in
             Printf.sprintf "-W %S -- " s
         | Cmdline.Files None -> "-f"
