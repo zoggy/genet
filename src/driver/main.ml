@@ -37,6 +37,7 @@ let common_options =
 let command = {
   com_options = common_options ;
   com_usage = "<command> [arguments]" ;
+  com_compl = [] ;
   com_kind = Commands (Main_cmd.subcommands()) ;
   }
 

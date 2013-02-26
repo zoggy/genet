@@ -92,6 +92,10 @@ let diff ctx opts =
 let command = {
     com_options = options ;
     com_usage = "<instanciation1> [<instanciation2>]" ;
+    com_compl = [
+      Cmdline.Compfun Main_cmd.compl_ichain ;
+      Cmdline.Compfun Main_cmd.compl_ichain ;
+    ];
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun diff) ;
   }
 ;;

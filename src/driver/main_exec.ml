@@ -81,6 +81,7 @@ let com_exec ctx opts =
 let com_exec = {
     com_options = [ option_all ] ;
     com_usage = "[<input name1> [<input name2> ...]]" ;
+    com_compl = [ Cmdline.Complist Main_cmd.compl_input_name ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun com_exec) ;
   }
 ;;

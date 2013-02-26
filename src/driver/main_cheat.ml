@@ -37,6 +37,7 @@ let common_options =
 let command = {
   com_options = common_options ;
   com_usage = "<command> [arguments]" ;
+  com_compl = [] ;
   com_kind = Commands (Main_cmd.subcommands()) ;
   }
 ;;
@@ -54,8 +55,13 @@ let () =
         | Cmdline.Choices choices ->
             let s = String.concat " " choices in
             Printf.sprintf "-W %S -- " s
-        | Cmdline.Files None -> "-f"
-        | Cmdline.Files (Some pattern) -> Printf.sprintf "-f -X %S" pattern
+        | Cmdline.Files ([], None) -> "-f"
+        | Cmdline.Files (choices, None) ->
+            Printf.sprintf "-f -W %S -- " (String.concat " " choices)
+        | Cmdline.Files ([], Some pattern) ->
+            Printf.sprintf "-f -X %S" pattern
+        | Cmdline.Files (choices, Some pattern) ->
+            Printf.sprintf "-f -W %S -X %S -- " (String.concat " " choices) pattern
       in
       print_endline res
     end

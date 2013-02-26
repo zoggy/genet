@@ -73,6 +73,7 @@ let com_test _ _ opts =
 let com_test = {
     com_options = [ option_dot ] ;
     com_usage = "<chain file(s)>" ;
+    com_compl = [ Cmdline.Complist Main_cmd.compl_file ] ;
     com_kind = Main_cmd.mk_final_fun com_test ;
   };;
 let com_test = ("test", com_test, "test the given chain files");;
@@ -102,6 +103,7 @@ let show_combinations ctx opts =
 let com_showcombs = {
     com_options = [] ;
     com_usage = "<flat chain uri>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_fchain ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun show_combinations) ;
   };;
 let com_showcombs =
@@ -113,6 +115,7 @@ let com_showcombs =
 let command_chain = {
   com_options = [] ;
   com_usage = "" ;
+  com_compl = [] ;
   com_kind = Cmdline.Commands
       [
         com_test ;
@@ -150,6 +153,7 @@ let flatten ctx opts =
 let com_flatten = {
     com_options = [ option_dot ] ;
     com_usage = "<Mod.chain>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_chain_name ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun flatten) ;
   };;
 
@@ -186,6 +190,7 @@ let flatten_all ctx opts =
 let com_flatten_all = {
     com_options = [ ] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun flatten_all) ;
   };;
 

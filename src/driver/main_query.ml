@@ -36,6 +36,7 @@ let list_tools _ wld _ =
 let com_tools = {
   Cmdline.com_options = [] ;
   com_usage = "" ;
+  com_compl = [] ;
   com_kind = Main_cmd.mk_final_fun list_tools ;
   }
 ;;
@@ -58,6 +59,7 @@ let list_branches _ wld options =
 let com_branches = {
   Cmdline.com_options = [] ;
   com_usage = "[anscestor uris]" ;
+  com_compl = [Cmdline.Complist Main_cmd.compl_tool_or_branch] ;
   com_kind = Main_cmd.mk_final_fun list_branches ;
   }
 ;;
@@ -81,6 +83,7 @@ let list_versions _ wld options =
 let com_versions =
   { Cmdline.com_options = [] ;
     com_usage = "[<uri1>] [<uri2> ...]" ;
+    com_compl = [ Cmdline.Complist Main_cmd.compl_tool_or_branch ] ;
     com_kind = Main_cmd.mk_final_fun list_versions ;
   }
 ;;
@@ -102,6 +105,7 @@ let list_interfaces _ wld options =
 let com_intfs =
   { Cmdline.com_options = [] ;
     com_usage = "[<uri1>] [<uri2> ...]" ;
+    com_compl = [ Cmdline.Complist Main_cmd.compl_intf_provider ] ;
     com_kind = Main_cmd.mk_final_fun list_interfaces ;
   }
 ;;
@@ -115,6 +119,7 @@ let list_filetypes _ wld _ =
 let com_ftypes =
   { Cmdline.com_options = [] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Main_cmd.mk_final_fun list_filetypes ;
   }
 ;;
@@ -124,6 +129,7 @@ let dot _ wld _ = print_endline (Grdf_dot.dot wld);;
 let com_dot =
   { Cmdline.com_options = [] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Main_cmd.mk_final_fun dot ;
   }
 ;;
@@ -162,6 +168,7 @@ let print_filename_of_url config wld opts =
 let com_filename =
   { Cmdline.com_options = [] ;
     com_usage = "<uri>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_file_uri ] ;
     com_kind = Main_cmd.mk_final_fun print_filename_of_url ;
   }
 ;;
@@ -182,6 +189,7 @@ let ref_inst_of_inst ctx opts =
 let com_ref_inst_of_inst =
   { Cmdline.com_options = [] ;
     com_usage = "<uri>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_ichain ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun ref_inst_of_inst) ;
   }
 ;;
@@ -203,7 +211,11 @@ let ref_inst ctx opts =
 
 let com_ref_inst =
   { Cmdline.com_options = [] ;
-    com_usage = "<input name> <chain uri>" ;
+    com_usage = "<input name> <chain name>" ;
+    com_compl = [
+      Cmdline.Compfun Main_cmd.compl_input_name ;
+      Cmdline.Compfun Main_cmd.compl_chain_name ;
+    ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun ref_inst) ;
   }
 ;;
@@ -215,6 +227,7 @@ let com_ref_inst =
 let command =
   { Cmdline.com_options = [] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Cmdline.Commands
       [
         com_tools ;

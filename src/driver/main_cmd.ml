@@ -32,7 +32,7 @@ let mk_ctx_fun f config rdf_wld opts =
   f ctx opts
 ;;
 
-let compl_file () = Cmdline.Files None;;
+let compl_file () = Cmdline.Files ([], None);;
 let compl_toolname () = Cmdline.Choices [];;
 
 let compl_tool () =
@@ -40,3 +40,44 @@ let compl_tool () =
     (try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
      with _ -> [])
 ;;
+
+let compl_branch () =
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query branches") ['\n']
+     with _ -> [])
+;;
+
+let compl_version () =
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query branches") ['\n']
+     with _ -> [])
+;;
+
+let compl_intf () =
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query interfaces") ['\n']
+     with _ -> [])
+;;
+
+let compl_filetype () =
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query filetypes") ['\n']
+     with _ -> [])
+;;
+
+let compl_port () = Choices ["http://"]
+(*
+  Cmdline.Choices
+    (try Misc.split_string (Misc.exec_command "genet query ports") ['\n']
+     with _ -> [])
+*)
+
+let compl_ichain () = Cmdline.Choices ["http://"];;
+let compl_tool_or_branch () = Cmdline.Choices ["http://"];;
+let compl_intf_provider () = Cmdline.Choices ["http://"];;
+let compl_file_uri () = Cmdline.Choices ["http://"];;
+let compl_input_name () = Cmdline.Choices [];;
+let compl_chain_name () = Cmdline.Choices [];;
+let compl_fchain () = Cmdline.Choices ["http://"];;
+let compl_in_out () = Cmdline.Choices  ["in" ; "out"];;
+let compl_bool () = Cmdline.Choices ["true" ; "false"];;

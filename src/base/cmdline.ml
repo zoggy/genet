@@ -25,20 +25,21 @@
 
 (** *)
 
-type compl_kind = Choices of string list | Files of string option
-type completion_fun = (unit -> compl_kind) option
+type compl_kind = Choices of string list | Files of string list * string option
+type completion_fun = (unit -> compl_kind)
+type completion_opt = completion_fun option
 
 type spec =
   | Unit of (unit -> unit)
   | Bool of (bool -> unit)
   | Set of bool Pervasives.ref
   | Clear of bool Pervasives.ref
-  | String of completion_fun * (string -> unit)
-  | Set_string of completion_fun * string Pervasives.ref
-  | Int of completion_fun * (int -> unit)
-  | Set_int of completion_fun * int Pervasives.ref
-  | Float of completion_fun * (float -> unit)
-  | Set_float of completion_fun * float Pervasives.ref
+  | String of completion_opt * (string -> unit)
+  | Set_string of completion_opt * string Pervasives.ref
+  | Int of completion_opt * (int -> unit)
+  | Set_int of completion_opt * int Pervasives.ref
+  | Float of completion_opt * (float -> unit)
+  | Set_float of completion_opt * float Pervasives.ref
   | Tuple of Arg.spec list
   | Symbol of string list * (string -> unit)
   | Rest of (string -> unit)
@@ -66,6 +67,11 @@ let specs_to_arg_specs =
 
 type option_spec = string * spec * string;;
 
+type completion_spec =
+  | Complist of completion_fun
+  | Compfun of completion_fun
+;;
+
 type command_kind =
 | Final of (unit -> unit)
 | Commands of (string * command * string) list
@@ -73,6 +79,7 @@ type command_kind =
 and command = {
   com_options : option_spec list ;
   com_usage : string ;
+  com_compl : completion_spec list ;
   com_kind : command_kind ;
   }
 
@@ -182,12 +189,23 @@ let completion stop args com =
   let len = Array.length args in
   let mk_choices options com =
     let f (s,_,_) = s in
-    Choices (
-     (List.map f options) @
-       (match com.com_kind with
-          Final _ -> []
-        | Commands l -> List.map f l)
-    )
+    let choices =
+      (List.map f options) @
+        (match com.com_kind with
+           Final _ -> []
+         | Commands l -> List.map f l)
+    in
+    match com.com_compl with
+      [] -> Choices choices
+    | h :: q ->
+        let spec =
+          match h with
+            Compfun f
+          | Complist f -> f ()
+        in
+        match spec with
+          Choices l -> Choices (choices @ l)
+        | Files (l, pat) -> Files (choices @ l, pat)
   in
   let rec iter_option_param pos options com op_spec =
     if pos = stop then
@@ -229,7 +247,7 @@ let completion stop args com =
           with
             Not_found ->
               match com.com_kind with
-                Final _ -> Choices []
+                Final _ -> mk_choices options com
               | Commands coms ->
                   try
                     let (_,com,_) = List.find (fun (s, _, _) -> s=arg) coms in

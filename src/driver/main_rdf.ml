@@ -43,6 +43,7 @@ let export_rdf config rdf_wld opts =
 let com_export_rdf = {
     com_options = [] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Main_cmd.mk_final_fun export_rdf;
   }
 ;;
@@ -65,6 +66,7 @@ let import_rdf config rdf_wld opts =
 let com_import_rdf = {
     com_options = [] ;
     com_usage = "<rdf files>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_file ] ;
     com_kind = Main_cmd.mk_final_fun import_rdf;
   }
 ;;

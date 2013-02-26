@@ -80,6 +80,7 @@ let com_init_dir = {
       "<repo> will create the 'in' directory by cloning the repository" ;
     ] ;
     com_usage = "[<directory>]" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_file ] ;
     com_kind = Final (fun () -> Main_cmd.set_final_fun init_dir) ;
   }
 ;;
@@ -88,6 +89,7 @@ let init_db _  = ();;
 let com_init_db = {
     com_options = [] ;
     com_usage = "" ;
+    com_compl = [] ;
     com_kind = Final (fun () -> Main_cmd.set_final_fun init_db);
   }
 ;;
