@@ -13,4 +13,4 @@ _genet()
   return 0
 }
 
-complete -o filenames -F _genet genet
+complete -f -F _genet genet
