@@ -34,7 +34,7 @@ let print_version pref () =
 
 let option_version pref =
   "--version", Cmdline.Unit (print_version pref),
-  " Print version number and exit"
+  " print version number and exit"
 ;;
 
 let config_file = ref Install.default_config_file;;

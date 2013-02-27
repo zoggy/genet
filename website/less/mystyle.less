@@ -555,6 +555,33 @@ div.elt-item p {
   }
 div.elt-intro { margin-top: 4px }
 
+div.subcommands {
+  margin-left: 1em;
+}
+.command-desc {
+  font-style: italic ;
+  color: lighten(@fgcolor, 10);
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+ul.synopsis-tree {
+  li:before {
+    content: '\2023\0020';
+    position:absolute;
+    right:100% ;
+  }
+  li {
+    list-style:none;
+    position:relative;
+    margin-left: -1em;
+    margin-bottom: 0.3em;
+  }
+}
+.command-options-button {
+  float: left;
+  margin-top: 0.2em;
+  margin-right: 0.2em;
+}
 
 @media print {
 div.sidebar {

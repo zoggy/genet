@@ -4,10 +4,8 @@ base/version.ml
 genet
 genet.byte
 genet-genrdfs*
-genet-query*
-genet-diff*
+genet-cheat*
 genet-rest*
-genet-exec*
 genet-gtk*
 ocsigen/ocsigen.conf.xtmpl
 base/install.ml

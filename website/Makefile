@@ -12,11 +12,14 @@ build:
 style.css: less/*.less
 	$(LESSC) less/style.less > $@
 
-site: genet_plugin.cmxs style.css
+site: genet_plugin.cmxs cmdline_doc.xml style.css
 	$(STOG) $(STOG_OPTIONS) --plugin $< .
 	$(CP) style.css $(DEST_DIR)/style.css
 	mkdir -p $(DEST_DIR)/refdoc
 	(cd ../src && make doc && cp -r ocamldoc/* $(DEST_DIR)/refdoc/ )
+
+cmdline_doc.xml: ../src/genet-cheat
+	$< --doc > $@
 
 test:
 	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site
