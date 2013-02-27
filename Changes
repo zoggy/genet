@@ -1,4 +1,7 @@
 Next release:
+add: "genet query ichains"
+fix: "genet query filetypes" outputs to stdout instead of stderr
+add: bash completion script (utils/genet-bash-completion.sh)
 mod: genet-exec is replaced by subcommand exec of genet
 mod: genet-diff is replaced by subcommand diff of genet
 mod: genet-query is replaced by subcommand query of genet
