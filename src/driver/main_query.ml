@@ -127,6 +127,39 @@ let com_ftypes =
 ;;
 let com_ftypes = ("filetypes", com_ftypes, "list filetypes");;
 
+let list_chains config wld _ =
+  let (cmods,_) = Chn_io.load_chain_files config in
+  let f_mod modname acc chn =
+    let n = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
+    (Chn_types.string_of_chain_name n) :: acc
+  in
+  let f acc cmod =
+     List.fold_left (f_mod cmod.Chn_ast.cmod_name)
+      acc cmod.Chn_ast.cmod_chains
+  in
+  List.iter print_endline (List.fold_left f [] cmods)
+;;
+let com_chains =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_compl = [] ;
+    com_kind = Main_cmd.mk_final_fun list_chains ;
+  }
+;;
+let com_chains = ("chains", com_chains, "list chains");;
+
+let list_inputs config _ _ =
+  List.iter print_endline (Ind_io.list_inputs config)
+;;
+let com_inputs =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_compl = [] ;
+    com_kind = Main_cmd.mk_final_fun list_inputs ;
+  }
+;;
+let com_inputs = ("inputs", com_inputs, "list inputs");;
+
 let list_ichains _ wld _ =
   let l = Chn_inst.inst_chains wld in
   List.iter pruri_endline l
@@ -247,10 +280,12 @@ let command =
       [
         com_tools ;
         com_branches ;
+        com_chains ;
         com_versions ;
         com_intfs ;
         com_ftypes ;
         com_ichains ;
+        com_inputs ;
         com_dot ;
         com_filename ;
         com_ref_inst ;

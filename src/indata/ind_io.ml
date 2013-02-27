@@ -107,7 +107,7 @@ let list_inputs config =
     Find.Stderr [data_dir] [Find.Type Unix.S_REG ; Find.Predicate pred]
   in
   List.map
-  (fun f -> Misc.path_under ~parent: data_dir (Filename.dirname f))
-  spec_files
+    (fun f -> Misc.path_under ~parent: data_dir (Filename.dirname f))
+    spec_files
 ;;
 

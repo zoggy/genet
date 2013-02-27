@@ -1,4 +1,6 @@
 Next release:
+add: "genet query inputs"
+add: "genet query chains"
 add: "genet query ichains"
 fix: "genet query filetypes" outputs to stdout instead of stderr
 add: bash completion script (utils/genet-bash-completion.sh)
