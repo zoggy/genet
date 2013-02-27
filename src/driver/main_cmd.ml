@@ -114,7 +114,17 @@ let compl_tool_or_branch () =
   Cmdline.compl_choices ~words: (tools @ branches) ()
 ;;
 
-let compl_intf_provider () = Cmdline.compl_choices ~words: ["http://"] ();;
+let compl_intf_provider () =
+ let f acc s =
+    try
+      (Misc.split_string (Misc.exec_command ("genet query "^s)) ['\n'])
+      @ acc
+    with _ -> acc
+  in
+  let words = List.fold_left f [] ["tools"; "branches"; "versions"] in
+  Cmdline.compl_choices ~words ()
+;;
+
 let compl_file_uri () = Cmdline.compl_choices ~words: ["http://"] ();;
 let compl_input_name () = Cmdline.compl_choices ~words: [] ();;
 let compl_chain_name () = Cmdline.compl_choices ~words: [] ();;
