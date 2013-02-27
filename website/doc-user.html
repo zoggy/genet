@@ -181,7 +181,7 @@ http://localhost:8082/tools/why3
 </dd>
 
 <dt>Adding a branch to a tool or branch:</dt>
-<dd><icode>genet add branch &lt;url of tool/branch&gt; &lt;id&gt;</icode>
+<dd><icode>genet add branch &lt;url of tool or branch&gt; &lt;id&gt;</icode>
 <command-line>$ genet add branch http://localhost:8082/tools/why3 0.x
 http://localhost:8082/tools/why3/branches/0.x
 </command-line>
@@ -195,7 +195,7 @@ http://localhost:8082/tools/why3/versions/0.1
 </dd>
 
 <dt>Add an interface to a tool or branch:</dt>
-<dd><icode>genet add interface -p &lt;command path&gt; &lt;url to tool/branch&gt; &lt;id&gt;</icode>
+<dd><icode>genet add interface -p &lt;command path&gt; &lt;url of tool or branch&gt; &lt;id&gt;</icode>
 <command-line>$ genet add interface -p "/opt/why3-%v/bin/why3_split.sh" \
   http://localhost:8082/tools/why3/branches/0.x split-2-altergo
 http://localhost:8082/tools/why3/interfaces/split-2-altergo
