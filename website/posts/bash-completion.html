@@ -1,0 +1,148 @@
+<post title="Adding bash completion"
+date="2013/02/27"
+keywords="bash, completion, command line, arguments, genet"
+topics="code"
+>
+<p>Some notes about how bash completion is provided for the genet command line tool.</p>
+<sep_/>
+<p>
+One of the first demands of the first Genet users was
+about adding command line completion when using the
+<code>genet</code> command line tool. Indeed, this
+tool accepts subcommands (like git, or svn), and even
+subsubcommands (for example <code>genet add port</code>).
+</p>
+<p>
+The first thing I did was to read about bash completion
+(starting with <ext-a href="http://blog.greweb.fr/2009/10/bash-completion/">this
+post</ext-a>). Then I had a look at how git completion is implemented
+(in file <code>/etc/bash_completion.d/git</code> on my Debian).
+</p>
+<p>
+At this point, looking at all this bash code, two questions came to
+my mind:
+</p>
+<ul>
+<li>Do I <strong>really</strong> have to do it in bash ?</li>
+<li>Do I <strong>really</strong> have to modify the code when
+I change the command line arguments and subcommands ?</li>
+</ul>
+<p>
+Instead, I chose another way: Since I had already coded a <code>Cmdline</code>
+module to handle subcommands when parsing command line arguments,
+the subcommands and their options were already represented in my code.
+What was missing was a function taking the current command line and
+returning a list of choices of what was possible next, to provide completion
+facility.
+</p>
+<p>
+So, the <a href="../genet-bash-completion.sh"><code>genet-bash-completion.sh</code></a>
+file is rather simple:
+</p>
+<hcode lang="bash" defer_="1"><include raw="true" file="../genet-bash-completion.sh"/></hcode>
+<p>
+Almost all the work is done by the <code>genet-cheat</code> tool, taking as argument
+the position of the currently edited argument and the current command line.
+</p>
+<p>
+From this information and the command line specification, the <code>Cmdline.completion</code>
+function walks through the command line specification according to the current command line arguments.
+When the argument currently edited is reached, the function returns a structure
+indicating what can be used to complete the argument.
+</p>
+<p>This structure has the following form (at the time I write this post):</p>
+<ocaml>
+type completion_choices =
+  { compl_words : string list ;
+    compl_files : bool ;
+    compl_xfiles : string option ;
+  }
+</ocaml>
+<p>
+The field <code>compl_words</code> is used to indicate a list of possible words
+to complete the current argument. From this field, the <code>genet-cheat</code>
+tool will issue a <code>-W "word1 word2 ..."</code> string. This tells
+<code>compgen</code> to use the given list of words as possible choices.
+</p>
+<p>If the field <code>compl_files</code> is set to <code>true</code>, then
+the <code>genet-cheat</code> tool will also issue a <code>-f</code> string;
+this makes <code>compgen</code> propose filename completion.
+</p>
+<p>At last, if a pattern is given in the field <code>compl_xfiles</code>, then
+<code>-X "pattern"</code> is also printed by <code>genet-cheat</code>.
+</p>
+<p>
+The rest of the work is achieved by the <code>compgen</code> bash internal function.
+</p>
+<p>
+If my previous command line specification contained enough information to complete
+options and subcommands names, some information was missing: how to complete
+(1) option arguments and (2) anonymous arguments ?
+</p>
+<p>
+In my previous command line specification, I used the <code>Arg.spec</code> type
+provided by the OCaml <code>Arg</code> module to describe options. So I was
+able to know whether an option takes an argument or not, which was required to
+be able to provide contextual completion, i.e. do not propose an option name if the
+current edited argument is after an option requiring an argument.
+</p>
+<p>
+So I added a new <code>Cmdline.spec</code> type, on the same form as <code>Arg.spec</code>,
+excepts that some construtors take an additional argument: a function returning
+a <code>completion_choices</code> structure. Here is a part of the definition of this
+<code>Cmdline.spec</code> type:
+</p>
+<ocaml><![CDATA[
+type completion_fun = (unit -> completion_choices)
+type completion_opt = completion_fun option
+type spec =
+  | Unit of (unit -> unit)
+  ...
+  | String of completion_opt * (string -> unit)
+  | Set_string of completion_opt * string Pervasives.ref
+  | Int of completion_opt * (int -> unit)
+  ...
+]]></ocaml>
+<p>
+Now with this information, when the current edited argument is the argument of
+an option, the completion function is called to retrieve the choices to propose
+to the user. This solves problem (1).
+</p>
+<p>
+To tackle problem (2), the <code>Cmdline.completion</code> function needed some
+information about anonymous arguments. I added a field in command description
+to store a value of the following new type:
+</p>
+<ocaml>
+type completion_spec =
+  | Complist of completion_fun
+  | Compfun of completion_fun
+;;
+</ocaml>
+<p>
+With this type, I can indicate the list of expected arguments for a command
+by a list of values of type <code>completion_spec</code>.
+</p>
+<p>When the currently edited argument corresponds to an anonymous argument,
+the <code>completion</code> function can use the corresponding function
+to return the choices to propose to the user.
+</p>
+<p>
+An example of the result is shown <elt href="doc-bash-completion#example">here</elt>.
+</p>
+<p>
+With this solution, I don't need to maintain the bash completion script
+consistent to the OCaml code. All is done from the command line specification,
+which is used to parse command line arguments in the <code>genet</code> tool
+and used by the <code>genet-cheat</code> tool to provide completion.
+Should I modify subcommands or options, I don't have to worry about
+completion. I just have to provide <code>completion_fun</code>s,
+and OCaml will not compile if I forget to fill the corresponding field.
+</p>
+<p>
+The only possible problem I can encounter is to forget to update completion
+functions for anonymous arguments. Well, I think that's a good compromise
+compared to the work required to provide and maintain the same facility
+with bash code.
+</p>
+</post>
