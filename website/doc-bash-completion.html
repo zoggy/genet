@@ -1,0 +1,70 @@
+<page title="Bash completion for command line tool"
+navbar-doc="active"
+>
+<p>
+If you use <code>bash</code> as command shell, you can take
+advantage of the completion facilities when using
+<elt href="doc-cmdline">the <code>genet</code> command line tool</elt>.
+</p>
+<section id="setup" title="Setup">
+<p>
+To enable bash completion, get <a href="genet-bash-completion.sh">this file</a>.
+Then, in your shell, type
+</p>
+<command-line>
+. genet-bash-completion.sh
+</command-line>
+<p>
+Before, you should have enabled bash completion, for example by
+adding the following code to your <code>~/.bashrc</code> file:
+</p>
+<hcode lang="bash"><![CDATA[
+if [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+fi
+]]></hcode>
+</section>
+
+<section id="using" title="Using completion">
+<p>
+Once the completion is enabled, you can try it:
+</p>
+<command-line><![CDATA[$ genet <TAB>]]></command-line>
+<p>
+This should help you type your genet commands.
+</p>
+<p>
+Completion of arguments requires you to be in your genet project directory,
+i.e. the directory where the <code>config.txt</code> file is. Indeed, to
+propose completion of arguments (urls, ...), the completion code must be aware
+of the database to connect to, hence it needs the <code>config.txt</code> file
+to be in the current directory.
+</p>
+<p>
+The completion facility is quite powerful. For example, as shows the
+folowing example when adding a port:
+</p>
+<command-line><![CDATA[
+/tmp/genet-example/$ ls config.txt
+config.txt
+/tmp/genet-example/$ ls genet add p<TAB>
+/tmp/genet-example/$ genet add port <TAB>
+--config
+--version
+-p
+-v
+http://localhost:8082/tools/average/interfaces/line-length
+http://localhost:8082/tools/split-text/interfaces/split-in-words
+http://localhost:8082/tools/words/interfaces/unique-words
+/tmp/genet-example/$ genet add port http://localhost:8082/tools/<TAB>
+http://localhost:8082/tools/average/interfaces/line-length
+http://localhost:8082/tools/split-text/interfaces/split-in-words
+http://localhost:8082/tools/words/interfaces/unique-words
+/tmp/genet-example/$ genet add port http://localhost:8082/tools/average/interfaces/line-length<TAB>
+--config   --version  -p         -v         in         out
+/tmp/genet-example/$ genet add port http://localhost:8082/tools/average/interfaces/line-length in<TAB>
+--config   --version  -p         -v         average    text       words
+/tmp/genet-example/$ genet add port http://localhost:8082/tools/average/interfaces/line-length in average
+]]></command-line>
+</section>
+</page>

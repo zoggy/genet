@@ -6,13 +6,10 @@ _genet()
   COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
   COMPREPLY=()
   cur=${COMP_WORDS[COMP_CWORD]}
-  #echo ${COMP_WORDS[@]} >> log
   res=`genet-cheat ${COMP_CWORD} ${COMP_WORDS[@]}`
   #echo $res
   COMPREPLY=($( eval compgen ${res} "$cur"))
-  #COMPREPLY=($( eval compgen -f "$cur"))
   return 0
 }
-
 #complete -f -F _genet genet
 complete -F _genet genet
