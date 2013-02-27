@@ -246,54 +246,44 @@ let completion stop args com =
   and iter pos options com =
     match com.com_kind with
       Final _ ->
-        if pos >= len then
+        if pos >= len || pos = stop then
           mk_choices options com
         else
-          if pos = stop then
-              mk_choices options com
-          else
-            begin
-              let arg = args.(pos) in
-              try
-                let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
-                iter_option_param (pos+1) options com k
-              with
-                Not_found ->
+          begin
+            let arg = args.(pos) in
+            try
+              let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
+              iter_option_param (pos+1) options com k
+            with
+              Not_found ->
                   let com =
-                    match com.com_compl with
-                      [] -> com
-                    | (Compfun _) :: q ->
-                        { com with com_compl = q }
-                    | (Complist _) :: _ -> com
-                  in
-                  iter (pos+1) options com
-            end
+                  match com.com_compl with
+                    [] -> com
+                  | (Compfun _) :: q ->
+                      { com with com_compl = q }
+                  | (Complist _) :: _ -> com
+                in
+                iter (pos+1) options com
+          end
     | Commands coms ->
-        if pos >= len then
-          (
-           mk_choices options com
-          )
-        else
-          if pos = stop then
-            (
+        if pos >= len || pos = stop then
              mk_choices options com
-            )
-          else
-            begin
-              let arg = args.(pos) in
-              try
-                let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
-                iter_option_param (pos+1) options com k
-              with
-                Not_found ->
-                  try
-                    let (_,com,_) = List.find (fun (s, _, _) -> s=arg) coms in
-                    let options = merge_options ~options ~more: com.com_options in
-                    iter (pos+1) options com
-                  with
-                    Not_found ->
-                      compl_choices ()
-            end
+        else
+          begin
+            let arg = args.(pos) in
+            try
+              let (_,k,_) = List.find (fun (s, _, _) -> s=arg) options in
+              iter_option_param (pos+1) options com k
+            with
+              Not_found ->
+                try
+                  let (_,com,_) = List.find (fun (s, _, _) -> s=arg) coms in
+                  let options = merge_options ~options ~more: com.com_options in
+                  iter (pos+1) options com
+                with
+                  Not_found ->
+                    compl_choices ()
+          end
   in
   iter 1 com.com_options com
 ;;
