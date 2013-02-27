@@ -114,7 +114,7 @@ let com_intfs = ("interfaces", com_intfs, "list interfaces");;
 
 let list_filetypes _ wld _ =
   let l = Grdf_ftype.filetypes wld in
-  List.iter (fun ft -> prerr_endline (Grdf_ftype.string_of_filetype wld ft)) l
+  List.iter (fun ft -> print_endline (Grdf_ftype.string_of_filetype wld ft)) l
 ;;
 let com_ftypes =
   { Cmdline.com_options = [] ;

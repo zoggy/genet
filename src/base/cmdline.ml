@@ -25,8 +25,20 @@
 
 (** *)
 
-type compl_kind = Choices of string list | Files of string list * string option
-type completion_fun = (unit -> compl_kind)
+type completion_choices =
+  { compl_words : string list ;
+    compl_files : bool ;
+    compl_xfiles : string option ;
+  }
+
+let compl_choices ?(words=[]) ?(files=false) ?xfiles () =
+  { compl_words = words ;
+    compl_files = files ;
+    compl_xfiles = xfiles ;
+  }
+;;
+
+type completion_fun = (unit -> completion_choices)
 type completion_opt = completion_fun option
 
 type spec =
@@ -196,16 +208,14 @@ let completion stop args com =
          | Commands l -> List.map f l)
     in
     match com.com_compl with
-      [] -> Choices choices
+      [] -> compl_choices ~words: choices ()
     | h :: q ->
         let spec =
           match h with
             Compfun f
           | Complist f -> f ()
         in
-        match spec with
-          Choices l -> Choices (choices @ l)
-        | Files (l, pat) -> Files (choices @ l, pat)
+        { spec with compl_words = choices @ spec.compl_words }
   in
   let rec iter_option_param pos options com op_spec =
     if pos = stop then
@@ -216,9 +226,9 @@ let completion stop args com =
         | Set_int (Some f, _)
         | Float (Some f, _)
         | Set_float (Some f, _) -> f ()
-        | Bool _ -> Choices ["true" ; "false"]
-        | Symbol (l, _) -> Choices l
-        | Tuple _ -> Choices [] (* FIXME: Arg.Tuple not handled *)
+        | Bool _ -> compl_choices ~words: ["true" ; "false"] ()
+        | Symbol (words, _) -> compl_choices ~words ()
+        | Tuple _ -> compl_choices () (* FIXME: Arg.Tuple not handled *)
         | _ -> iter pos options com
     else
       if pos >= len then
@@ -282,7 +292,7 @@ let completion stop args com =
                     iter (pos+1) options com
                   with
                     Not_found ->
-                      Choices []
+                      compl_choices ()
             end
   in
   iter 1 com.com_options com

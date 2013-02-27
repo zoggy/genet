@@ -62,17 +62,14 @@ let () =
         Printf.sprintf "-W %S" s
       in
       let res =
-        match Cmdline.completion stop args command with
-        | Cmdline.Choices [] -> "-f"
-        | Cmdline.Choices choices ->
-            Printf.sprintf "%s -- " (to_w choices)
-        | Cmdline.Files ([], None) -> "-f"
-        | Cmdline.Files (choices, None) ->
-            Printf.sprintf "-f %s -- " (to_w choices)
-        | Cmdline.Files ([], Some pattern) ->
-            Printf.sprintf "-f -X %S" pattern
-        | Cmdline.Files (choices, Some pattern) ->
-            Printf.sprintf "-f %s-X %S -- " (to_w choices) pattern
+        let t = Cmdline.completion stop args command in
+        (match t.compl_words with
+           [] -> ""
+         | l -> to_w l)^" "^
+          (if t.compl_files then "-f" else "")^" "^
+          (match t.compl_xfiles with
+             None -> ""
+           | Some pat -> Printf.sprintf "-X %S" pat)
       in
       print_endline res
     end
