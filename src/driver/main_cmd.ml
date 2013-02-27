@@ -96,7 +96,12 @@ let compl_port () = Cmdline.compl_choices ~words: ["http://"] ()
      with _ -> [])
 *)
 
-let compl_ichain () = Cmdline.compl_choices ~words: ["http://"] ();;
+let compl_ichain () =
+  Cmdline.compl_choices ~words:
+    (try Misc.split_string (Misc.exec_command "genet query ichains") ['\n']
+     with _ -> [])
+    ()
+;;
 let compl_tool_or_branch () =
   let tools =
     try Misc.split_string (Misc.exec_command "genet query tools") ['\n']

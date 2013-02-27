@@ -125,6 +125,19 @@ let com_ftypes =
 ;;
 let com_ftypes = ("filetypes", com_ftypes, "list filetypes");;
 
+let list_ichains _ wld _ =
+  let l = Chn_inst.inst_chains wld in
+  List.iter pruri_endline l
+;;
+let com_ichains =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_compl = [] ;
+    com_kind = Main_cmd.mk_final_fun list_ichains ;
+  }
+;;
+let com_ichains = ("ichains", com_ichains, "list inst chains");;
+
 let dot _ wld _ = print_endline (Grdf_dot.dot wld);;
 let com_dot =
   { Cmdline.com_options = [] ;
@@ -235,6 +248,7 @@ let command =
         com_versions ;
         com_intfs ;
         com_ftypes ;
+        com_ichains ;
         com_dot ;
         com_filename ;
         com_ref_inst ;

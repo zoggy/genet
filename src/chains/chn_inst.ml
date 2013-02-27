@@ -424,3 +424,9 @@ let reference_inst_of_inst ctx inst =
               reference_inst ctx ~input ~chain
 ;;
 
+let inst_chains wld =
+  Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type
+    ~obj: (Rdf_node.Uri Grdfs.genet_instchain)
+;;
+
