@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Cmdline</title>
@@ -94,7 +105,64 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">type</span>&nbsp;option_spec&nbsp;=&nbsp;string&nbsp;*&nbsp;<span class="constructor">Arg</span>.spec&nbsp;*&nbsp;string;;<br>
+<span class="keyword">type</span>&nbsp;completion_choices&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;compl_words&nbsp;:&nbsp;string&nbsp;list&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;compl_files&nbsp;:&nbsp;bool&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;compl_xfiles&nbsp;:&nbsp;string&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<br>
+<span class="keyword">let</span>&nbsp;compl_choices&nbsp;?(words=[])&nbsp;?(files=<span class="keyword">false</span>)&nbsp;?xfiles&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;compl_words&nbsp;=&nbsp;words&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;compl_files&nbsp;=&nbsp;files&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;compl_xfiles&nbsp;=&nbsp;xfiles&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<br>
+<span class="keyword">type</span>&nbsp;completion_fun&nbsp;=&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;completion_choices)<br>
+<span class="keyword">type</span>&nbsp;completion_opt&nbsp;=&nbsp;completion_fun&nbsp;option<br>
+<br>
+<span class="keyword">type</span>&nbsp;spec&nbsp;=<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unit</span>&nbsp;<span class="keyword">of</span>&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;<span class="keyword">of</span>&nbsp;(bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;<span class="keyword">of</span>&nbsp;bool&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Clear</span>&nbsp;<span class="keyword">of</span>&nbsp;bool&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">String</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_string</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;string&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Int</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_int</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;int&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Float</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;(float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_float</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_opt&nbsp;*&nbsp;float&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Arg</span>.spec&nbsp;list<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Symbol</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list&nbsp;*&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Rest</span>&nbsp;<span class="keyword">of</span>&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
+<br>
+<span class="keyword">let</span>&nbsp;spec_to_arg_spec&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unit</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;f<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Bool</span>&nbsp;f<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;r&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set</span>&nbsp;r<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Clear</span>&nbsp;r&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Clear</span>&nbsp;r<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">String</span>&nbsp;(_,&nbsp;f)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;f<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_string</span>&nbsp;(_,&nbsp;r)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set_string</span>&nbsp;r<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Int</span>&nbsp;(_,&nbsp;f)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Int</span>&nbsp;f<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_int</span>&nbsp;(_,&nbsp;r)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set_int</span>&nbsp;r<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Float</span>&nbsp;(_,&nbsp;f)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Float</span>&nbsp;f<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_float</span>&nbsp;(_,&nbsp;r)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set_float</span>&nbsp;r<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Tuple</span>&nbsp;l<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Symbol</span>&nbsp;(l,&nbsp;f)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Symbol</span>&nbsp;(l,&nbsp;f)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Rest</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Rest</span>&nbsp;f<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;specs_to_arg_specs&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(s1,&nbsp;spec,&nbsp;s2)&nbsp;=&nbsp;(s1,&nbsp;spec_to_arg_spec&nbsp;spec,&nbsp;s2)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;f<br>
+;;<br>
+<br>
+<span class="keyword">type</span>&nbsp;option_spec&nbsp;=&nbsp;string&nbsp;*&nbsp;spec&nbsp;*&nbsp;string;;<br>
+<br>
+<span class="keyword">type</span>&nbsp;completion_spec&nbsp;=<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Complist</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_fun<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Compfun</span>&nbsp;<span class="keyword">of</span>&nbsp;completion_fun<br>
+;;<br>
 <br>
 <span class="keyword">type</span>&nbsp;command_kind&nbsp;=<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Final</span>&nbsp;<span class="keyword">of</span>&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)<br>
@@ -103,6 +171,7 @@
 <span class="keyword">and</span>&nbsp;command&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;com_options&nbsp;:&nbsp;option_spec&nbsp;list&nbsp;;<br>
 &nbsp;&nbsp;com_usage&nbsp;:&nbsp;string&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;:&nbsp;completion_spec&nbsp;list&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;:&nbsp;command_kind&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 <br>
@@ -134,6 +203,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.usage_string&nbsp;(<span class="constructor">Arg</span>.align&nbsp;options)&nbsp;usage<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Commands</span>&nbsp;coms&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;coms&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(s1,&nbsp;_,&nbsp;_)&nbsp;(s2,&nbsp;_&nbsp;,_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;s1&nbsp;s2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;coms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;usage&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;[options]&nbsp;&lt;command&gt;\nwhere&nbsp;command&nbsp;can&nbsp;be:\n%s\n\nand&nbsp;options&nbsp;are:"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;path)<br>
@@ -151,9 +224,9 @@
 <span class="keyword">exception</span>&nbsp;<span class="constructor">Missing_command</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list;;<br>
 <span class="keyword">exception</span>&nbsp;<span class="constructor">Stop_parse</span>&nbsp;<span class="keyword">of</span>&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;parse&nbsp;com&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;parse&nbsp;?(args=<span class="constructor">Sys</span>.argv)&nbsp;com&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;remaining&nbsp;=&nbsp;ref&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;?(path=[])&nbsp;?(options=[])&nbsp;?(argv=<span class="constructor">Sys</span>.argv)&nbsp;com&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;?(path=[])&nbsp;?(options=[])&nbsp;?(argv=args)&nbsp;com&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;current&nbsp;=&nbsp;ref&nbsp;0&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;path&nbsp;@&nbsp;[argv.(0)]&nbsp;<span class="keyword">in</span><br>
 <span class="comment">(*<br>
@@ -164,11 +237,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(Printf.sprintf&nbsp;"current=%d"&nbsp;!current);<br>
 *)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;merge_options&nbsp;~options&nbsp;~more:&nbsp;com.com_options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;arg_options&nbsp;=&nbsp;specs_to_arg_specs&nbsp;options&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;com.com_kind&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Final</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;anon_fun&nbsp;s&nbsp;=&nbsp;remaining&nbsp;:=&nbsp;s&nbsp;::&nbsp;!remaining&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.parse_argv&nbsp;~current&nbsp;argv&nbsp;options&nbsp;anon_fun&nbsp;com.com_usage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.parse_argv&nbsp;~current&nbsp;argv&nbsp;arg_options&nbsp;anon_fun&nbsp;com.com_usage;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Commands</span>&nbsp;subs&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;anon_fun&nbsp;s&nbsp;=<br>
@@ -183,16 +257,17 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(<span class="constructor">No_such_command</span>&nbsp;(path&nbsp;@&nbsp;[s]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.parse_argv&nbsp;~current&nbsp;argv&nbsp;options&nbsp;anon_fun&nbsp;com.com_usage;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.parse_argv&nbsp;~current&nbsp;argv&nbsp;arg_options&nbsp;anon_fun&nbsp;com.com_usage;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(<span class="constructor">Missing_command</span>&nbsp;path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Stop_parse</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Stop_parse</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Help</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;make_help_msg&nbsp;path&nbsp;options&nbsp;com.com_usage&nbsp;com.com_kind&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;make_help_msg&nbsp;path&nbsp;arg_options&nbsp;com.com_usage&nbsp;com.com_kind&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(<span class="constructor">My_help</span>&nbsp;msg)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;iter&nbsp;com;&nbsp;!remaining<br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;iter&nbsp;~argv:&nbsp;args&nbsp;com;&nbsp;!remaining<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Bad</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;s<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">My_help</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prerr_endline&nbsp;s;&nbsp;exit&nbsp;0<br>
@@ -202,4 +277,94 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s:&nbsp;please&nbsp;give&nbsp;a&nbsp;subcommand"</span>&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;path))<br>
 ;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;completion&nbsp;stop&nbsp;args&nbsp;com&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len&nbsp;=&nbsp;<span class="constructor">Array</span>.length&nbsp;args&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mk_choices&nbsp;options&nbsp;com&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(s,_,_)&nbsp;=&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;choices&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.map&nbsp;f&nbsp;options)&nbsp;@<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;com.com_kind&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Final</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Commands</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;l)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;com.com_compl&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compl_choices&nbsp;~words:&nbsp;choices&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;h&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;h&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Compfun</span>&nbsp;f<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Complist</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;spec&nbsp;<span class="keyword">with</span>&nbsp;compl_words&nbsp;=&nbsp;choices&nbsp;@&nbsp;spec.compl_words&nbsp;}<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter_option_param&nbsp;pos&nbsp;options&nbsp;com&nbsp;op_spec&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;pos&nbsp;=&nbsp;stop&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;op_spec&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">String</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_string</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Int</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_int</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Float</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_float</span>&nbsp;(<span class="constructor">Some</span>&nbsp;f,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compl_choices&nbsp;~words:&nbsp;[<span class="string">"true"</span>&nbsp;;&nbsp;<span class="string">"false"</span>]&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Symbol</span>&nbsp;(words,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compl_choices&nbsp;~words&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;compl_choices&nbsp;()&nbsp;<span class="comment">(*&nbsp;FIXME:&nbsp;Arg.Tuple&nbsp;not&nbsp;handled&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iter&nbsp;pos&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;pos&nbsp;&gt;=&nbsp;len&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;pos&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;op_spec&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">String</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_string</span>&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Int</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_int</span>&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Float</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set_float</span>&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Bool</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Symbol</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;(pos+1)&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;pos&nbsp;options&nbsp;com<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;iter&nbsp;pos&nbsp;options&nbsp;com&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;com.com_kind&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Final</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;pos&nbsp;&gt;=&nbsp;len&nbsp;<span class="keywordsign">||</span>&nbsp;pos&nbsp;=&nbsp;stop&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mk_choices&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;arg&nbsp;=&nbsp;args.(pos)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,k,_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;(<span class="keyword">fun</span>&nbsp;(s,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s=arg)&nbsp;options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter_option_param&nbsp;(pos+1)&nbsp;options&nbsp;com&nbsp;k<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;com.com_compl&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="constructor">Compfun</span>&nbsp;_)&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;com&nbsp;<span class="keyword">with</span>&nbsp;com_compl&nbsp;=&nbsp;q&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(<span class="constructor">Complist</span>&nbsp;_)&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;(pos+1)&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Commands</span>&nbsp;coms&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;pos&nbsp;&gt;=&nbsp;len&nbsp;<span class="keywordsign">||</span>&nbsp;pos&nbsp;=&nbsp;stop&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mk_choices&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;arg&nbsp;=&nbsp;args.(pos)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,k,_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;(<span class="keyword">fun</span>&nbsp;(s,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s=arg)&nbsp;options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter_option_param&nbsp;(pos+1)&nbsp;options&nbsp;com&nbsp;k<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,com,_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;(<span class="keyword">fun</span>&nbsp;(s,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s=arg)&nbsp;coms&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;merge_options&nbsp;~options&nbsp;~more:&nbsp;com.com_options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iter&nbsp;(pos+1)&nbsp;options&nbsp;com<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;compl_choices&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;iter&nbsp;1&nbsp;com.com_options&nbsp;com<br>
+;;<br>
 </code></body></html>

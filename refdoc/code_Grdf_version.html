@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_version</title>
@@ -133,24 +144,19 @@
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;add&nbsp;wld&nbsp;~tool&nbsp;?(parent=tool)&nbsp;name&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;add&nbsp;wld&nbsp;~parent&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_version.add&nbsp;parent="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;parent)^<span class="string">"&nbsp;name="</span>^name);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_parent&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;parent&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool_is_tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_tool&nbsp;wld&nbsp;tool&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_tool&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_branch&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_branch&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
-<br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;tool_is_tool&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Not_a_tool</span>&nbsp;tool);<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(parent_is_tool&nbsp;<span class="keywordsign">||</span>&nbsp;parent_is_branch)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Not_tool_or_branch</span>&nbsp;parent);<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;root_tool&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.tool&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Rdf_uri</span>.compare&nbsp;root_tool&nbsp;tool&nbsp;&lt;&gt;&nbsp;0&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Tool_of_branch_differs</span>&nbsp;(parent,&nbsp;root_tool,&nbsp;tool));<br>
-<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;parent_is_tool&nbsp;<span class="keyword">then</span>&nbsp;parent&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Grdf_branch</span>.tool&nbsp;wld&nbsp;parent<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_version&nbsp;tool&nbsp;name&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;version_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>

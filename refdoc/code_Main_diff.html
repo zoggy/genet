@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_diff</title>
@@ -94,40 +105,33 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Main module of the genet-diff program.*)</span></td></tr></table><code class="code"><br>
 <br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdline</span>;;<br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Chn_types</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;usage&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;[options]&nbsp;&lt;instanciation1&gt;&nbsp;[&lt;instanciation2&gt;]"</span>&nbsp;<span class="constructor">Sys</span>.argv.(0);;<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;diff&nbsp;[options]&nbsp;&lt;instanciation1&gt;&nbsp;[&lt;instanciation2&gt;]"</span>&nbsp;<span class="constructor">Sys</span>.argv.(0);;<br>
 <span class="keyword">let</span>&nbsp;html_output&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
 <span class="keyword">let</span>&nbsp;diff_command&nbsp;=&nbsp;ref&nbsp;<span class="constructor">None</span>;;<br>
 <span class="keyword">let</span>&nbsp;keep_files&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
 <span class="keyword">let</span>&nbsp;url_if_diff&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;options&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Options</span>.option_version&nbsp;<span class="string">"Genet-diff"</span>&nbsp;::<br>
-&nbsp;&nbsp;<span class="constructor">Options</span>.option_config&nbsp;::<br>
 &nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--diff"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;diff_command&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;c),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--diff"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">String</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Some</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file,&nbsp;<span class="keyword">fun</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;diff_command&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;c),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&lt;com&gt;&nbsp;use&nbsp;com&nbsp;as&nbsp;diff&nbsp;command;&nbsp;default&nbsp;is&nbsp;diff&nbsp;-r&nbsp;-u"</span>&nbsp;;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--html"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set</span>&nbsp;html_output,&nbsp;<span class="string">"&nbsp;output&nbsp;HTML&nbsp;instead&nbsp;of&nbsp;raw&nbsp;diff&nbsp;output"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--html"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;html_output,&nbsp;<span class="string">"&nbsp;output&nbsp;HTML&nbsp;instead&nbsp;of&nbsp;raw&nbsp;diff&nbsp;output"</span>&nbsp;;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--keep-files"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set</span>&nbsp;keep_files,&nbsp;<span class="string">"&nbsp;do&nbsp;not&nbsp;erase&nbsp;files&nbsp;after&nbsp;computing&nbsp;diffs"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--keep-files"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;keep_files,&nbsp;<span class="string">"&nbsp;do&nbsp;not&nbsp;erase&nbsp;files&nbsp;after&nbsp;computing&nbsp;diffs"</span>;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--url-if-diff"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set</span>&nbsp;url_if_diff,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--url-if-diff"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;url_if_diff,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;if&nbsp;there&nbsp;are&nbsp;diffs,&nbsp;print&nbsp;url&nbsp;instead&nbsp;(useful&nbsp;for&nbsp;nightly&nbsp;reports)"</span>;<br>
 &nbsp;&nbsp;]<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;main&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;diff&nbsp;ctx&nbsp;opts&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(inst1,&nbsp;inst2)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[uri1]&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -165,4 +169,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;print_string&nbsp;output<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;()&nbsp;=&nbsp;<span class="constructor">Misc</span>.safe_main&nbsp;main;;</code></body></html>
+<span class="keyword">let</span>&nbsp;command&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;options&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;instanciation1&gt;&nbsp;[&lt;instanciation2&gt;]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_ichain&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_ichain&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;diff)&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<br>
+<span class="constructor">Main_cmd</span>.register_subcommand&nbsp;<span class="string">"diff"</span>&nbsp;command&nbsp;<span class="string">"compute&nbsp;differences&nbsp;between&nbsp;executions"</span>&nbsp;;;<br>
+</code></body></html>

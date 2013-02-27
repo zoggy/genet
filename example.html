@@ -60,7 +60,7 @@ We will show how to use Genet to set up a continuous integration environment
 for our project.
 </p>
 <p class="alert alert-warning">
-The <span class="icode">genet*</span> tools must be in our path.
+The <span class="icode">genet</span> tools must be in our path.
 The output of commands is not shown. You are encouraged to type
 the commands of the example to get familiar with Genet.
 </p>
@@ -156,8 +156,8 @@ Each item has its own unique url, used as identifier in other commands.
 Moreover, these urls can be used in the web interface to access the items; the items
 are resources, which can be refered to in RDF graphs, for example.
 </p>
-<p>We can use the <span class="icode">genet-query</span> command to list filetypes:</p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>query <span class="hl opt">--</span>filetypes</pre>
+<p>We can use the <span class="icode">genet query</span> subcommand to list filetypes:</p>
+<pre class="code-sh">$ genet query filetypes</pre>
 </div>
 
 <div class="section"><div class="section-title" id="tools">Adding tools</div>
@@ -194,9 +194,7 @@ in comment, because it is used from one command to another:</p>
 <pre class="code-sh">$ genet add branch http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text <span class="hl num">0</span>.x
  <span class="hl slc"># http://localhost:8082/tools/split-text/branches/0.x</span></pre>
 <p>In this branch, we define a <span class="icode">0.1</span> version:</p>
-<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text \
-   http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x \
-   <span class="hl num">0.1</span>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.1</span>
   <span class="hl slc"># http://localhost:8082/tools/split-text/versions/0.1</span></pre>
 <p>Then, we define a new interface, associated to the tool, which means this interface
 will be supported by all versions of the tool. We could have defined the interface
@@ -230,7 +228,7 @@ input file and an output file.
 We can list the available interfaces with the following command.
 By now, this will list the only interface we defined at this point:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>query <span class="hl opt">--</span>interfaces
+<pre class="code-sh">$ genet query interfaces
  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-words : text -&gt; words</span></pre>
 
 </div>
@@ -242,7 +240,7 @@ use the output of previous commands to avoid typing the urls of created items:
 </p>
 <pre class="code-sh">$ TOOL<span class="hl opt">=</span><span class="hl str">`genet add tool words`</span> <span class="hl slc"># http://localhost:8082/tools/words</span>
 $ BRANCH<span class="hl opt">=</span><span class="hl str">`genet add branch ${TOOL} 0.x`</span> <span class="hl slc"># http://localhost:8082/tools/words/branches/0.x</span>
-$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${TOOL} ${BRANCH} 0.2`</span>
+$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${BRANCH} 0.2`</span>
   <span class="hl slc"># http://localhost:8082/tools/words/versions/0.2</span>
 $ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/words-%v&quot; ${BRANCH} unique-words`</span>
   <span class="hl slc"># http://localhost:8082/tools/words/interfaces/unique-words</span>
@@ -256,7 +254,7 @@ Then, we do the same to define the &quot;average&quot; tool with one interface:
 </p>
 <pre class="code-sh">$ TOOL<span class="hl opt">=</span><span class="hl str">`genet add tool average`</span> <span class="hl slc"># http://localhost:8082/tools/average</span>
 $ BRANCH<span class="hl opt">=</span><span class="hl str">`genet add branch ${TOOL} 0.x`</span> <span class="hl slc"># http://localhost:8082/tools/average/branches/0.x</span>
-$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${TOOL} ${BRANCH} 0.1`</span>
+$ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${BRANCH} 0.1`</span>
   <span class="hl slc"># http://localhost:8082/tools/average/versions/0.1</span>
 $ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/average-%v&quot; ${BRANCH} line-length`</span>
   <span class="hl slc"># http://localhost:8082/tools/average/interfaces/line-length</span>
@@ -314,7 +312,7 @@ Revisions of chains are handled with git. So we add our chain file to git:
 We can check our chain by visiting its url
 <span class="ext-a"><a href="http://localhost:8082/chains/Test/words_avg_length"><span class="icode">http://localhost:8082/chains/Test/words_avg_length</span></a></span> or just test the syntax with the following command:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>t <span class="hl kwa">in</span><span class="hl opt">/</span>chains<span class="hl opt">/</span><span class="hl kwb">test</span>.gnt</pre>
+<pre class="code-sh">$ genet chain <span class="hl kwb">test</span> <span class="hl kwa">in</span><span class="hl opt">/</span>chains<span class="hl opt">/</span><span class="hl kwb">test</span>.gnt</pre>
 </div>
 
 <div class="section"><div class="section-title" id="input">Defining an input</div>
@@ -367,7 +365,7 @@ to the git ids of the source chains it was built from.
 To flatten our <span class="icode">Test.words_avg_length</span> chain, let's just run
 the following command:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>f Test.words_avg_length
+<pre class="code-sh">$ genet flatten Test.words_avg_length
  <span class="hl slc"># Test.words_avg_length =&gt; http://localhost:8082/flat-chains/Test/words_avg_length/...</span></pre>
 </div>
 
@@ -388,7 +386,7 @@ By now, we have only one version per tool, so we will get only one instanciation
 chain, by running the following command. We indicate to execute chains on
 the <span class="icode">test1</span> input:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
 <p>
 The flattened chain executed is the last chain flattened from the chain specified
 in the input. The instanciated chain can be browsed using the form at
@@ -410,8 +408,7 @@ which lowercases all words. We want to re-run our <span class="icode">test1</spa
 <p>
 First, we add this new version:
 </p>
-<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words \
-  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.4</span>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.4</span>
   <span class="hl slc"># http://localhost:8082/tools/words/versions/0.4</span></pre>
 <p>
 Since this version is under the 0.x branch, it means that the <span class="icode">unique-words</span>
@@ -419,13 +416,13 @@ interface is provided by this new version. Then, we can execute our test, and th
 new version of the tool will be used when computing the combinations of tools
 to use to execute the last chain flattened from <span class="icode">Test.words_avg_length</span>:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
 <p>
 Then, we can compare this new instanciated chain with the reference instanciated chain:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwc">diff</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>inst<span class="hl opt">-</span>chains<span class="hl opt">/</span>Test<span class="hl opt">/</span>words_avg_length<span class="hl opt">/</span>...</pre>
+<pre class="code-sh">$ genet <span class="hl kwc">diff</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>inst<span class="hl opt">-</span>chains<span class="hl opt">/</span>Test<span class="hl opt">/</span>words_avg_length<span class="hl opt">/</span>...</pre>
 <p>
-<span class="icode">genet-diff</span> can be given two instanciated chain urls to compare
+<span class="icode">genet diff</span> can be given two instanciated chain urls to compare
 the output of any instanciated chains. If only one is given, it compares against the reference
 instanciated chain, for the same input and source chain of the instanciated chain
 given on command line.
@@ -435,7 +432,7 @@ The web interface provides a form to compare two executions:
   <span class="ext-a"><a href="http://localhost:8082/diff/inst-chains"><span class="icode">http://localhost:8082/diff/inst-chains</span></a></span>
 </p>
 <p>
-The <span class="icode">--url-if-diff</span> option of <span class="icode">genet-diff</span>
+The <span class="icode">--url-if-diff</span> option of <span class="icode">genet diff</span>
 prints a url to the comparison results if there is a difference. This is useful for example
 to nightly compare new executions with reference executions, and send an email with
 the url of differences, if any.
@@ -448,8 +445,7 @@ Now suppose we developped and installed a new version of our &quot;average&quot;
 which removes the extrema values before computing the average.
 </p>
 <p>Let's add this new version:</p>
-<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average \
-  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.2</span>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.2</span>
   <span class="hl slc"># http://localhost:8082/tools/average/versions/0.2</span></pre>
 <p>
 Now, if we ask for execution of chains for the <span class="icode">test1</span> input, we will
@@ -457,12 +453,12 @@ have 1 x 2 x 2 combinations of tool versions, i.e. 4 instanciated chains. Two ha
 been executed, so the following command will trigger the execution of the two remaining
 combinations:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
 <p>
-<span class="icode">genet-diff</span> can also be used to compare not only execution final results, but also
+<span class="icode">genet diff</span> can also be used to compare not only execution final results, but also
 intermediate command results. In the web interface, when looking at an instanciated chain,
 you can click on a chain node to get its url.
-You can then give two of these urls to <span class="icode">genet-diff</span> to compare, for example,
+You can then give two of these urls to <span class="icode">genet diff</span> to compare, for example,
 the outputs of the &quot;words/unique-words&quot; in two executions.
 </p>
 </div>
@@ -490,7 +486,7 @@ can use the following algorithm in these scripts:
 <li>add new versions of tools in Genet, for example using the git id
   as version number,</li>
 <li>run the tests, i.e. create instanciated chains with the new combinations
-of tool versions (as we did with <span class="icode">genet-exec test1</span>),</li>
+of tool versions (as we did with <span class="icode">genet exec test1</span>),</li>
 <li>set the new versions of tools as inactive, so that they won't be used
 next night.</li>
 </ol>
@@ -498,8 +494,8 @@ next night.</li>
 
 <div class="section"><div class="section-title" id="scripts">Using scripts</div>
 <p>
-The various <span class="icode">genet*</span> tools can be used in scripts to perform
-nightly actions. See the page of each tool in the reference documentation.
+The various <span class="icode">genet</span> subcommands can be used in scripts to perform
+nightly actions. See the reference documentation.
 </p>
 </div>
 
@@ -511,5 +507,8 @@ nightly actions. See the page of each tool in the reference documentation.
 
 <footer id="bottombar">
 </footer>
+<script type="text/javascript" src="http://zoggy.github.com/genet/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.com/genet/bootstrap-collapse.js">_</script>
+
 </body>
 </html>

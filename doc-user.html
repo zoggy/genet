@@ -41,7 +41,7 @@ This is a very short introduction to the use of Genet.
 Table of contents<ul class="toc"><li class="toc-section"><a href="#setup">Set up a new project</a><ul class="toc"><li class="toc-subsection"><a href="#setup:init-dir">Create your project directory</a></li><li class="toc-subsection"><a href="#setup:config-file">Edit the configuration file</a></li><li class="toc-subsection"><a href="#setup:create-db">Create the database</a></li><li class="toc-subsection"><a href="#setup:init-db">Initialize the database</a></li></ul></li><li class="toc-section"><a href="#server">Launch the web server</a></li><li class="toc-section"><a href="#filetypes">Define filetypes</a></li><li class="toc-section"><a href="#tools">Define tools, branches, versions, intefaces</a></li><li class="toc-section"><a href="#chains">Define treatment chains</a></li><li class="toc-section"><a href="#inputs">Define inputs</a></li><li class="toc-section"><a href="#flattening">Flatten chains</a></li><li class="toc-section"><a href="#executing">Execute chains</a></li></ul>
 <div class="alert alert-warning">
 We assume Genet was correctly installed (see <a href="http://zoggy.github.com/genet/doc-install.html">Installation</a>)
-and the various <span class="icode">genet*</span> tools are in your <span class="icode">PATH</span>.
+and the various <span class="icode">genet</span> tools are in your <span class="icode">PATH</span>.
 </div>
 
 <div class="section"><div class="section-title" id="setup">Set up a new project</div>
@@ -90,7 +90,7 @@ The generated configuration file has the following form:
 project_id <span class="hl opt">=</span> foo
 db <span class="hl opt">= {</span>
   <span class="hl com">(* postgresql or mysql *)</span>
-  engine <span class="hl opt">=</span> postgresql
+  engine <span class="hl opt">=</span> mysql
   name <span class="hl opt">=</span> genet
   user <span class="hl opt">=</span> genet
   host <span class="hl opt">=</span> localhost
@@ -188,20 +188,19 @@ http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span c
 </dd>
 
 <dt>Adding a branch to a tool or branch:</dt>
-<dd><span class="icode">genet add branch &lt;url of tool/branch&gt; &lt;id&gt;</span>
+<dd><span class="icode">genet add branch &lt;url of tool or branch&gt; &lt;id&gt;</span>
 <pre class="code-sh">$ genet add branch http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3 <span class="hl num">0</span>.x
 http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x</pre>
 </dd>
 
 <dt>Adding a version to a tool or branch:</dt>
-<dd><span class="icode">genet add version &lt;url of tool&gt; [url of branch] &lt;id&gt;</span>
-<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3 \
-  http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.1</span>
+<dd><span class="icode">genet add version &lt;url of tool or branch&gt; &lt;id&gt;</span>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.1</span>
 http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span></pre>
 </dd>
 
 <dt>Add an interface to a tool or branch:</dt>
-<dd><span class="icode">genet add interface -p &lt;command path&gt; &lt;url to tool/branch&gt; &lt;id&gt;</span>
+<dd><span class="icode">genet add interface -p &lt;command path&gt; &lt;url of tool or branch&gt; &lt;id&gt;</span>
 <pre class="code-sh">$ genet add interface <span class="hl opt">-</span>p <span class="hl str">&quot;/opt/why3-%v/bin/why3_split.sh&quot;</span> \
   http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo
 http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>why3<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl opt">-</span>altergo</pre>
@@ -302,19 +301,18 @@ associated to the version ids of the source files used in the chain definition.
 The following command will flatten the current versions of the chains
 <span class="icode">Mod1.my_chain</span> and <span class="icode">Mod1.my_chain2</span>:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span>chain <span class="hl opt">-</span>f Mod1.my_chain <span class="hl opt">-</span>f Mod1.my_chain2
+<pre class="code-sh">$ genet flatten Mod1.my_chain Mod1.my_chain2
 Mod1.my_chain <span class="hl opt">=&gt;</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>flat<span class="hl opt">-</span>chains<span class="hl opt">/</span>Mod1<span class="hl opt">/</span>my_chain<span class="hl opt">/</span>c4be<span class="hl opt">-</span>fc5d<span class="hl opt">-</span>d901<span class="hl opt">-</span>a047
 Mod1.my_chain2 <span class="hl opt">=&gt;</span> http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>flat<span class="hl opt">-</span>chains<span class="hl opt">/</span>Mod1<span class="hl opt">/</span>my_chain2<span class="hl opt">/</span>d2fe<span class="hl opt">-</span>c10d<span class="hl opt">-</span>d231<span class="hl opt">-</span>f98f</pre>
 <p>
 If any source file used by a chain is not commited, then the flat chain is not kept.
 It is useful to test before commiting.
 </p>
-<p>The list of available options is obtained with <span class="icode">genet-chain --help</span>.</p>
 </div>
 
 <div class="section"><div class="section-title" id="executing">Execute chains</div>
 <p>
-The <span class="icode">genet-exec</span> tool &quot;executes&quot; an input, that is it applies available
+The <span class="icode">genet exec</span> subcommand &quot;executes&quot; an input, that is it applies available
 flat chains on the input files, according to the list of chains specified in the
 <span class="icode">spec.in</span> file of the input (see <a href="#inputs">this section</a>).
 </p>
@@ -323,7 +321,7 @@ command will run the chains <span class="icode">Mod1.my_chain</span> and <span c
 To do so, it will use <b>the last flattened chain</b> (according to its flattening date)
 for each specified chain name:
 </p>
-<pre class="code-sh">$ genet<span class="hl opt">-</span><span class="hl kwb">exec</span> test1</pre>
+<pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
 <p>
 The two executions of the two chains can now be browsed in the web interface.
 </p>
@@ -338,5 +336,8 @@ The two executions of the two chains can now be browsed in the web interface.
 
 <footer id="bottombar">
 </footer>
+<script type="text/javascript" src="http://zoggy.github.com/genet/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.com/genet/bootstrap-collapse.js">_</script>
+
 </body>
 </html>

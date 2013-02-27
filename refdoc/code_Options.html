@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Options</title>
@@ -94,7 +105,7 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">type</span>&nbsp;option_spec&nbsp;=&nbsp;string&nbsp;*&nbsp;<span class="constructor">Arg</span>.spec&nbsp;*&nbsp;string<br>
+<span class="keyword">type</span>&nbsp;option_spec&nbsp;=&nbsp;string&nbsp;*&nbsp;<span class="constructor">Cmdline</span>.spec&nbsp;*&nbsp;string<br>
 <br>
 <span class="keyword">let</span>&nbsp;print_version&nbsp;pref&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.printf&nbsp;<span class="string">"%s&nbsp;version&nbsp;%s\n"</span>&nbsp;pref&nbsp;<span class="constructor">Version</span>.version;<br>
@@ -102,25 +113,26 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;option_version&nbsp;pref&nbsp;=<br>
-&nbsp;&nbsp;<span class="string">"--version"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(print_version&nbsp;pref),<br>
-&nbsp;&nbsp;<span class="string">"&nbsp;Print&nbsp;version&nbsp;number&nbsp;and&nbsp;exit"</span><br>
+&nbsp;&nbsp;<span class="string">"--version"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(print_version&nbsp;pref),<br>
+&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;version&nbsp;number&nbsp;and&nbsp;exit"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;config_file&nbsp;=&nbsp;ref&nbsp;<span class="constructor">Install</span>.default_config_file;;<br>
 <span class="keyword">let</span>&nbsp;option_config&nbsp;=<br>
-&nbsp;&nbsp;<span class="string">"--config"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Set_string</span>&nbsp;config_file,<br>
+&nbsp;&nbsp;<span class="string">"--config"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set_string</span><br>
+&nbsp;&nbsp;(<span class="constructor">Some</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Cmdline</span>.compl_choices&nbsp;~files:&nbsp;<span class="keyword">true</span>()),&nbsp;config_file),<br>
 &nbsp;&nbsp;<span class="string">"&lt;file&gt;&nbsp;use&nbsp;&lt;file&gt;&nbsp;as&nbsp;config&nbsp;file&nbsp;instead&nbsp;of&nbsp;"</span>^&nbsp;!config_file<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;verb_level&nbsp;=&nbsp;ref&nbsp;0;;<br>
 <span class="keyword">let</span>&nbsp;option_verbose&nbsp;=<br>
-&nbsp;&nbsp;<span class="string">"-v"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;incr&nbsp;verb_level),<br>
+&nbsp;&nbsp;<span class="string">"-v"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;incr&nbsp;verb_level),<br>
 &nbsp;&nbsp;<span class="string">"&nbsp;increase&nbsp;verbosity&nbsp;level"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;rdf_output_format&nbsp;=&nbsp;ref&nbsp;<span class="string">"turtle"</span>;;<br>
 <span class="keyword">let</span>&nbsp;mk_rdf_output_format&nbsp;f&nbsp;=<br>
-&nbsp;&nbsp;<span class="string">"--"</span>^f,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;rdf_output_format&nbsp;:=&nbsp;f),<br>
+&nbsp;&nbsp;<span class="string">"--"</span>^f,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;rdf_output_format&nbsp;:=&nbsp;f),<br>
 &nbsp;&nbsp;<span class="string">"&nbsp;set&nbsp;rdf&nbsp;output&nbsp;format&nbsp;to&nbsp;"</span>^f^<span class="string">"&nbsp;instead&nbsp;of&nbsp;"</span>^&nbsp;!rdf_output_format<br>
 ;;<br>
 <br>
@@ -145,6 +157,7 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse&nbsp;options&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;<span class="constructor">Cmdline</span>.specs_to_arg_specs&nbsp;options&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Arg</span>.parse&nbsp;(<span class="constructor">Arg</span>.align&nbsp;options)&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;remaining&nbsp;:=&nbsp;s&nbsp;::&nbsp;!remaining)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;[options]&nbsp;[arguments]"</span>&nbsp;<span class="constructor">Sys</span>.argv.(0));<br>
 &nbsp;&nbsp;build_option_values&nbsp;()<br>

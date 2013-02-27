@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Chn_types.html">
+<link rel="previous" href="Chngui.html">
 <link rel="next" href="Config.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
@@ -27,6 +27,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -43,18 +44,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -67,12 +77,13 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Cmdline</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Chn_types.html" title="Chn_types">Previous</a>
+<div class="navbar"><a class="pre" href="Chngui.html" title="Chngui">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;<a class="post" href="Config.html" title="Config">Next</a>
 </div>
@@ -80,7 +91,147 @@
 <pre><span class="keyword">module</span> Cmdline: <code class="code">sig</code> <a href="Cmdline.html">..</a> <code class="code">end</code></pre><div class="info">
 </div>
 <hr width="100%">
-<pre><span id="TYPEoption_spec"><span class="keyword">type</span> <code class="type"></code>option_spec</span> = <code class="type">string * Arg.spec * string</code> </pre>
+<pre><code><span id="TYPEcompletion_choices"><span class="keyword">type</span> <code class="type"></code>completion_choices</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcompletion_choices.compl_words">compl_words</span>&nbsp;:<code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcompletion_choices.compl_files">compl_files</span>&nbsp;:<code class="type">bool</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcompletion_choices.compl_xfiles">compl_xfiles</span>&nbsp;:<code class="type">string option</code>;</code></td>
+
+</tr></table>
+}
+
+
+<pre><span id="VALcompl_choices"><span class="keyword">val</span> <a href="code_VALCmdline.compl_choices.html">compl_choices</a></span> : <code class="type">?words:string list -><br>       ?files:bool -> ?xfiles:string -> unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre><pre><span id="TYPEcompletion_fun"><span class="keyword">type</span> <code class="type"></code>completion_fun</span> = <code class="type">unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code> </pre>
+
+<pre><span id="TYPEcompletion_opt"><span class="keyword">type</span> <code class="type"></code>completion_opt</span> = <code class="type"><a href="Cmdline.html#TYPEcompletion_fun">completion_fun</a> option</code> </pre>
+
+<pre><code><span id="TYPEspec"><span class="keyword">type</span> <code class="type"></code>spec</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Unit"><span class="constructor">Unit</span></span> <span class="keyword">of</span> <code class="type">(unit -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Bool"><span class="constructor">Bool</span></span> <span class="keyword">of</span> <code class="type">(bool -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set"><span class="constructor">Set</span></span> <span class="keyword">of</span> <code class="type">bool Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Clear"><span class="constructor">Clear</span></span> <span class="keyword">of</span> <code class="type">bool Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.String"><span class="constructor">String</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * (string -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_string"><span class="constructor">Set_string</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * string Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Int"><span class="constructor">Int</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * (int -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_int"><span class="constructor">Set_int</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * int Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Float"><span class="constructor">Float</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * (float -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_float"><span class="constructor">Set_float</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_opt">completion_opt</a> * float Pervasives.ref</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Tuple"><span class="constructor">Tuple</span></span> <span class="keyword">of</span> <code class="type">Arg.spec list</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Symbol"><span class="constructor">Symbol</span></span> <span class="keyword">of</span> <code class="type">string list * (string -> unit)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Rest"><span class="constructor">Rest</span></span> <span class="keyword">of</span> <code class="type">(string -> unit)</code></code></td>
+
+</tr></table>
+
+
+<pre><span id="VALspec_to_arg_spec"><span class="keyword">val</span> <a href="code_VALCmdline.spec_to_arg_spec.html">spec_to_arg_spec</a></span> : <code class="type"><a href="Cmdline.html#TYPEspec">spec</a> -> Arg.spec</code></pre><pre><span id="VALspecs_to_arg_specs"><span class="keyword">val</span> <a href="code_VALCmdline.specs_to_arg_specs.html">specs_to_arg_specs</a></span> : <code class="type">(Arg.key * <a href="Cmdline.html#TYPEspec">spec</a> * Arg.doc) list -><br>       (Arg.key * Arg.spec * Arg.doc) list</code></pre><pre><span id="TYPEoption_spec"><span class="keyword">type</span> <code class="type"></code>option_spec</span> = <code class="type">string * <a href="Cmdline.html#TYPEspec">spec</a> * string</code> </pre>
+
+<pre><code><span id="TYPEcompletion_spec"><span class="keyword">type</span> <code class="type"></code>completion_spec</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcompletion_spec.Complist"><span class="constructor">Complist</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_fun">completion_fun</a></code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcompletion_spec.Compfun"><span class="constructor">Compfun</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_fun">completion_fun</a></code></code></td>
+
+</tr></table>
+
 
 <pre><code><span id="TYPEcommand_kind"><span class="keyword">type</span> <code class="type"></code>command_kind</span> = </code></pre><table class="typetable">
 <tr>
@@ -118,6 +269,13 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
+<code><span id="TYPEELTcommand.com_compl">com_compl</span>&nbsp;:<code class="type"><a href="Cmdline.html#TYPEcompletion_spec">completion_spec</a> list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
 <code><span id="TYPEELTcommand.com_kind">com_kind</span>&nbsp;:<code class="type"><a href="Cmdline.html#TYPEcommand_kind">command_kind</a></code>;</code></td>
 
 </tr></table>
@@ -128,4 +286,4 @@
 <pre><span id="VALalign_commands"><span class="keyword">val</span> <a href="code_VALCmdline.align_commands.html">align_commands</a></span> : <code class="type">(string * 'a * 'b) list -> (string * 'a * 'b) list</code></pre><pre><span id="VALmake_help_msg"><span class="keyword">val</span> <a href="code_VALCmdline.make_help_msg.html">make_help_msg</a></span> : <code class="type">string list -><br>       (Arg.key * Arg.spec * Arg.doc) list -><br>       string -> <a href="Cmdline.html#TYPEcommand_kind">command_kind</a> -> string</code></pre><pre><span id="EXCEPTIONMy_help"><span class="keyword">exception</span> My_help</span> <span class="keyword">of</span> <code class="type">string</code></pre>
 <pre><span id="EXCEPTIONMissing_command"><span class="keyword">exception</span> Missing_command</span> <span class="keyword">of</span> <code class="type">string list</code></pre>
 <pre><span id="EXCEPTIONStop_parse"><span class="keyword">exception</span> Stop_parse</span> <span class="keyword">of</span> <code class="type">(unit -> unit)</code></pre>
-<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALCmdline.parse.html">parse</a></span> : <code class="type"><a href="Cmdline.html#TYPEcommand">command</a> -> string list</code></pre></body></html>
+<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALCmdline.parse.html">parse</a></span> : <code class="type">?args:string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> string list</code></pre><pre><span id="VALcompletion"><span class="keyword">val</span> <a href="code_VALCmdline.completion.html">completion</a></span> : <code class="type">int -> string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre></body></html>

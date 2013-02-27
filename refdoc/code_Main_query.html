@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_query</title>
@@ -96,75 +107,22 @@
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Grdf_tool</span>;;<br>
 <br>
-<span class="keyword">type</span>&nbsp;mode&nbsp;=<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tools</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interfaces</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetypes</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Dot</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Test</span>&nbsp;<span class="keyword">of</span>&nbsp;int<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">File</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ref_inst_of_inst</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Ref_inst</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string&nbsp;<span class="comment">(*&nbsp;input&nbsp;*&nbsp;chain&nbsp;name&nbsp;*)</span><br>
-<br>
-<span class="keyword">let</span>&nbsp;mode&nbsp;=&nbsp;ref&nbsp;<span class="constructor">None</span>;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;set_ref_inst&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;s&nbsp;[<span class="string">','</span>]&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[s1&nbsp;;&nbsp;s2&nbsp;]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Ref_inst</span>&nbsp;(s1,&nbsp;s2))<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"option&nbsp;--ref-inst&nbsp;needs&nbsp;an&nbsp;argument&nbsp;of&nbsp;form&nbsp;&lt;input&nbsp;name&gt;,&lt;chain&nbsp;fullname&gt;"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;options&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Options</span>.option_version&nbsp;<span class="string">"Genet-query"</span>&nbsp;::<br>
-&nbsp;&nbsp;<span class="constructor">Options</span>.option_config&nbsp;::<br>
-&nbsp;&nbsp;(<span class="string">"--tools"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Tools</span>),&nbsp;<span class="string">"&nbsp;print&nbsp;tools"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--branches"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Branches</span>),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;branches&nbsp;(all&nbsp;or&nbsp;only&nbsp;the&nbsp;ones&nbsp;of&nbsp;the&nbsp;given&nbsp;parents)"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--versions"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Versions</span>),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;versions&nbsp;(all&nbsp;or&nbsp;only&nbsp;the&nbsp;ones&nbsp;of&nbsp;the&nbsp;given&nbsp;tools&nbsp;or&nbsp;branches)"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--interfaces"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Interfaces</span>),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;interfaces&nbsp;(all&nbsp;or&nbsp;only&nbsp;the&nbsp;ones&nbsp;of&nbsp;the&nbsp;given&nbsp;tools&nbsp;or&nbsp;branches)"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--filetypes"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Filetypes</span>),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;filetypes"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--file"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">File</span>&nbsp;s)),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&lt;url&gt;&nbsp;print&nbsp;the&nbsp;filename&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;file&nbsp;url"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--inst"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Inst</span>&nbsp;s)),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&lt;url&gt;&nbsp;look&nbsp;for&nbsp;other&nbsp;executions&nbsp;'almost'&nbsp;like&nbsp;the&nbsp;given&nbsp;one"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--dot"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Dot</span>),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;print&nbsp;graph&nbsp;in&nbsp;graphviz&nbsp;format"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--ref-inst-of-inst"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Ref_inst_of_inst</span>&nbsp;s)),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&lt;url&gt;&nbsp;print&nbsp;reference&nbsp;inst&nbsp;chain,&nbsp;if&nbsp;any,&nbsp;from&nbsp;given&nbsp;inst&nbsp;chain"</span>&nbsp;)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--ref-inst"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;set_ref_inst,<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&lt;url&gt;&nbsp;print&nbsp;reference&nbsp;inst&nbsp;chain,&nbsp;if&nbsp;any,&nbsp;from&nbsp;given&nbsp;inst&nbsp;chain"</span>&nbsp;)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;(<span class="string">"--test"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Int</span>&nbsp;(<span class="keyword">fun</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;mode&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Test</span>&nbsp;n)),<br>
-&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;not&nbsp;documented&nbsp;(testing&nbsp;purpose)"</span>)&nbsp;::<br>
-<br>
-&nbsp;&nbsp;[]<br>
-;;<br>
-<br>
 <span class="keyword">let</span>&nbsp;pruri_endline&nbsp;uri&nbsp;=&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;list_tools&nbsp;wld&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;list_tools&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;wld&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;tools<br>
 ;;<br>
+<span class="keyword">let</span>&nbsp;com_tools&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_tools&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_tools&nbsp;=&nbsp;(<span class="string">"tools"</span>,&nbsp;com_tools,&nbsp;<span class="string">"print&nbsp;tools"</span>)&nbsp;;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;list_branches&nbsp;wld&nbsp;options&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;list_branches&nbsp;_&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;b&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;b.<span class="constructor">Grdf_branch</span>.bch_uri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)<br>
@@ -178,8 +136,16 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;branches<br>
 ;;<br>
+<span class="keyword">let</span>&nbsp;com_branches&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[anscestor&nbsp;uris]"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch]&nbsp;;<br>
+&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_branches&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_branches&nbsp;=&nbsp;(<span class="string">"branches"</span>,&nbsp;com_branches,&nbsp;<span class="string">"list&nbsp;branches"</span>);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;list_versions&nbsp;wld&nbsp;options&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;list_versions&nbsp;_&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_version</span>.versions&nbsp;wld<br>
@@ -194,148 +160,255 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;versions<br>
 ;;<br>
+<span class="keyword">let</span>&nbsp;com_versions&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;uri1&gt;]&nbsp;[&lt;uri2&gt;&nbsp;...]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_versions&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_versions&nbsp;=&nbsp;(<span class="string">"versions"</span>,&nbsp;com_versions,&nbsp;<span class="string">"list&nbsp;versions"</span>);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;list_interfaces&nbsp;wld&nbsp;options&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;list_interfaces&nbsp;_&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.union&nbsp;set<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_intf</span>.intfs_of&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;inherited)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.union&nbsp;set&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;explicit&nbsp;inherited)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;uri))&nbsp;intfs<br>
 ;;<br>
+<span class="keyword">let</span>&nbsp;com_intfs&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;uri1&gt;]&nbsp;[&lt;uri2&gt;&nbsp;...]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf_provider&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_interfaces&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_intfs&nbsp;=&nbsp;(<span class="string">"interfaces"</span>,&nbsp;com_intfs,&nbsp;<span class="string">"list&nbsp;interfaces"</span>);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;list_filetypes&nbsp;wld&nbsp;=<br>
+<br>
+<span class="keyword">let</span>&nbsp;list_filetypes&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdf_ftype</span>.filetypes&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;ft&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prerr_endline&nbsp;(<span class="constructor">Grdf_ftype</span>.string_of_filetype&nbsp;wld&nbsp;ft))&nbsp;l<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;ft&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_ftype</span>.string_of_filetype&nbsp;wld&nbsp;ft))&nbsp;l<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ftypes&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_filetypes&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ftypes&nbsp;=&nbsp;(<span class="string">"filetypes"</span>,&nbsp;com_ftypes,&nbsp;<span class="string">"list&nbsp;filetypes"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;list_chains&nbsp;config&nbsp;wld&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(cmods,_)&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.load_chain_files&nbsp;config&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_mod&nbsp;modname&nbsp;acc&nbsp;chn&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_chain_name&nbsp;modname&nbsp;chn.<span class="constructor">Chn_ast</span>.chn_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;n)&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;cmod&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_mod&nbsp;cmod.<span class="constructor">Chn_ast</span>.cmod_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc&nbsp;cmod.<span class="constructor">Chn_ast</span>.cmod_chains<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;print_endline&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;cmods)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_chains&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_chains&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_chains&nbsp;=&nbsp;(<span class="string">"chains"</span>,&nbsp;com_chains,&nbsp;<span class="string">"list&nbsp;chains"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;list_inputs&nbsp;config&nbsp;_&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;print_endline&nbsp;(<span class="constructor">Ind_io</span>.list_inputs&nbsp;config)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_inputs&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_inputs&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_inputs&nbsp;=&nbsp;(<span class="string">"inputs"</span>,&nbsp;com_inputs,&nbsp;<span class="string">"list&nbsp;inputs"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;list_fchains&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains&nbsp;wld&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;l<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_fchains&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_fchains&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_fchains&nbsp;=&nbsp;(<span class="string">"fchains"</span>,&nbsp;com_fchains,&nbsp;<span class="string">"list&nbsp;flat&nbsp;chains"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;list_ichains&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.inst_chains&nbsp;wld&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;l<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ichains&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_ichains&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ichains&nbsp;=&nbsp;(<span class="string">"ichains"</span>,&nbsp;com_ichains,&nbsp;<span class="string">"list&nbsp;inst&nbsp;chains"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;dot&nbsp;_&nbsp;wld&nbsp;_&nbsp;=&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_dot</span>.dot&nbsp;wld);;<br>
+<span class="keyword">let</span>&nbsp;com_dot&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;dot&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_dot&nbsp;=&nbsp;(<span class="string">"dot"</span>,&nbsp;com_dot,&nbsp;<span class="string">"output&nbsp;graph&nbsp;in&nbsp;graphviz&nbsp;format"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;print_filename_of_url&nbsp;config&nbsp;wld&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;::&nbsp;_&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;only&nbsp;one&nbsp;uri"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.out_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefixes&nbsp;=&nbsp;<span class="comment">(*&nbsp;order&nbsp;matters&nbsp;as&nbsp;raw&nbsp;prefixes&nbsp;are&nbsp;prefix&nbsp;of&nbsp;"not&nbsp;raw"&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;out_pref_raw,&nbsp;out_dir&nbsp;;&nbsp;out_pref,&nbsp;out_dir&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_pref_raw,&nbsp;in_dir&nbsp;;&nbsp;in_pref,&nbsp;in_dir&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;f&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;<span class="constructor">Not_found</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(prefix,&nbsp;dir)&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;prefix)&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;print_endline&nbsp;(f&nbsp;prefixes)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;does&nbsp;not&nbsp;correspond&nbsp;to&nbsp;an&nbsp;input&nbsp;or&nbsp;output&nbsp;file&nbsp;url"</span>&nbsp;s)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_filename&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file_uri&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;print_filename_of_url&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_filename&nbsp;=<br>
+&nbsp;&nbsp;(<span class="string">"filename"</span>,&nbsp;com_filename,&nbsp;<span class="string">"print&nbsp;the&nbsp;filename&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;file&nbsp;uri"</span>)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;print_filename_of_url&nbsp;config&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.out_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefixes&nbsp;=&nbsp;<span class="comment">(*&nbsp;order&nbsp;matters&nbsp;as&nbsp;raw&nbsp;prefixes&nbsp;are&nbsp;prefix&nbsp;of&nbsp;"not&nbsp;raw"&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;out_pref_raw,&nbsp;out_dir&nbsp;;&nbsp;out_pref,&nbsp;out_dir&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_pref_raw,&nbsp;in_dir&nbsp;;&nbsp;in_pref,&nbsp;in_dir&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;f&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;<span class="constructor">Not_found</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(prefix,&nbsp;dir)&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;prefix)&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;q<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;print_endline&nbsp;(f&nbsp;prefixes)<br>
-&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;does&nbsp;not&nbsp;correspond&nbsp;to&nbsp;an&nbsp;input&nbsp;or&nbsp;output&nbsp;file&nbsp;url"</span>&nbsp;s)<br>
+<span class="keyword">let</span>&nbsp;ref_inst_of_inst&nbsp;ctx&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;::&nbsp;_&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;inst&nbsp;chain&nbsp;uri"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.reference_inst_of_inst&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ref_inst_of_inst&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_ichain&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;ref_inst_of_inst)&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ref_inst_of_inst&nbsp;=<br>
+&nbsp;&nbsp;(<span class="string">"ref-inst-of-inst"</span>,&nbsp;com_ref_inst_of_inst,<br>
+&nbsp;&nbsp;&nbsp;<span class="string">"print&nbsp;reference&nbsp;inst&nbsp;chain,&nbsp;if&nbsp;any,&nbsp;from&nbsp;given&nbsp;inst&nbsp;chain"</span>)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_uri_inst&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;ref_inst&nbsp;ctx&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[input&nbsp;;&nbsp;chain_name]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.reference_insts&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))&nbsp;l<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;input&nbsp;name&nbsp;and&nbsp;chain&nbsp;fullname,&nbsp;no&nbsp;less,&nbsp;no&nbsp;more"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;com_ref_inst&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;input&nbsp;name&gt;&nbsp;&lt;chain&nbsp;name&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_input_name&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_chain_name&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;ref_inst)&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_ref_inst&nbsp;=<br>
+&nbsp;&nbsp;(<span class="string">"ref-inst"</span>,&nbsp;com_ref_inst,<br>
+&nbsp;&nbsp;&nbsp;<span class="string">"print&nbsp;reference&nbsp;inst&nbsp;chain,&nbsp;if&nbsp;any,&nbsp;from&nbsp;given&nbsp;input&nbsp;name&nbsp;and&nbsp;chain&nbsp;fullname"</span>)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;command&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Commands</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_tools&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_branches&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_chains&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_versions&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_intfs&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ftypes&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_fchains&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ichains&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_inputs&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_dot&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_filename&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ref_inst&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ref_inst_of_inst&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<br>
+<span class="constructor">Main_cmd</span>.register_subcommand&nbsp;<span class="string">"query"</span>&nbsp;command&nbsp;<span class="string">"query&nbsp;information"</span>;;<br>
+<br>
+<span class="comment">(*<br>
+<br>
+let&nbsp;options&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;("--inst",&nbsp;Arg.String&nbsp;(fun&nbsp;s&nbsp;-&gt;&nbsp;mode&nbsp;:=&nbsp;Some&nbsp;(Inst&nbsp;s)),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&lt;url&gt;&nbsp;look&nbsp;for&nbsp;other&nbsp;executions&nbsp;'almost'&nbsp;like&nbsp;the&nbsp;given&nbsp;one")&nbsp;;<br>
+<br>
+let&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;_uri_inst&nbsp;=&nbsp;Rdf_uri.uri&nbsp;s&nbsp;in<br>
 &nbsp;&nbsp;[]<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;lookup_and_print_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insts&nbsp;=&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+let&nbsp;lookup_and_print_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;insts&nbsp;=&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;in<br>
+&nbsp;&nbsp;List.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(fun&nbsp;uri&nbsp;-&gt;&nbsp;print_endline&nbsp;(Rdf_uri.string&nbsp;uri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;insts;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Chn_lookup</span>.make_graph&nbsp;ctx&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;svg&nbsp;=&nbsp;<span class="constructor">Grdf_dot</span>.dot_to_svg&nbsp;~program:&nbsp;<span class="string">"circo"</span>&nbsp;dot&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;svg)<br>
+&nbsp;&nbsp;let&nbsp;dot&nbsp;=&nbsp;Chn_lookup.make_graph&nbsp;ctx&nbsp;(Rdf_uri.uri&nbsp;s)&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;svg&nbsp;=&nbsp;Grdf_dot.dot_to_svg&nbsp;~program:&nbsp;"circo"&nbsp;dot&nbsp;in<br>
+&nbsp;&nbsp;print_endline&nbsp;(Xtmpl.string_of_xmls&nbsp;svg)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;dot&nbsp;wld&nbsp;=&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_dot</span>.dot&nbsp;wld);;<br>
-<br>
-<span class="keyword">let</span>&nbsp;test&nbsp;wld&nbsp;config&nbsp;n&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;n&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_files&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chain_files&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;prerr_endline&nbsp;chain_files<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Uriset</span>.is_empty&nbsp;intfs&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"no&nbsp;interfaces&nbsp;to&nbsp;use&nbsp;to&nbsp;test"</span>;<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_ftype</span>.filetypes&nbsp;wld&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"no&nbsp;filetype&nbsp;to&nbsp;use&nbsp;to&nbsp;test"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;filetypes&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filetypes&nbsp;=&nbsp;<span class="constructor">Array</span>.of_list&nbsp;filetypes&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%d&nbsp;filetypes"</span>&nbsp;(<span class="constructor">Array</span>.length&nbsp;filetypes));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n&nbsp;=&nbsp;<span class="constructor">Array</span>.length&nbsp;filetypes&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grdf_intf.delete_ports&nbsp;wld&nbsp;Grdf_intf.In&nbsp;intf;*)</span><br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Random</span>.self_init();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Random</span>.int&nbsp;2&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ftype&nbsp;=&nbsp;<span class="constructor">Grdf_ftype</span>.name&nbsp;wld&nbsp;filetypes.(<span class="constructor">Random</span>.int&nbsp;n)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Random</span>.int&nbsp;1&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Grdf_types</span>.<span class="constructor">Set</span>&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">T</span>&nbsp;ftype)&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Grdf_types</span>.<span class="constructor">T</span>&nbsp;ftype<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_intfs&nbsp;=&nbsp;<span class="constructor">Uriset</span>.elements&nbsp;intfs&nbsp;<span class="keyword">in</span><br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"http://localhost:8082/tools/altergo/interfaces/ae-prove"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;&nbsp;List.nth&nbsp;intfs&nbsp;(Random.int&nbsp;(List.length&nbsp;intfs))*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;intf);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.add_port&nbsp;wld&nbsp;intf&nbsp;dir&nbsp;port;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;intf);<br>
-<br>
-<span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grdf_port.delete_ports&nbsp;wld&nbsp;intf&nbsp;Grdf_port.In&nbsp;;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;intf);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;ref_inst_of_inst&nbsp;ctx&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.reference_inst_of_inst&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;ref_inst&nbsp;ctx&nbsp;input&nbsp;chain_name&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.reference_insts&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))&nbsp;l<br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;main&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;!mode&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Tools</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list_tools&nbsp;rdf_wld<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Branches</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list_branches&nbsp;rdf_wld&nbsp;opts<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Versions</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list_versions&nbsp;rdf_wld&nbsp;opts<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Interfaces</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list_interfaces&nbsp;rdf_wld&nbsp;opts<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Filetypes</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list_filetypes&nbsp;rdf_wld<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="constructor">Dot</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dot&nbsp;rdf_wld<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Test</span>&nbsp;n)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;test&nbsp;rdf_wld&nbsp;config&nbsp;n<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">File</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_filename_of_url&nbsp;config&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Inst</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;lookup_and_print_insts&nbsp;ctx&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Ref_inst_of_inst</span>&nbsp;s)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;ref_inst_of_inst&nbsp;ctx&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Ref_inst</span>&nbsp;(input,&nbsp;chain_name))&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;ref_inst&nbsp;ctx&nbsp;input&nbsp;chain_name<br>
-&nbsp;&nbsp;<span class="keyword">end</span><br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;()&nbsp;=&nbsp;<span class="constructor">Misc</span>.safe_main&nbsp;main;;<br>
-</code></body></html>
+*)</span></code></body></html>

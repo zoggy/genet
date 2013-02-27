@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : Adding bash completion</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.com/genet/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.com/genet">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.com/genet/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.com/genet/download.html">Download</a></li>
+    <li class="&lt;navbar-doc/&gt;"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
+    <li class="active"><a href="http://zoggy.github.com/genet/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.com/genet/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Adding bash completion</div>
+</div>
+<span/>
+<div class="date">February 27, 2013</div>
+
+<p>Some notes about how bash completion is provided for the genet command line tool.</p>
+
+<p>
+One of the first demands of the first Genet users was
+about adding command line completion when using the
+<code>genet</code> command line tool. Indeed, this
+tool accepts subcommands (like git, or svn), and even
+subsubcommands (for example <code>genet add port</code>).
+</p>
+<p>
+The first thing I did was to read about bash completion
+(starting with <span class="ext-a"><a href="http://blog.greweb.fr/2009/10/bash-completion/">this
+post</a></span>). Then I had a look at how git completion is implemented
+(in file <code>/etc/bash_completion.d/git</code> on my Debian).
+</p>
+<p>
+At this point, looking at all this bash code, two questions came to
+my mind:
+</p>
+<ul>
+<li>Do I <strong>really</strong> have to do it in bash ?</li>
+<li>Do I <strong>really</strong> have to modify the code when
+I change the command line arguments and subcommands ?</li>
+</ul>
+<p>
+Instead, I chose another way: Since I had already coded a <code>Cmdline</code>
+module to handle subcommands when parsing command line arguments,
+the subcommands and their options were already represented in my code.
+What was missing was a function taking the current command line and
+returning a list of choices of what was possible next, to provide completion
+facility.
+</p>
+<p>
+So, the <a href="../genet-bash-completion.sh"><code>genet-bash-completion.sh</code></a>
+file is rather simple:
+</p>
+<pre class="code-bash"><span class="hl slc"># genet command line completion for bash.</span>
+
+_genet<span class="hl opt">()</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">local</span> cur res
+  COMP_WORDBREAKS<span class="hl opt">=</span><span class="hl kwd">${COMP_WORDBREAKS//:}</span>
+  COMPREPLY<span class="hl opt">=()</span>
+  cur<span class="hl opt">=</span><span class="hl kwd">${COMP_WORDS[COMP_CWORD]}</span>
+  res<span class="hl opt">=</span><span class="hl str">`genet-cheat ${COMP_CWORD} ${COMP_WORDS[@]}`</span>
+  <span class="hl slc">#echo $res</span>
+  COMPREPLY<span class="hl opt">=(</span>$<span class="hl opt">(</span> <span class="hl kwb">eval</span> compgen <span class="hl kwd">${res}</span> <span class="hl str">&quot;$cur&quot;</span><span class="hl opt">))</span>
+  <span class="hl kwb">return</span> <span class="hl num">0</span>
+<span class="hl opt">}</span>
+<span class="hl slc">#complete -f -F _genet genet</span>
+complete <span class="hl opt">-</span>F _genet genet</pre>
+<p>
+Almost all the work is done by the <code>genet-cheat</code> tool, taking as argument
+the position of the currently edited argument and the current command line.
+</p>
+<p>
+From this information and the command line specification, the <code>Cmdline.completion</code>
+function walks through the command line specification according to the current command line arguments.
+When the argument currently edited is reached, the function returns a structure
+indicating what can be used to complete the argument.
+</p>
+<p>This structure has the following form (at the time I write this post):</p>
+<pre class="code-ocaml"><span class="hl kwa">type</span> completion_choices <span class="hl opt">=</span>
+  <span class="hl opt">{</span> compl_words <span class="hl opt">:</span> <span class="hl kwb">string</span> list <span class="hl opt">;</span>
+    compl_files <span class="hl opt">:</span> <span class="hl kwb">bool</span> <span class="hl opt">;</span>
+    compl_xfiles <span class="hl opt">:</span> <span class="hl kwb">string option</span> <span class="hl opt">;</span>
+  <span class="hl opt">}</span></pre>
+<p>
+The field <code>compl_words</code> is used to indicate a list of possible words
+to complete the current argument. From this field, the <code>genet-cheat</code>
+tool will issue a <code>-W &quot;word1 word2 ...&quot;</code> string. This tells
+<code>compgen</code> to use the given list of words as possible choices.
+</p>
+<p>If the field <code>compl_files</code> is set to <code>true</code>, then
+the <code>genet-cheat</code> tool will also issue a <code>-f</code> string;
+this makes <code>compgen</code> propose filename completion.
+</p>
+<p>At last, if a pattern is given in the field <code>compl_xfiles</code>, then
+<code>-X &quot;pattern&quot;</code> is also printed by <code>genet-cheat</code>.
+</p>
+<p>
+The rest of the work is achieved by the <code>compgen</code> bash internal function.
+</p>
+<p>
+If my previous command line specification contained enough information to complete
+options and subcommands names, some information was missing: how to complete
+(1) option arguments and (2) anonymous arguments ?
+</p>
+<p>
+In my previous command line specification, I used the <code>Arg.spec</code> type
+provided by the OCaml <code>Arg</code> module to describe options. So I was
+able to know whether an option takes an argument or not, which was required to
+be able to provide contextual completion, i.e. do not propose an option name if the
+current edited argument is after an option requiring an argument.
+</p>
+<p>
+So I added a new <code>Cmdline.spec</code> type, on the same form as <code>Arg.spec</code>,
+excepts that some construtors take an additional argument: a function returning
+a <code>completion_choices</code> structure. Here is a part of the definition of this
+<code>Cmdline.spec</code> type:
+</p>
+<pre class="code-ocaml"><span class="hl kwa">type</span> completion_fun <span class="hl opt">= (</span><span class="hl kwb">unit</span> <span class="hl opt">-&gt;</span> completion_choices<span class="hl opt">)</span>
+<span class="hl kwa">type</span> completion_opt <span class="hl opt">=</span> completion_fun <span class="hl kwb">option</span>
+<span class="hl kwa">type</span> spec <span class="hl opt">=</span>
+  | <span class="hl kwd">Unit</span> <span class="hl kwa">of</span> <span class="hl opt">(</span><span class="hl kwb">unit</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">unit</span><span class="hl opt">)</span>
+  <span class="hl opt">...</span>
+  | <span class="hl kwd">String</span> <span class="hl kwa">of</span> completion_opt <span class="hl opt">* (</span><span class="hl kwb">string</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">unit</span><span class="hl opt">)</span>
+  | <span class="hl kwd">Set_string</span> <span class="hl kwa">of</span> completion_opt <span class="hl opt">*</span> <span class="hl kwb">string</span> <span class="hl kwc">Pervasives</span><span class="hl opt">.</span><span class="hl kwb">ref</span>
+  | <span class="hl kwd">Int</span> <span class="hl kwa">of</span> completion_opt <span class="hl opt">* (</span><span class="hl kwb">int</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">unit</span><span class="hl opt">)</span>
+  <span class="hl opt">...</span></pre>
+<p>
+Now with this information, when the current edited argument is the argument of
+an option, the completion function is called to retrieve the choices to propose
+to the user. This solves problem (1).
+</p>
+<p>
+To tackle problem (2), the <code>Cmdline.completion</code> function needed some
+information about anonymous arguments. I added a field in command description
+to store a value of the following new type:
+</p>
+<pre class="code-ocaml"><span class="hl kwa">type</span> completion_spec <span class="hl opt">=</span>
+  | <span class="hl kwd">Complist</span> <span class="hl kwa">of</span> completion_fun
+  | <span class="hl kwd">Compfun</span> <span class="hl kwa">of</span> completion_fun
+<span class="hl opt">;;</span></pre>
+<p>
+With this type, I can indicate the list of expected arguments for a command
+by a list of values of type <code>completion_spec</code>.
+</p>
+<p>When the currently edited argument corresponds to an anonymous argument,
+the <code>completion</code> function can use the corresponding function
+to return the choices to propose to the user.
+</p>
+<p>
+An example of the result is shown <a href="http://zoggy.github.com/genet/doc-bash-completion.html#example">here</a>.
+</p>
+<p>
+With this solution, I don't need to maintain the bash completion script
+consistent to the OCaml code. All is done from the command line specification,
+which is used to parse command line arguments in the <code>genet</code> tool
+and used by the <code>genet-cheat</code> tool to provide completion.
+Should I modify subcommands or options, I don't have to worry about
+completion. I just have to provide <code>completion_fun</code>s,
+and OCaml will not compile if I forget to fill the corresponding field.
+</p>
+<p>
+The only possible problem I can encounter is to forget to update completion
+functions for anonymous arguments. Well, I think that's a good compromise
+compared to the work required to provide and maintain the same facility
+with bash code.
+</p>
+
+
+<div class="comments">
+<div>
+<div class="elt-keywords">
+  <div class="bloc-keywords">
+  Topics: <div class="keywords"><a href="http://zoggy.github.com/genet/topic_code.html"><span itemprop="keywords">code</span></a></div>
+  </div>
+  <div class="bloc-keywords">
+  Keywords: <div class="keywords"><a href="http://zoggy.github.com/genet/kw_bash.html"><span itemprop="keywords">bash</span></a>, <a href="http://zoggy.github.com/genet/kw_completion.html"><span itemprop="keywords">completion</span></a>, <a href="http://zoggy.github.com/genet/kw_command%20line.html"><span itemprop="keywords">command line</span></a>, <a href="http://zoggy.github.com/genet/kw_arguments.html"><span itemprop="keywords">arguments</span></a>, <a href="http://zoggy.github.com/genet/kw_genet.html"><span itemprop="keywords">genet</span></a></div>
+  </div>
+</div>
+</div>
+<div itemprop="articleSection" class="section">
+  <div id="disqus_thread"/>
+  <script type="text/javascript">
+      /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+      var disqus_shortname = 'genet'; // required: replace example with your forum shortname
+      var disqus_url = 'http://zoggy.github.com/genet/posts/bash-completion.html' ;
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+</div>
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.com/genet/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.com/genet/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

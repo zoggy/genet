@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : Bash completion for command line tool</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.com/genet/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.com/genet">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.com/genet/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.com/genet/download.html">Download</a></li>
+    <li class="active"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.com/genet/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.com/genet/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">Bash completion for command line tool</div>
+</div>
+<span/>
+
+
+<p>
+If you use <code>bash</code> as command shell, you can take
+advantage of the completion facilities when using
+<a href="http://zoggy.github.com/genet/doc-cmdline.html">the <code>genet</code> command line tool</a>.
+</p>
+<div class="section"><div class="section-title" id="setup">Setup</div>
+<p>
+To enable bash completion, get <a href="genet-bash-completion.sh">this file</a>.
+Then, in your shell, type
+</p>
+<pre class="code-sh">. genet<span class="hl opt">-</span>bash<span class="hl opt">-</span>completion.sh</pre>
+<p>
+Before, you should have enabled bash completion, for example by
+adding the following code to your <code>~/.bashrc</code> file:
+</p>
+<pre class="code-bash"><span class="hl kwa">if</span> <span class="hl opt">[ -</span>f <span class="hl opt">/</span>etc<span class="hl opt">/</span>bash_completion <span class="hl opt">];</span> <span class="hl kwa">then</span>
+        . <span class="hl opt">/</span>etc<span class="hl opt">/</span>bash_completion
+<span class="hl kwa">fi</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="using">Using completion</div>
+<p>
+Once the completion is enabled, you can try it:
+</p>
+<pre class="code-sh">$ genet <span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span></pre>
+<p>
+This should help you type your genet commands.
+</p>
+<p>
+Completion of arguments requires you to be in your genet project directory,
+i.e. the directory where the <code>config.txt</code> file is. Indeed, to
+propose completion of arguments (urls, ...), the completion code must be aware
+of the database to connect to, hence it needs the <code>config.txt</code> file
+to be in the current directory.
+</p>
+<p id="example">
+The completion facility is quite powerful, as shows the
+following example when adding a port:
+</p>
+<pre class="code-sh"><span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ <span class="hl kwc">ls</span> config.txt
+config.txt
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ <span class="hl kwc">ls</span> genet add p<span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port <span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+<span class="hl opt">--</span>config
+<span class="hl opt">--</span>version
+<span class="hl opt">-</span>p
+<span class="hl opt">-</span>v
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>line<span class="hl opt">-</span>length
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl kwa">in</span><span class="hl opt">-</span>words
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>unique<span class="hl opt">-</span>words
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port h<span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>line<span class="hl opt">-</span>length
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>interfaces<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span><span class="hl kwa">in</span><span class="hl opt">-</span>words
+http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>words<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>unique<span class="hl opt">-</span>words
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>l<span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+<span class="hl opt">--</span>config   <span class="hl opt">--</span>version  <span class="hl opt">-</span>p         <span class="hl opt">-</span>v         <span class="hl kwa">in</span>         out
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>line<span class="hl opt">-</span>length <span class="hl kwa">in</span><span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+<span class="hl opt">--</span>config   <span class="hl opt">--</span>version  <span class="hl opt">-</span>p         <span class="hl opt">-</span>v         average    text       words
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>line<span class="hl opt">-</span>length <span class="hl kwa">in</span> a<span class="hl opt">&lt;</span>TAB<span class="hl opt">&gt;</span>
+<span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>$ genet add port http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>interfaces<span class="hl opt">/</span>line<span class="hl opt">-</span>length <span class="hl kwa">in</span> average</pre>
+</div>
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.com/genet/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.com/genet/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

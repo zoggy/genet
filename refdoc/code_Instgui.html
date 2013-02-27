@@ -1,0 +1,466 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Instgui</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(** Gui elements to display instanciated chains. *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Chn_types</span>&nbsp;;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Chn_ast</span>&nbsp;;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;uri&nbsp;on_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;ctx.ctx_rdf&nbsp;~recur:<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Smap</span>.add&nbsp;name&nbsp;uri&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Smap</span>.empty&nbsp;versions<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wcombo&nbsp;=&nbsp;<span class="constructor">GEdit</span>.combo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~enable_arrow_keys:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~value_in_list:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~allow_empty:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~case_sensitive:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;wcombo<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>text&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Smap</span>.find&nbsp;s&nbsp;map)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;tool&nbsp;=&nbsp;uri<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;choices&nbsp;=&nbsp;<span class="constructor">Smap</span>.fold&nbsp;(<span class="keyword">fun</span>&nbsp;name&nbsp;_&nbsp;acc&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;name&nbsp;::&nbsp;acc)&nbsp;map&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;choices&nbsp;=&nbsp;<span class="string">""</span>&nbsp;::&nbsp;(<span class="constructor">List</span>.rev&nbsp;choices)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wcombo<span class="keywordsign">#</span>set_popdown_strings&nbsp;choices;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>connect<span class="keywordsign">#</span>changed&nbsp;on_change)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;tool_selection&nbsp;ctx&nbsp;on_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;ctx.ctx_rdf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wtable&nbsp;=&nbsp;<span class="constructor">GPack</span>.table&nbsp;~columns:&nbsp;2&nbsp;~rows:&nbsp;(<span class="constructor">List</span>.length&nbsp;tools)&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;tool_versions&nbsp;=&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;wtable<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;sel&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;sel<span class="keywordsign">#</span>get&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;version&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(sel<span class="keywordsign">#</span>tool,&nbsp;version)&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tool_versions<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_tool&nbsp;i&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;<span class="constructor">GMisc</span>.label&nbsp;~xpad:&nbsp;3&nbsp;~xalign:&nbsp;1.&nbsp;~text:&nbsp;name&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;0&nbsp;~top:&nbsp;i&nbsp;label<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;uri&nbsp;on_change&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;1&nbsp;~top:&nbsp;i&nbsp;~expand:&nbsp;<span class="keywordsign">`</span><span class="constructor">X</span>&nbsp;version_sel<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;version_sel<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tool_versions&nbsp;&lt;-&nbsp;<span class="constructor">List</span>.mapi&nbsp;add_tool&nbsp;tools<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;input_selection&nbsp;ctx&nbsp;on_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wcombo&nbsp;=&nbsp;<span class="constructor">GEdit</span>.combo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~enable_arrow_keys:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~value_in_list:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~allow_empty:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~case_sensitive:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;wcombo<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>text&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;s<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.list_inputs&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">List</span>.sort&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;inputs&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wcombo<span class="keywordsign">#</span>set_popdown_strings&nbsp;(<span class="string">""</span>&nbsp;::&nbsp;inputs);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>connect<span class="keywordsign">#</span>changed&nbsp;on_change)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;fchain_selection&nbsp;ctx&nbsp;on_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wcombo&nbsp;=&nbsp;<span class="constructor">GEdit</span>.combo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~enable_arrow_keys:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~value_in_list:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~allow_empty:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~case_sensitive:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;map&nbsp;=&nbsp;<span class="constructor">Smap</span>.empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;wcombo<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>text&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Smap</span>.find&nbsp;s&nbsp;map)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_fchain&nbsp;acc&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_fchain&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_id&nbsp;name&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="string">"&nbsp;"</span>^id&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s&nbsp;uri&nbsp;map;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_chain&nbsp;modname&nbsp;acc&nbsp;chn&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_chain_name&nbsp;modname&nbsp;chn.<span class="constructor">Chn_ast</span>.chn_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s_name&nbsp;uri&nbsp;map&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;acc&nbsp;=&nbsp;s_name&nbsp;::&nbsp;acc&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flats&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains_of_chain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f_fchain&nbsp;acc&nbsp;flats<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_mod&nbsp;acc&nbsp;m&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chains&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;c1&nbsp;c2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;c1.chn_name&nbsp;c2.chn_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m.cmod_chains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_chain&nbsp;m.cmod_name)&nbsp;acc&nbsp;chains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_files&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chain_files&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modules&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Chn_io</span>.chn_module_of_file&nbsp;chain_files&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modules&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;m1&nbsp;m2&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.compare_chain_modname<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m1.cmod_name&nbsp;m2.cmod_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modules<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;choices&nbsp;=&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;f_mod&nbsp;[]&nbsp;modules)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wcombo<span class="keywordsign">#</span>set_popdown_strings&nbsp;(<span class="string">""</span>&nbsp;::&nbsp;choices);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(wcombo<span class="keywordsign">#</span>entry<span class="keywordsign">#</span>connect<span class="keywordsign">#</span>changed&nbsp;on_change)<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;inst_chain_date&nbsp;ctx&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"??"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;inst_chain_name&nbsp;ctx&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;inst.&nbsp;chain"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;icname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.string_of_ichain_name&nbsp;icname<br>
+;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;inst_list&nbsp;ctx&nbsp;on_sel_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;[<span class="constructor">Rdf_uri</span>.uri]&nbsp;<span class="constructor">Gmylist</span>.plist&nbsp;<span class="keywordsign">`</span><span class="constructor">SINGLE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;(inst_chain_name&nbsp;ctx);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;(inst_chain_date&nbsp;ctx)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;self<span class="keywordsign">#</span>box<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_select&nbsp;_&nbsp;=&nbsp;on_sel_change&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_deselect&nbsp;_&nbsp;=&nbsp;on_sel_change&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;empty_dot_graph&nbsp;=<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Odot</span>.strict&nbsp;=&nbsp;<span class="keyword">false</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;kind&nbsp;=&nbsp;<span class="constructor">Odot</span>.<span class="constructor">Digraph</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;stmt_list&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<br>
+<span class="keyword">class</span>&nbsp;inst_fig&nbsp;ctx&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;<span class="constructor">Odot_gtk</span>.box&nbsp;~tmp_hash:&nbsp;<span class="string">"genetinstgui"</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;graph&nbsp;=&nbsp;empty_dot_graph<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;self<span class="keywordsign">#</span>box<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;build_graph&nbsp;=&nbsp;graph<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;refresh_data&nbsp;=&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_button1_press&nbsp;~x&nbsp;~y&nbsp;_&nbsp;=&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_dot&nbsp;dot_code&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;graph&nbsp;&lt;-&nbsp;<span class="constructor">Odot</span>.parse_string&nbsp;dot_code;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<span class="keywordsign">#</span>refresh&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Odot</span>.<span class="constructor">Parse_error</span>&nbsp;(line,&nbsp;char)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Dot&nbsp;parse&nbsp;error&nbsp;line&nbsp;%d,&nbsp;character&nbsp;%d"</span>&nbsp;line&nbsp;char)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;display_inst&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;graph&nbsp;&lt;-&nbsp;empty_dot_graph&nbsp;;&nbsp;self<span class="keywordsign">#</span>refresh&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ichain_name&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Not&nbsp;an&nbsp;instanciated&nbsp;chain&nbsp;uri:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.dot_of_ichain&nbsp;ctx&nbsp;ichain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<span class="keywordsign">#</span>set_dot&nbsp;dot<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">type</span>&nbsp;inst_filter&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;filt_input&nbsp;:&nbsp;string&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filt_fchain&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filt_tools&nbsp;:&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;*&nbsp;<span class="constructor">Rdf_uri</span>.uri)&nbsp;list&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+<br>
+<span class="keyword">class</span>&nbsp;inst_chain_box&nbsp;ctx&nbsp;on_sel_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;vbox&nbsp;=&nbsp;<span class="constructor">GPack</span>.vbox&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wtable&nbsp;=&nbsp;<span class="constructor">GPack</span>.table&nbsp;~columns:&nbsp;2&nbsp;~rows:&nbsp;3&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;on_selection_changed&nbsp;=&nbsp;ref&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_fig&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;inst_fig&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_list&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;inst_list&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_selection_changed&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;on_filter_change&nbsp;=&nbsp;ref&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;input_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;input_selection&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_filter_change())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;fchain_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;fchain_selection&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_filter_change())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;tool_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;tool_selection&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_filter_change())<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;vbox<span class="keywordsign">#</span>coerce<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;fill_table&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;0&nbsp;~top:&nbsp;0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">GMisc</span>.label&nbsp;~text:&nbsp;<span class="string">"Input"</span>&nbsp;~xpad:&nbsp;3&nbsp;~xalign:&nbsp;1.&nbsp;())<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;1&nbsp;~right:&nbsp;2&nbsp;~top:&nbsp;0&nbsp;~expand:&nbsp;<span class="keywordsign">`</span><span class="constructor">X</span>&nbsp;input_sel<span class="keywordsign">#</span>coerce&nbsp;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;0&nbsp;~top:&nbsp;1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">GMisc</span>.label&nbsp;~text:&nbsp;<span class="string">"Chain"</span>&nbsp;~xpad:&nbsp;3&nbsp;~xalign:&nbsp;1.&nbsp;())<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;1&nbsp;~right:&nbsp;2&nbsp;~top:&nbsp;1&nbsp;~expand:&nbsp;<span class="keywordsign">`</span><span class="constructor">X</span>&nbsp;fchain_sel<span class="keywordsign">#</span>coerce&nbsp;;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;0&nbsp;~right:&nbsp;2&nbsp;~top:&nbsp;2&nbsp;~expand:&nbsp;<span class="keywordsign">`</span><span class="constructor">BOTH</span>&nbsp;tool_sel<span class="keywordsign">#</span>coerce<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;filt_input&nbsp;=&nbsp;input_sel<span class="keywordsign">#</span>selection&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filt_fchain&nbsp;=&nbsp;fchain_sel<span class="keywordsign">#</span>selection&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filt_tools&nbsp;=&nbsp;tool_sel<span class="keywordsign">#</span>selection&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selected&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;inst_list<span class="keywordsign">#</span>selection&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;i&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;i<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vbox<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">false</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>&nbsp;wtable<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paned&nbsp;=&nbsp;<span class="constructor">GPack</span>.paned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">VERTICAL</span>&nbsp;~packing:&nbsp;(vbox<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>)&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>add1&nbsp;inst_list<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>add2&nbsp;inst_fig<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>set_position&nbsp;150;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<span class="keywordsign">#</span>fill_table;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filter_change&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filter&nbsp;=&nbsp;self<span class="keywordsign">#</span>selection&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;filter.filt_input&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Misc</span>.split_filename&nbsp;s,&nbsp;<span class="constructor">None</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;map&nbsp;(tool,&nbsp;version)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Urimap</span>.add&nbsp;tool&nbsp;version&nbsp;map)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Urimap</span>.empty&nbsp;filter.filt_tools<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Chn_inst_query</span>.query_instances&nbsp;ctx<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?input:&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?chain:&nbsp;filter.filt_fchain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~tools<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_list<span class="keywordsign">#</span>update_data&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_filter_change&nbsp;:=&nbsp;filter_change;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;selection_changed&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_fig<span class="keywordsign">#</span>display_inst&nbsp;self<span class="keywordsign">#</span>selected&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_sel_change&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_selection_changed&nbsp;:=&nbsp;selection_changed&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">class</span>&nbsp;diff_box&nbsp;ctx&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;vbox&nbsp;=&nbsp;<span class="constructor">GPack</span>.vbox&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wscroll&nbsp;=&nbsp;<span class="constructor">GBin</span>.scrolled_window<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~hpolicy:&nbsp;<span class="keywordsign">`</span><span class="constructor">AUTOMATIC</span>&nbsp;~vpolicy:&nbsp;<span class="keywordsign">`</span><span class="constructor">AUTOMATIC</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~packing:&nbsp;(vbox<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;view&nbsp;=&nbsp;<span class="constructor">GSourceView2</span>.source_view<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~show_line_numbers:&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;~packing:&nbsp;wscroll<span class="keywordsign">#</span>add_with_viewport&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;vbox<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;display_diff&nbsp;diff&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;view<span class="keywordsign">#</span>source_buffer&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b<span class="keywordsign">#</span>delete&nbsp;~start:&nbsp;b<span class="keywordsign">#</span>start_iter&nbsp;~stop:&nbsp;b<span class="keywordsign">#</span>end_iter;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b<span class="keywordsign">#</span>insert&nbsp;diff<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view<span class="keywordsign">#</span>source_buffer<span class="keywordsign">#</span>set_language<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Gtksv_utils</span>.source_language_by_name&nbsp;<span class="string">"Diff"</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtksv_utils</span>.set_source_style_scheme<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Gtksv_utils</span>.read_style_scheme_selection&nbsp;());<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtksv_utils</span>.register_source_view&nbsp;view;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Gtksv_utils</span>.apply_sourceview_props&nbsp;view&nbsp;(<span class="constructor">Gtksv_utils</span>.read_sourceview_props&nbsp;())&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;escape_amp&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Str</span>.global_replace&nbsp;(<span class="constructor">Str</span>.regexp_string&nbsp;<span class="string">"&amp;"</span>)&nbsp;<span class="string">"&amp;amp;"</span><br>
+;;<br>
+<br>
+<br>
+<span class="keyword">class</span>&nbsp;box&nbsp;ctx&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;paned&nbsp;=&nbsp;<span class="constructor">GPack</span>.paned&nbsp;<span class="keywordsign">`</span><span class="constructor">VERTICAL</span>&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;hbox&nbsp;=&nbsp;<span class="constructor">GPack</span>.hbox&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;on_inst_sel_change&nbsp;=&nbsp;ref&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;instbox1&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;inst_chain_box&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_inst_sel_change&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;instbox2&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;inst_chain_box&nbsp;ctx&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;!on_inst_sel_change&nbsp;())&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;vbox_diff&nbsp;=&nbsp;<span class="constructor">GPack</span>.vbox&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;hbox_url&nbsp;=&nbsp;<span class="constructor">GPack</span>.hbox&nbsp;~packing:&nbsp;(vbox_diff<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">false</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>)&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_&nbsp;=&nbsp;<span class="constructor">GMisc</span>.label&nbsp;~text:&nbsp;<span class="string">"URL:"</span>&nbsp;~xpad:&nbsp;3<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~packing:&nbsp;(hbox_url<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">false</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>)&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wurl&nbsp;=&nbsp;<span class="constructor">GMisc</span>.label&nbsp;~selectable:&nbsp;<span class="keyword">true</span>&nbsp;~markup:&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~packing:&nbsp;(hbox_url<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>)&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;diffbox&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;diff_box&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;=&nbsp;paned<span class="keywordsign">#</span>coerce<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;update_diff&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;instbox1<span class="keywordsign">#</span>selected,&nbsp;instbox2<span class="keywordsign">#</span>selected&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wurl<span class="keywordsign">#</span>set_text&nbsp;<span class="string">""</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diffbox<span class="keywordsign">#</span>display_diff&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;inst1,&nbsp;<span class="constructor">Some</span>&nbsp;inst2<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;<span class="constructor">Chn_diff</span>.diff_url&nbsp;ctx&nbsp;~inst1&nbsp;~inst2&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;escape_amp&nbsp;url&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wurl<span class="keywordsign">#</span>set_text&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;a&nbsp;href=%S&gt;%s&lt;/a&gt;"</span>&nbsp;url&nbsp;url);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wurl<span class="keywordsign">#</span>set_use_markup&nbsp;<span class="keyword">true</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;diff&nbsp;=&nbsp;<span class="constructor">Chn_diff</span>.diff&nbsp;ctx&nbsp;inst1&nbsp;inst2&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diffbox<span class="keywordsign">#</span>display_diff&nbsp;diff<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on_inst_sel_change&nbsp;:=&nbsp;self<span class="keywordsign">#</span>update_diff;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wf1&nbsp;=&nbsp;<span class="constructor">GBin</span>.frame&nbsp;~label:&nbsp;<span class="string">"Instanciation&nbsp;1"</span>&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hbox<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>&nbsp;wf1<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wf1<span class="keywordsign">#</span>add&nbsp;instbox1<span class="keywordsign">#</span>coerce;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wf2&nbsp;=&nbsp;<span class="constructor">GBin</span>.frame&nbsp;~label:&nbsp;<span class="string">"Instanciation&nbsp;2"</span>&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hbox<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>&nbsp;wf2<span class="keywordsign">#</span>coerce;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wf2<span class="keywordsign">#</span>add&nbsp;instbox2<span class="keywordsign">#</span>coerce;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>add1&nbsp;hbox<span class="keywordsign">#</span>coerce&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>add2&nbsp;vbox_diff<span class="keywordsign">#</span>coerce&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paned<span class="keywordsign">#</span>set_position&nbsp;400;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vbox_diff<span class="keywordsign">#</span>pack&nbsp;~expand:&nbsp;<span class="keyword">true</span>&nbsp;~fill:&nbsp;<span class="keyword">true</span>&nbsp;diffbox<span class="keywordsign">#</span>coerce;<br>
+<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">end</span>;;<br>
+&nbsp;&nbsp;</code></body></html>

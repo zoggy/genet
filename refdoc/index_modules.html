@@ -23,6 +23,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -39,18 +40,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -63,6 +73,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Index of modules</title>
@@ -133,6 +144,11 @@ Running commands to instanciate a chain.
 <tr><td><a href="Chn_types.html">Chn_types</a> </td>
 <td><div class="info">
 Basic types for chains.
+</div>
+</td></tr>
+<tr><td><a href="Chngui.html">Chngui</a> </td>
+<td><div class="info">
+Main module of Gui for Chains.
 </div>
 </td></tr>
 <tr><td><a href="Chn_ast.Cmap.html">Cmap</a> [<a href="Chn_ast.html">Chn_ast</a>]</td>
@@ -211,6 +227,18 @@ Types
 <td><div class="info">
 </div>
 </td></tr>
+<tr><td><a href="Gui_base.html">Gui_base</a> </td>
+<td></td></tr>
+<tr><td><a href="Gui_install.html">Gui_install</a> </td>
+<td><div class="info">
+Configuration for GUI.
+</div>
+</td></tr>
+<tr><td><a href="Gui_main.html">Gui_main</a> </td>
+<td><div class="info">
+Main module of GUI.
+</div>
+</td></tr>
 <tr><td><a href="Chn_run.Guri_ord_type.html">Guri_ord_type</a> [<a href="Chn_run.html">Chn_run</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_run.Gurimap.html">Gurimap</a> [<a href="Chn_run.html">Chn_run</a>]</td>
@@ -232,6 +260,11 @@ Types of input data.
 Information about installation.
 </div>
 </td></tr>
+<tr><td><a href="Instgui.html">Instgui</a> </td>
+<td><div class="info">
+Gui elements to display instanciated chains.
+</div>
+</td></tr>
 <tr><td align="left"><br>L</td></tr>
 <tr><td><a href="Lexer.html">Lexer</a> </td>
 <td><div class="info">
@@ -251,7 +284,18 @@ Main module of genet tool.
 </td></tr>
 <tr><td><a href="Main_chain.html">Main_chain</a> </td>
 <td><div class="info">
-Main module of the <code class="code">genet-chain</code> tool.
+Operation on chains in <code class="code">genet</code> tool.
+</div>
+</td></tr>
+<tr><td><a href="Main_cheat.html">Main_cheat</a> </td>
+<td><div class="info">
+Generation of cheat sheet and bash completion parameters for main command
+  line tool.
+</div>
+</td></tr>
+<tr><td><a href="Main_cmd.html">Main_cmd</a> </td>
+<td><div class="info">
+Common stuff for command line tool.
 </div>
 </td></tr>
 <tr><td><a href="Main_diff.html">Main_diff</a> </td>
@@ -259,8 +303,14 @@ Main module of the <code class="code">genet-chain</code> tool.
 Main module of the genet-diff program.
 </div>
 </td></tr>
+<tr><td><a href="Main_edit.html">Main_edit</a> </td>
+<td><div class="info">
+Edition operations for the command line tool.
+</div>
+</td></tr>
 <tr><td><a href="Main_exec.html">Main_exec</a> </td>
 <td><div class="info">
+Execution of chains from command line tool.
 </div>
 </td></tr>
 <tr><td><a href="Main_genrdfs.html">Main_genrdfs</a> </td>
@@ -273,9 +323,19 @@ Main module of the program generating the RDFschema of genet.
 Main module of genet gui.
 </div>
 </td></tr>
+<tr><td><a href="Main_init.html">Main_init</a> </td>
+<td><div class="info">
+Initialization of genet directory and database.
+</div>
+</td></tr>
 <tr><td><a href="Main_query.html">Main_query</a> </td>
 <td><div class="info">
 Main module of the genet-query program.
+</div>
+</td></tr>
+<tr><td><a href="Main_rdf.html">Main_rdf</a> </td>
+<td><div class="info">
+RDF import/export for the command line tool.
 </div>
 </td></tr>
 <tr><td><a href="Main_rest.html">Main_rest</a> </td>
@@ -348,6 +408,11 @@ Sets of strings.
 <tr><td align="left"><br>T</td></tr>
 <tr><td><a href="Tokens.html">Tokens</a> </td>
 <td></td></tr>
+<tr><td><a href="Toolgui.html">Toolgui</a> </td>
+<td><div class="info">
+Gui elements for tools, interfaces, branches, versions.
+</div>
+</td></tr>
 <tr><td align="left"><br>U</td></tr>
 <tr><td><a href="Urimap.html">Urimap</a> </td>
 <td><div class="info">

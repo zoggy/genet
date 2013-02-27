@@ -22,6 +22,7 @@
 <link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
 <link title="Chn_run" rel="Chapter" href="Chn_run.html">
 <link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
@@ -38,18 +39,27 @@
 <link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
 <link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
 <link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
 <link title="Ind_io" rel="Chapter" href="Ind_io.html">
 <link title="Ind_types" rel="Chapter" href="Ind_types.html">
 <link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
 <link title="Lexer" rel="Chapter" href="Lexer.html">
 <link title="Loc" rel="Chapter" href="Loc.html">
 <link title="Main" rel="Chapter" href="Main.html">
 <link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
 <link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
 <link title="Main_exec" rel="Chapter" href="Main_exec.html">
 <link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
 <link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
 <link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
@@ -62,6 +72,7 @@
 <link title="Smap" rel="Chapter" href="Smap.html">
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
 <link title="Urimap" rel="Chapter" href="Urimap.html">
 <link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_chain</title>
@@ -92,9 +103,17 @@
 <span class="comment">(*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*)</span><br>
 </code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
 <br>
-</code><table><tr><td></td><td><span class="comment">(** Main module of the <code class="code">genet-chain</code> tool. *)</span></td></tr></table><code class="code"><br>
+</code><table><tr><td></td><td><span class="comment">(** Operation on chains in <code class="code">genet</code> tool. *)</span></td></tr></table><code class="code"><br>
 <br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Chn_types</span>;;<br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Chn_ast</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Cmdline</span>;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;gendot&nbsp;=&nbsp;ref&nbsp;(<span class="constructor">None</span>&nbsp;:&nbsp;string&nbsp;option);;<br>
+<span class="keyword">let</span>&nbsp;option_dot&nbsp;=<br>
+&nbsp;&nbsp;(<span class="string">"--dot"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">String</span><br>
+&nbsp;&nbsp;&nbsp;(<span class="constructor">Some</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file,&nbsp;<span class="keyword">fun</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;gendot&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;file),<br>
+&nbsp;&nbsp;&nbsp;<span class="string">"&lt;prefix&gt;&nbsp;generate&nbsp;dot&nbsp;file(s)&nbsp;using&nbsp;&lt;prefix&gt;"</span>);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;gen_chain_dot&nbsp;file&nbsp;chain&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;(<span class="keyword">new</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_dot_printer)<span class="keywordsign">#</span>dot_of_chain&nbsp;chain&nbsp;<span class="keyword">in</span><br>
@@ -106,14 +125,12 @@
 &nbsp;&nbsp;<span class="constructor">Misc</span>.file_of_string&nbsp;~file:&nbsp;file&nbsp;dot<br>
 ;;<br>
 <br>
-<br>
-<br>
-<span class="keyword">let</span>&nbsp;test_file&nbsp;?dot&nbsp;file&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;test_file&nbsp;file&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmod&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chn_module_of_file&nbsp;file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_io</span>.print_chn_module&nbsp;stdout&nbsp;cmod;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;dot&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;!gendot&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;prefix&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;chn&nbsp;=<br>
@@ -125,79 +142,21 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gen_chain_dot&nbsp;outfile&nbsp;chn<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;cmod.cmod_chains<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">true</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Loc</span>.string_of_problem&nbsp;pb);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Loc</span>.string_of_problem&nbsp;pb)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;flatten&nbsp;opts&nbsp;?dot&nbsp;acc&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fullname&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flatten&nbsp;ctx&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;=&gt;&nbsp;%s"</span>&nbsp;s&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span>&nbsp;<span class="keyword">match</span>&nbsp;dot&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;gen_fchain_dot&nbsp;ctx&nbsp;file&nbsp;uri&nbsp;<span class="keyword">end</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
-&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sys_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Loc</span>.string_of_problem&nbsp;pb<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"flatten&nbsp;%s:&nbsp;%s"</span>&nbsp;s&nbsp;msg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;msg;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc&nbsp;+&nbsp;1<br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;flatten_all&nbsp;opts&nbsp;acc&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(chain_mods,&nbsp;_)&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.load_chain_files&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_chain&nbsp;mod_name&nbsp;&nbsp;acc&nbsp;chain&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fullname&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_chain_name&nbsp;mod_name&nbsp;chain.chn_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flatten&nbsp;ctx&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;=&gt;&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sys_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Loc</span>.string_of_problem&nbsp;pb<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"flatten&nbsp;%s:&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)&nbsp;msg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;msg;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc&nbsp;+&nbsp;1<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_mod&nbsp;acc&nbsp;cmod&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_chain&nbsp;cmod.cmod_name)&nbsp;acc&nbsp;cmod.cmod_chains<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f_mod&nbsp;acc&nbsp;chain_mods<br>
-&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sys_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Loc</span>.string_of_problem&nbsp;pb<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"flatten-all:&nbsp;%s"</span>&nbsp;msg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;msg;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc&nbsp;+&nbsp;1<br>
-;;<br>
+<span class="keyword">let</span>&nbsp;com_test&nbsp;_&nbsp;_&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;test_file&nbsp;opts.<span class="constructor">Options</span>.args;;<br>
+<span class="keyword">let</span>&nbsp;com_test&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[&nbsp;option_dot&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;chain&nbsp;file(s)&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;com_test&nbsp;;<br>
+&nbsp;&nbsp;};;<br>
+<span class="keyword">let</span>&nbsp;com_test&nbsp;=&nbsp;(<span class="string">"test"</span>,&nbsp;com_test,&nbsp;<span class="string">"test&nbsp;the&nbsp;given&nbsp;chain&nbsp;files"</span>);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;string_of_comb&nbsp;ctx&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_version&nbsp;tool&nbsp;version&nbsp;acc&nbsp;=<br>
@@ -210,56 +169,114 @@
 &nbsp;&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">",&nbsp;"</span>&nbsp;(<span class="constructor">Urimap</span>.fold&nbsp;f_version&nbsp;comb&nbsp;[])<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;show_combinations&nbsp;opts&nbsp;acc&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;combs&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.version_combinations&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"combinations&nbsp;for&nbsp;%s:"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_comb&nbsp;comb&nbsp;=&nbsp;print_endline&nbsp;(string_of_comb&nbsp;ctx&nbsp;comb)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_comb&nbsp;combs;<br>
-&nbsp;&nbsp;acc<br>
+<span class="keyword">let</span>&nbsp;show_combinations&nbsp;ctx&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;combs&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.version_combinations&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"combinations&nbsp;for&nbsp;%s:"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_comb&nbsp;comb&nbsp;=&nbsp;print_endline&nbsp;(string_of_comb&nbsp;ctx&nbsp;comb)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_comb&nbsp;combs<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;flat&nbsp;chain&nbsp;uri"</span><br>
 ;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;ref&nbsp;<span class="constructor">None</span>;;<br>
-<span class="keyword">type</span>&nbsp;action&nbsp;=<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Test</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flatten</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flatten_all</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Show_combs</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-;;<br>
-<span class="keyword">let</span>&nbsp;actions&nbsp;=&nbsp;ref&nbsp;[];;<br>
-<br>
-<span class="keyword">let</span>&nbsp;do_action&nbsp;opts&nbsp;acc&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;<span class="constructor">Test</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">if</span>&nbsp;test_file&nbsp;?dot:&nbsp;!dot&nbsp;file&nbsp;<span class="keyword">then</span>&nbsp;acc&nbsp;<span class="keyword">else</span>&nbsp;acc&nbsp;+&nbsp;1<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flatten</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flatten&nbsp;opts&nbsp;?dot:&nbsp;!dot&nbsp;acc&nbsp;s<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flatten_all</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flatten_all&nbsp;opts&nbsp;acc<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Show_combs</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;show_combinations&nbsp;opts&nbsp;acc&nbsp;s<br>
-;;<br>
-<br>
-<span class="keyword">let</span>&nbsp;options&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Options</span>.option_config&nbsp;::<br>
-&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--dot"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dot&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;file),&nbsp;<span class="string">"&nbsp;generate&nbsp;dot&nbsp;files"</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-t"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;actions&nbsp;:=&nbsp;<span class="constructor">Test</span>&nbsp;s&nbsp;::&nbsp;!actions),&nbsp;<span class="string">"&lt;file&gt;&nbsp;test&nbsp;the&nbsp;given&nbsp;file"</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-f"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;actions&nbsp;:=&nbsp;<span class="constructor">Flatten</span>&nbsp;s&nbsp;::&nbsp;!actions),&nbsp;<span class="string">"&lt;Mod.chain&gt;&nbsp;flatten&nbsp;the&nbsp;given&nbsp;chain"</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--flatten-all"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;actions&nbsp;:=&nbsp;<span class="constructor">Flatten_all</span>&nbsp;::&nbsp;!actions),&nbsp;<span class="string">"flatten&nbsp;all&nbsp;the&nbsp;chains"</span>&nbsp;;<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--show-combs"</span>,&nbsp;<span class="constructor">Arg</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;actions&nbsp;:=&nbsp;<span class="constructor">Show_combs</span>&nbsp;s&nbsp;::&nbsp;!actions),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&lt;flat&nbsp;chain&nbsp;uri&gt;&nbsp;show&nbsp;tool&nbsp;combinations&nbsp;usable&nbsp;to&nbsp;instanciate&nbsp;this&nbsp;chain"</span>;<br>
-&nbsp;&nbsp;]<br>
+<span class="keyword">let</span>&nbsp;com_showcombs&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;flat&nbsp;chain&nbsp;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_fchain&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;show_combinations)&nbsp;;<br>
+&nbsp;&nbsp;};;<br>
+<span class="keyword">let</span>&nbsp;com_showcombs&nbsp;=<br>
+&nbsp;&nbsp;(<span class="string">"tool-combs"</span>,&nbsp;com_showcombs,<br>
+&nbsp;&nbsp;&nbsp;<span class="string">"show&nbsp;tool&nbsp;combinations&nbsp;usable&nbsp;to&nbsp;instanciate&nbsp;a&nbsp;flat&nbsp;chain"</span>)<br>
 ;;<br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;main&nbsp;()&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(do_action&nbsp;opts)&nbsp;0&nbsp;(<span class="constructor">List</span>.rev&nbsp;!actions)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;flush&nbsp;stdout;<br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;n&nbsp;&gt;&nbsp;0&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%d&nbsp;problem(s)&nbsp;encountered"</span>&nbsp;n);<br>
-&nbsp;&nbsp;exit&nbsp;n<br>
+<span class="keyword">let</span>&nbsp;command_chain&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Commands</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_test&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_showcombs&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+};;<br>
+<br>
+<span class="keyword">let</span>&nbsp;flatten&nbsp;ctx&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="keyword">let</span>&nbsp;fullname&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flatten&nbsp;ctx&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;=&gt;&nbsp;%s"</span>&nbsp;s&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;!gendot&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;gen_fchain_dot&nbsp;ctx&nbsp;file&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sys_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Loc</span>.string_of_problem&nbsp;pb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"flatten&nbsp;%s:&nbsp;%s"</span>&nbsp;s&nbsp;msg&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;chain&nbsp;fullname"</span><br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;()&nbsp;=&nbsp;<span class="constructor">Misc</span>.safe_main&nbsp;main;;<br>
+<span class="keyword">let</span>&nbsp;com_flatten&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[&nbsp;option_dot&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;Mod.chain&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_chain_name&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;flatten)&nbsp;;<br>
+&nbsp;&nbsp;};;<br>
+<br>
+<span class="keyword">let</span>&nbsp;flatten_all&nbsp;ctx&nbsp;opts&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(chain_mods,&nbsp;_)&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.load_chain_files&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_chain&nbsp;mod_name&nbsp;acc&nbsp;chain&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fullname&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_chain_name&nbsp;mod_name&nbsp;chain.chn_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flatten&nbsp;ctx&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;=&gt;&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;e&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Sys_error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Loc</span>.<span class="constructor">Problem</span>&nbsp;pb&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Loc</span>.string_of_problem&nbsp;pb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"flatten&nbsp;%s:&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_mod&nbsp;acc&nbsp;cmod&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_chain&nbsp;cmod.cmod_name)&nbsp;acc&nbsp;cmod.cmod_chains<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f_mod&nbsp;[]&nbsp;chain_mods&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;errors&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"\n"</span>&nbsp;errors)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;com_flatten_all&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;flatten_all)&nbsp;;<br>
+&nbsp;&nbsp;};;<br>
+<br>
+<span class="constructor">Main_cmd</span>.register_subcommand&nbsp;<span class="string">"chain"</span>&nbsp;command_chain&nbsp;<span class="string">"operations&nbsp;on&nbsp;chains"</span>;;<br>
+<span class="constructor">Main_cmd</span>.register_subcommand&nbsp;<span class="string">"flatten"</span>&nbsp;com_flatten&nbsp;<span class="string">"flatten&nbsp;a&nbsp;chain"</span>;;<br>
+<span class="constructor">Main_cmd</span>.register_subcommand&nbsp;<span class="string">"flatten-all"</span>&nbsp;com_flatten_all&nbsp;<span class="string">"flatten&nbsp;all&nbsp;chains"</span>;;<br>
+<br>
+<br>
 </code></body></html>

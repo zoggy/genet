@@ -1,0 +1,119 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Checks" rel="Chapter" href="Checks.html">
+<link title="Chn_ast" rel="Chapter" href="Chn_ast.html">
+<link title="Chn_diff" rel="Chapter" href="Chn_diff.html">
+<link title="Chn_exec" rel="Chapter" href="Chn_exec.html">
+<link title="Chn_flat" rel="Chapter" href="Chn_flat.html">
+<link title="Chn_inst" rel="Chapter" href="Chn_inst.html">
+<link title="Chn_inst_query" rel="Chapter" href="Chn_inst_query.html">
+<link title="Chn_io" rel="Chapter" href="Chn_io.html">
+<link title="Chn_lookup" rel="Chapter" href="Chn_lookup.html">
+<link title="Chn_parser" rel="Chapter" href="Chn_parser.html">
+<link title="Chn_run" rel="Chapter" href="Chn_run.html">
+<link title="Chn_types" rel="Chapter" href="Chn_types.html">
+<link title="Chngui" rel="Chapter" href="Chngui.html">
+<link title="Cmdline" rel="Chapter" href="Cmdline.html">
+<link title="Config" rel="Chapter" href="Config.html">
+<link title="Find" rel="Chapter" href="Find.html">
+<link title="Graph" rel="Chapter" href="Graph.html">
+<link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
+<link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
+<link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
+<link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
+<link title="Grdf_intf" rel="Chapter" href="Grdf_intf.html">
+<link title="Grdf_parser" rel="Chapter" href="Grdf_parser.html">
+<link title="Grdf_port" rel="Chapter" href="Grdf_port.html">
+<link title="Grdf_tool" rel="Chapter" href="Grdf_tool.html">
+<link title="Grdf_types" rel="Chapter" href="Grdf_types.html">
+<link title="Grdf_version" rel="Chapter" href="Grdf_version.html">
+<link title="Grdfs" rel="Chapter" href="Grdfs.html">
+<link title="Gui_base" rel="Chapter" href="Gui_base.html">
+<link title="Gui_install" rel="Chapter" href="Gui_install.html">
+<link title="Gui_main" rel="Chapter" href="Gui_main.html">
+<link title="Ind_io" rel="Chapter" href="Ind_io.html">
+<link title="Ind_types" rel="Chapter" href="Ind_types.html">
+<link title="Install" rel="Chapter" href="Install.html">
+<link title="Instgui" rel="Chapter" href="Instgui.html">
+<link title="Lexer" rel="Chapter" href="Lexer.html">
+<link title="Loc" rel="Chapter" href="Loc.html">
+<link title="Main" rel="Chapter" href="Main.html">
+<link title="Main_chain" rel="Chapter" href="Main_chain.html">
+<link title="Main_cheat" rel="Chapter" href="Main_cheat.html">
+<link title="Main_cmd" rel="Chapter" href="Main_cmd.html">
+<link title="Main_diff" rel="Chapter" href="Main_diff.html">
+<link title="Main_edit" rel="Chapter" href="Main_edit.html">
+<link title="Main_exec" rel="Chapter" href="Main_exec.html">
+<link title="Main_genrdfs" rel="Chapter" href="Main_genrdfs.html">
+<link title="Main_gui" rel="Chapter" href="Main_gui.html">
+<link title="Main_init" rel="Chapter" href="Main_init.html">
+<link title="Main_query" rel="Chapter" href="Main_query.html">
+<link title="Main_rdf" rel="Chapter" href="Main_rdf.html">
+<link title="Main_rest" rel="Chapter" href="Main_rest.html">
+<link title="Misc" rel="Chapter" href="Misc.html">
+<link title="Options" rel="Chapter" href="Options.html">
+<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
+<link title="Reporter" rel="Chapter" href="Reporter.html">
+<link title="Rest_query" rel="Chapter" href="Rest_query.html">
+<link title="Rest_types" rel="Chapter" href="Rest_types.html">
+<link title="Rest_xhtml" rel="Chapter" href="Rest_xhtml.html">
+<link title="Rest_xpage" rel="Chapter" href="Rest_xpage.html">
+<link title="Smap" rel="Chapter" href="Smap.html">
+<link title="Sset" rel="Chapter" href="Sset.html">
+<link title="Tokens" rel="Chapter" href="Tokens.html">
+<link title="Toolgui" rel="Chapter" href="Toolgui.html">
+<link title="Urimap" rel="Chapter" href="Urimap.html">
+<link title="Uriset" rel="Chapter" href="Uriset.html">
+<link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Gui_main</title>
+</head>
+<body>
+<code class="code"></code><table><tr><td></td><td><span class="comment">(** Main module of GUI. *)</span></td></tr></table><code class="code"><br>
+<br>
+<br>
+<span class="keyword">class</span>&nbsp;main&nbsp;ctx&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;main&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Gui_base</span>.win_main<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~file:&nbsp;<span class="constructor">Gui_install</span>.glade_file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~autoconnect:<span class="keyword">false</span>&nbsp;()<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wnote&nbsp;=&nbsp;main<span class="keywordsign">#</span>wnote&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chnbox&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Chngui</span>.box&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;toolbox&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Toolgui</span>.box&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;instbox&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Instgui</span>.box&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;wnote<span class="keywordsign">#</span>remove_page&nbsp;0)&nbsp;wnote<span class="keywordsign">#</span>children;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_tab&nbsp;(text,&nbsp;b)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wnote<span class="keywordsign">#</span>append_page<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~tab_label:&nbsp;(<span class="constructor">GMisc</span>.label&nbsp;~text())<span class="keywordsign">#</span>coerce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;add_tab<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="string">"Tools"</span>,&nbsp;toolbox<span class="keywordsign">#</span>coerce&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Chains"</span>,&nbsp;chnbox<span class="keywordsign">#</span>coerce&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Inst&nbsp;chains"</span>,&nbsp;instbox<span class="keywordsign">#</span>coerce&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(main<span class="keywordsign">#</span>menuquit<span class="keywordsign">#</span>connect<span class="keywordsign">#</span>activate&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Main</span>.quit);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore(main<span class="keywordsign">#</span>win_main<span class="keywordsign">#</span>connect<span class="keywordsign">#</span>destroy&nbsp;<span class="constructor">GMain</span>.<span class="constructor">Main</span>.quit);<br>
+&nbsp;&nbsp;<span class="keyword">end</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;make_gui&nbsp;ctx&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_gui&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;main&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;ignore(<span class="constructor">GMain</span>.<span class="constructor">Main</span>.main())<br>
+;;<br>
+</code></body></html>
