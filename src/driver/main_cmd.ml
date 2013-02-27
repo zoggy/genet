@@ -51,7 +51,7 @@ let compl_branch () =
 
 let compl_version () =
   Cmdline.compl_choices ~words:
-    (try Misc.split_string (Misc.exec_command "genet query branches") ['\n']
+    (try Misc.split_string (Misc.exec_command "genet query versions") ['\n']
      with _ -> [])
     ()
 ;;
