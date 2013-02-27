@@ -38,9 +38,7 @@ genet add branch http://localhost:8082/tools/split-text 0.x
  # http://localhost:8082/tools/split-text/branches/0.x
 
 #id=addsplittextversion
-genet add version http://localhost:8082/tools/split-text \
-   http://localhost:8082/tools/split-text/branches/0.x \
-   0.1
+genet add version http://localhost:8082/tools/split-text/branches/0.x 0.1
   # http://localhost:8082/tools/split-text/versions/0.1
 
 #id=addsplittextintf
@@ -59,7 +57,7 @@ genet add port http://localhost:8082/tools/split-text/interfaces/split-in-words 
 #id=addwords
 TOOL=`genet add tool words` # http://localhost:8082/tools/words
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/words/branches/0.x
-VERSION=`genet add version ${TOOL} ${BRANCH} 0.2`
+VERSION=`genet add version ${BRANCH} 0.2`
   # http://localhost:8082/tools/words/versions/0.2
 INTF=`genet add interface -p "/tmp/tools/words-%v" ${BRANCH} unique-words`
   # http://localhost:8082/tools/words/interfaces/unique-words
@@ -69,7 +67,7 @@ genet add port ${INTF} "out" "words"
 #id=addaverage
 TOOL=`genet add tool average` # http://localhost:8082/tools/average
 BRANCH=`genet add branch ${TOOL} 0.x` # http://localhost:8082/tools/average/branches/0.x
-VERSION=`genet add version ${TOOL} ${BRANCH} 0.1`
+VERSION=`genet add version ${BRANCH} 0.1`
   # http://localhost:8082/tools/average/versions/0.1
 INTF=`genet add interface -p "/tmp/tools/average-%v" ${BRANCH} line-length`
   # http://localhost:8082/tools/average/interfaces/line-length
@@ -101,15 +99,13 @@ genet flatten Test.words_avg_length
 genet exec test1
 
 #id=addnewwords
-genet add version http://localhost:8082/tools/words \
-  http://localhost:8082/tools/words/branches/0.x 0.4
+genet add version http://localhost:8082/tools/words/branches/0.x 0.4
   # http://localhost:8082/tools/words/versions/0.4
 
 genet exec test1
 
 #id=addnewaverage
-genet add version http://localhost:8082/tools/average \
-  http://localhost:8082/tools/average/branches/0.x 0.2
+genet add version http://localhost:8082/tools/average/branches/0.x 0.2
   # http://localhost:8082/tools/average/versions/0.2
 
 #id=setactive

@@ -64,24 +64,19 @@ let do_add wld uri name =
   Grdfs.add_name wld sub name
 ;;
 
-let add wld ~tool ?(parent=tool) name =
+let add wld ~parent name =
   dbg ~level: 1 (fun () -> "Grdf_version.add parent="^(Rdf_uri.string parent)^" name="^name);
   let node_parent = Uri parent in
 
-  let tool_is_tool = Grdfs.is_a_tool wld tool in
   let parent_is_tool = Grdfs.is_a_tool wld parent in
   let parent_is_branch = Grdfs.is_a_branch wld parent in
-
-  if not tool_is_tool then
-    Grdf_types.error (Grdf_types.Not_a_tool tool);
 
   if not (parent_is_tool || parent_is_branch) then
     Grdf_types.error (Grdf_types.Not_tool_or_branch parent);
 
-  let root_tool = Grdf_branch.tool wld parent in
-  if Rdf_uri.compare root_tool tool <> 0 then
-    Grdf_types.error (Grdf_types.Tool_of_branch_differs (parent, root_tool, tool));
-
+  let tool =
+    if parent_is_tool then parent else Grdf_branch.tool wld parent
+  in
   let uri = Grdfs.uri_version tool name in
 
   match version_exists wld uri with

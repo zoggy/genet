@@ -30,4 +30,7 @@ Exec:
 
 
 Filetypes:
-- allow various extensions for each filetype  
+- allow various extensions for each filetype
+
+Command line:
+- check for version name validity (only some characters allowed)
