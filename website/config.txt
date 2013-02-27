@@ -1,0 +1,12 @@
+project_name = Foo
+project_id = foo
+db = {
+  (* postgresql or mysql *)
+  engine = mysql
+  name = genet
+  user = genet
+  host = localhost
+  password = ""
+}
+(* do not forget ending / *)
+rest_api = "http://localhost:8082/"
