@@ -418,6 +418,7 @@ dump.odoc: base/*.ml base/*.mli \
 	indata/*.ml indata/*.mli \
 	chains/*.ml chains/*.mli \
 	rest/*.ml rest/*.mli \
+	gui/*.ml gui/*.mli \
 	driver/*.ml driver/*.mli
 	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
 	-v \

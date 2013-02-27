@@ -63,13 +63,28 @@ Rest_xhtml
 Rest_xpage
 }
 
+{2 Graphical interface (in [gui/])}
+{modgraph[width=600]
+Chngui
+Gui_base
+Gui_install
+Gui_main
+Instgui
+Toolgui.ml
+}
+
 {2 Application modules (in [driver/])}
 {modgraph[width=600]
 Main
 Main_chain
+Main_cheat
+Main_cmd
 Main_diff
+Main_edit
 Main_exec
 Main_genrdfs
+Main_gui
+Main_init
 Main_query
 Main_rest
 Options
