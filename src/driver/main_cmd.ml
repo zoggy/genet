@@ -126,6 +126,7 @@ let compl_intf_provider () =
 ;;
 
 let compl_file_uri () = Cmdline.compl_choices ~words: ["http://"] ();;
+
 let compl_input_name () =
  Cmdline.compl_choices ~words:
     (try Misc.split_string (Misc.exec_command "genet query inputs") ['\n']
@@ -139,6 +140,12 @@ let compl_chain_name () =
     ()
 ;;
 
-let compl_fchain () = Cmdline.compl_choices ~words: ["http://"] ();;
+let compl_fchain () =
+ Cmdline.compl_choices ~words:
+    (try Misc.split_string (Misc.exec_command "genet query fchains") ['\n']
+     with _ -> [])
+    ()
+;;
+
 let compl_in_out () = Cmdline.compl_choices ~words:  ["in" ; "out"] ();;
 let compl_bool () = Cmdline.compl_choices ~words: ["true" ; "false"] ();;

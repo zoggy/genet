@@ -90,6 +90,12 @@ let add_chain_version ctx uri_fchain (modname, id) =
   ~pred: (Uri Grdfs.genet_useversion) ~obj
 ;;
 
+let flat_chains wld =
+  Grdfs.subject_uris wld
+    ~pred: Grdfs.rdf_type
+    ~obj: (Rdf_node.Uri Grdfs.genet_flatchain)
+;;
+
 let set_fchain_chain_versions ctx uri_fchain chain_versions =
   let previous = fchain_chain_versions ctx uri_fchain in
   Chain_versions.iter (remove_chain_version ctx uri_fchain) previous;

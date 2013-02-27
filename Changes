@@ -1,4 +1,5 @@
 Next release:
+add: "genet query fchains"
 add: "genet query inputs"
 add: "genet query chains"
 add: "genet query ichains"

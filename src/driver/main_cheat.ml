@@ -70,6 +70,7 @@ let () =
           (match t.compl_xfiles with
              None -> ""
            | Some pat -> Printf.sprintf "-X %S" pat)
+          ^" -- "
       in
       print_endline res
     end

@@ -160,6 +160,19 @@ let com_inputs =
 ;;
 let com_inputs = ("inputs", com_inputs, "list inputs");;
 
+let list_fchains _ wld _ =
+  let l = Chn_flat.flat_chains wld in
+  List.iter pruri_endline l
+;;
+let com_fchains =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_compl = [] ;
+    com_kind = Main_cmd.mk_final_fun list_fchains ;
+  }
+;;
+let com_fchains = ("fchains", com_fchains, "list flat chains");;
+
 let list_ichains _ wld _ =
   let l = Chn_inst.inst_chains wld in
   List.iter pruri_endline l
@@ -284,6 +297,7 @@ let command =
         com_versions ;
         com_intfs ;
         com_ftypes ;
+        com_fchains ;
         com_ichains ;
         com_inputs ;
         com_dot ;
