@@ -55,7 +55,16 @@ let compl_version () =
 
 let compl_intf () =
   Cmdline.Choices
-    (try Misc.split_string (Misc.exec_command "genet query interfaces") ['\n']
+    (try
+       let l = Misc.split_string
+         (Misc.exec_command "genet query interfaces") ['\n']
+       in
+       let f acc s =
+         match Misc.split_string s [' '] with
+           [] -> acc
+         | h :: _ -> h :: acc
+       in
+       List.fold_left f [] l
      with _ -> [])
 ;;
 
@@ -73,7 +82,18 @@ let compl_port () = Choices ["http://"]
 *)
 
 let compl_ichain () = Cmdline.Choices ["http://"];;
-let compl_tool_or_branch () = Cmdline.Choices ["http://"];;
+let compl_tool_or_branch () =
+  let tools =
+    try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
+    with _ -> []
+  in
+  let branches =
+    try Misc.split_string (Misc.exec_command "genet query branches") ['\n']
+    with _ -> []
+  in
+  Cmdline.Choices (tools @ branches)
+;;
+
 let compl_intf_provider () = Cmdline.Choices ["http://"];;
 let compl_file_uri () = Cmdline.Choices ["http://"];;
 let compl_input_name () = Cmdline.Choices [];;

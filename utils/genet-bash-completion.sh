@@ -3,6 +3,7 @@
 _genet()
 {
   local cur res
+  COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
   COMPREPLY=()
   cur=${COMP_WORDS[COMP_CWORD]}
   #echo ${COMP_WORDS[@]} >> log
@@ -13,4 +14,5 @@ _genet()
   return 0
 }
 
-complete -f -F _genet genet
+#complete -f -F _genet genet
+complete -F _genet genet

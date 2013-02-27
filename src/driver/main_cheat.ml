@@ -49,7 +49,10 @@ let () =
     begin
       let stop = int_of_string Sys.argv.(1) in
       let args = Array.sub Sys.argv 2 (len - 2) in
-      (*prerr_endline (Printf.sprintf "stop=%d in %d args" stop (Array.length args));*)
+      (*
+      prerr_endline (Printf.sprintf "stop=%d in %d args" stop (Array.length args));
+      prerr_endline (Printf.sprintf "args=%s" (String.concat " " (Array.to_list args)));
+      *)
 (*      let escape s =
         String.concat "\\:" (Misc.split_string s [':'])
       in
