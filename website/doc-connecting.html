@@ -1,0 +1,43 @@
+<page title="Filetypes and sets"
+navbar-doc="active"
+with-contents="true"
+>
+<incsh prompt="$" id=""><from-shell prompt="&lt;prompt/&gt;" file="example/run2.sh" id="&lt;id/&gt;"/></incsh>
+<contents>
+<p>
+When specifying a chain, it is not possible to connect two ports of
+interfaces producing and consuming different file types.
+</p>
+<p>
+However, it is possible ports producing a set of files of a given filetype to a
+port consuming a file of the same file type. This will result in running the
+operation containing the second port for each file produced by the first port.
+</p>
+<p>
+Let's illustrate this by an example. Following <elt href="example"/>, we define
+a second chain, to compute the average length of paragraphs.
+To do so, we need to:
+</p>
+<ul>
+<li>upgrade the <icode>split-text</icode> tool to a new version, handling option <icode>-p</icode>
+to split text according to blank lines instead of spaces,</li>
+<li>upgrade the <icode>average></icode> tool to a new version, handling option <icode>-n</icode>
+indicating that input files contain numbers, and it is the average of these numbers that must be
+printed, and handling a <icode>-c</icode> option indicating to only count input characters, not compute average,</li>
+<li>add new interfaces <icode>split-in-pars</icode>, <icode>average-on-list</icode>
+  and <icode>text-length</icode> to use the new features in chains,</li>
+<li>define a new chain implementing implementing the workflow.</li>
+</ul>
+<section id="addintfs" title="Adding versions and interfaces">
+
+</section>
+
+<section id="addchain" title="Defining the new chain">
+
+</section>
+
+<section id="running" title="Running the chain">
+
+</section>
+</contents>
+</page>
