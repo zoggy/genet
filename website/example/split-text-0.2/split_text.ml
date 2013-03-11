@@ -52,9 +52,6 @@ let split_string ?(keep_empty=false) s chars =
 
 let usage = Printf.sprintf "Usage: %s [-p] infile <outfile|outdir>" Sys.argv.(0);;
 
-if Array.length Sys.argv <> 3 then
-  ( prerr_endline usage; exit 1 );;
-
 let separators = [' ' ; '\t' ; '\n' ; '.' ; ',' ; ';' ; '?' ; '!' ; ':'];;
 
 let split_in_pars infile outdir =
@@ -87,7 +84,9 @@ let split_in_pars infile outdir =
             prev_nl := true;
             Buffer.add_char b '\n'
           end
-    | c -> Buffer.add_char b c
+    | c ->
+        prev_nl := false;
+        Buffer.add_char b c
   done;
   let s = Buffer.contents b in
   match split_string s ['\n'] with
@@ -104,17 +103,19 @@ try
   let args = ref [] in
   Arg.parse options (fun s -> args := !args @ [s]) usage;
   match !args with
-    [] | [_] | _::_::_::_ ->
-      failwith usage
   | [infile ; outfile] ->
-      match !split_par with
-        false ->
-          let words = split_string (string_of_file infile) separators in
-          let oc = open_out Sys.argv.(2) in
-          List.iter (fun word -> output_string oc (word^"\n")) words;
-          close_out oc;
-      | true ->
-          split_in_pars infile outfile
+      begin
+        match !split_par with
+          false ->
+            let words = split_string (string_of_file infile) separators in
+            let oc = open_out Sys.argv.(2) in
+            List.iter (fun word -> output_string oc (word^"\n")) words;
+            close_out oc;
+        | true ->
+            split_in_pars infile outfile
+      end
+  | _ ->
+      failwith usage
 with
   Failure msg
 | Sys_error msg  -> prerr_endline msg; exit 1
