@@ -14,8 +14,8 @@ let location_in_buffer (b : GSourceView2.source_buffer) =
 
 class mod_box ctx ~on_select ~on_unselect =
   object(self)
-    inherit [string] Gmylist.plist `SINGLE
-      [None, Gmylist.String Filename.basename] false
+    inherit [ [`Absolute] Fname.filename] Gmylist.plist `SINGLE
+      [None, Gmylist.String (fun f -> Filename.basename (Fname.abs_string f))] false
 
     method on_select = on_select
     method on_deselect = on_unselect
@@ -33,9 +33,9 @@ let create_buffer ctx =
   Gtksv_utils.register_source_buffer buffer;
   buffer
 
-class buffer ctx file =
+class buffer ctx (file : [`Absolute] Fname.filename) =
   let buf = create_buffer ctx in
-  let s = Misc.string_of_file file in
+  let s = Misc.string_of_file (Fname.abs_string file) in
   let _ = buf#insert s in
   object(self)
     method source_buffer = buf
@@ -99,7 +99,9 @@ class code_box ctx =
         | Some buf ->
             let modname = Chn_io.modname_of_file buf#file in
             let code = buf#source_buffer#get_text () in
-            let chn_mod = Chn_io.chn_module_of_string ~file: buf#file modname code in
+            let chn_mod = Chn_io.chn_module_of_string 
+              ~file: (Fname.abs_string buf#file) modname code
+            in
             let (line, char) = location_in_buffer buf#source_buffer in
             let chn =
               List.find
@@ -171,17 +173,18 @@ class box ctx =
       let files = Chn_io.chain_files ctx.ctx_cfg in
       List.iter
         (fun file ->
-          try ignore(Smap.find file buffers)
+          let file_s = Fname.abs_string file in
+          try ignore(Smap.find file_s buffers)
           with Not_found ->
             let b = new buffer ctx file in
-            buffers <- Smap.add file b buffers
+            buffers <- Smap.add file_s b buffers
         )
         files;
       mod_box#update_data files
 
     method on_mod_select file =
       try
-        let b = Smap.find file buffers in
+        let b = Smap.find (Fname.abs_string file) buffers in
         code_box#set_buffer (Some b)
       with Not_found -> assert false
 

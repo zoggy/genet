@@ -36,7 +36,7 @@ type t =
     db_passwd : string ;
     db_host : string ;
     rest_api : Rdf_uri.uri ;
-    root_dir : string ;
+    root_dir : [`Absolute] Fname.filename ;
   }
 
 let read_config file =
@@ -65,7 +65,7 @@ let read_config file =
     db_host = dbhost_cp#get ;
     db_passwd = dbpasswd_cp#get ;
     rest_api = Rdf_uri.uri rest_api ;
-    root_dir = Filename.dirname (Misc.normalized_path file) ;
+    root_dir = Fname.absolute (Filename.dirname (Misc.normalized_path file)) ;
   }
 ;;
 
@@ -82,8 +82,8 @@ let string_of_config c =
   Buffer.contents b
 ;;
 
-let in_dir cfg = Filename.concat cfg.root_dir "in";;
-let out_dir cfg = Filename.concat cfg.root_dir "out";;
-let chains_dir cfg = Filename.concat (in_dir cfg) "chains";;
-let data_dir cfg =  Filename.concat (in_dir cfg) "data";;
-let web_dir cfg = Filename.concat (in_dir cfg) "web";;
+let in_dir cfg = Fname.concat_s cfg.root_dir "in";;
+let out_dir cfg = Fname.concat_s cfg.root_dir "out";;
+let chains_dir cfg = Fname.concat_s (in_dir cfg) "chains";;
+let data_dir cfg =  Fname.concat_s (in_dir cfg) "data";;
+let web_dir cfg = Fname.concat_s (in_dir cfg) "web";;

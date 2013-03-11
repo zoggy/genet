@@ -125,17 +125,17 @@ let dot_of_graph ctx g =
 
 let extract_git_file config ~file ~id ~target =
   let data_dir = Config.data_dir config in
-  let base_dir = Misc.path_under ~parent: data_dir file in
-  let target_dir = Filename.quote (Filename.dirname target) in
-  let target_base = Filename.quote (Filename.basename target) in
+  let base_dir = Fname.path_under ~parent: data_dir file in
+  let target_dir = Filename.quote (Filename.dirname (Fname.abs_string target)) in
+  let target_base = Filename.quote (Filename.basename (Fname.abs_string target)) in
   let com = Printf.sprintf
     "mkdir -p %s/.tmp; \
     (cd %s ; git archive --format tar %s %s| (cd %s/.tmp ; tar xvf -)) ; \
     mv %s/.tmp/%s %s/%s ; \
     rm -fr %s/.tmp/"
     target_dir
-    (Filename.quote data_dir) id (Filename.quote base_dir) target_dir
-    target_dir (Filename.quote base_dir) target_dir target_base
+    (Fname.quote data_dir) id (Fname.rel_quote base_dir) target_dir
+    target_dir (Fname.rel_quote base_dir) target_dir target_base
     target_dir
   in
   dbg ~level:3 (fun () -> Printf.sprintf "extract_git_file: %s" com);
@@ -147,21 +147,22 @@ let extract_git_file config ~file ~id ~target =
 ;;
 
 let filename_of_md5 ctx md5 =
-  Filename.concat (Config.out_dir ctx.ctx_cfg) md5
+  Fname.concat_s (Config.out_dir ctx.ctx_cfg) md5
 ;;
 
 let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file uri =
-  if not (Sys.file_exists file) then
-    failwith (Printf.sprintf "File %S not found" file);
+  let file_s = Fname.abs_string file in
+  if not (Sys.file_exists file_s) then
+    failwith (Printf.sprintf "File %S not found (pwd=%s)" file_s (Sys.getcwd()));
   let md5 =
-    match (Unix.stat file).Unix.st_kind with
-      Unix.S_DIR -> Misc.dir_md5sum file
-    | Unix.S_REG -> Misc.file_md5sum file
-    | _ -> failwith (Printf.sprintf "Invalid file kind for %S" file)
+    match (Unix.stat file_s).Unix.st_kind with
+      Unix.S_DIR -> Misc.dir_md5sum file_s
+    | Unix.S_REG -> Misc.file_md5sum file_s
+    | _ -> failwith (Printf.sprintf "Invalid file kind for %S" file_s)
   in
-  let outfile = Filename.concat (Config.out_dir ctx.ctx_cfg) md5 in
-  if not (Sys.file_exists outfile) then
-    Misc.copy_file ~src: file ~dst: outfile;
+  let outfile = Fname.concat_s (Config.out_dir ctx.ctx_cfg) md5 in
+  if not (Sys.file_exists (Fname.abs_string outfile)) then
+    Misc.copy_file ~src: file_s ~dst: (Fname.abs_string outfile);
   Grdfs.add_triple ctx.ctx_rdf
     ~sub: (Rdf_node.Uri (uri_of_g_uri uri)) ~pred: (Rdf_node.Uri pred)
     ~obj: (Rdf_node.node_of_literal_string md5)
@@ -188,7 +189,7 @@ let compute_version_replacement ctx comb =
 
 type state =
   { g : Graph.t ;
-    port_to_file : string Gurimap.t ;
+    port_to_file : [`Absolute] Fname.filename Gurimap.t ;
     nodes_run : Guriset.t ;
     replace_versions : Rdf_uri.uri -> string -> string ;
   }
@@ -223,30 +224,30 @@ let out_ports state node =
 let run_command ctx (reporter: Reporter.reporter)
   state inst_chain tmp_dir inst_node path in_files inst_out_ports out_files =
 
-  let out_file = Filename.temp_file "genet" "run_command.out" in
+  let out_file = Fname.absolute (Filename.temp_file "genet" "run_command.out") in
   let com = Printf.sprintf
     "(cd %s ; %s %s %s) > %s 2>&1"
-    (Filename.quote tmp_dir)
+    (Fname.quote tmp_dir)
     path
-    (String.concat " " (List.map Filename.quote in_files))
-    (String.concat " " (List.map Filename.quote out_files))
-    (Filename.quote out_file)
+    (String.concat " " (List.map Fname.quote in_files))
+    (String.concat " " (List.map Fname.quote out_files))
+    (Fname.quote out_file)
   in
   let msg = "Running " ^ com in
   dbg ~level: 2 (fun () -> msg);
   reporter#msg msg;
   let link_output ?(error=false) () =
     record_file ctx reporter
-    ~pred: (Grdfs.genet_commandoutput) out_file inst_node;
-    let contents = Misc.string_of_file out_file in
+      ~pred: (Grdfs.genet_commandoutput) out_file inst_node;
+    let contents = Misc.string_of_file (Fname.abs_string out_file) in
     if error then reporter#error contents else reporter#msg contents
   in
   match Sys.command com with
     0 ->
       List.iter2
-      (fun port file ->
-         record_file ctx reporter file port)
-      inst_out_ports out_files;
+        (fun port file ->
+           record_file ctx reporter file port)
+        inst_out_ports out_files;
       link_output ()
   | n ->
       let msg = Printf.sprintf "command failed [%d]: %s" n com in
@@ -262,7 +263,7 @@ let gen_file =
   let cpt = ref 0 in
   fun ?ext () ->
     incr cpt;
-    Printf.sprintf "file%d%s" !cpt (match ext with None -> "" | Some s -> "."^s)
+    Fname.relative (Printf.sprintf "file%d%s" !cpt (match ext with None -> "" | Some s -> "."^s))
 ;;
 
 let copy_flat_port ctx ~inst ~container ?cpt flat_port =
@@ -309,8 +310,11 @@ let new_file ctx tmp_dir ?path state inst_port =
         | Set _ | Tuple _ -> (None, true)
       in
       let file = gen_file ?ext () in
-      let file = match path with None -> file | Some p -> Filename.concat p file in
-      let file = Filename.concat tmp_dir file in
+      let file =
+        match path with 
+          None -> Fname.concat tmp_dir file
+        | Some p -> Fname.concat p file
+      in
       let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
       (file, state)
 ;;
@@ -424,7 +428,7 @@ let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
   let state = { state with g = Graph.remove_node state.g (Flat fchain) } in
   let f state (in_file, id) inst_port =
     let (target, state) = new_file ctx tmp_dir state inst_port in
-    let file = Filename.concat input.Ind_types.dir in_file in
+    let file = Fname.concat input.Ind_types.dir in_file in
     extract_git_file ctx.ctx_cfg ~file ~id ~target;
     record_file ctx reporter target inst_port;
     state
@@ -493,7 +497,7 @@ let add_implode_ports ctx inst_implode orig_impl_in_port tmp_dir impl_out_file c
     | Set t ->
         match t with
         | Var _ | T _ -> (t, None)
-        | Set _ | Tuple _ -> (t, Some (string_of_int cpt))
+        | Set _ | Tuple _ -> (t, Some (Fname.concat_s tmp_dir (string_of_int cpt)))
   in
   let in_port =
     let uri = Grdfs.uri_intf_in_port (uri_of_g_uri inst_implode) cpt in
@@ -543,8 +547,10 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
   in
   let root = get_port_input_file ctx state orig_in_port in
   let in_files =
-     let entries = Find.find_list Find.Ignore [root] [Find.Maxdepth 1] in
-     List.filter ((<>) root) entries
+    let root_s = Fname.abs_string root in
+     let entries = Find.find_list Find.Ignore [root_s] [Find.Maxdepth 1] in
+     let entries = List.filter ((<>) root_s) entries in
+     List.map Fname.absolute entries
   in
   let uri_implode =
     match Grdfs.object_uri ctx.ctx_rdf
@@ -621,7 +627,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     (new_expl_node :: expl_nodes, state)
   in
   let insert_graph (state, cpt) in_file =
-    let in_file = Misc.path_under ~parent: tmp_dir in_file in
+    (*let in_file = Misc.path_under ~parent: tmp_dir in_file in*)
     let (expl_nodes, state) = Guriset.fold (f_node cpt in_file) exploded_nodes ([], state) in
     let state = add_implode_ports
       ctx inst_implode orig_impl_in_port
@@ -646,7 +652,7 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
     match out_ports state inst_node with
       [p] ->
         let (file, state) = new_file ctx tmp_dir state p in
-        Misc.mkdir file;
+        Misc.mkdir (Fname.abs_string file);
         (p, file, state)
      | [] -> assert false | _ -> assert false
    in
@@ -673,8 +679,9 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
      (List.length in_files) (g_uri_string orig_node));
 
   let test file =
-     if not (Sys.file_exists file) then
-       error (Printf.sprintf "File %S does not exist" file)
+     let file_s = Fname.abs_string file in
+     if not (Sys.file_exists file_s) then
+       error (Printf.sprintf "File %S does not exist" file_s)
   in
   List.iter test in_files;
 
@@ -768,9 +775,9 @@ and run_nodes ctx reporter inst tmp_dir state =
 let run ctx reporter ~inst ~fchain input comb g =
   Grdfs.set_start_date_uri ctx.ctx_rdf inst ();
 
-  let tmp_dir = Filename.temp_file "genet-run" ".dir" in
-  Sys.remove tmp_dir;
-  Misc.mkdir tmp_dir ;
+  let tmp_dir = Fname.absolute (Filename.temp_file "genet-run" ".dir") in
+  Sys.remove (Fname.string tmp_dir);
+  Misc.mkdir (Fname.string tmp_dir) ;
 
   let state = init_run ctx reporter comb ~inst ~fchain input tmp_dir g  in
   let state = set_node_as_run state (Flat fchain) in

@@ -26,14 +26,15 @@
 (** Reading and writing chain ASTs. *)
 
 let modname_of_file f =
+  let f = Fname.string f in
   Chn_types.chain_modname_of_string
-  (String.capitalize (Filename.basename (Filename.chop_extension f)))
+    (String.capitalize (Filename.basename (Filename.chop_extension f)))
 ;;
 
 let file_of_modname config name =
   let dir = Config.chains_dir config in
   let name = String.uncapitalize (Chn_types.string_of_chain_modname name) in
-  Filename.concat dir (Printf.sprintf "%s.gnt" name)
+  Fname.concat_s dir (Printf.sprintf "%s.gnt" name)
 ;;
 
 let input_chn_module name lexbuf =
@@ -60,11 +61,11 @@ let chn_module_of_string ?(file="") modname str =
 ;;
 
 let chn_module_of_file file =
-  let ic = open_in file in
+  let ic = open_in (Fname.string file) in
   let lexbuf = Lexing.from_channel ic in
   let lexbuf =
     { lexbuf with
-      Lexing.lex_curr_p = { lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = file }
+      Lexing.lex_curr_p = { lexbuf.Lexing.lex_curr_p with Lexing.pos_fname = (Fname.string file) }
     }
   in
   let modname = modname_of_file file in
@@ -77,9 +78,12 @@ let print_chn_module oc m =
 
 let chain_files config =
   let dir = Config.chains_dir config in
-  Find.find_list Find.Stderr [dir]
-  [ Find.Maxdepth 1 ; Find.Type Unix.S_REG ;
-    Find.Regexp (Str.regexp ".*\\.gnt$") ]
+  let l = 
+    Find.find_list Find.Stderr [Fname.abs_string dir]
+      [ Find.Maxdepth 1 ; Find.Type Unix.S_REG ;
+        Find.Regexp (Str.regexp ".*\\.gnt$") ]
+  in
+  List.map Fname.absolute l
 ;;
 
 let load_chain_files config =
@@ -102,8 +106,8 @@ let load_chain_files config =
 
 module File_set = Set.Make
   (struct
-     type t = string * Misc.git_status
-     let compare (f1,_) (f2,_) = Pervasives.compare f1 f2
+     type t = [`Absolute] Fname.filename * Misc.git_status
+     let compare (f1,_) (f2,_) = Fname.compare f1 f2
    end)
 ;;
 type chain_file_dep =
@@ -136,7 +140,7 @@ let get_chain_deps_files ctx chain_name =
         let succs = Chn_ast.Chn_graph.succ g chn_name in
         let map = List.fold_left (fun map (succ,_) -> f map succ) map succs in
         let file = file_of_modname ctx.Chn_types.ctx_cfg (Chn_types.chain_modname chn_name) in
-        let git_status = Misc.git_status file in
+        let git_status = Misc.git_status (Fname.abs_string file) in
         let (chains, files) = List.fold_left (gather_deps map)
           (Chn_ast.Cset.empty, File_set.singleton (file, git_status)) succs
         in

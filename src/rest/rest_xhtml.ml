@@ -533,7 +533,7 @@ let xhtml_of_intfs_of ctx uri =
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  Xtmpl.apply_to_file env tmpl
+  Xtmpl.apply_to_file env (Fname.abs_string tmpl)
 ;;
 
 let xhtml_of_branches_of ctx uri =
@@ -575,7 +575,7 @@ let get_tool ctx uri =
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_to_file env tmpl in
+  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
   let navpath = xhtml_navpath ctx (`Tool uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -649,7 +649,7 @@ let get_intf ctx uri =
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let navpath = xhtml_navpath ctx (`Intf uri) in
-  let contents = Xtmpl.apply_to_file env tmpl in
+  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
   ([ctype ()], tool_page ctx ~title: name ~wtitle ~navpath contents)
 ;;
 
@@ -724,7 +724,7 @@ let get_branch ctx uri =
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_to_file env tmpl in
+  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
   let navpath = xhtml_navpath ctx (`Branch uri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -846,7 +846,8 @@ let get_chain ctx fullname =
   let contents =
     [
       Xtmpl.E (("", "section"), [], svg) ;
-      Xtmpl.E (("", "section"), [("","title"), "Source from "^(Filename.quote file)], code) ;
+      Xtmpl.E (("", "section"), 
+       [("","title"), "Source from "^(Fname.quote file)], code) ;
     ]
   in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
@@ -1046,7 +1047,7 @@ let xhtml_input_of_ichain ctx uri =
   match Chn_inst.inst_input ctx uri with
     None -> [Xtmpl.D "??"]
   | Some (name, id) ->
-      [ Xtmpl.D (Printf.sprintf "%s [%s]" name id) ]
+      [ Xtmpl.D (Printf.sprintf "%s [%s]" (Fname.rel_string name) id) ]
 ;;
 
 let xhtml_tools_of_ichain ctx ?(short=false) uri =
@@ -1140,10 +1141,10 @@ let get_ichain ctx uri =
 
 let get_outfile_raw ctx path =
   let filename =
-    List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
+    List.fold_left Fname.concat_s (Config.out_dir ctx.ctx_cfg) path
   in
-  let file_contents = Misc.string_of_file filename in
-  let ctype = ctype ~t: (Misc.file_mimetype filename) () in
+  let file_contents = Misc.string_of_file (Fname.abs_string filename) in
+  let ctype = ctype ~t: (Misc.file_mimetype (Fname.abs_string filename)) () in
   ([ctype], file_contents)
 ;;
 
@@ -1176,23 +1177,23 @@ let xhtml_dir_contents f_uri dir =
 ;;
 
 let xhtml_outdir_contents ctx path =
-  let dir = List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path in
+  let dir = List.fold_left Fname.concat_s (Config.out_dir ctx.ctx_cfg) path in
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let f_uri basename =
     Grdfs.uri_outfile_path ~raw: false prefix (path@[basename])
   in
-  xhtml_dir_contents f_uri dir
+  xhtml_dir_contents f_uri (Fname.abs_string dir)
 ;;
 
 let xhtml_inputdir_contents ctx input path =
   let dir =
-    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) (input @ path)
+    List.fold_left Fname.concat_s (Config.data_dir ctx.ctx_cfg) (input @ path)
   in
   let prefix = ctx.ctx_cfg.Config.rest_api in
   let f_uri basename =
     Grdfs.uri_input_file_path ~raw: false prefix input (path@[basename])
   in
-  xhtml_dir_contents f_uri dir
+  xhtml_dir_contents f_uri (Fname.abs_string dir)
 ;;
 
 let get_outfile ctx path raw =
@@ -1201,10 +1202,10 @@ let get_outfile ctx path raw =
   | false ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
       let filename =
-        List.fold_left Filename.concat (Config.out_dir ctx.ctx_cfg) path
+        List.fold_left Fname.concat_s (Config.out_dir ctx.ctx_cfg) path
       in
       let wtitle = String.concat "/" path in
-      let kind = (Unix.lstat filename).Unix.st_kind in
+      let kind = (Unix.lstat (Fname.abs_string filename)).Unix.st_kind in
       let raw_link =
         match kind with
           Unix.S_DIR -> []
@@ -1225,13 +1226,13 @@ let get_outfile ctx path raw =
           Unix.S_DIR ->
             xhtml_outdir_contents ctx path
         | _ ->
-            let file_contents = Misc.string_of_file filename in
+            let file_contents = Misc.string_of_file (Fname.abs_string filename) in
             Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents])
       in
       let contents =
         [ Xtmpl.E (("","p"), [],
            [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Date:" ] ) ;
-             Xtmpl.D  (file_date filename) ;
+             Xtmpl.D  (file_date (Fname.abs_string filename)) ;
            ]) ;
           Xtmpl.E (("","p"), [],
            [ Xtmpl.E (("","div"), [("","class"), "btn-group"],
@@ -1314,7 +1315,7 @@ let get_inst_producers_of ctx path =
 let get_inputs ctx =
   let inputs = Ind_io.list_inputs ctx.ctx_cfg in
   let heads = ["Input"] in
-  let rows = List.map (fun s -> [ [a_input ctx [s]]] ) inputs in
+  let rows = List.map (fun s -> [ [a_input ctx [Fname.rel_string s]]] ) inputs in
   let table = [ table ~heads rows ] in
   let title = "Inputs" in
   ([ctype ()], in_page ctx ~title table)
@@ -1322,14 +1323,14 @@ let get_inputs ctx =
 
 let get_input ctx path =
   let dirname =
-    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) path
+    List.fold_left Fname.concat_s (Config.data_dir ctx.ctx_cfg) path
   in
   let title = String.concat "/" path in
   let spec = Ind_io.load ctx.ctx_cfg dirname in
-  let git_id = Misc.get_git_id dirname in
+  let git_id = Misc.get_git_id (Fname.abs_string dirname) in
   let in_table =
     let f (name, _) =
-      let file_path = Misc.split_filename name in
+      let file_path = Misc.split_filename (Fname.rel_string name) in
       [ [ a_input_file ctx path file_path ] ]
     in
     let rows = List.map f spec.Ind_types.in_files in
@@ -1360,22 +1361,22 @@ let get_input ctx path =
 
 let get_input_file ctx ~raw ~input file_path =
   let filename =
-    List.fold_left Filename.concat (Config.data_dir ctx.ctx_cfg) (input @ file_path)
+    List.fold_left Fname.concat_s (Config.data_dir ctx.ctx_cfg) (input @ file_path)
   in
   match raw with
     true ->
-      let file_contents = Misc.string_of_file filename in
-      let ctype = ctype ~t: (Misc.file_mimetype filename) () in
+      let file_contents = Misc.string_of_file (Fname.abs_string filename) in
+      let ctype = ctype ~t: (Misc.file_mimetype (Fname.abs_string filename)) () in
       ([ctype], file_contents)
   | false ->
       let prefix = ctx.ctx_cfg.Config.rest_api in
-      let kind = (Unix.lstat filename).Unix.st_kind in
+      let kind = (Unix.lstat (Fname.abs_string filename)).Unix.st_kind in
       let contents =
         match kind with
           Unix.S_DIR ->
             [ xhtml_inputdir_contents ctx input file_path ]
         | _ ->
-            let file_contents = Misc.string_of_file filename in
+            let file_contents = Misc.string_of_file (Fname.abs_string filename) in
             [ Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]) ]
       in
       let raw_link =
@@ -1480,10 +1481,10 @@ let get_inst_chains ctx args =
       begin
         let title = "Executions" in
         let javascript = Buffer.create 256 in
-        let file = List.fold_left Filename.concat (Config.web_dir ctx.ctx_cfg)
+        let file = List.fold_left Fname.concat_s (Config.web_dir ctx.ctx_cfg)
           ["tmpl" ; "inst_chain_query.js"]
         in
-        Buffer.add_string javascript (Misc.string_of_file file);
+        Buffer.add_string javascript (Misc.string_of_file (Fname.abs_string file));
         let iq = inst_chain_query_of_args args in
         let input_options _ _ _ =
           let inputs = Ind_io.list_inputs ctx.ctx_cfg in
@@ -1496,9 +1497,9 @@ let get_inst_chains ctx args =
           List.map
             (fun i ->
               let atts =
-                (("", "value"), i) :: (if i = selected then [("", "selected"),"true"] else [])
+                (("", "value"), Fname.rel_string i) :: (if (Fname.rel_string i) = selected then [("", "selected"),"true"] else [])
               in
-              Xtmpl.E (("", "option"), atts, [Xtmpl.D i]))
+              Xtmpl.E (("", "option"), atts, [Xtmpl.D (Fname.rel_string i)]))
             inputs
         in
         let chain_options _ _ _ =
@@ -1612,7 +1613,7 @@ let get_inst_chains ctx args =
 
 let ichain_digest ctx uri =
   let tmpl_dir = Rest_xpage.tmpl_dir ctx.ctx_cfg in
-  let tmpl = Filename.concat tmpl_dir "inst_chain_digest.tmpl" in
+  let tmpl = Fname.concat_s tmpl_dir "inst_chain_digest.tmpl" in
   let date =
     match Grdfs.creation_date_uri ctx.ctx_rdf uri with
       None -> "??"
@@ -1630,7 +1631,7 @@ let ichain_digest ctx uri =
      ("","tools"), (fun _ _ _ -> tools) ;
     ]
   in
-  Xtmpl.apply_to_file env tmpl
+  Xtmpl.apply_to_file env (Fname.abs_string tmpl)
 ;;
 
 let get_diff_ichains ctx args =

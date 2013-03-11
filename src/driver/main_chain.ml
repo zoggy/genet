@@ -56,7 +56,7 @@ let test_file file =
           let f chn =
             let outfile = Printf.sprintf "%s%s.%s.dot"
               prefix
-              (String.capitalize (Filename.basename file))
+              (String.capitalize (Filename.basename (Fname.abs_string file)))
               (Chn_types.string_of_chain_basename chn.chn_name)
             in
             gen_chain_dot outfile chn
@@ -69,7 +69,14 @@ let test_file file =
 ;;
 
 let com_test _ _ opts =
-  List.iter test_file opts.Options.args;;
+  let f name =
+    if Filename.is_relative name then
+      Fname.concat (Fname.absolute (Sys.getcwd())) (Fname.relative name)
+    else
+      Fname.absolute name
+  in
+  List.iter test_file (List.map f opts.Options.args)
+;;
 let com_test = {
     com_options = [ option_dot ] ;
     com_usage = "<chain file(s)>" ;

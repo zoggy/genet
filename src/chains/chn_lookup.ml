@@ -28,7 +28,7 @@
 type ichain_info = {
     ichain : Grdf_types.uri ;
     fchain : Grdf_types.uri ;
-    input : string * string ; (* name * id *)
+    input : [`Relative] Fname.filename * string ; (* name * id *)
     tools : Grdf_types.uri Urimap.t ; (* version (uri) of each used tool *)
   }
 

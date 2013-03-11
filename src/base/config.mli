@@ -34,13 +34,13 @@ type t = {
   db_passwd : string;
   db_host : string;
   rest_api : Rdf_uri.uri ;
-  root_dir : string;
+  root_dir : [`Absolute] Fname.filename ;
 }
 val read_config : string -> t
 val string_of_config : t -> string
 
-val in_dir : t -> string
-val out_dir : t -> string
-val chains_dir : t -> string
-val data_dir : t -> string
-val web_dir : t -> string
+val in_dir : t -> [`Absolute] Fname.filename
+val out_dir : t -> [`Absolute] Fname.filename
+val chains_dir : t -> [`Absolute] Fname.filename
+val data_dir : t -> [`Absolute] Fname.filename
+val web_dir : t -> [`Absolute] Fname.filename

@@ -227,8 +227,8 @@ let add_input config _ options =
       begin
         try
           let data_dir = Config.data_dir config in
-          let fulldir = Filename.concat data_dir dir in
-          Misc.mkdir ~verbose: (options.verb_level > 0) fulldir;
+          let fulldir = Fname.concat_s data_dir dir in
+          Misc.mkdir ~verbose: (options.verb_level > 0) (Fname.abs_string fulldir);
           Ind_io.write fulldir
         with
           Ind_io.Error e ->
@@ -247,6 +247,7 @@ let add_ref_inst config wld options =
   match options.args with
     [input ; chainname ; inst_uri] ->
       begin
+        let input = Fname.relative input in
         let chain = Chn_types.chain_name_of_string chainname in
         let chain = Chn_types.uri_chain config.Config.rest_api chain in
         let inst = Rdf_uri.uri inst_uri in

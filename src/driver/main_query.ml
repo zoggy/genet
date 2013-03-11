@@ -149,7 +149,7 @@ let com_chains =
 let com_chains = ("chains", com_chains, "list chains");;
 
 let list_inputs config _ _ =
-  List.iter print_endline (Ind_io.list_inputs config)
+  List.iter (fun i -> print_endline (Fname.rel_string i)) (Ind_io.list_inputs config)
 ;;
 let com_inputs =
   { Cmdline.com_options = [] ;
@@ -218,10 +218,10 @@ let print_filename_of_url config wld opts =
       | (prefix, dir) :: q ->
           try
             let path = Misc.path_under ~parent: (Rdf_uri.string prefix) s in
-            Filename.concat dir path
+            Fname.concat_s dir path
           with _ -> f q
       in
-      try print_endline (f prefixes)
+      try print_endline (Fname.abs_string (f prefixes))
       with
         Not_found ->
           failwith (Printf.sprintf "%S does not correspond to an input or output file url" s)
@@ -262,6 +262,7 @@ let com_ref_inst_of_inst =
 let ref_inst ctx opts =
   match opts.Options.args with
   | [input ; chain_name] ->
+      let input = Fname.relative input in
       let chain_name = Chn_types.chain_name_of_string chain_name in
       let chain = Chn_types.uri_chain ctx.Chn_types.ctx_cfg.Config.rest_api chain_name in
       let l = Chn_inst.reference_insts ctx ~input ~chain in

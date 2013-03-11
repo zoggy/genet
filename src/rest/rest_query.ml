@@ -329,10 +329,10 @@ let rec read_path_in_path ctx raw inpath = function
   [] -> Input (List.rev inpath)
 | s :: q ->
     let data_dir = Config.data_dir ctx.ctx_cfg in
-    let dir = List.fold_left Filename.concat data_dir (List.rev (s :: inpath)) in
-    let spec_file = Filename.concat dir Ind_io.input_basename in
-    prerr_endline (Printf.sprintf "spec_file=%S" spec_file);
-    if Sys.file_exists spec_file then
+    let dir = List.fold_left Fname.concat_s data_dir (List.rev (s :: inpath)) in
+    let spec_file = Fname.concat_s dir Ind_io.input_basename in
+    prerr_endline (Printf.sprintf "spec_file=%S" (Fname.abs_string spec_file));
+    if Sys.file_exists (Fname.abs_string spec_file) then
       begin
         match q with
           [] -> Input (List.rev (s :: inpath))
@@ -374,10 +374,10 @@ let read_path =
             try
               let static_files = allowed_files ctx.ctx_cfg in
               let (f, t) = List.assoc uri static_files in
-              let f = List.fold_left Filename.concat ctx.ctx_cfg.Config.root_dir
+              let f = List.fold_left Fname.concat_s ctx.ctx_cfg.Config.root_dir
                 ["in" ; "web" ; f]
               in
-              Static_file (f, t)
+              Static_file (Fname.abs_string f, t)
             with
               Not_found -> Other uri
 ;;

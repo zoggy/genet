@@ -33,7 +33,7 @@ let input_basename = "spec.in";;
 type error = (string * string) (** file * msg *)
 exception Error of error
 
-let error ~file msg = raise (Error (file, msg));;
+let error ~file msg = raise (Error (Fname.string file, msg));;
 
 let string_of_error (file, msg) =
   Printf.sprintf "File %s: %s" file msg
@@ -66,15 +66,18 @@ let on_type_error file cp _ _ _ =
 let load config dir =
   let from_in_data =
     let data_dir = Config.data_dir config in
-    Misc.path_under ~parent: data_dir dir
+    Fname.path_under ~parent: data_dir dir
   in
-  let file = Filename.concat dir input_basename in
+  let file = Fname.concat_s dir input_basename in
   let g = mk_spec_group () in
   try
     g.group#read ~no_default: true
-    ~on_type_error: (on_type_error file) file;
+      ~on_type_error: (on_type_error file) (Fname.string file);
     let in_files = List.map
-      (fun file -> (file, Misc.get_git_id (Filename.concat dir file)))
+      (fun file -> 
+        let rel = Fname.relative file in
+        (rel, Misc.get_git_id (Fname.string (Fname.concat dir rel)))
+      )
       g.in_cp#get
     in
     { dir = dir ;
@@ -94,20 +97,20 @@ let load config dir =
 ;;
 
 let write dir =
-  let file = Filename.concat dir input_basename in
+  let file = Fname.concat_s dir input_basename in
   let g = mk_spec_group () in
-  g.group#read ~on_type_error: (on_type_error file) file;
-  g.group#write file
+  g.group#read ~on_type_error: (on_type_error file) (Fname.abs_string file);
+  g.group#write (Fname.abs_string file)
 ;;
 
 let list_inputs config =
   let data_dir = Config.data_dir config in
   let pred s = (Filename.basename s) = input_basename in
   let spec_files = Find.find_list
-    Find.Stderr [data_dir] [Find.Type Unix.S_REG ; Find.Predicate pred]
+    Find.Stderr [Fname.abs_string data_dir] [Find.Type Unix.S_REG ; Find.Predicate pred]
   in
   List.map
-    (fun f -> Misc.path_under ~parent: data_dir (Filename.dirname f))
+    (fun f -> Fname.path_under ~parent: data_dir (Fname.absolute (Filename.dirname f)))
     spec_files
 ;;
 

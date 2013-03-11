@@ -179,16 +179,16 @@ let fun_site_url config _ _ _ = [ Xtmpl.D (Rdf_uri.string config.Config.rest_api
 let fun_site_title config _ _ _ = [ Xtmpl.D config.Config.project_name ];;
 
 let tmpl_dir config =
-  List.fold_left Filename.concat config.Config.root_dir
+  List.fold_left Fname.concat_s config.Config.root_dir
   ["in" ; "web" ; "tmpl"]
 ;;
-let tmpl_file config file = Filename.concat (tmpl_dir config) file;;
+let tmpl_file config file = Fname.concat_s (tmpl_dir config) file;;
 
 let default_commands config =
 
   [
     ("", "if"), fun_if ;
-    ("", "include"), fun_include (tmpl_dir config);
+    ("", "include"), fun_include (Fname.abs_string (tmpl_dir config));
     ("", "image"), fun_image ;
     ("", "hcode"), fun_hcode ~inline: false ?lang: None;
     ("", "icode"), fun_icode ?lang: None;
@@ -222,7 +222,7 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath=[]) ?(error=""
   let f env args body = contents in
   let env = Xtmpl.env_of_list ~env [("", "contents"), f] in
   let tmpl_file = tmpl_file config "page.tmpl" in
-  Xtmpl .apply_to_file env tmpl_file
+  Xtmpl .apply_to_file env (Fname.abs_string tmpl_file)
 ;;
 
 open Chn_ast;;

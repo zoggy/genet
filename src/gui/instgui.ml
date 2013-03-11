@@ -84,7 +84,8 @@ class input_selection ctx on_change =
 
     initializer
       let inputs = Ind_io.list_inputs ctx.ctx_cfg in
-      let inputs = List.sort Pervasives.compare inputs in
+      let inputs = List.sort Fname.compare inputs in
+      let inputs = List.map Fname.rel_string inputs in
       wcombo#set_popdown_strings ("" :: inputs);
       ignore(wcombo#entry#connect#changed on_change)
   end

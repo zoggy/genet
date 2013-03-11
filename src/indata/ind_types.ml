@@ -26,9 +26,9 @@
 (** *)
 
 type spec = {
-    dir : string ;
-    from_in_data : string ;
-    in_files : (string * string) list ;
+    dir : [`Absolute] Fname.filename ;
+    from_in_data : [`Relative] Fname.filename ;
+    in_files : ([`Relative] Fname.filename * string) list ;
     chains : string list ;
   }
 ;;

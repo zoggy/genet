@@ -128,7 +128,7 @@ let inst_input ctx uri_inst =
   in
   match input, input_id with
     None, _ | _, None -> None
-  | Some s, Some id -> Some (s, id)
+  | Some s, Some id -> Some (Fname.relative s, id)
 ;;
 
 let equal_tool_versions = Urimap.equal Rdf_uri.equal;;
@@ -160,12 +160,12 @@ let instances ctx uri_fchain =
 
 let set_input_info ctx uri_inst input =
   let input_name = input.Ind_types.from_in_data in
-  let input_id = Misc.get_git_id input.Ind_types.dir in
+  let input_id = Misc.get_git_id (Fname.abs_string input.Ind_types.dir) in
 
   let sub = Rdf_node.Uri uri_inst in
 
   let pred = Rdf_node.Uri Grdfs.genet_useinput in
-  let obj = Rdf_node.node_of_literal_string input_name in
+  let obj = Rdf_node.node_of_literal_string (Fname.rel_string input_name) in
   Grdfs.add_triple ctx.ctx_rdf ~sub ~pred ~obj;
 
   let pred = Rdf_node.Uri Grdfs.genet_useinputcommitid in
@@ -179,7 +179,7 @@ let inst_chain_exists ctx uri_fchain input comb =
   let insts = instances ctx uri_fchain in
   let input =
     (input.Ind_types.from_in_data,
-     Misc.get_git_id input.Ind_types.dir)
+     Misc.get_git_id (Fname.abs_string input.Ind_types.dir))
   in
   let pred (_, versions, input_info) =
     equal_tool_versions comb versions &&
@@ -320,7 +320,7 @@ let instanciate ctx reporter uri_fchain input comb =
 
 let reference_insts ctx ~input ~chain =
   let input_refs = Grdfs.subject_uris ctx.ctx_rdf
-    ~pred: Grdfs.genet_refinstfor ~obj: (Rdf_node.node_of_literal_string input)
+    ~pred: Grdfs.genet_refinstfor ~obj: (Rdf_node.node_of_literal_string (Fname.rel_string input))
   in
   let chain_refs = Grdfs.subject_uris ctx.ctx_rdf
     ~pred: Grdfs.genet_refinstfor ~obj: (Rdf_node.Uri chain)
@@ -342,7 +342,7 @@ let remove_ref_inst ctx ~input ~chain ~inst =
   Grdfs.rem_triple ctx.ctx_rdf
     ~sub: (Rdf_node.Uri inst)
     ~pred: (Rdf_node.Uri Grdfs.genet_refinstfor)
-    ~obj: (Rdf_node.node_of_literal_string input);
+    ~obj: (Rdf_node.node_of_literal_string (Fname.rel_string input));
   Grdfs.rem_triple_uris ctx.ctx_rdf
     ~sub: inst ~pred: Grdfs.genet_refinstfor ~obj: chain
 ;;
@@ -391,12 +391,14 @@ let add_reference_inst ctx ~input ~chain ~inst =
         in
         failwith msg
     | Some (name, _) ->
-        if name <> input then
-          let msg = Printf.sprintf
-            "Inst chain %S uses input %S and cannot be used as reference for %S"
-            (Rdf_uri.string inst) name input
-          in
-          failwith msg;
+        match Fname.compare name input with
+          0 -> ()
+        | _ ->
+            let msg = Printf.sprintf
+              "Inst chain %S uses input %S and cannot be used as reference for %S"
+                (Rdf_uri.string inst) (Fname.rel_string name) (Fname.rel_string input)
+            in
+            failwith msg
   end;
   List.iter
     (fun inst -> remove_ref_inst ctx ~input ~chain ~inst)
@@ -404,7 +406,7 @@ let add_reference_inst ctx ~input ~chain ~inst =
   Grdfs.add_triple ctx.ctx_rdf
     ~sub: (Rdf_node.Uri inst)
     ~pred: (Rdf_node.Uri Grdfs.genet_refinstfor)
-    ~obj: (Rdf_node.node_of_literal_string input);
+    ~obj: (Rdf_node.node_of_literal_string (Fname.rel_string input));
   Grdfs.add_triple_uris ctx.ctx_rdf
     ~sub: inst ~pred: Grdfs.genet_refinstfor ~obj: chain
 ;;

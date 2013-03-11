@@ -94,6 +94,9 @@ let files_in_dir dir =
 
 try
   let args = ref [] in
+  ignore(Sys.command
+    (Printf.sprintf "echo arguments=%s > /tmp/log.txt"
+     (String.concat " " (Array.to_list (Array.map Filename.quote Sys.argv)))));
   Arg.parse options (fun s -> args := !args @ [s]) usage;
   match !args with
     [] | [_] | _ :: _ :: _ :: _ ->
@@ -136,7 +139,7 @@ try
             | _ ->
                 string_of_float ((float sum) /. (float (List.length files)))
       in
-      let oc = open_out Sys.argv.(2) in
+      let oc = open_out outfile in
       output_string oc (output ^ "\n");
       close_out oc
 with

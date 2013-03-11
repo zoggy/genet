@@ -1,14 +1,20 @@
 chain par_avg_length
 (* This chain reads a text file and output the average size of paragraphs. *)
 {
-  in: test i1;
+  in: text i1;
   out: number o1;
 
   (* operation "split" calls the interface "split-in-pars" of tool "split-text" *)
   operation split : "/split-text/split-in-pars" ;
 
-  (* operation "count" calls the interface "text-length" of tool "average" *)
-  operation count : "/average/text-length" ;
+  (* operation "count" calls the interface "text-length" of tool "average".
+    Since the "split" operation will produce a set of text, we want as many
+    "count" operations as "text" outputs from "split". The "foreach" construction
+    will change the type of the first input port of "count" from "x" to "x set",
+    and its output type from "y" to "y set". Here "x" is "text" and "y" is "number".
+   Parameter 1 of "foreach" indicates to iterize on first input port.
+  *)
+  operation count : foreach("/average/text-length",1) ;
 
   (* operation "avg" calls the interface "average-of-set" of tool "average" *)
   operation avg : "/average/average-of-set" ;

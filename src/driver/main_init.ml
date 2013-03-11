@@ -33,41 +33,46 @@ let git_repo = ref None;;
 let init_dir opts =
   let dir =
     match opts.Options.args with
-      [] -> Filename.current_dir_name
-    | dir :: _ -> dir
+      [] -> Fname.absolute (Sys.getcwd())
+    | dir :: _ -> 
+        if Filename.is_relative dir then
+          Fname.concat (Fname.absolute (Sys.getcwd())) (Fname.relative dir)
+        else
+          Fname.absolute dir
   in
   let verbose = opts.Options.verb_level > 0 in
   let mkdir = Misc.mkdir ~verbose in
-  mkdir dir;
+  mkdir (Fname.abs_string dir);
   let config_file = Install.default_config_file in
   let config = Config.read_config config_file in
   let config = { config with Config.root_dir = dir } in
-  mkdir (Config.out_dir config);
+  mkdir (Fname.abs_string (Config.out_dir config));
   let in_dir = Config.in_dir config in
   begin
     match !git_repo with
       None ->
-        List.iter mkdir [Config.chains_dir config; Config.data_dir config];
+        mkdir (Fname.abs_string (Config.chains_dir config));
+        mkdir (Fname.abs_string (Config.data_dir config));
         let web_dir = Config.web_dir config in
         begin
           let com = Printf.sprintf "cp -r %s %s"
             (Filename.quote Install.share_web_dir)
-            (Filename.quote web_dir)
+            (Fname.quote web_dir)
           in
           if verbose then
             print_endline
-            (Printf.sprintf "copying %s to %s"
-             Install.share_web_dir web_dir);
+              (Printf.sprintf "copying %s to %s"
+               Install.share_web_dir (Fname.abs_string web_dir));
           match Sys.command com with
             0 -> ()
           | _ -> failwith (Printf.sprintf "Command failed: %s" com)
         end
     | Some repo ->
         let com = Printf.sprintf "git clone %s %s"
-          (Filename.quote repo) (Filename.quote in_dir)
+          (Filename.quote repo) (Fname.quote in_dir)
         in
         if verbose then
-          print_endline (Printf.sprintf "Cloning %s into %s" repo in_dir);
+          print_endline (Printf.sprintf "Cloning %s into %s" repo (Fname.abs_string in_dir));
         match Sys.command com with
           0 -> ()
         | _ -> failwith (Printf.sprintf "Command failed: %s" com)

@@ -648,7 +648,7 @@ let flatten ctx fullname =
     | files ->
         let msg = Printf.sprintf
           "The following files are not commited:\n%s\n=> The flattened chains will no be kept (test mode)"
-          (String.concat "\n" files)
+          (String.concat "\n" (List.map Fname.abs_string files))
         in
         Checks.print_warning msg;
         true
