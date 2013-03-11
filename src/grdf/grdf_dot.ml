@@ -102,14 +102,20 @@ let gen_hasversion b wld ?(label=true) ?pred uri =
 ;;
 
 let gen_hasintf b wld ?(label=true) ?pred uri =
-  let set = Grdf_intf.intfs_of wld uri in
+  let set = Grdf_intf.explicit_intfs_of wld uri in
   let set = match pred with None -> set | Some f -> Uriset.filter f set in
-  Uriset.iter
-    (fun uri2 -> Printf.bprintf b "%s -> %s [%s];\n"
-     (dot_id uri) (dot_id uri2)
-     (if label then "label=\"hasIntf\"" else "")
-  )
-     set
+
+  let set_no = Grdf_intf.explicit_no_intfs_of wld uri in
+  let set_no = match pred with None -> set_no | Some f -> Uriset.filter f set_no in
+
+  let f edgelabel color uri2 =
+    Printf.bprintf b "%s -> %s [color=%S%s];\n"
+      (dot_id uri) (dot_id uri2)
+      color
+      (if label then Printf.sprintf ", label=%S" edgelabel else "")
+  in
+  Uriset.iter (f "hasintf" "black") set ;
+  Uriset.iter (f "nointf" "red") set_no ;
 ;;
 
 let dot ?(edge_labels=true) wld =
@@ -127,7 +133,7 @@ let dot ?(edge_labels=true) wld =
   let label = edge_labels in
   List.iter (gen_hasbranch b ~label wld) (tools @ branches);
   List.iter (gen_hasversion b ~label wld) (tools @ branches);
-  List.iter (gen_hasintf b ~label wld) (tools @ branches);
+  List.iter (gen_hasintf b ~label wld) (tools @ branches @ versions);
 
   Buffer.add_string b "}\n";
   Buffer.contents b

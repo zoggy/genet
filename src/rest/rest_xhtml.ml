@@ -519,7 +519,7 @@ let xhtml_of_intfs_of ctx uri =
   let intfs = intf_list ctx (Uriset.elements explicit) in
   let intfs_no = intf_list ctx (Uriset.elements explicit_no) in
   prerr_endline "xhtml_of_intfs: intfs ok";
-  let inherited_intfs = intf_list ctx (Uriset.elements inherited) in
+  let inherited_intfs = intf_list ctx (Uriset.elements (Uriset.diff inherited explicit_no)) in
   prerr_endline "xhtml_of_intfs: inherited ok";
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
   let env = Xtmpl.env_of_list
