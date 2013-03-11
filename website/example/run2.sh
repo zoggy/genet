@@ -2,6 +2,15 @@
 
 export PATH=/home/guesdon/devel/genet/src:$PATH
 
+#id=addtest2gnt
+cp -f in/chains/test2.gnt /tmp/genet-example/in/chains/
+(cd /tmp/genet-example/in/chains && git add test2.gnt && git commit -m"add new chain" test2.gnt)
+
+cp -f spec.in2 /tmp/genet-example/in/data/test1/spec.in
+(cd /tmp/genet-example/in/data/test1 && git commit -m"add new chain" spec.in)
+
+cd /tmp/genet-example
+
 
 #id=addsplittextversion
 genet add version http://localhost:8082/tools/split-text/branches/0.x 0.2
@@ -48,3 +57,4 @@ genet add port ${INTF} "out" "number"
 #id=addnointfaverage-n
 genet add no-interface http://localhost:8082/tools/average/versions/0.1 ${INTF}
 genet add no-interface http://localhost:8082/tools/average/versions/0.2 ${INTF}
+

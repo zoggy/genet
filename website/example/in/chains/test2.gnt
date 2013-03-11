@@ -1,0 +1,21 @@
+chain par_avg_length
+(* This chain reads a text file and output the average size of paragraphs. *)
+{
+  in: test i1;
+  out: number o1;
+
+  (* operation "split" calls the interface "split-in-pars" of tool "split-text" *)
+  operation split : "/split-text/split-in-pars" ;
+
+  (* operation "count" calls the interface "text-length" of tool "average" *)
+  operation count : "/average/text-length" ;
+
+  (* operation "avg" calls the interface "average-of-set" of tool "average" *)
+  operation avg : "/average/average-of-set" ;
+
+  i1 -> split.1 ;
+  split.1 -> count.1 ;
+  count.1 -> avg.1 ;
+  avg.1 -> o1 ;
+
+}
