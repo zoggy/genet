@@ -18,22 +18,27 @@ genet add port http://localhost:8082/tools/split-text/interfaces/split-in-pars "
 
 #id=addsplittextout
 genet add port http://localhost:8082/tools/split-text/interfaces/split-in-pars "out" "text set"
-  # http://localhost:8082/tools/split-text/interfaces/split-in-pars/out/1#id=addaverage
-
+  # http://localhost:8082/tools/split-text/interfaces/split-in-pars/out/1
 
 #id=addaverage-c
 genet add version http://localhost:8082/tools/average/branches/0.x  0.3
   # http://localhost:8082/tools/average/versions/0.3
 
 INTF=`genet add interface -p "/tmp/tools/average-%v -c" \
-  http://localhost:8082/tools/average/branches/0.3 text-length`
+  http://localhost:8082/tools/average/branches/0.x text-length`
   # http://localhost:8082/tools/average/interfaces/text-length
 genet add port ${INTF} "in" "text"
-genet add port ${INTF} "out" "average"
+genet add port ${INTF} "out" "number"
+
+genet add no-interface http://localhost:8082/tools/average/versions/0.1 ${INTF}
+genet add no-interface http://localhost:8082/tools/average/versions/0.2 ${INTF}
 
 #id=addaverage-n
 INTF=`genet add interface -p "/tmp/tools/average-%v -n" \
-  http://localhost:8082/tools/average/branches/0.3 average-of-list`
-  # http://localhost:8082/tools/average/interfaces/average-of-list
-genet add port ${INTF} "in" "average list"
-genet add port ${INTF} "out" "average"
+  http://localhost:8082/tools/average/branches/0.x average-of-set`
+  # http://localhost:8082/tools/average/interfaces/average-of-set
+genet add port ${INTF} "in" "number set"
+genet add port ${INTF} "out" "number"
+
+genet add no-interface http://localhost:8082/tools/average/versions/0.1 ${INTF}
+genet add no-interface http://localhost:8082/tools/average/versions/0.2 ${INTF}

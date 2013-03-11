@@ -21,13 +21,11 @@ cd /tmp/genet-example
 
 #id=addfiletypes
 genet add filetype "text" txt "Source text file"
-genet add filetype "words" txt "words, one per line"
-genet add filetype "average" avg "computed average length of words"
+genet add filetype "words" txt "Words, one per line"
+genet add filetype "number" nb "A real number"
 
 #id=showfiletypes
 genet query filetypes
-
-
 
 #id=addsplittexttool
 genet add tool split-text
@@ -72,7 +70,7 @@ VERSION=`genet add version ${BRANCH} 0.1`
 INTF=`genet add interface -p "/tmp/tools/average-%v" ${BRANCH} line-length`
   # http://localhost:8082/tools/average/interfaces/line-length
 genet add port ${INTF} "in" "words"
-genet add port ${INTF} "out" "average"
+genet add port ${INTF} "out" "number"
 
 #id=showinterfaces
 genet query interfaces

@@ -94,8 +94,8 @@ let version_combinations ctx fchain =
       let f_version acc version =
         (* keep only versions implementing all the required interfaces *)
         let implemented =
-          let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf version in
-          Uriset.union explicit inherited
+          let (explicit, explicit_no, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf version in
+          Uriset.diff (Uriset.union explicit inherited) explicit_no
         in
         dbg ~level:2
           (fun () -> Printf.sprintf "Implemented:\n%s"

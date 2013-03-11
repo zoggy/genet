@@ -99,6 +99,7 @@ let add_intf config wld options =
       print_endline (Rdf_uri.string uri)
   | _ -> failwith "Please give tool or branch uri and name of the new interface"
 ;;
+
 let com_add_intf = {
   com_options = [
       "-p", Cmdline.String (None, fun s -> intf_path := Some s),
@@ -110,6 +111,26 @@ let com_add_intf = {
   com_usage = "<tool|branch uri> <name>" ;
   com_compl = [ Cmdline.Compfun Main_cmd.compl_tool_or_branch ] ;
   com_kind = Main_cmd.mk_final_fun add_intf ;
+  }
+;;
+
+let add_no_intf config wld options =
+  match options.args with
+  | [parent; intf] ->
+      let parent = Rdf_uri.uri parent in
+      let intf = Rdf_uri.uri intf in
+      Grdf_intf.add_no_intf wld ~parent intf
+  | _ -> failwith "Please give (branch|version) uri and interface uri"
+;;
+
+let com_add_no_intf = {
+  com_options = [];
+  com_usage = "<branch|version uri> <name>" ;
+  com_compl = [
+      Cmdline.Compfun Main_cmd.compl_branch_or_version ;
+      Cmdline.Compfun Main_cmd.compl_intf ;
+    ] ;
+  com_kind = Main_cmd.mk_final_fun add_no_intf ;
   }
 ;;
 
@@ -275,6 +296,7 @@ let add_commands = [
     "branch", com_add_branch, "add new branch" ;
     "version", com_add_version, "add new version" ;
     "interface", com_add_intf, "add new interface" ;
+    "no-interface", com_add_no_intf, "indicate a branch or version does not immlement a given interface" ;
     "filetype", com_add_filetype, "add new filetype" ;
     "port", com_add_port, "add new port" ;
     "input", com_add_input, "add new input";

@@ -514,9 +514,10 @@ let intf_list ctx intfs =
 
 let xhtml_of_intfs_of ctx uri =
   prerr_endline "xhtml_of_intfs: start";
-  let (explicit, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
-  prerr_endline "xhtml_of_intfs: explicit,inherited ok";
+  let (explicit, explicit_no, inherited) = Grdf_intf.compute_intfs_of ctx.ctx_rdf uri in
+  prerr_endline "xhtml_of_intfs: explicit,explicit_no,inherited ok";
   let intfs = intf_list ctx (Uriset.elements explicit) in
+  let intfs_no = intf_list ctx (Uriset.elements explicit_no) in
   prerr_endline "xhtml_of_intfs: intfs ok";
   let inherited_intfs = intf_list ctx (Uriset.elements inherited) in
   prerr_endline "xhtml_of_intfs: inherited ok";
@@ -525,6 +526,8 @@ let xhtml_of_intfs_of ctx uri =
     [
       ("", "has_intfs"), (fun _ _ _ -> [if Uriset.is_empty explicit then Xtmpl.D "" else Xtmpl.D "true"])  ;
       ("", "intfs"), (fun _ _ _ -> intfs) ;
+      ("", "has_intfs_no"), (fun _ _ _ -> [if Uriset.is_empty explicit_no then Xtmpl.D "" else Xtmpl.D "true"])  ;
+      ("", "intfs_no"), (fun _ _ _ -> intfs_no) ;
       ("", "has_inherited_intfs"), (fun _ _ _ -> [if Uriset.is_empty inherited then Xtmpl.D "" else Xtmpl.D "true"]) ;
       ("", "inherited_intfs"), (fun _ _ _ -> inherited_intfs) ;
     ]

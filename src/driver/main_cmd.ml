@@ -102,6 +102,7 @@ let compl_ichain () =
      with _ -> [])
     ()
 ;;
+
 let compl_tool_or_branch () =
   let tools =
     try Misc.split_string (Misc.exec_command "genet query tools") ['\n']
@@ -112,6 +113,18 @@ let compl_tool_or_branch () =
     with _ -> []
   in
   Cmdline.compl_choices ~words: (tools @ branches) ()
+;;
+
+let compl_branch_or_version () =
+  let branches =
+    try Misc.split_string (Misc.exec_command "genet query branches") ['\n']
+    with _ -> []
+  in
+  let versions =
+    try Misc.split_string (Misc.exec_command "genet query versions") ['\n']
+    with _ -> []
+  in
+  Cmdline.compl_choices ~words: (branches @ versions) ()
 ;;
 
 let compl_intf_provider () =

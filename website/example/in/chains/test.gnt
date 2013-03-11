@@ -2,7 +2,7 @@ chain words_avg_length
 (*  This chain reads a text file and output the average length of the different words used. *)
 {
   in: text i1 ;
-  out: average o1 ;
+  out: number o1 ;
 
   (* operation "split" calls the interface "split-in-words" of tool "split-text" *)
   operation split : "/split-text/split-in-words" ;

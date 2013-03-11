@@ -85,11 +85,40 @@ let add wld ~parent name =
       Some _ -> ()
     | None -> do_add wld uri name
   end;
+  (* eventually remove information about not implementing this interface *)
+  Grdfs.rem_triple wld
+    ~sub: node_parent
+    ~pred: (Uri Grdfs.genet_nointf)
+    ~obj:  (Uri uri);
+
   Grdfs.add_triple wld
-  ~sub: node_parent
-  ~pred: (Uri Grdfs.genet_hasintf)
-  ~obj:  (Uri uri);
+    ~sub: node_parent
+    ~pred: (Uri Grdfs.genet_hasintf)
+    ~obj:  (Uri uri);
+
   uri
+;;
+
+let add_no_intf wld ~parent uri =
+  dbg ~level: 1 (fun () -> "Grdf_intf.add_no_intf parent="^(Rdf_uri.string parent)^" uri="^(Rdf_uri.string uri));
+  match intf_exists wld uri with
+    None -> failwith (Printf.sprintf "No such interface: %S" (Rdf_uri.string uri))
+  | Some _ ->
+      let parent_is_branch = Grdfs.is_a_branch wld parent in
+      let parent_is_version = Grdfs.is_a_version wld parent in
+      if not (parent_is_branch || parent_is_version) then
+        Grdf_types.error (Grdf_types.Not_branch_or_version parent);
+      let node_parent = Uri parent in
+      (* eventually remove information about implementing this interface *)
+      Grdfs.rem_triple wld
+        ~sub: node_parent
+        ~pred: (Uri Grdfs.genet_hasintf)
+        ~obj:  (Uri uri);
+
+      Grdfs.add_triple wld
+        ~sub: node_parent
+        ~pred: (Uri Grdfs.genet_nointf)
+        ~obj:  (Uri uri)
 ;;
 
 let explicit_intfs_of wld uri =
@@ -139,7 +168,7 @@ let compute_intfs_of wld uri =
     (* show all interfaces *)
     (
      (*prerr_endline "Grdf_intf.compute_intfs_of: then";*)
-     let ret = (intfs_of_tool wld uri, Uriset.empty) in
+     let ret = (intfs_of_tool wld uri, Uriset.empty, Uriset.empty) in
      (*prerr_endline "Grdf_intf.compute_intfs_of: ok";*)
      ret
     )
@@ -162,8 +191,9 @@ let compute_intfs_of wld uri =
       in
       (*prerr_endline "Grdf_intf.compute_intfs_of: parent ok";*)
       let inherited = inher parent in
+      let explicit_no = explicit_no_intfs_of wld uri in
       (*prerr_endline "Grdf_intf.compute_intfs_of: inherited ok";*)
-      (explicit, inherited)
+      (explicit, explicit_no, inherited)
     end
 ;;
 

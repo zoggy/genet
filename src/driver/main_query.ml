@@ -95,10 +95,10 @@ let list_interfaces _ wld options =
       [] -> Grdf_intf.intfs wld
     | l ->
         let f set s_uri =
-          let (explicit, inherited) =
+          let (explicit, explicit_no, inherited) =
             Grdf_intf.compute_intfs_of wld (Rdf_uri.uri s_uri)
           in
-          Uriset.union set (Uriset.union explicit inherited)
+          Uriset.diff (Uriset.union set (Uriset.union explicit inherited)) explicit_no
         in
         List.fold_left f Uriset.empty l
   in

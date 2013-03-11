@@ -39,6 +39,7 @@ type error =
   | Intf_exists of string
   | Filetype_exists of string
   | Not_tool_or_branch of uri
+  | Not_branch_or_version of uri
   | Not_a_tool of uri
   | Not_a_version of uri
   | Tool_of_branch_differs of uri * uri * uri
