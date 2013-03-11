@@ -75,11 +75,13 @@ let files_in_dir dir =
       with
         None -> acc
       | Some entry ->
-          let filename = Filename.concat dir entry in
-          if filename <> Filename.current_dir_name
-            && filename <> Filename.parent_dir_name
+          if entry <> Filename.current_dir_name
+            && entry <> Filename.parent_dir_name
           then
-            iter (filename :: acc)
+            (
+             let filename = Filename.concat dir entry in
+             iter (filename :: acc)
+            )
           else
             iter acc
     in
@@ -94,9 +96,6 @@ let files_in_dir dir =
 
 try
   let args = ref [] in
-  ignore(Sys.command
-    (Printf.sprintf "echo arguments=%s > /tmp/log.txt"
-     (String.concat " " (Array.to_list (Array.map Filename.quote Sys.argv)))));
   Arg.parse options (fun s -> args := !args @ [s]) usage;
   match !args with
     [] | [_] | _ :: _ :: _ :: _ ->
