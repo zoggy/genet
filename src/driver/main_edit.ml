@@ -125,7 +125,7 @@ let add_no_intf config wld options =
 
 let com_add_no_intf = {
   com_options = [];
-  com_usage = "<branch|version uri> <name>" ;
+  com_usage = "<branch|version uri> <interface uri>" ;
   com_compl = [
       Cmdline.Compfun Main_cmd.compl_branch_or_version ;
       Cmdline.Compfun Main_cmd.compl_intf ;
@@ -297,7 +297,7 @@ let add_commands = [
     "branch", com_add_branch, "add new branch" ;
     "version", com_add_version, "add new version" ;
     "interface", com_add_intf, "add new interface" ;
-    "no-interface", com_add_no_intf, "indicate a branch or version does not immlement a given interface" ;
+    "no-interface", com_add_no_intf, "indicate a branch or version does not implement a given interface" ;
     "filetype", com_add_filetype, "add new filetype" ;
     "port", com_add_port, "add new port" ;
     "input", com_add_input, "add new input";
