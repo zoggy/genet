@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,6 +81,6 @@
 <body>
 <code class="code"><span class="constructor">Set</span>.<span class="constructor">Make</span><br>
 &nbsp;&nbsp;(<span class="keyword">struct</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;string&nbsp;*&nbsp;<span class="constructor">Misc</span>.git_status<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;compare&nbsp;(f1,_)&nbsp;(f2,_)&nbsp;=&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;f1&nbsp;f2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;*&nbsp;<span class="constructor">Misc</span>.git_status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;compare&nbsp;(f1,_)&nbsp;(f2,_)&nbsp;=&nbsp;<span class="constructor">Fname</span>.compare&nbsp;f1&nbsp;f2<br>
 &nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)</code></body></html>

@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -79,5 +80,5 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;tmpl_dir&nbsp;config&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;config.<span class="constructor">Config</span>.root_dir<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;config.<span class="constructor">Config</span>.root_dir<br>
 &nbsp;&nbsp;[<span class="string">"in"</span>&nbsp;;&nbsp;<span class="string">"web"</span>&nbsp;;&nbsp;<span class="string">"tmpl"</span>]</code></body></html>

@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -182,6 +183,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;()<br>
 ;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;compl_tool_or_branch&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;(<span class="constructor">Misc</span>.exec_command&nbsp;<span class="string">"genet&nbsp;query&nbsp;tools"</span>)&nbsp;[<span class="string">'\n'</span>]<br>
@@ -192,6 +194,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Cmdline</span>.compl_choices&nbsp;~words:&nbsp;(tools&nbsp;@&nbsp;branches)&nbsp;()<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;compl_branch_or_version&nbsp;()&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;(<span class="constructor">Misc</span>.exec_command&nbsp;<span class="string">"genet&nbsp;query&nbsp;branches"</span>)&nbsp;[<span class="string">'\n'</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;(<span class="constructor">Misc</span>.exec_command&nbsp;<span class="string">"genet&nbsp;query&nbsp;versions"</span>)&nbsp;[<span class="string">'\n'</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Cmdline</span>.compl_choices&nbsp;~words:&nbsp;(branches&nbsp;@&nbsp;versions)&nbsp;()<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;compl_intf_provider&nbsp;()&nbsp;=<br>

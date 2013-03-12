@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,9 +82,9 @@
 <code class="code"><span class="keyword">let</span>&nbsp;run&nbsp;ctx&nbsp;reporter&nbsp;~inst&nbsp;~fchain&nbsp;input&nbsp;comb&nbsp;g&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_start_date_uri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmp_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet-run"</span>&nbsp;<span class="string">".dir"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;tmp_dir;<br>
-&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;tmp_dir&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmp_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet-run"</span>&nbsp;<span class="string">".dir"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;(<span class="constructor">Fname</span>.string&nbsp;tmp_dir);<br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.string&nbsp;tmp_dir)&nbsp;;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;init_run&nbsp;ctx&nbsp;reporter&nbsp;comb&nbsp;~inst&nbsp;~fchain&nbsp;input&nbsp;tmp_dir&nbsp;g&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;set_node_as_run&nbsp;state&nbsp;(<span class="constructor">Flat</span>&nbsp;fchain)&nbsp;<span class="keyword">in</span><br>

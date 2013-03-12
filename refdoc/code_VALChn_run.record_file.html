@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -79,17 +80,18 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;?(pred=<span class="constructor">Grdfs</span>.genet_filemd5)&nbsp;file&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;not&nbsp;found"</span>&nbsp;file);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file_s)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;not&nbsp;found&nbsp;(pwd=%s)"</span>&nbsp;file_s&nbsp;(<span class="constructor">Sys</span>.getcwd()));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;md5&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;(<span class="constructor">Unix</span>.stat&nbsp;file).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.dir_md5sum&nbsp;file<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.file_md5sum&nbsp;file<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;file&nbsp;kind&nbsp;for&nbsp;%S"</span>&nbsp;file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;(<span class="constructor">Unix</span>.stat&nbsp;file_s).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.dir_md5sum&nbsp;file_s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.file_md5sum&nbsp;file_s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;file&nbsp;kind&nbsp;for&nbsp;%S"</span>&nbsp;file_s)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;outfile&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;outfile)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.copy_file&nbsp;~src:&nbsp;file&nbsp;~dst:&nbsp;outfile;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;outfile&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;outfile))&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.copy_file&nbsp;~src:&nbsp;file_s&nbsp;~dst:&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;outfile);<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;(uri_of_g_uri&nbsp;uri))&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;pred)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;md5)</code></body></html>

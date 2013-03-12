@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -179,6 +180,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;tool&nbsp;or&nbsp;branch&nbsp;uri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;interface"</span><br>
 ;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;com_add_intf&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;com_options&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-p"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">String</span>&nbsp;(<span class="constructor">None</span>,&nbsp;<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intf_path&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;s),<br>
@@ -190,6 +192,26 @@
 &nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;tool|branch&nbsp;uri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_intf&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_no_intf&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[parent;&nbsp;intf]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.add_no_intf&nbsp;wld&nbsp;~parent&nbsp;intf<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;(branch|version)&nbsp;uri&nbsp;and&nbsp;interface&nbsp;uri"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;com_add_no_intf&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[];<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;branch|version&nbsp;uri&gt;&nbsp;&lt;interface&nbsp;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_branch_or_version&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_no_intf&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 ;;<br>
 <br>
@@ -285,8 +307,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fulldir&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;data_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;~verbose:&nbsp;(options.verb_level&nbsp;&gt;&nbsp;0)&nbsp;fulldir;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fulldir&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;data_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;~verbose:&nbsp;(options.verb_level&nbsp;&gt;&nbsp;0)&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;fulldir);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ind_io</span>.write&nbsp;fulldir<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ind_io</span>.<span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -305,6 +327,7 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[input&nbsp;;&nbsp;chainname&nbsp;;&nbsp;inst_uri]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=&nbsp;<span class="constructor">Fname</span>.relative&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chainname&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;chain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;inst_uri&nbsp;<span class="keyword">in</span><br>
@@ -354,6 +377,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"branch"</span>,&nbsp;com_add_branch,&nbsp;<span class="string">"add&nbsp;new&nbsp;branch"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"version"</span>,&nbsp;com_add_version,&nbsp;<span class="string">"add&nbsp;new&nbsp;version"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"interface"</span>,&nbsp;com_add_intf,&nbsp;<span class="string">"add&nbsp;new&nbsp;interface"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"no-interface"</span>,&nbsp;com_add_no_intf,&nbsp;<span class="string">"indicate&nbsp;a&nbsp;branch&nbsp;or&nbsp;version&nbsp;does&nbsp;not&nbsp;implement&nbsp;a&nbsp;given&nbsp;interface"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"filetype"</span>,&nbsp;com_add_filetype,&nbsp;<span class="string">"add&nbsp;new&nbsp;filetype"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"port"</span>,&nbsp;com_add_port,&nbsp;<span class="string">"add&nbsp;new&nbsp;port"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"input"</span>,&nbsp;com_add_input,&nbsp;<span class="string">"add&nbsp;new&nbsp;input"</span>;<br>

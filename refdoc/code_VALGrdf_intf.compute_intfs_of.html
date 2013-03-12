@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -93,7 +94,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;show&nbsp;all&nbsp;interfaces&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;then";*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;=&nbsp;(intfs_of_tool&nbsp;wld&nbsp;uri,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;=&nbsp;(intfs_of_tool&nbsp;wld&nbsp;uri,&nbsp;<span class="constructor">Uriset</span>.empty,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;ok";*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
@@ -116,6 +117,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;parent&nbsp;ok";*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inherited&nbsp;=&nbsp;inher&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;explicit_no&nbsp;=&nbsp;explicit_no_intfs_of&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;inherited&nbsp;ok";*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(explicit,&nbsp;inherited)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

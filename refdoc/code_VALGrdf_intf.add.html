@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -95,8 +96,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name<br>
 &nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;eventually&nbsp;remove&nbsp;information&nbsp;about&nbsp;not&nbsp;implementing&nbsp;this&nbsp;interface&nbsp;*)</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld<br>
-&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
-&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
-&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+<br>
 &nbsp;&nbsp;uri</code></body></html>

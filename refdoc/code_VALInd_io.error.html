@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -78,4 +79,4 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Ind_io.error</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;error&nbsp;~file&nbsp;msg&nbsp;=&nbsp;raise&nbsp;(<span class="constructor">Error</span>&nbsp;(file,&nbsp;msg))</code></body></html>
+<code class="code"><span class="keyword">let</span>&nbsp;error&nbsp;~file&nbsp;msg&nbsp;=&nbsp;raise&nbsp;(<span class="constructor">Error</span>&nbsp;(<span class="constructor">Fname</span>.string&nbsp;file,&nbsp;msg))</code></body></html>

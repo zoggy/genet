@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -79,4 +80,4 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;list_inputs&nbsp;config&nbsp;_&nbsp;_&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;print_endline&nbsp;(<span class="constructor">Ind_io</span>.list_inputs&nbsp;config)</code></body></html>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;i))&nbsp;(<span class="constructor">Ind_io</span>.list_inputs&nbsp;config)</code></body></html>

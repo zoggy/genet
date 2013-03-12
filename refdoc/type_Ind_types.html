@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,9 +81,9 @@
 <body>
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;spec&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;dir&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;from_in_data&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;in_files&nbsp;:&nbsp;(string&nbsp;*&nbsp;string)&nbsp;list;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dir&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;from_in_data&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Relative</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in_files&nbsp;:&nbsp;([&nbsp;<span class="keywordsign">`</span><span class="constructor">Relative</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;*&nbsp;string)&nbsp;list;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;chains&nbsp;:&nbsp;string&nbsp;list;<br>
 &nbsp;&nbsp;}<br>
 <span class="keyword">end</span></code></body></html>

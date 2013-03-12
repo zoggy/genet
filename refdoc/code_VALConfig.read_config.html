@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -104,5 +105,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;=&nbsp;dbhost_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;=&nbsp;dbpasswd_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;rest_api&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Misc</span>.normalized_path&nbsp;file)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Misc</span>.normalized_path&nbsp;file))&nbsp;;<br>
 &nbsp;&nbsp;}</code></body></html>

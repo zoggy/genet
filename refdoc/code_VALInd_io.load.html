@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,15 +82,18 @@
 <code class="code"><span class="keyword">let</span>&nbsp;load&nbsp;config&nbsp;dir&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;from_in_data&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;dir<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;input_basename&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;input_basename&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;mk_spec_group&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;g.group<span class="keywordsign">#</span>read&nbsp;~no_default:&nbsp;<span class="keyword">true</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;~on_type_error:&nbsp;(on_type_error&nbsp;file)&nbsp;file;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~on_type_error:&nbsp;(on_type_error&nbsp;file)&nbsp;(<span class="constructor">Fname</span>.string&nbsp;file);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_files&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(file,&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;file)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rel&nbsp;=&nbsp;<span class="constructor">Fname</span>.relative&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(rel,&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.string&nbsp;(<span class="constructor">Fname</span>.concat&nbsp;dir&nbsp;rel)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g.in_cp<span class="keywordsign">#</span>get<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;dir&nbsp;=&nbsp;dir&nbsp;;<br>

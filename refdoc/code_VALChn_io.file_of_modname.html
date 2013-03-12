@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,4 +82,4 @@
 <code class="code"><span class="keyword">let</span>&nbsp;file_of_modname&nbsp;config&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Config</span>.chains_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.uncapitalize&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_modname&nbsp;name)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s.gnt"</span>&nbsp;name)</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s.gnt"</span>&nbsp;name)</code></body></html>

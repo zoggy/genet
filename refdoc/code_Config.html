@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -116,7 +117,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;:&nbsp;string&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;:&nbsp;string&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;:&nbsp;string&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 <br>
 <span class="keyword">let</span>&nbsp;read_config&nbsp;file&nbsp;=<br>
@@ -145,7 +146,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;=&nbsp;dbhost_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;=&nbsp;dbpasswd_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;rest_api&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Misc</span>.normalized_path&nbsp;file)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Misc</span>.normalized_path&nbsp;file))&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 ;;<br>
 <br>
@@ -162,9 +163,9 @@
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.contents&nbsp;b<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;in_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;cfg.root_dir&nbsp;<span class="string">"in"</span>;;<br>
-<span class="keyword">let</span>&nbsp;out_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;cfg.root_dir&nbsp;<span class="string">"out"</span>;;<br>
-<span class="keyword">let</span>&nbsp;chains_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"chains"</span>;;<br>
-<span class="keyword">let</span>&nbsp;data_dir&nbsp;cfg&nbsp;=&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"data"</span>;;<br>
-<span class="keyword">let</span>&nbsp;web_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"web"</span>;;<br>
+<span class="keyword">let</span>&nbsp;in_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;cfg.root_dir&nbsp;<span class="string">"in"</span>;;<br>
+<span class="keyword">let</span>&nbsp;out_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;cfg.root_dir&nbsp;<span class="string">"out"</span>;;<br>
+<span class="keyword">let</span>&nbsp;chains_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"chains"</span>;;<br>
+<span class="keyword">let</span>&nbsp;data_dir&nbsp;cfg&nbsp;=&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"data"</span>;;<br>
+<span class="keyword">let</span>&nbsp;web_dir&nbsp;cfg&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(in_dir&nbsp;cfg)&nbsp;<span class="string">"web"</span>;;<br>
 </code></body></html>

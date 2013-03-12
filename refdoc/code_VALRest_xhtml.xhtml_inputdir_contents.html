@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,10 +81,10 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;xhtml_inputdir_contents&nbsp;ctx&nbsp;input&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;path)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_uri&nbsp;basename&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_input_file_path&nbsp;~raw:&nbsp;<span class="keyword">false</span>&nbsp;prefix&nbsp;input&nbsp;(path@[basename])<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;dir</code></body></html>
+&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir)</code></body></html>

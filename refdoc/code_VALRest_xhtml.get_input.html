@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,14 +81,14 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;get_input&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dirname&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.load&nbsp;ctx.ctx_cfg&nbsp;dirname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;dirname&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dirname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_table&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(name,&nbsp;_)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_path&nbsp;=&nbsp;<span class="constructor">Misc</span>.split_filename&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_path&nbsp;=&nbsp;<span class="constructor">Misc</span>.split_filename&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;name)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a_input_file&nbsp;ctx&nbsp;path&nbsp;file_path&nbsp;]&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;spec.<span class="constructor">Ind_types</span>.in_files&nbsp;<span class="keyword">in</span><br>

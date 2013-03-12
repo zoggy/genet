@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -106,7 +107,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;state.g&nbsp;(<span class="constructor">Flat</span>&nbsp;fchain)&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;state&nbsp;(in_file,&nbsp;id)&nbsp;inst_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(target,&nbsp;state)&nbsp;=&nbsp;new_file&nbsp;ctx&nbsp;tmp_dir&nbsp;state&nbsp;inst_port&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;extract_git_file&nbsp;ctx.ctx_cfg&nbsp;~file&nbsp;~id&nbsp;~target;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;target&nbsp;inst_port;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;state<br>

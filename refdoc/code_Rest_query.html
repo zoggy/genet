@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -409,10 +410,10 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Input</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;inpath)<br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;data_dir&nbsp;(<span class="constructor">List</span>.rev&nbsp;(s&nbsp;::&nbsp;inpath))&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_file&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;<span class="constructor">Ind_io</span>.input_basename&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"spec_file=%S"</span>&nbsp;spec_file);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Sys</span>.file_exists&nbsp;spec_file&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;data_dir&nbsp;(<span class="constructor">List</span>.rev&nbsp;(s&nbsp;::&nbsp;inpath))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_file&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;<span class="constructor">Ind_io</span>.input_basename&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"spec_file=%S"</span>&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;spec_file));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Sys</span>.file_exists&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;spec_file)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Input</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;(s&nbsp;::&nbsp;inpath))<br>
@@ -454,10 +455,10 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;static_files&nbsp;=&nbsp;allowed_files&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(f,&nbsp;t)&nbsp;=&nbsp;<span class="constructor">List</span>.assoc&nbsp;uri&nbsp;static_files&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.root_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.root_dir<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"in"</span>&nbsp;;&nbsp;<span class="string">"web"</span>&nbsp;;&nbsp;f]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Static_file</span>&nbsp;(f,&nbsp;t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Static_file</span>&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;f,&nbsp;t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Other</span>&nbsp;uri<br>
 ;;<br>

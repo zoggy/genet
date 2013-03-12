@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Genet : A step-by-step example: Filetypes and sets</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="http://zoggy.github.com/genet/style.css"/>
+<rssfeed/>
+</head><body>
+<div id="page">
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+
+  <div class="nav-collapse">
+  <ul class="nav">
+    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.com/genet">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.com/genet/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.com/genet/download.html">Download</a></li>
+    <li class="active"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.com/genet/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.com/genet/about.html">?</a></li>
+  </ul>
+  </div>
+  <div class="nav pull-right">
+
+  </div>
+</div>
+</div>
+</div>
+
+<div id="header">
+
+<div class="page-title">A step-by-step example: Filetypes and sets</div>
+</div>
+<span/>
+
+
+<p>
+When specifying a chain, it is not possible to connect two ports of
+interfaces producing and consuming different file types.
+</p>
+<p>
+However, it is possible to connect a port producing a set of files of a given filetype to a
+port consuming a file of the same type. This will result in running the
+operation containing the second port for each file produced by the first port.
+</p>
+<p>
+Let's illustrate this by an example. Following <a href="http://zoggy.github.com/genet/example.html">A step-by-step example: basics</a>, we define
+a second chain, to compute the average length of paragraphs.
+To do so, we need to:
+</p>
+<ul>
+<li>upgrade the <span class="icode">split-text</span> tool to a new version,
+ handling option <span class="icode">-p</span> to split text according to
+ blank lines instead of spaces,</li>
+<li>upgrade the <span class="icode">average</span> tool to a new version,
+  handling two options:
+  <ul>
+    <li>option <span class="icode">-n</span> will indicate that input files contain numbers,
+         and it is the average of these numbers that must be printed,
+    </li>
+    <li>option <span class="icode">-c</span> will indicate to only output the number
+      of input characters.
+    </li>
+  </ul>
+</li>
+<li>add new interfaces <span class="icode">split-in-pars</span>, <span class="icode">average-of-set</span>
+  and <span class="icode">text-length</span> to use these new features in chains,</li>
+<li>define a new chain implementing the workflow.</li>
+</ul>
+<div id="makeinstalltools" class="alert alert-info">
+<p>To install the tools, go to the <span class="icode">website/example</span> directory
+of the Genet distribution and type
+</p>
+<pre class="code-sh">$ <span class="hl kwc">make install</span></pre>
+<p>This will install tools in the <span class="icode">/tmp/tools</span> directory. </p>
+</div>
+<div class="section"><div class="section-title" id="addintfs">Adding versions and interfaces</div>
+<p>
+We start by adding a new version for the <span class="icode">split-text</span> tool:
+</p>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x <span class="hl num">0.2</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/versions/0.2</span></pre>
+<p>
+As previously, we show in comment the output of the command.
+</p>
+<p>
+Then, we add a new interface to the <span class="icode">0.x</span> branch. This interface
+is called <span class="icode">split-in-pars</span>, and the associated command will
+be <span class="icode">/tmp/tool/split-text-%v -p</span>, with <span class="icode">%v</span> being replaced
+at execution time by the tool version number. Since we will use the created interface
+uri that is printed by the command, we store it in a variable:
+</p>
+<pre class="code-sh">$ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/split-text-%v -p&quot; \</span>
+<span class="hl str">  http://localhost:8082/tools/split-text/branches/0.x split-in-pars`</span></pre>
+<p>
+Now we add an input port to this interface, of type <span class="icode">text</span>:
+</p>
+<pre class="code-sh">$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;text&quot;</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-pars/in/1</span></pre>
+<p>
+Then we add an output port, of type <span class="icode">text set</span>, that is a set a files
+of type <span class="icode">text</span>. This means that the interface, when it is called,
+will be given a <strong>directory</strong> where to create the output files:
+</p>
+<pre class="code-sh">$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;text set&quot;</span>
+  <span class="hl slc"># http://localhost:8082/tools/split-text/interfaces/split-in-pars/out/1</span></pre>
+<p>
+Since version <span class="icode">0.1</span> of <span class="icode">split-text</span> is also under the
+<span class="icode">0.x</span> branch, it should implement the <span class="icode">split-in-pars</span>
+interface, which is not the case since we implemented it in version <span class="icode">0.2</span>.
+So we must indicate explicitely that version <span class="icode">0.1</span> does not implement
+this interface, with the following command:
+</p>
+<pre class="code-sh">$ genet add no<span class="hl opt">-</span>interface http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span><span class="hl kwc">split</span><span class="hl opt">-</span>text<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span> <span class="hl kwd">${INTF}</span></pre>
+<p>
+If we did not, when a chain contains this interface, the version <span class="icode">0.1</span> would
+have been used in the computation of tool version combinations to execute the chain, and
+this would have produced an error since the <span class="icode">-p</span> option is invalid for
+<span class="icode">split-text</span> <span class="icode">0.1</span>. (Another way to prevent this would have been
+to make version <span class="icode">0.1</span> inactive.)
+</p>
+<p>
+We act the same way to add a new version and two new interfaces to the
+<span class="icode">average</span> tool.
+</p>
+<p>First, we add the new version:</p>
+<pre class="code-sh">$ genet add version http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>branches<span class="hl opt">/</span><span class="hl num">0</span>.x  <span class="hl num">0.3</span>
+  <span class="hl slc"># http://localhost:8082/tools/average/versions/0.3</span></pre>
+<p>Then we add the new interface <span class="icode">text-length</span>:</p>
+<pre class="code-sh">$ INTFC<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/average-%v -c&quot; \</span>
+<span class="hl str">  http://localhost:8082/tools/average/branches/0.x text-length`</span>
+$ genet add port <span class="hl kwd">${INTFC}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;text&quot;</span>
+$ genet add port <span class="hl kwd">${INTFC}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;number&quot;</span></pre>
+<p>We also add the new interface <span class="icode">average-of-set</span>.
+Here the input port is of type <span class="icode">number set</span>, which means that the associated
+command will take a <strong>directory</strong> in parameter where to find files of type
+<span class="icode">number</span>:
+</p>
+<pre class="code-sh">$ INTFN<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/average-%v -n&quot; \</span>
+<span class="hl str">  http://localhost:8082/tools/average/branches/0.x average-of-set`</span>
+$ genet add port <span class="hl kwd">${INTFN}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;number set&quot;</span>
+$ genet add port <span class="hl kwd">${INTFN}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;number&quot;</span></pre>
+<p>At last, we explictely indicate that previous versions of the tool do not implement these new interfaces:</p>
+<pre class="code-sh">$ genet add no<span class="hl opt">-</span>interface http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span> <span class="hl kwd">${INTFC}</span>
+$ genet add no<span class="hl opt">-</span>interface http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.2</span> <span class="hl kwd">${INTFC}</span>
+$ genet add no<span class="hl opt">-</span>interface http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.1</span> <span class="hl kwd">${INTFN}</span>
+$ genet add no<span class="hl opt">-</span>interface http<span class="hl opt">://</span>localhost<span class="hl opt">:</span><span class="hl num">8082</span><span class="hl opt">/</span>tools<span class="hl opt">/</span>average<span class="hl opt">/</span>versions<span class="hl opt">/</span><span class="hl num">0.2</span> <span class="hl kwd">${INTFN}</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="addchain">Defining the new chain</div>
+<p>
+We can now define a new chain, using the new interfaces we added above. We type the following
+code in the file <span class="icode">in/chains/test2.gnt</span>:
+</p>
+<pre class="code-"><span class="hl kwa">chain</span> par_avg_length
+<span class="hl com">(* This chain reads a text file and output the average size of paragraphs. *)</span>
+<span class="hl opt">{</span>
+  <span class="hl kwb">in</span><span class="hl opt">:</span> text i1<span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> number o1<span class="hl opt">;</span>
+
+  <span class="hl com">(* operation &quot;split&quot; calls the interface &quot;split-in-pars&quot; of tool &quot;split-text&quot; *)</span>
+  <span class="hl kwb">operation</span> split <span class="hl opt">:</span> <span class="hl str">&quot;/split-text/split-in-pars&quot;</span> <span class="hl opt">;</span>
+
+  <span class="hl com">(* operation &quot;count&quot; calls the interface &quot;text-length&quot; of tool &quot;average&quot;.</span>
+<span class="hl com">    Since the &quot;split&quot; operation will produce a set of text, we want as many</span>
+<span class="hl com">    &quot;count&quot; operations as &quot;text&quot; outputs from &quot;split&quot;. The &quot;foreach&quot; construction</span>
+<span class="hl com">    will change the type of the first input port of &quot;count&quot; from &quot;x&quot; to &quot;x set&quot;,</span>
+<span class="hl com">    and its output type from &quot;y&quot; to &quot;y set&quot;. Here &quot;x&quot; is &quot;text&quot; and &quot;y&quot; is &quot;number&quot;.</span>
+<span class="hl com">   Parameter 1 of &quot;foreach&quot; indicates to iterate on first input port.</span>
+<span class="hl com">  *)</span>
+  <span class="hl kwb">operation</span> count <span class="hl opt">:</span> <span class="hl kwb">foreach</span><span class="hl opt">(</span><span class="hl str">&quot;/average/text-length&quot;</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">) ;</span>
+
+  <span class="hl com">(* operation &quot;avg&quot; calls the interface &quot;average-of-set&quot; of tool &quot;average&quot; *)</span>
+  <span class="hl kwb">operation</span> avg <span class="hl opt">:</span> <span class="hl str">&quot;/average/average-of-set&quot;</span> <span class="hl opt">;</span>
+
+  i1 <span class="hl opt">-&gt;</span> split<span class="hl num">.1</span> <span class="hl opt">;</span>
+  split<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> count<span class="hl num">.1</span> <span class="hl opt">;</span>
+  count<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> avg<span class="hl num">.1</span> <span class="hl opt">;</span>
+  avg<span class="hl num">.1</span> <span class="hl opt">-&gt;</span> o1 <span class="hl opt">;</span>
+
+<span class="hl opt">}</span></pre>
+<p>
+The important point in this chain in the <span class="icode">foreach</span> construction. See the comment
+in the code above.
+</p>
+<p>Then we add the new module to git and commit:</p>
+<pre class="code-sh">$ <span class="hl opt">(</span><span class="hl kwb">cd</span> <span class="hl kwa">in</span><span class="hl opt">/</span>chains <span class="hl opt">;</span> git add test2.gnt <span class="hl opt">;</span> git commit <span class="hl opt">-</span>m<span class="hl str">&quot;new chain&quot;</span> test2.gnt<span class="hl opt">)</span></pre>
+</div>
+
+<div class="section"><div class="section-title" id="running">Running the chain</div>
+<p>
+Our new chain can be applied on the same input file that the first chain, i.e. on a <span class="icode">text</span> file.
+So we add our new chain to the list of chains to use in our <span class="icode">test1</span> input, in the
+<span class="icode">in/data/test1/spec.in</span> file:
+</p>
+<pre class="code-"><span class="hl com">(* Input files and directories; order matters *)</span>
+<span class="hl kwb">in</span> <span class="hl opt">= [</span><span class="hl str">&quot;sue.txt&quot;</span> <span class="hl opt">]</span>
+<span class="hl com">(* The chains to apply *)</span>
+chains <span class="hl opt">= [</span> <span class="hl str">&quot;Test.words_avg_length&quot;</span> <span class="hl opt">;</span> <span class="hl str">&quot;Test2.par_avg_length&quot;</span> <span class="hl opt">]</span></pre>
+<p>
+We commit this new version of the file:
+</p>
+<pre class="code-sh">$ <span class="hl opt">(</span><span class="hl kwb">cd</span> <span class="hl kwa">in</span><span class="hl opt">/</span>data<span class="hl opt">/</span>test1 <span class="hl opt">;</span> git commit <span class="hl opt">-</span>m<span class="hl str">&quot;add new chain Test2.par_avg_length&quot;</span> spec.<span class="hl kwa">in</span><span class="hl opt">)</span></pre>
+<p>
+Then we flatten the chain:
+</p>
+<pre class="code-sh">$ genet flatten Test2.par_avg_length
+ <span class="hl slc"># Test2.par_avg_length =&gt; http://localhost:8082/flat-chains/Test2/par_avg_length/a792-f...</span></pre>
+<p>
+At last, we can execute the chains specified for <span class="icode">test1</span>:
+</p>
+<pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
+<p>
+Then, you can launch the web interface:
+</p>
+<pre class="code-sh">$ genet<span class="hl opt">-</span>rest <span class="hl opt">--</span>config <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>config.txt</pre>
+<p>
+In the interface, click on the &quot;Out files&quot; tab, select the chain &quot;Test2.par_avg_length&quot;
+to show the executions of this chain, and click on the execution in the list. You should
+see the execution displayed as in this screenshot (click to enlarge).
+The two operations around the <span class="icode">count</span> operations are &quot;explode&quot; and &quot;implode&quot;
+operations automatically added to handle the <span class="icode">foreach</span> construction.
+</p>
+<div class="center">
+  <a href="genet-example2.png"><img src="genet-example2.png" alt="Result of execution" width="600"/></a>
+</div>
+</div>
+
+
+
+</div>
+
+<footer id="bottombar">
+</footer>
+<script type="text/javascript" src="http://zoggy.github.com/genet/jquery.js">_</script>
+<script type="text/javascript" src="http://zoggy.github.com/genet/bootstrap-collapse.js">_</script>
+
+</body>
+</html>

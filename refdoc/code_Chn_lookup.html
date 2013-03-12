@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -108,7 +109,7 @@
 <span class="keyword">type</span>&nbsp;ichain_info&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ichain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;fchain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;:&nbsp;string&nbsp;*&nbsp;string&nbsp;;&nbsp;<span class="comment">(*&nbsp;name&nbsp;*&nbsp;id&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;input&nbsp;:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Relative</span>]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;*&nbsp;string&nbsp;;&nbsp;<span class="comment">(*&nbsp;name&nbsp;*&nbsp;id&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;tools&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="constructor">Urimap</span>.t&nbsp;;&nbsp;<span class="comment">(*&nbsp;version&nbsp;(uri)&nbsp;of&nbsp;each&nbsp;used&nbsp;tool&nbsp;*)</span><br>
 &nbsp;&nbsp;}<br>
 <br>

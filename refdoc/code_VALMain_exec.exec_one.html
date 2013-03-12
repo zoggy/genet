@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -83,7 +84,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;config)&nbsp;input&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;config)&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.load&nbsp;config&nbsp;spec_dir&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_exec</span>.exec&nbsp;ctx&nbsp;reporter&nbsp;spec<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
@@ -92,7 +93,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;exc&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Ind_io</span>.<span class="constructor">Error</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Input&nbsp;%s:&nbsp;%s"</span>&nbsp;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Input&nbsp;%s:&nbsp;%s"</span>&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Ind_io</span>.string_of_error&nbsp;e)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>

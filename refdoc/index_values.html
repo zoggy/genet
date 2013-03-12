@@ -27,6 +27,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -125,6 +126,10 @@
 <td></td></tr>
 <tr><td><a href="Rest_xhtml.html#VALa_version">a_version</a> [<a href="Rest_xhtml.html">Rest_xhtml</a>]</td>
 <td></td></tr>
+<tr><td><a href="Fname.html#VALabs_string">abs_string</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALabsolute">absolute</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdf_version.html#VALactive_versions_of">active_versions_of</a> [<a href="Grdf_version.html">Grdf_version</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_version.html#VALadd">add</a> [<a href="Grdf_version.html">Grdf_version</a>]</td>
@@ -180,6 +185,10 @@
 <tr><td><a href="Main_genrdfs.html#VALadd_label">add_label</a> [<a href="Main_genrdfs.html">Main_genrdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALadd_name">add_name</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_edit.html#VALadd_no_intf">add_no_intf</a> [<a href="Main_edit.html">Main_edit</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_intf.html#VALadd_no_intf">add_no_intf</a> [<a href="Grdf_intf.html">Grdf_intf</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_flat.html#VALadd_op">add_op</a> [<a href="Chn_flat.html">Chn_flat</a>]</td>
 <td></td></tr>
@@ -301,6 +310,8 @@ Création d'un résultat de vérification.
 <td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_intf">com_add_intf</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
+<tr><td><a href="Main_edit.html#VALcom_add_no_intf">com_add_no_intf</a> [<a href="Main_edit.html">Main_edit</a>]</td>
+<td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_port">com_add_port</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_refinst">com_add_refinst</a> [<a href="Main_edit.html">Main_edit</a>]</td>
@@ -383,6 +394,8 @@ Création d'un résultat de vérification.
 <td></td></tr>
 <tr><td><a href="Graph.GMap.html#VALcompare">compare</a> [<a href="Graph.GMap.html">Graph.GMap</a>]</td>
 <td></td></tr>
+<tr><td><a href="Fname.html#VALcompare">compare</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
 <tr><td><a href="Chn_run.Guri_ord_type.html#VALcompare">compare</a> [<a href="Chn_run.Guri_ord_type.html">Chn_run.Guri_ord_type</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_ast.Chn_ord_type.html#VALcompare">compare</a> [<a href="Chn_ast.Chn_ord_type.html">Chn_ast.Chn_ord_type</a>]</td>
@@ -400,6 +413,8 @@ Création d'un résultat de vérification.
 <tr><td><a href="Main_cmd.html#VALcompl_bool">compl_bool</a> [<a href="Main_cmd.html">Main_cmd</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_cmd.html#VALcompl_branch">compl_branch</a> [<a href="Main_cmd.html">Main_cmd</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_cmd.html#VALcompl_branch_or_version">compl_branch_or_version</a> [<a href="Main_cmd.html">Main_cmd</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_cmd.html#VALcompl_chain_name">compl_chain_name</a> [<a href="Main_cmd.html">Main_cmd</a>]</td>
 <td></td></tr>
@@ -445,7 +460,11 @@ Création d'un résultat de vérification.
 <td></td></tr>
 <tr><td><a href="Chn_run.html#VALcompute_version_replacement">compute_version_replacement</a> [<a href="Chn_run.html">Chn_run</a>]</td>
 <td></td></tr>
+<tr><td><a href="Fname.html#VALconcat">concat</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdfs.html#VALconcat_chain_name">concat_chain_name</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALconcat_s">concat_s</a> [<a href="Fname.html">Fname</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_rest.html#VALconfig_tree">config_tree</a> [<a href="Main_rest.html">Main_rest</a>]</td>
 <td></td></tr>
@@ -1443,6 +1462,8 @@ Fusion de deux résultats de vérification.
 <code class="code">path_under ~parent file</code> returns the path to <code class="code">file</code> from <code class="code">parent</code>.
 </div>
 </td></tr>
+<tr><td><a href="Fname.html#VALpath_under">path_under</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
 <tr><td><a href="Main_cheat.html#VALpb">pb</a> [<a href="Main_cheat.html">Main_cheat</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_cheat.html#VALpn">pn</a> [<a href="Main_cheat.html">Main_cheat</a>]</td>
@@ -1529,6 +1550,8 @@ Création d'un problème.
 <td></td></tr>
 <tr><td><a href="Chn_inst_query.html#VALquery_instances">query_instances</a> [<a href="Chn_inst_query.html">Chn_inst_query</a>]</td>
 <td></td></tr>
+<tr><td><a href="Fname.html#VALquote">quote</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>R</td></tr>
 <tr><td><a href="Loc.html#VALraise_problem">raise_problem</a> [<a href="Loc.html">Loc</a>]</td>
 <td></td></tr>
@@ -1600,6 +1623,12 @@ Same as <a href="Graph.S.html#VALrecursive_succs"><code class="code">Graph.S.rec
 <tr><td><a href="Chn_inst.html#VALreference_insts">reference_insts</a> [<a href="Chn_inst.html">Chn_inst</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_cmd.html#VALregister_subcommand">register_subcommand</a> [<a href="Main_cmd.html">Main_cmd</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALrel_quote">rel_quote</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALrel_string">rel_string</a> [<a href="Fname.html">Fname</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALrelative">relative</a> [<a href="Fname.html">Fname</a>]</td>
 <td></td></tr>
 <tr><td><a href="Graph.S.html#VALrem">rem</a> [<a href="Graph.S.html">Graph.S</a>]</td>
 <td><div class="info">
@@ -1764,6 +1793,8 @@ Separate the given string according to the given list of characters.
 <tr><td><a href="Grdfs.html#VALstop_date_uri">stop_date_uri</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Lexer.html#VALstring">string</a> [<a href="Lexer.html">Lexer</a>]</td>
+<td></td></tr>
+<tr><td><a href="Fname.html#VALstring">string</a> [<a href="Fname.html">Fname</a>]</td>
 <td></td></tr>
 <tr><td><a href="Lexer.html#VALstring_buffer">string_buffer</a> [<a href="Lexer.html">Lexer</a>]</td>
 <td></td></tr>

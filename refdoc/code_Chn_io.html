@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -106,14 +107,15 @@
 </code><table><tr><td></td><td><span class="comment">(** Reading and writing chain ASTs. *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">let</span>&nbsp;modname_of_file&nbsp;f&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">Fname</span>.string&nbsp;f&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Chn_types</span>.chain_modname_of_string<br>
-&nbsp;&nbsp;(<span class="constructor">String</span>.capitalize&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Filename</span>.chop_extension&nbsp;f)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.capitalize&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Filename</span>.chop_extension&nbsp;f)))<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;file_of_modname&nbsp;config&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Config</span>.chains_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.uncapitalize&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_modname&nbsp;name)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s.gnt"</span>&nbsp;name)<br>
+&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s.gnt"</span>&nbsp;name)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;input_chn_module&nbsp;name&nbsp;lexbuf&nbsp;=<br>
@@ -140,11 +142,11 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;chn_module_of_file&nbsp;file&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ic&nbsp;=&nbsp;open_in&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ic&nbsp;=&nbsp;open_in&nbsp;(<span class="constructor">Fname</span>.string&nbsp;file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_channel&nbsp;ic&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;lexbuf&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lexing</span>.lex_curr_p&nbsp;=&nbsp;{&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Lexing</span>.pos_fname&nbsp;=&nbsp;file&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Lexing</span>.lex_curr_p&nbsp;=&nbsp;{&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Lexing</span>.pos_fname&nbsp;=&nbsp;(<span class="constructor">Fname</span>.string&nbsp;file)&nbsp;}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;modname_of_file&nbsp;file&nbsp;<span class="keyword">in</span><br>
@@ -157,9 +159,12 @@
 <br>
 <span class="keyword">let</span>&nbsp;chain_files&nbsp;config&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Config</span>.chains_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Stderr</span>&nbsp;[dir]<br>
-&nbsp;&nbsp;[&nbsp;<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1&nbsp;;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Type</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Regexp</span>&nbsp;(<span class="constructor">Str</span>.regexp&nbsp;<span class="string">".*\\.gnt$"</span>)&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Stderr</span>&nbsp;[<span class="constructor">Fname</span>.abs_string&nbsp;dir]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1&nbsp;;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Type</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Regexp</span>&nbsp;(<span class="constructor">Str</span>.regexp&nbsp;<span class="string">".*\\.gnt$"</span>)&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;l<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;load_chain_files&nbsp;config&nbsp;=<br>
@@ -182,8 +187,8 @@
 <br>
 <span class="keyword">module</span>&nbsp;<span class="constructor">File_set</span>&nbsp;=&nbsp;<span class="constructor">Set</span>.<span class="constructor">Make</span><br>
 &nbsp;&nbsp;(<span class="keyword">struct</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;string&nbsp;*&nbsp;<span class="constructor">Misc</span>.git_status<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;compare&nbsp;(f1,_)&nbsp;(f2,_)&nbsp;=&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;f1&nbsp;f2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;*&nbsp;<span class="constructor">Misc</span>.git_status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;compare&nbsp;(f1,_)&nbsp;(f2,_)&nbsp;=&nbsp;<span class="constructor">Fname</span>.compare&nbsp;f1&nbsp;f2<br>
 &nbsp;&nbsp;&nbsp;<span class="keyword">end</span>)<br>
 ;;<br>
 <span class="keyword">type</span>&nbsp;chain_file_dep&nbsp;=<br>
@@ -216,7 +221,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;succs&nbsp;=&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Chn_graph</span>.succ&nbsp;g&nbsp;chn_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;map&nbsp;(succ,_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;map&nbsp;succ)&nbsp;map&nbsp;succs&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;file_of_modname&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg&nbsp;(<span class="constructor">Chn_types</span>.chain_modname&nbsp;chn_name)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_status&nbsp;=&nbsp;<span class="constructor">Misc</span>.git_status&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_status&nbsp;=&nbsp;<span class="constructor">Misc</span>.git_status&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(chains,&nbsp;files)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(gather_deps&nbsp;map)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_ast</span>.<span class="constructor">Cset</span>.empty,&nbsp;<span class="constructor">File_set</span>.singleton&nbsp;(file,&nbsp;git_status))&nbsp;succs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>

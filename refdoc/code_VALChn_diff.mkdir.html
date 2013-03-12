@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -79,11 +80,12 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;mkdir&nbsp;ctx&nbsp;ports&nbsp;main_dir&nbsp;n&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;main_dir&nbsp;(string_of_int&nbsp;n)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;dir&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;main_dir&nbsp;(string_of_int&nbsp;n)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir)&nbsp;;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;make_link&nbsp;n&nbsp;port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;file_of_out_port&nbsp;ctx&nbsp;port&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Unix</span>.symlink&nbsp;file&nbsp;(<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;(string_of_int&nbsp;n))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Unix</span>.symlink&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;(<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;(string_of_int&nbsp;n)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">Unix_error</span>&nbsp;(e,s1,s2)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s:&nbsp;%s&nbsp;%s"</span>&nbsp;(<span class="constructor">Unix</span>.error_message&nbsp;e)&nbsp;s1&nbsp;s2&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>

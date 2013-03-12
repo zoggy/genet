@@ -31,6 +31,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -97,7 +98,7 @@ file * msg<br>
 </div>
 
 <pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="Ind_io.html#TYPEerror">error</a></code></pre>
-<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALInd_io.error.html">error</a></span> : <code class="type">file:string -> string -> 'a</code></pre><pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALInd_io.string_of_error.html">string_of_error</a></span> : <code class="type">string * string -> string</code></pre><pre><code><span id="TYPEinput"><span class="keyword">type</span> <code class="type"></code>input</span> = {</code></pre><table class="typetable">
+<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALInd_io.error.html">error</a></span> : <code class="type">file:[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> string -> 'a</code></pre><pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALInd_io.string_of_error.html">string_of_error</a></span> : <code class="type">string * string -> string</code></pre><pre><code><span id="TYPEinput"><span class="keyword">type</span> <code class="type"></code>input</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
@@ -122,4 +123,4 @@ file * msg<br>
 }
 
 
-<pre><span id="VALmk_spec_group"><span class="keyword">val</span> <a href="code_VALInd_io.mk_spec_group.html">mk_spec_group</a></span> : <code class="type">unit -> <a href="Ind_io.html#TYPEinput">input</a></code></pre><pre><span id="VALon_type_error"><span class="keyword">val</span> <a href="code_VALInd_io.on_type_error.html">on_type_error</a></span> : <code class="type">string -> < get_name : string list; .. > -> 'a -> 'b -> 'c -> 'd</code></pre><pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALInd_io.load.html">load</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> string -> <a href="Ind_types.html#TYPEspec">Ind_types.spec</a></code></pre><pre><span id="VALwrite"><span class="keyword">val</span> <a href="code_VALInd_io.write.html">write</a></span> : <code class="type">string -> unit</code></pre><pre><span id="VALlist_inputs"><span class="keyword">val</span> <a href="code_VALInd_io.list_inputs.html">list_inputs</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> string list</code></pre></body></html>
+<pre><span id="VALmk_spec_group"><span class="keyword">val</span> <a href="code_VALInd_io.mk_spec_group.html">mk_spec_group</a></span> : <code class="type">unit -> <a href="Ind_io.html#TYPEinput">input</a></code></pre><pre><span id="VALon_type_error"><span class="keyword">val</span> <a href="code_VALInd_io.on_type_error.html">on_type_error</a></span> : <code class="type">[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -><br>       < get_name : string list; .. > -> 'a -> 'b -> 'c -> 'd</code></pre><pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALInd_io.load.html">load</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> <a href="Ind_types.html#TYPEspec">Ind_types.spec</a></code></pre><pre><span id="VALwrite"><span class="keyword">val</span> <a href="code_VALInd_io.write.html">write</a></span> : <code class="type">[< `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> unit</code></pre><pre><span id="VALlist_inputs"><span class="keyword">val</span> <a href="code_VALInd_io.list_inputs.html">list_inputs</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [< `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> list</code></pre></body></html>

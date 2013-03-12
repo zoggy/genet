@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -205,14 +206,14 @@
 <br>
 <span class="keyword">let</span>&nbsp;extract_git_file&nbsp;config&nbsp;~file&nbsp;~id&nbsp;~target&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base_dir&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;target)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_base&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;target)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;target))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_base&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;target))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"mkdir&nbsp;-p&nbsp;%s/.tmp;&nbsp;(cd&nbsp;%s&nbsp;;&nbsp;git&nbsp;archive&nbsp;--format&nbsp;tar&nbsp;%s&nbsp;%s|&nbsp;(cd&nbsp;%s/.tmp&nbsp;;&nbsp;tar&nbsp;xvf&nbsp;-))&nbsp;;&nbsp;mv&nbsp;%s/.tmp/%s&nbsp;%s/%s&nbsp;;&nbsp;rm&nbsp;-fr&nbsp;%s/.tmp/"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;base_dir)&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
 &nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:3&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"extract_git_file:&nbsp;%s"</span>&nbsp;com);<br>
@@ -224,21 +225,22 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;filename_of_md5&nbsp;ctx&nbsp;md5&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5<br>
+&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;?(pred=<span class="constructor">Grdfs</span>.genet_filemd5)&nbsp;file&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;not&nbsp;found"</span>&nbsp;file);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file_s)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;not&nbsp;found&nbsp;(pwd=%s)"</span>&nbsp;file_s&nbsp;(<span class="constructor">Sys</span>.getcwd()));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;md5&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;(<span class="constructor">Unix</span>.stat&nbsp;file).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.dir_md5sum&nbsp;file<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.file_md5sum&nbsp;file<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;file&nbsp;kind&nbsp;for&nbsp;%S"</span>&nbsp;file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;(<span class="constructor">Unix</span>.stat&nbsp;file_s).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.dir_md5sum&nbsp;file_s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.file_md5sum&nbsp;file_s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;file&nbsp;kind&nbsp;for&nbsp;%S"</span>&nbsp;file_s)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;outfile&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;outfile)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.copy_file&nbsp;~src:&nbsp;file&nbsp;~dst:&nbsp;outfile;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;outfile&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;md5&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;outfile))&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.copy_file&nbsp;~src:&nbsp;file_s&nbsp;~dst:&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;outfile);<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;(uri_of_g_uri&nbsp;uri))&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;pred)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;md5)<br>
@@ -265,7 +267,7 @@
 <br>
 <span class="keyword">type</span>&nbsp;state&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;g&nbsp;:&nbsp;<span class="constructor">Graph</span>.t&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;port_to_file&nbsp;:&nbsp;string&nbsp;<span class="constructor">Gurimap</span>.t&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port_to_file&nbsp;:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;<span class="constructor">Gurimap</span>.t&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;nodes_run&nbsp;:&nbsp;<span class="constructor">Guriset</span>.t&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;replace_versions&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -300,30 +302,30 @@
 <span class="keyword">let</span>&nbsp;run_command&nbsp;ctx&nbsp;(reporter:&nbsp;<span class="constructor">Reporter</span>.reporter)<br>
 &nbsp;&nbsp;state&nbsp;inst_chain&nbsp;tmp_dir&nbsp;inst_node&nbsp;path&nbsp;in_files&nbsp;inst_out_ports&nbsp;out_files&nbsp;=<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_file&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"run_command.out"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_file&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"run_command.out"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"(cd&nbsp;%s&nbsp;;&nbsp;%s&nbsp;%s&nbsp;%s)&nbsp;&gt;&nbsp;%s&nbsp;2&gt;&amp;1"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;tmp_dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;tmp_dir)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Filename</span>.quote&nbsp;in_files))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Filename</span>.quote&nbsp;out_files))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;out_file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.quote&nbsp;in_files))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.quote&nbsp;out_files))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;out_file)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"Running&nbsp;"</span>&nbsp;^&nbsp;com&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;msg);<br>
 &nbsp;&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;msg;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link_output&nbsp;?(error=<span class="keyword">false</span>)&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Grdfs</span>.genet_commandoutput)&nbsp;out_file&nbsp;inst_node;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;out_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Grdfs</span>.genet_commandoutput)&nbsp;out_file&nbsp;inst_node;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;out_file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;error&nbsp;<span class="keyword">then</span>&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;contents&nbsp;<span class="keyword">else</span>&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;contents<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter2<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;port&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;file&nbsp;port)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_out_ports&nbsp;out_files;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;port&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;file&nbsp;port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_out_ports&nbsp;out_files;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;link_output&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"command&nbsp;failed&nbsp;[%d]:&nbsp;%s"</span>&nbsp;n&nbsp;com&nbsp;<span class="keyword">in</span><br>
@@ -339,7 +341,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cpt&nbsp;=&nbsp;ref&nbsp;0&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;?ext&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;incr&nbsp;cpt;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"file%d%s"</span>&nbsp;!cpt&nbsp;(<span class="keyword">match</span>&nbsp;ext&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"."</span>^s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.relative&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"file%d%s"</span>&nbsp;!cpt&nbsp;(<span class="keyword">match</span>&nbsp;ext&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"."</span>^s))<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;copy_flat_port&nbsp;ctx&nbsp;~inst&nbsp;~container&nbsp;?cpt&nbsp;flat_port&nbsp;=<br>
@@ -386,8 +388,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">None</span>,&nbsp;<span class="keyword">true</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;gen_file&nbsp;?ext&nbsp;()&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;path&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;file&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filename</span>.concat&nbsp;p&nbsp;file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;tmp_dir&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;path&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.concat&nbsp;tmp_dir&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.concat&nbsp;p&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Gurimap</span>.add&nbsp;inst_port&nbsp;file&nbsp;state.port_to_file&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file,&nbsp;state)<br>
 ;;<br>
@@ -501,7 +506,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;state.g&nbsp;(<span class="constructor">Flat</span>&nbsp;fchain)&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;state&nbsp;(in_file,&nbsp;id)&nbsp;inst_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(target,&nbsp;state)&nbsp;=&nbsp;new_file&nbsp;ctx&nbsp;tmp_dir&nbsp;state&nbsp;inst_port&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;extract_git_file&nbsp;ctx.ctx_cfg&nbsp;~file&nbsp;~id&nbsp;~target;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;target&nbsp;inst_port;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;state<br>
@@ -570,7 +575,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Var</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">None</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">Some</span>&nbsp;(string_of_int&nbsp;cpt))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Fname</span>.concat_s&nbsp;tmp_dir&nbsp;(string_of_int&nbsp;cpt)))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_intf_in_port&nbsp;(uri_of_g_uri&nbsp;inst_implode)&nbsp;cpt&nbsp;<span class="keyword">in</span><br>
@@ -620,8 +625,10 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;root&nbsp;=&nbsp;get_port_input_file&nbsp;ctx&nbsp;state&nbsp;orig_in_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_files&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Ignore</span>&nbsp;[root]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;((&lt;&gt;)&nbsp;root)&nbsp;entries<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;root_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;root&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Ignore</span>&nbsp;[root_s]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">List</span>.filter&nbsp;((&lt;&gt;)&nbsp;root_s)&nbsp;entries&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;entries<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_implode&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_uri&nbsp;ctx.ctx_rdf<br>
@@ -682,7 +689,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.pred_of_dir&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(uri_of_g_uri&nbsp;inst_node)&nbsp;~pred&nbsp;~obj:&nbsp;uri;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;FIXME&nbsp;HANDLE&nbsp;FILES&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;in_file&nbsp;(<span class="constructor">Inst</span>&nbsp;uri);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;<span class="constructor">Inst</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(port,<br>
@@ -698,7 +704,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(new_expl_node&nbsp;::&nbsp;expl_nodes,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insert_graph&nbsp;(state,&nbsp;cpt)&nbsp;in_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_file&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*let&nbsp;in_file&nbsp;=&nbsp;Misc.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;in*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;add_implode_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;inst_implode&nbsp;orig_impl_in_port<br>
@@ -723,7 +729,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;out_ports&nbsp;state&nbsp;inst_node&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[p]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(file,&nbsp;state)&nbsp;=&nbsp;new_file&nbsp;ctx&nbsp;tmp_dir&nbsp;state&nbsp;p&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;file;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(p,&nbsp;file,&nbsp;state)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -750,8 +756,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;in_files)&nbsp;(g_uri_string&nbsp;orig_node));<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;test&nbsp;file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;does&nbsp;not&nbsp;exist"</span>&nbsp;file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file_s)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;does&nbsp;not&nbsp;exist"</span>&nbsp;file_s)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;test&nbsp;in_files;<br>
 <br>
@@ -845,9 +852,9 @@
 <span class="keyword">let</span>&nbsp;run&nbsp;ctx&nbsp;reporter&nbsp;~inst&nbsp;~fchain&nbsp;input&nbsp;comb&nbsp;g&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_start_date_uri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmp_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet-run"</span>&nbsp;<span class="string">".dir"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;tmp_dir;<br>
-&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;tmp_dir&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmp_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet-run"</span>&nbsp;<span class="string">".dir"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;(<span class="constructor">Fname</span>.string&nbsp;tmp_dir);<br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.string&nbsp;tmp_dir)&nbsp;;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;init_run&nbsp;ctx&nbsp;reporter&nbsp;comb&nbsp;~inst&nbsp;~fchain&nbsp;input&nbsp;tmp_dir&nbsp;g&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;set_node_as_run&nbsp;state&nbsp;(<span class="constructor">Flat</span>&nbsp;fchain)&nbsp;<span class="keyword">in</span><br>

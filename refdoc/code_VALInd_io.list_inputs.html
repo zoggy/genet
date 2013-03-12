@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -82,8 +83,8 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;s&nbsp;=&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;s)&nbsp;=&nbsp;input_basename&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_files&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Stderr</span>&nbsp;[data_dir]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Type</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Predicate</span>&nbsp;pred]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Stderr</span>&nbsp;[<span class="constructor">Fname</span>.abs_string&nbsp;data_dir]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Type</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_REG</span>&nbsp;;&nbsp;<span class="constructor">Find</span>.<span class="constructor">Predicate</span>&nbsp;pred]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;f))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;(<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;f)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;spec_files</code></body></html>

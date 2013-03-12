@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,30 +82,30 @@
 <code class="code"><span class="keyword">let</span>&nbsp;run_command&nbsp;ctx&nbsp;(reporter:&nbsp;<span class="constructor">Reporter</span>.reporter)<br>
 &nbsp;&nbsp;state&nbsp;inst_chain&nbsp;tmp_dir&nbsp;inst_node&nbsp;path&nbsp;in_files&nbsp;inst_out_ports&nbsp;out_files&nbsp;=<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_file&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"run_command.out"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_file&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"run_command.out"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"(cd&nbsp;%s&nbsp;;&nbsp;%s&nbsp;%s&nbsp;%s)&nbsp;&gt;&nbsp;%s&nbsp;2&gt;&amp;1"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;tmp_dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;tmp_dir)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;path<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Filename</span>.quote&nbsp;in_files))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Filename</span>.quote&nbsp;out_files))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;out_file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.quote&nbsp;in_files))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"&nbsp;"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.quote&nbsp;out_files))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;out_file)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"Running&nbsp;"</span>&nbsp;^&nbsp;com&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;msg);<br>
 &nbsp;&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;msg;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link_output&nbsp;?(error=<span class="keyword">false</span>)&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Grdfs</span>.genet_commandoutput)&nbsp;out_file&nbsp;inst_node;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;out_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Grdfs</span>.genet_commandoutput)&nbsp;out_file&nbsp;inst_node;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;out_file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;error&nbsp;<span class="keyword">then</span>&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;contents&nbsp;<span class="keyword">else</span>&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;contents<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter2<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;port&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;file&nbsp;port)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_out_ports&nbsp;out_files;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;port&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;file&nbsp;port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inst_out_ports&nbsp;out_files;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;link_output&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"command&nbsp;failed&nbsp;[%d]:&nbsp;%s"</span>&nbsp;n&nbsp;com&nbsp;<span class="keyword">in</span><br>

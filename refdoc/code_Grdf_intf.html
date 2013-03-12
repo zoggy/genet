@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -165,11 +166,40 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name<br>
 &nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;eventually&nbsp;remove&nbsp;information&nbsp;about&nbsp;not&nbsp;implementing&nbsp;this&nbsp;interface&nbsp;*)</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld<br>
-&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
-&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
-&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+<br>
 &nbsp;&nbsp;uri<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;add_no_intf&nbsp;wld&nbsp;~parent&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_intf.add_no_intf&nbsp;parent="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;parent)^<span class="string">"&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;intf_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;such&nbsp;interface:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_branch&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_branch&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_version&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_version&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(parent_is_branch&nbsp;<span class="keywordsign">||</span>&nbsp;parent_is_version)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Not_branch_or_version</span>&nbsp;parent);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_parent&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;eventually&nbsp;remove&nbsp;information&nbsp;about&nbsp;implementing&nbsp;this&nbsp;interface&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;explicit_intfs_of&nbsp;wld&nbsp;uri&nbsp;=<br>
@@ -219,7 +249,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;show&nbsp;all&nbsp;interfaces&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;then";*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;=&nbsp;(intfs_of_tool&nbsp;wld&nbsp;uri,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ret&nbsp;=&nbsp;(intfs_of_tool&nbsp;wld&nbsp;uri,&nbsp;<span class="constructor">Uriset</span>.empty,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;ok";*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
@@ -242,8 +272,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;parent&nbsp;ok";*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inherited&nbsp;=&nbsp;inher&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;explicit_no&nbsp;=&nbsp;explicit_no_intfs_of&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;"Grdf_intf.compute_intfs_of:&nbsp;inherited&nbsp;ok";*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(explicit,&nbsp;inherited)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 ;;<br>
 <br>

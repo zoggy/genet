@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -174,8 +175,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_version&nbsp;acc&nbsp;version&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;keep&nbsp;only&nbsp;versions&nbsp;implementing&nbsp;all&nbsp;the&nbsp;required&nbsp;interfaces&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;implemented&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;inherited)&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.union&nbsp;explicit&nbsp;inherited<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.diff&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;explicit&nbsp;inherited)&nbsp;explicit_no<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Implemented:\n%s"</span><br>
@@ -208,7 +209,7 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;input,&nbsp;input_id&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s,&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(s,&nbsp;id)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s,&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Fname</span>.relative&nbsp;s,&nbsp;id)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;equal_tool_versions&nbsp;=&nbsp;<span class="constructor">Urimap</span>.equal&nbsp;<span class="constructor">Rdf_uri</span>.equal;;<br>
@@ -240,12 +241,12 @@
 <br>
 <span class="keyword">let</span>&nbsp;set_input_info&nbsp;ctx&nbsp;uri_inst&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_name&nbsp;=&nbsp;input.<span class="constructor">Ind_types</span>.from_in_data&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;input.<span class="constructor">Ind_types</span>.dir)&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri_inst&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_useinput&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input_name)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf&nbsp;~sub&nbsp;~pred&nbsp;~obj;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_useinputcommitid&nbsp;<span class="keyword">in</span><br>
@@ -259,7 +260,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insts&nbsp;=&nbsp;instances&nbsp;ctx&nbsp;uri_fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(input.<span class="constructor">Ind_types</span>.from_in_data,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;input.<span class="constructor">Ind_types</span>.dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;input.<span class="constructor">Ind_types</span>.dir))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;(_,&nbsp;versions,&nbsp;input_info)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;equal_tool_versions&nbsp;comb&nbsp;versions&nbsp;<span class="keywordsign">&amp;&amp;</span><br>
@@ -400,7 +401,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;reference_insts&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;chain)<br>
@@ -422,7 +423,7 @@
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;inst)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input));<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_uris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;chain<br>
 ;;<br>
@@ -471,12 +472,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(name,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;name&nbsp;&lt;&gt;&nbsp;input&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Inst&nbsp;chain&nbsp;%S&nbsp;uses&nbsp;input&nbsp;%S&nbsp;and&nbsp;cannot&nbsp;be&nbsp;used&nbsp;as&nbsp;reference&nbsp;for&nbsp;%S"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;inst)&nbsp;name&nbsp;input<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Fname</span>.compare&nbsp;name&nbsp;input&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Inst&nbsp;chain&nbsp;%S&nbsp;uses&nbsp;input&nbsp;%S&nbsp;and&nbsp;cannot&nbsp;be&nbsp;used&nbsp;as&nbsp;reference&nbsp;for&nbsp;%S"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;inst)&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;name)&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;<span class="keyword">end</span>;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;inst&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;remove_ref_inst&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;~inst)<br>
@@ -484,7 +487,7 @@
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;inst)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input));<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;chain<br>
 ;;<br>

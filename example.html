@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Genet : A small example</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Genet : A step-by-step example: basics</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <link rel="stylesheet" type="text/css" href="http://zoggy.github.com/genet/style.css"/>
 <rssfeed/>
 </head><body>
@@ -15,7 +15,7 @@
     <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.com/genet">Genet</a></li>
     <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.com/genet/screenshots.html">Screenshots</a></li>
     <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.com/genet/download.html">Download</a></li>
-    <li class="&lt;navbar-doc/&gt;"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
+    <li class="active"><a href="http://zoggy.github.com/genet/doc.html">Documentation</a></li>
     <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.com/genet/blog.html">Blog</a></li>
     <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.com/genet/about.html">?</a></li>
   </ul>
@@ -29,7 +29,7 @@
 
 <div id="header">
 
-<div class="page-title">A small example</div>
+<div class="page-title">A step-by-step example: basics</div>
 </div>
 <span/>
 
@@ -42,7 +42,7 @@ in directory <span class="icode">website/example</span>.
 
 <ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#init">Initialisation</a></li><li class="toc-section"><a href="#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="#tools">Adding tools</a></li><li class="toc-section"><a href="#chains">Defining a chain</a></li><li class="toc-section"><a href="#input">Defining an input</a></li><li class="toc-section"><a href="#flattening">Flattening chains</a></li><li class="toc-section"><a href="#inst">Executing chains</a></li><li class="toc-section"><a href="#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="#newaverage">A new version of the average tool</a></li><li class="toc-section"><a href="#activeversion">Active versions</a></li><li class="toc-section"><a href="#scripts">Using scripts</a></li></ul>
 <div class="section"><div class="section-title" id="intro">Introduction</div>
-<p>The example projet, called &quot;genet-example&quot;, defines three tools:
+<p>The example project, called &quot;genet-example&quot;, defines three tools:
 </p>
 <ul>
 <li><span class="icode">split-text</span> to split text files into words,</li>
@@ -144,12 +144,12 @@ a file extension and a description.Here, we have three filetypes:
 <ul>
 <li>text files, with <span class="icode">.txt</span> extension,</li>
 <li>words files, with <span class="icode">.txt</span> extension, with a word on each line,</li>
-<li>average files, with <span class="icode">.avg</span> extension, containing only a string representing a float number.</li>
+<li>number files, with <span class="icode">.nb</span> extension, containing only a string representing a float number.</li>
 </ul>
 <p>The following commands will create the filetypes:</p>
 <pre class="code-sh">$ genet add filetype <span class="hl str">&quot;text&quot;</span> txt <span class="hl str">&quot;Source text file&quot;</span>
-$ genet add filetype <span class="hl str">&quot;words&quot;</span> txt <span class="hl str">&quot;words, one per line&quot;</span>
-$ genet add filetype <span class="hl str">&quot;average&quot;</span> avg <span class="hl str">&quot;computed average length of words&quot;</span></pre>
+$ genet add filetype <span class="hl str">&quot;words&quot;</span> txt <span class="hl str">&quot;Words, one per line&quot;</span>
+$ genet add filetype <span class="hl str">&quot;number&quot;</span> nb <span class="hl str">&quot;A real number&quot;</span></pre>
 <p class="alert alert-info">
 <span class="icode">genet add</span> commands usually returns the url of the newly created item.
 Each item has its own unique url, used as identifier in other commands.
@@ -185,6 +185,13 @@ For our example project, we'll act like if our three tools are developped separa
 and so their version numbers are independent. Each of our tools is composed of only
 one executable.
 </p>
+<div id="makeinstalltools" class="alert alert-info">
+<p>To install the tools, go to the <span class="icode">website/example</span> directory
+of the Genet distribution and type
+</p>
+<pre class="code-sh">$ <span class="hl kwc">make install</span></pre>
+<p>This will install tools in the <span class="icode">/tmp/tools</span> directory. </p>
+</div>
 <div class="subsection"><div class="subsection-title" id="splittext">Adding the split-text tool</div>
 <p>We start by defining our <span class="icode">split-text</span> tool. We show the output
 in comment, because it is used from one command to another:</p>
@@ -259,7 +266,7 @@ $ VERSION<span class="hl opt">=</span><span class="hl str">`genet add version ${
 $ INTF<span class="hl opt">=</span><span class="hl str">`genet add interface -p &quot;/tmp/tools/average-%v&quot; ${BRANCH} line-length`</span>
   <span class="hl slc"># http://localhost:8082/tools/average/interfaces/line-length</span>
 $ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;in&quot;</span> <span class="hl str">&quot;words&quot;</span>
-$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;average&quot;</span></pre>
+$ genet add port <span class="hl kwd">${INTF}</span> <span class="hl str">&quot;out&quot;</span> <span class="hl str">&quot;number&quot;</span></pre>
 </div>
 
 </div>
@@ -285,7 +292,7 @@ To do so, we type the following code in the
 <span class="hl com">(*  This chain reads a text file and output the average length of the different words used. *)</span>
 <span class="hl opt">{</span>
   <span class="hl kwb">in</span><span class="hl opt">:</span> text i1 <span class="hl opt">;</span>
-  <span class="hl kwb">out</span><span class="hl opt">:</span> average o1 <span class="hl opt">;</span>
+  <span class="hl kwb">out</span><span class="hl opt">:</span> number o1 <span class="hl opt">;</span>
 
   <span class="hl com">(* operation &quot;split&quot; calls the interface &quot;split-in-words&quot; of tool &quot;split-text&quot; *)</span>
   <span class="hl kwb">operation</span> split <span class="hl opt">:</span> <span class="hl str">&quot;/split-text/split-in-words&quot;</span> <span class="hl opt">;</span>

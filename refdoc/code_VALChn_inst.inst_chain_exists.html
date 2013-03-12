@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -82,7 +83,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insts&nbsp;=&nbsp;instances&nbsp;ctx&nbsp;uri_fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(input.<span class="constructor">Ind_types</span>.from_in_data,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;input.<span class="constructor">Ind_types</span>.dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;input.<span class="constructor">Ind_types</span>.dir))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;(_,&nbsp;versions,&nbsp;input_info)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;equal_tool_versions&nbsp;comb&nbsp;versions&nbsp;<span class="keywordsign">&amp;&amp;</span><br>

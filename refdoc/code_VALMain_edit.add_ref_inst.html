@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -82,6 +83,7 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[input&nbsp;;&nbsp;chainname&nbsp;;&nbsp;inst_uri]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=&nbsp;<span class="constructor">Fname</span>.relative&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chainname&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;chain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;inst_uri&nbsp;<span class="keyword">in</span><br>

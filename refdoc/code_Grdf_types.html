@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -119,6 +120,7 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool_of_branch_differs</span>&nbsp;<span class="keyword">of</span>&nbsp;uri&nbsp;*&nbsp;uri&nbsp;*&nbsp;uri<br>
@@ -134,6 +136,7 @@
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf_exists</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Interface&nbsp;%s&nbsp;already&nbsp;exists."</span>&nbsp;name<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype_exists</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Filetype&nbsp;%s&nbsp;already&nbsp;exists."</span>&nbsp;name<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;tool&nbsp;nor&nbsp;a&nbsp;branch."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;branch&nbsp;nor&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;tool."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool_of_branch_differs</span>&nbsp;(branch,&nbsp;branch_tool,&nbsp;tool)&nbsp;<span class="keywordsign">-&gt;</span><br>

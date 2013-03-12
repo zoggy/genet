@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -88,13 +89,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_config&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Config</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string_of_config&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;in_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;out_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;chains_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;data_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;web_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;in_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;out_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;chains_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;data_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;web_dir&nbsp;:&nbsp;<span class="constructor">Config</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename<br>
 <span class="keyword">end</span></code></body></html>

@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -88,7 +89,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;t&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Var</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">None</span>)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">Some</span>&nbsp;(string_of_int&nbsp;cpt))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(t,&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Fname</span>.concat_s&nbsp;tmp_dir&nbsp;(string_of_int&nbsp;cpt)))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_intf_in_port&nbsp;(uri_of_g_uri&nbsp;inst_implode)&nbsp;cpt&nbsp;<span class="keyword">in</span><br>

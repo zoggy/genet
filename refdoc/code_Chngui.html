@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -94,8 +95,8 @@
 <br>
 <span class="keyword">class</span>&nbsp;mod_box&nbsp;ctx&nbsp;~on_select&nbsp;~on_unselect&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;[string]&nbsp;<span class="constructor">Gmylist</span>.plist&nbsp;<span class="keywordsign">`</span><span class="constructor">SINGLE</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;<span class="constructor">Filename</span>.basename]&nbsp;<span class="keyword">false</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;[&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename]&nbsp;<span class="constructor">Gmylist</span>.plist&nbsp;<span class="keywordsign">`</span><span class="constructor">SINGLE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;(<span class="keyword">fun</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;f))]&nbsp;<span class="keyword">false</span><br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_select&nbsp;=&nbsp;on_select<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_deselect&nbsp;=&nbsp;on_unselect<br>
@@ -113,9 +114,9 @@
 &nbsp;&nbsp;<span class="constructor">Gtksv_utils</span>.register_source_buffer&nbsp;buffer;<br>
 &nbsp;&nbsp;buffer<br>
 <br>
-<span class="keyword">class</span>&nbsp;buffer&nbsp;ctx&nbsp;file&nbsp;=<br>
+<span class="keyword">class</span>&nbsp;buffer&nbsp;ctx&nbsp;(file&nbsp;:&nbsp;[<span class="keywordsign">`</span><span class="constructor">Absolute</span>]&nbsp;<span class="constructor">Fname</span>.filename)&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;buf&nbsp;=&nbsp;create_buffer&nbsp;ctx&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_&nbsp;=&nbsp;buf<span class="keywordsign">#</span>insert&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;source_buffer&nbsp;=&nbsp;buf<br>
@@ -179,7 +180,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;buf&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.modname_of_file&nbsp;buf<span class="keywordsign">#</span>file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;code&nbsp;=&nbsp;buf<span class="keywordsign">#</span>source_buffer<span class="keywordsign">#</span>get_text&nbsp;()&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chn_mod&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chn_module_of_string&nbsp;~file:&nbsp;buf<span class="keywordsign">#</span>file&nbsp;modname&nbsp;code&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chn_mod&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chn_module_of_string&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~file:&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;buf<span class="keywordsign">#</span>file)&nbsp;modname&nbsp;code<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(line,&nbsp;char)&nbsp;=&nbsp;location_in_buffer&nbsp;buf<span class="keywordsign">#</span>source_buffer&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chn&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.find<br>
@@ -251,17 +254,18 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;files&nbsp;=&nbsp;<span class="constructor">Chn_io</span>.chain_files&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;ignore(<span class="constructor">Smap</span>.find&nbsp;file&nbsp;buffers)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;ignore(<span class="constructor">Smap</span>.find&nbsp;file_s&nbsp;buffers)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;buffer&nbsp;ctx&nbsp;file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buffers&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;file&nbsp;b&nbsp;buffers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buffers&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;file_s&nbsp;b&nbsp;buffers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;files;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mod_box<span class="keywordsign">#</span>update_data&nbsp;files<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_mod_select&nbsp;file&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Smap</span>.find&nbsp;file&nbsp;buffers&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Smap</span>.find&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;buffers&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code_box<span class="keywordsign">#</span>set_buffer&nbsp;(<span class="constructor">Some</span>&nbsp;b)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 <br>

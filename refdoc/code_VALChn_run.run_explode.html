@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -99,8 +100,10 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;root&nbsp;=&nbsp;get_port_input_file&nbsp;ctx&nbsp;state&nbsp;orig_in_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_files&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Ignore</span>&nbsp;[root]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;((&lt;&gt;)&nbsp;root)&nbsp;entries<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;root_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;root&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Ignore</span>&nbsp;[root_s]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">List</span>.filter&nbsp;((&lt;&gt;)&nbsp;root_s)&nbsp;entries&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;entries<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_implode&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_uri&nbsp;ctx.ctx_rdf<br>
@@ -161,7 +164,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.pred_of_dir&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(uri_of_g_uri&nbsp;inst_node)&nbsp;~pred&nbsp;~obj:&nbsp;uri;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;FIXME&nbsp;HANDLE&nbsp;FILES&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;in_file&nbsp;(<span class="constructor">Inst</span>&nbsp;uri);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;<span class="constructor">Inst</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(port,<br>
@@ -177,7 +179,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(new_expl_node&nbsp;::&nbsp;expl_nodes,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insert_graph&nbsp;(state,&nbsp;cpt)&nbsp;in_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_file&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*let&nbsp;in_file&nbsp;=&nbsp;Misc.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;in*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;add_implode_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;inst_implode&nbsp;orig_impl_in_port<br>

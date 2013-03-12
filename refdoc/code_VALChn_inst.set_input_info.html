@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,12 +81,12 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;set_input_info&nbsp;ctx&nbsp;uri_inst&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_name&nbsp;=&nbsp;input.<span class="constructor">Ind_types</span>.from_in_data&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;input.<span class="constructor">Ind_types</span>.dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;input.<span class="constructor">Ind_types</span>.dir)&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri_inst&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_useinput&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input_name)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf&nbsp;~sub&nbsp;~pred&nbsp;~obj;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_useinputcommitid&nbsp;<span class="keyword">in</span><br>

@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -120,18 +121,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_prefix&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;out_prefix)&nbsp;s_file_uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Filename</span>.concat&nbsp;out_dir&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;out_dir&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;output&nbsp;file&nbsp;uri"</span>&nbsp;s_file_uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;mkdir&nbsp;ctx&nbsp;ports&nbsp;main_dir&nbsp;n&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;main_dir&nbsp;(string_of_int&nbsp;n)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;dir&nbsp;;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;main_dir&nbsp;(string_of_int&nbsp;n)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir)&nbsp;;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;make_link&nbsp;n&nbsp;port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;file_of_out_port&nbsp;ctx&nbsp;port&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Unix</span>.symlink&nbsp;file&nbsp;(<span class="constructor">Filename</span>.concat&nbsp;dir&nbsp;(string_of_int&nbsp;n))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Unix</span>.symlink&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;(<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;(string_of_int&nbsp;n)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Unix</span>.<span class="constructor">Unix_error</span>&nbsp;(e,s1,s2)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s:&nbsp;%s&nbsp;%s"</span>&nbsp;(<span class="constructor">Unix</span>.error_message&nbsp;e)&nbsp;s1&nbsp;s2&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
@@ -142,34 +144,34 @@
 <span class="keyword">let</span>&nbsp;diff&nbsp;ctx&nbsp;?(html=<span class="keyword">false</span>)&nbsp;?(fragment=<span class="keyword">false</span>)&nbsp;?(keepfiles=<span class="keyword">false</span>)&nbsp;?(diff=<span class="string">"diff&nbsp;-r&nbsp;-u"</span>)&nbsp;inst1&nbsp;inst2&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports1&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;inst1&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports2&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;inst2&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;main_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"diff"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;main_dir&nbsp;;<br>
-&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;main_dir;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;main_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"diff"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;main_dir)&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;main_dir);<br>
 &nbsp;&nbsp;mkdir&nbsp;ctx&nbsp;ports1&nbsp;main_dir&nbsp;1&nbsp;;<br>
 &nbsp;&nbsp;mkdir&nbsp;ctx&nbsp;ports2&nbsp;main_dir&nbsp;2&nbsp;;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;res&nbsp;=&nbsp;<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genetdiff"</span>&nbsp;<span class="string">"result"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;res&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genetdiff"</span>&nbsp;<span class="string">"result"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"(cd&nbsp;%s&nbsp;&amp;&amp;&nbsp;%s&nbsp;1&nbsp;2&nbsp;%s)&nbsp;&gt;&nbsp;%s&nbsp;2&gt;&amp;1"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;main_dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;main_dir)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;diff<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;html&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"|&nbsp;highlight&nbsp;--syntax=diff&nbsp;%s"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;fragment&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"&nbsp;-f"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;res)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;res)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;com;<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed:&nbsp;%s"</span>&nbsp;com)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;result&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;res&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;result&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;res)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;keepfiles&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"rm&nbsp;-fr&nbsp;%s"</span>&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;main_dir)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"rm&nbsp;-fr&nbsp;%s"</span>&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;main_dir)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">try</span>&nbsp;ignore(<span class="constructor">Sys</span>.command&nbsp;com)&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;())<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;res;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;res);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result<br>
 ;;<br>
 <br>

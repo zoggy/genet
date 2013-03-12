@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -121,5 +122,5 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Intf</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)</code></body></html>

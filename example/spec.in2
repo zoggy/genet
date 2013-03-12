@@ -1,0 +1,4 @@
+(* Input files and directories; order matters *)
+in = ["sue.txt" ]
+(* The chains to apply *)
+chains = [ "Test.words_avg_length" ; "Test2.par_avg_length" ]

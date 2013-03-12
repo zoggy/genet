@@ -29,6 +29,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -84,7 +85,7 @@
 <div class="navbar">&nbsp;<a class="up" href="Chn_io.html" title="Chn_io">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Chn_io.File_set.html">Chn_io.File_set</a> (<a href="code_Chn_io.File_set.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> File_set: <code class="type">Set.Make</code><code class="code">(</code><code class="code">sig</code><div class="sig_block"><pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">string * <a href="Misc.html#TYPEgit_status">Misc.git_status</a></code> </pre>
+<pre><span class="keyword">module</span> File_set: <code class="type">Set.Make</code><code class="code">(</code><code class="code">sig</code><div class="sig_block"><pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> * <a href="Misc.html#TYPEgit_status">Misc.git_status</a></code> </pre>
 
-<pre><span id="VALcompare"><span class="keyword">val</span> <a href="code_VALChn_io.File_set.compare.html">compare</a></span> : <code class="type">'a * 'b -> 'a * 'c -> int</code></pre></div><code class="code">end</code><code class="code">)</code></pre><hr width="100%">
+<pre><span id="VALcompare"><span class="keyword">val</span> <a href="code_VALChn_io.File_set.compare.html">compare</a></span> : <code class="type">'a <a href="Fname.html#TYPEfilename">Fname.filename</a> * 'b -> 'a <a href="Fname.html#TYPEfilename">Fname.filename</a> * 'c -> int</code></pre></div><code class="code">end</code><code class="code">)</code></pre><hr width="100%">
 </body></html>

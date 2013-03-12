@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,41 +82,46 @@
 <code class="code"><span class="keyword">let</span>&nbsp;init_dir&nbsp;opts&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filename</span>.current_dir_name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;dir&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Sys</span>.getcwd())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;dir&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Filename</span>.is_relative&nbsp;dir&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.concat&nbsp;(<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Sys</span>.getcwd()))&nbsp;(<span class="constructor">Fname</span>.relative&nbsp;dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;dir<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;verbose&nbsp;=&nbsp;opts.<span class="constructor">Options</span>.verb_level&nbsp;&gt;&nbsp;0&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mkdir&nbsp;=&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;~verbose&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;mkdir&nbsp;dir;<br>
+&nbsp;&nbsp;mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config_file&nbsp;=&nbsp;<span class="constructor">Install</span>.default_config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;{&nbsp;config&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Config</span>.root_dir&nbsp;=&nbsp;dir&nbsp;}&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;mkdir&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;config);<br>
+&nbsp;&nbsp;mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;config));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.in_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;!git_repo&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;mkdir&nbsp;[<span class="constructor">Config</span>.chains_dir&nbsp;config;&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;(<span class="constructor">Config</span>.chains_dir&nbsp;config));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;config));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;web_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.web_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"cp&nbsp;-r&nbsp;%s&nbsp;%s"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;<span class="constructor">Install</span>.share_web_dir)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;web_dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;web_dir)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;verbose&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"copying&nbsp;%s&nbsp;to&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Install</span>.share_web_dir&nbsp;web_dir);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"copying&nbsp;%s&nbsp;to&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Install</span>.share_web_dir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;web_dir));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed:&nbsp;%s"</span>&nbsp;com)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;repo&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"git&nbsp;clone&nbsp;%s&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;repo)&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;in_dir)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;repo)&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;in_dir)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;verbose&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Cloning&nbsp;%s&nbsp;into&nbsp;%s"</span>&nbsp;repo&nbsp;in_dir);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Cloning&nbsp;%s&nbsp;into&nbsp;%s"</span>&nbsp;repo&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;in_dir));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed:&nbsp;%s"</span>&nbsp;com)<br>

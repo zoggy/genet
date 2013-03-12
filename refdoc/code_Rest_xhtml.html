@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -594,23 +595,26 @@
 <br>
 <span class="keyword">let</span>&nbsp;xhtml_of_intfs_of&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;prerr_endline&nbsp;<span class="string">"xhtml_of_intfs:&nbsp;start"</span>;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;inherited)&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;prerr_endline&nbsp;<span class="string">"xhtml_of_intfs:&nbsp;explicit,inherited&nbsp;ok"</span>;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;prerr_endline&nbsp;<span class="string">"xhtml_of_intfs:&nbsp;explicit,explicit_no,inherited&nbsp;ok"</span>;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;intf_list&nbsp;ctx&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;explicit)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs_no&nbsp;=&nbsp;intf_list&nbsp;ctx&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;explicit_no)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;prerr_endline&nbsp;<span class="string">"xhtml_of_intfs:&nbsp;intfs&nbsp;ok"</span>;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inherited_intfs&nbsp;=&nbsp;intf_list&nbsp;ctx&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;inherited)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inherited_intfs&nbsp;=&nbsp;intf_list&nbsp;ctx&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;(<span class="constructor">Uriset</span>.diff&nbsp;inherited&nbsp;explicit_no))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;prerr_endline&nbsp;<span class="string">"xhtml_of_intfs:&nbsp;inherited&nbsp;ok"</span>;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.tmpl_file&nbsp;ctx.ctx_cfg&nbsp;<span class="string">"intfs.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"has_intfs"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keyword">if</span>&nbsp;<span class="constructor">Uriset</span>.is_empty&nbsp;explicit&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"true"</span>])&nbsp;&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"intfs"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intfs)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"has_intfs_no"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keyword">if</span>&nbsp;<span class="constructor">Uriset</span>.is_empty&nbsp;explicit_no&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"true"</span>])&nbsp;&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"intfs_no"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intfs_no)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"has_inherited_intfs"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="keyword">if</span>&nbsp;<span class="constructor">Uriset</span>.is_empty&nbsp;inherited&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"true"</span>])&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"inherited_intfs"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;inherited_intfs)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl<br>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;xhtml_of_branches_of&nbsp;ctx&nbsp;uri&nbsp;=<br>
@@ -652,7 +656,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Tool</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
@@ -726,7 +730,7 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Intf</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
 <br>
@@ -801,7 +805,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Branch</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
@@ -923,7 +927,8 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[],&nbsp;svg)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Source&nbsp;from&nbsp;"</span>^(<span class="constructor">Filename</span>.quote&nbsp;file)],&nbsp;code)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Source&nbsp;from&nbsp;"</span>^(<span class="constructor">Fname</span>.quote&nbsp;file)],&nbsp;code)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;chain_page&nbsp;ctx&nbsp;~title&nbsp;~navpath&nbsp;contents)<br>
@@ -1123,7 +1128,7 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.inst_input&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"??"</span>]<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(name,&nbsp;id)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;[%s]"</span>&nbsp;name&nbsp;id)&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;[%s]"</span>&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;name)&nbsp;id)&nbsp;]<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;xhtml_tools_of_ichain&nbsp;ctx&nbsp;?(short=<span class="keyword">false</span>)&nbsp;uri&nbsp;=<br>
@@ -1217,10 +1222,10 @@
 <br>
 <span class="keyword">let</span>&nbsp;get_outfile_raw&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filename&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;filename)&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename))&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype],&nbsp;file_contents)<br>
 ;;<br>
 <br>
@@ -1253,23 +1258,23 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;xhtml_outdir_contents&nbsp;ctx&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_uri&nbsp;basename&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;~raw:&nbsp;<span class="keyword">false</span>&nbsp;prefix&nbsp;(path@[basename])<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;dir<br>
+&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;xhtml_inputdir_contents&nbsp;ctx&nbsp;input&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;path)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_uri&nbsp;basename&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_input_file_path&nbsp;~raw:&nbsp;<span class="keyword">false</span>&nbsp;prefix&nbsp;input&nbsp;(path@[basename])<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;dir<br>
+&nbsp;&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dir)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_outfile&nbsp;ctx&nbsp;path&nbsp;raw&nbsp;=<br>
@@ -1278,10 +1283,10 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filename&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.out_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wtitle&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;filename).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;raw_link&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;kind&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
@@ -1302,13 +1307,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xhtml_outdir_contents&nbsp;ctx&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"hcode"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;file_contents])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"p"</span>),&nbsp;[],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"strong"</span>),&nbsp;[],&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"Date:"</span>&nbsp;]&nbsp;)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;&nbsp;(file_date&nbsp;filename)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;&nbsp;(file_date&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"p"</span>),&nbsp;[],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"div"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"class"</span>),&nbsp;<span class="string">"btn-group"</span>],<br>
@@ -1391,7 +1396,7 @@
 <span class="keyword">let</span>&nbsp;get_inputs&nbsp;ctx&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.list_inputs&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Input"</span>]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[a_input&nbsp;ctx&nbsp;[s]]]&nbsp;)&nbsp;inputs&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[a_input&nbsp;ctx&nbsp;[<span class="constructor">Fname</span>.rel_string&nbsp;s]]]&nbsp;)&nbsp;inputs&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;[&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="string">"Inputs"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;in_page&nbsp;ctx&nbsp;~title&nbsp;table)<br>
@@ -1399,14 +1404,14 @@
 <br>
 <span class="keyword">let</span>&nbsp;get_input&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dirname&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;path<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.load&nbsp;ctx.ctx_cfg&nbsp;dirname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;dirname&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_id&nbsp;=&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;dirname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_table&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(name,&nbsp;_)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_path&nbsp;=&nbsp;<span class="constructor">Misc</span>.split_filename&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_path&nbsp;=&nbsp;<span class="constructor">Misc</span>.split_filename&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;name)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a_input_file&nbsp;ctx&nbsp;path&nbsp;file_path&nbsp;]&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;spec.<span class="constructor">Ind_types</span>.in_files&nbsp;<span class="keyword">in</span><br>
@@ -1437,22 +1442,22 @@
 <br>
 <span class="keyword">let</span>&nbsp;get_input_file&nbsp;ctx&nbsp;~raw&nbsp;~input&nbsp;file_path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filename&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;file_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;file_path)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;raw&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;filename)&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename))&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([ctype],&nbsp;file_contents)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;filename).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;kind&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;xhtml_inputdir_contents&nbsp;ctx&nbsp;input&nbsp;file_path&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"hcode"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;file_contents])&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;raw_link&nbsp;=<br>
@@ -1557,10 +1562,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="string">"Executions"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;javascript&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.web_dir&nbsp;ctx.ctx_cfg)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.web_dir&nbsp;ctx.ctx_cfg)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"tmpl"</span>&nbsp;;&nbsp;<span class="string">"inst_chain_query.js"</span>]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;javascript&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;file);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;javascript&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iq&nbsp;=&nbsp;inst_chain_query_of_args&nbsp;args&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_options&nbsp;_&nbsp;_&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.list_inputs&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
@@ -1573,9 +1578,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;atts&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"value"</span>),&nbsp;i)&nbsp;::&nbsp;(<span class="keyword">if</span>&nbsp;i&nbsp;=&nbsp;selected&nbsp;<span class="keyword">then</span>&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"selected"</span>),<span class="string">"true"</span>]&nbsp;<span class="keyword">else</span>&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"value"</span>),&nbsp;<span class="constructor">Fname</span>.rel_string&nbsp;i)&nbsp;::&nbsp;(<span class="keyword">if</span>&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;i)&nbsp;=&nbsp;selected&nbsp;<span class="keyword">then</span>&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"selected"</span>),<span class="string">"true"</span>]&nbsp;<span class="keyword">else</span>&nbsp;[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"option"</span>),&nbsp;atts,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;i]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"option"</span>),&nbsp;atts,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;i)]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_options&nbsp;_&nbsp;_&nbsp;_&nbsp;=<br>
@@ -1689,7 +1694,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;ichain_digest&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl_dir&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.tmpl_dir&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;tmpl_dir&nbsp;<span class="string">"inst_chain_digest.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;tmpl_dir&nbsp;<span class="string">"inst_chain_digest.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"??"</span><br>
@@ -1707,7 +1712,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"tools"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;tools)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl<br>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;get_diff_ichains&nbsp;ctx&nbsp;args&nbsp;=<br>

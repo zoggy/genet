@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -82,7 +83,7 @@
 <span class="keyword">object</span><br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;buffers&nbsp;:&nbsp;<span class="constructor">Chngui</span>.buffer&nbsp;<span class="constructor">Smap</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_mod_select&nbsp;:&nbsp;<span class="constructor">Smap</span>.key&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_mod_unselect&nbsp;:&nbsp;<span class="constructor">Smap</span>.key&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_mod_select&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_mod_unselect&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;update_module_list&nbsp;:&nbsp;unit<br>
 <span class="keyword">end</span></code></body></html>

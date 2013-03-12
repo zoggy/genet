@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -96,8 +97,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;in_files)&nbsp;(g_uri_string&nbsp;orig_node));<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;test&nbsp;file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file)&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;does&nbsp;not&nbsp;exist"</span>&nbsp;file)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_s&nbsp;=&nbsp;<span class="constructor">Fname</span>.abs_string&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Sys</span>.file_exists&nbsp;file_s)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"File&nbsp;%S&nbsp;does&nbsp;not&nbsp;exist"</span>&nbsp;file_s)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;test&nbsp;in_files;<br>
 <br>

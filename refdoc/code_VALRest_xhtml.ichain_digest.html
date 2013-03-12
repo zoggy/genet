@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,7 +81,7 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;ichain_digest&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl_dir&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.tmpl_dir&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Filename</span>.concat&nbsp;tmpl_dir&nbsp;<span class="string">"inst_chain_digest.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;tmpl_dir&nbsp;<span class="string">"inst_chain_digest.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"??"</span><br>
@@ -98,4 +99,4 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"tools"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;tools)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;tmpl</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)</code></body></html>

@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,14 +81,14 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;extract_git_file&nbsp;config&nbsp;~file&nbsp;~id&nbsp;~target&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;data_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base_dir&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;target)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_base&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;target)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.path_under&nbsp;~parent:&nbsp;data_dir&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_dir&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;target))&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_base&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;target))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"mkdir&nbsp;-p&nbsp;%s/.tmp;&nbsp;(cd&nbsp;%s&nbsp;;&nbsp;git&nbsp;archive&nbsp;--format&nbsp;tar&nbsp;%s&nbsp;%s|&nbsp;(cd&nbsp;%s/.tmp&nbsp;;&nbsp;tar&nbsp;xvf&nbsp;-))&nbsp;;&nbsp;mv&nbsp;%s/.tmp/%s&nbsp;%s/%s&nbsp;;&nbsp;rm&nbsp;-fr&nbsp;%s/.tmp/"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;base_dir)&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Filename</span>.quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
 &nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:3&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"extract_git_file:&nbsp;%s"</span>&nbsp;com);<br>

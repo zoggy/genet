@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -80,22 +81,22 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;get_input_file&nbsp;ctx&nbsp;~raw&nbsp;~input&nbsp;file_path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;filename&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Filename</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;file_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;ctx.ctx_cfg)&nbsp;(input&nbsp;@&nbsp;file_path)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;raw&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;filename)&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctype&nbsp;=&nbsp;ctype&nbsp;~t:&nbsp;(<span class="constructor">Misc</span>.file_mimetype&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename))&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([ctype],&nbsp;file_contents)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;filename).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;kind&nbsp;=&nbsp;(<span class="constructor">Unix</span>.lstat&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)).<span class="constructor">Unix</span>.st_kind&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;kind&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Unix</span>.<span class="constructor">S_DIR</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;xhtml_inputdir_contents&nbsp;ctx&nbsp;input&nbsp;file_path&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;filename&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_contents&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;filename)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"hcode"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;file_contents])&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;raw_link&nbsp;=<br>

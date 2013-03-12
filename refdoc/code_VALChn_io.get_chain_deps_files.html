@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -100,7 +101,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;succs&nbsp;=&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Chn_graph</span>.succ&nbsp;g&nbsp;chn_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;map&nbsp;(succ,_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;map&nbsp;succ)&nbsp;map&nbsp;succs&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;file_of_modname&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg&nbsp;(<span class="constructor">Chn_types</span>.chain_modname&nbsp;chn_name)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_status&nbsp;=&nbsp;<span class="constructor">Misc</span>.git_status&nbsp;file&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;git_status&nbsp;=&nbsp;<span class="constructor">Misc</span>.git_status&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(chains,&nbsp;files)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(gather_deps&nbsp;map)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_ast</span>.<span class="constructor">Cset</span>.empty,&nbsp;<span class="constructor">File_set</span>.singleton&nbsp;(file,&nbsp;git_status))&nbsp;succs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>

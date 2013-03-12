@@ -26,6 +26,7 @@
 <link title="Cmdline" rel="Chapter" href="Cmdline.html">
 <link title="Config" rel="Chapter" href="Config.html">
 <link title="Find" rel="Chapter" href="Find.html">
+<link title="Fname" rel="Chapter" href="Fname.html">
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
@@ -81,7 +82,7 @@
 <code class="code"><span class="keyword">let</span>&nbsp;get_inputs&nbsp;ctx&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.list_inputs&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Input"</span>]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[a_input&nbsp;ctx&nbsp;[s]]]&nbsp;)&nbsp;inputs&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[a_input&nbsp;ctx&nbsp;[<span class="constructor">Fname</span>.rel_string&nbsp;s]]]&nbsp;)&nbsp;inputs&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;[&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="string">"Inputs"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;in_page&nbsp;ctx&nbsp;~title&nbsp;table)</code></body></html>
