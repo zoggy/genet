@@ -22,7 +22,7 @@ To do so, we need to:
 <li>upgrade the <icode>split-text</icode> tool to a new version,
  handling option <icode>-p</icode> to split text according to
  blank lines instead of spaces,</li>
-<li>upgrade the <icode>average></icode> tool to a new version,
+<li>upgrade the <icode>average</icode> tool to a new version,
   handling two options:
   <ul>
     <li>option <icode>-n</icode> will indicate that input files contain numbers,
@@ -55,7 +55,7 @@ uri that is printed by the command, we store it in a variable:
 </p>
 <incsh id="addsplittextintf"/>
 <p>
-Now we add an input port for this interface, of type <icode>text</icode>:
+Now we add an input port to this interface, of type <icode>text</icode>:
 </p>
 <incsh id="addsplittextin"/>
 <p>
@@ -74,7 +74,7 @@ this interface, with the following command:
 <incsh id="addnotintfsplittext"/>
 <p>
 If we did not, when a chain contains this interface, the version <icode>0.1</icode> would
-have beed used in the computation of tool version combinations to execute the chain, and
+have been used in the computation of tool version combinations to execute the chain, and
 this would have produced an error since the <icode>-p</icode> option is invalid for
 <icode>split-text</icode> <icode>0.1</icode>. (Another way to prevent this would have been
 to make version <icode>0.1</icode> inactive.)
@@ -98,11 +98,52 @@ command will take a <strong>directory</strong> in parameter where to find files 
 </section>
 
 <section id="addchain" title="Defining the new chain">
-
+<p>
+We can now define a new chain, using the new interfaces we added above. We type the following
+code in the file <icode>in/chains/test2.gnt</icode>:
+</p>
+<hcode lang-file="genet.lang" defer_="1"><include file="./example/in/chains/test2.gnt" raw="true"/></hcode>
+<p>
+The important point in this chain in the <icode>foreach</icode> construction. See the comment
+in the code above.
+</p>
+<p>Then we add the new module to git and commit:</p>
+<sh>$ (cd in/chains ; git add test2.gnt ; git commit -m"new chain" test2.gnt)</sh>
 </section>
 
 <section id="running" title="Running the chain">
-
+<p>
+Our new chain can be applied on the same input file that the first chain, i.e. on a <icode>text</icode> file.
+So we add our new chain to the list of chains to use in our <icode>test1</icode> input, in the
+<icode>in/data/test1/spec.in</icode> file:
+</p>
+<hcode lang-file="genet.lang" defer_="1"><include file="./example/spec.in2" raw="true"/></hcode>
+<p>
+We commit this new version of the file:
+</p>
+<sh>$ (cd in/data/test1 ; git commit -m"add new chain Test2.par_avg_length" spec.in)</sh>
+<p>
+Then we flatten the chain:
+</p>
+<incsh id="flattenchain"/>
+<p>
+At last, we can execute the chains specified for <icode>test1</icode>:
+</p>
+<incsh id="exec"/>
+<p>
+Then, you can launch the web interface:
+</p>
+<sh>$ genet-rest --config /tmp/genet-example/config.txt</sh>
+<p>
+In the interface, click on the "Out files" tab, select the chain "Test2.par_avg_length"
+to show the executions of this chain, and click on the execution in the list. You should
+see the execution displayed as in this screenshot (click to enlarge).
+The two operations around the <icode>count</icode> operations are "explode" and "implode"
+operations automatically added to handle the <icode>foreach</icode> construction.
+</p>
+<div class="center">
+  <a href="genet-example2.png"><img src="genet-example2.png" alt="Result of execution" width="600"/></a>
+</div>
 </section>
 </contents>
 </page>

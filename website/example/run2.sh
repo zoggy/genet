@@ -55,9 +55,9 @@ genet add no-interface http://localhost:8082/tools/average/versions/0.2 ${INTFC}
 genet add no-interface http://localhost:8082/tools/average/versions/0.1 ${INTFN}
 genet add no-interface http://localhost:8082/tools/average/versions/0.2 ${INTFN}
 
-#id=flattenall
-genet flatten-all
- #flatten Test2.par_avg_length: No type for port http://localhost:8082/flat-chains/Test2/par_avg_length/fee5-6166-604b-7ef0/split/in/1
+#id=flattenchain
+genet flatten Test2.par_avg_length
+ # Test2.par_avg_length => http://localhost:8082/flat-chains/Test2/par_avg_length/a792-f...
 
-#id=execall
-genet exec --all
+#id=exec
+genet exec test1

@@ -12,7 +12,7 @@ chain par_avg_length
     "count" operations as "text" outputs from "split". The "foreach" construction
     will change the type of the first input port of "count" from "x" to "x set",
     and its output type from "y" to "y set". Here "x" is "text" and "y" is "number".
-   Parameter 1 of "foreach" indicates to iterize on first input port.
+   Parameter 1 of "foreach" indicates to iterate on first input port.
   *)
   operation count : foreach("/average/text-length",1) ;
 

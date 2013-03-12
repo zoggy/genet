@@ -9,7 +9,7 @@ Keywords={
     List={"chain"},
   },
   { Id=2,
-    List={"in", "operation", "out", "->"},
+    List={"foreach", "in", "operation", "out", "->"},
   },
   { Id=3,
     List={},
