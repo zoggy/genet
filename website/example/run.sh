@@ -2,8 +2,6 @@
 
 export PATH=/home/guesdon/devel/genet/src:$PATH
 
-mkdir /tmp/tools
-for i in */*.x; do cp -f $i /tmp/tools/`dirname $i`; done
 
 #id=initdir
 genet init-dir /tmp/genet-example

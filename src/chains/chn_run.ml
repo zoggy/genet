@@ -311,7 +311,7 @@ let new_file ctx tmp_dir ?path state inst_port =
       in
       let file = gen_file ?ext () in
       let file =
-        match path with 
+        match path with
           None -> Fname.concat tmp_dir file
         | Some p -> Fname.concat p file
       in
@@ -611,7 +611,6 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
       let pred = Grdf_port.pred_of_dir Grdf_port.Out in
       Grdfs.add_triple_uris ctx.ctx_rdf ~sub: (uri_of_g_uri inst_node) ~pred ~obj: uri;
 
-      (* FIXME HANDLE FILES *)
       record_file ctx reporter in_file (Inst uri);
       let port = Inst uri in
       (port,
