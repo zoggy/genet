@@ -1,4 +1,4 @@
-<page title="Filetypes and sets"
+<page title="Filetypes and sets (small example, continued)"
 navbar-doc="active"
 with-contents="true"
 >
@@ -9,8 +9,8 @@ When specifying a chain, it is not possible to connect two ports of
 interfaces producing and consuming different file types.
 </p>
 <p>
-However, it is possible ports producing a set of files of a given filetype to a
-port consuming a file of the same file type. This will result in running the
+However, it is possible to connect a port producing a set of files of a given filetype to a
+port consuming a file of the same type. This will result in running the
 operation containing the second port for each file produced by the first port.
 </p>
 <p>
@@ -19,17 +19,82 @@ a second chain, to compute the average length of paragraphs.
 To do so, we need to:
 </p>
 <ul>
-<li>upgrade the <icode>split-text</icode> tool to a new version, handling option <icode>-p</icode>
-to split text according to blank lines instead of spaces,</li>
-<li>upgrade the <icode>average></icode> tool to a new version, handling option <icode>-n</icode>
-indicating that input files contain numbers, and it is the average of these numbers that must be
-printed, and handling a <icode>-c</icode> option indicating to only count input characters, not compute average,</li>
+<li>upgrade the <icode>split-text</icode> tool to a new version,
+ handling option <icode>-p</icode> to split text according to
+ blank lines instead of spaces,</li>
+<li>upgrade the <icode>average></icode> tool to a new version,
+  handling two options:
+  <ul>
+    <li>option <icode>-n</icode> will indicate that input files contain numbers,
+         and it is the average of these numbers that must be printed,
+    </li>
+    <li>option <icode>-c</icode> will indicate to only output the number
+      of input characters.
+    </li>
+  </ul>
+</li>
 <li>add new interfaces <icode>split-in-pars</icode>, <icode>average-of-set</icode>
-  and <icode>text-length</icode> to use the new features in chains,</li>
-<li>define a new chain implementing implementing the workflow.</li>
+  and <icode>text-length</icode> to use these new features in chains,</li>
+<li>define a new chain implementing the workflow.</li>
 </ul>
-<section id="addintfs" title="Adding versions and interfaces">
 
+<section id="addintfs" title="Adding versions and interfaces">
+<p>
+We start by adding a new version for the <icode>split-text</icode> tool:
+</p>
+<incsh id="addsplittextversion"/>
+<p>
+As previously, we show in comment the output of the command.
+</p>
+<p>
+Then, we add a new interface to the <icode>0.x</icode> branch. This interface
+is called <icode>split-in-pars</icode>, and the associated command will
+be <icode>/tmp/tool/split-text-%v -p</icode>, with <icode>%v</icode> being replaced
+at execution time by the tool version number. Since we will use the created interface
+uri that is printed by the command, we store it in a variable:
+</p>
+<incsh id="addsplittextintf"/>
+<p>
+Now we add an input port for this interface, of type <icode>text</icode>:
+</p>
+<incsh id="addsplittextin"/>
+<p>
+Then we add an output port, of type <icode>text set</icode>, that is a set a files
+of type <icode>text</icode>. This means that the interface, when it is called,
+will be given a <strong>directory</strong> where to create the output files:
+</p>
+<incsh id="addsplittextout"/>
+<p>
+Since version <icode>0.1</icode> of <icode>split-text</icode> is also under the
+<icode>0.x</icode> branch, it should implement the <icode>split-in-pars</icode>
+interface, which is not the case since we implemented it in version <icode>0.2</icode>.
+So we must indicate explicitely that version <icode>0.1</icode> does not implement
+this interface, with the following command:
+</p>
+<incsh id="addnotintfsplittext"/>
+<p>
+If we did not, when a chain contains this interface, the version <icode>0.1</icode> would
+have beed used in the computation of tool version combinations to execute the chain, and
+this would have produced an error since the <icode>-p</icode> option is invalid for
+<icode>split-text</icode> <icode>0.1</icode>. (Another way to prevent this would have been
+to make version <icode>0.1</icode> inactive.)
+</p>
+<p>
+We act the same way to add a new version and two new interfaces to the
+<icode>average</icode> tool.
+</p>
+<p>First, we add the new version:</p>
+<incsh id="addaverageversion"/>
+<p>Then we add the new interface <icode>text-length</icode>:</p>
+<incsh id="addaverage-c"/>
+<p>We also add the new interface <icode>average-of-set</icode>.
+Here the input port is of type <icode>number set</icode>, which means that the associated
+command will take a <strong>directory</strong> in parameter where to find files of type
+<icode>number</icode>:
+</p>
+<incsh id="addaverage-n"/>
+<p>At last, we explictely indicate that previous versions of the tool do not implement these new interfaces:</p>
+<incsh id="addnointfaverage"/>
 </section>
 
 <section id="addchain" title="Defining the new chain">
