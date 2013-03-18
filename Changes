@@ -1,4 +1,6 @@
-Next release:
+0.2:
+fix: fix handling of explode/implode ("foreach" construction)
+add: use type system to ensure use of absolute filenames
 add: "genet query fchains"
 add: "genet query inputs"
 add: "genet query chains"
