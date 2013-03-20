@@ -13,7 +13,7 @@ all: $(EXAMPLES)
 
 install: all
 	mkdir -p /tmp/tools
-	for i in */*.x; do cp -f $i /tmp/tools/`dirname $i`; done
+	for i in */*.x; do cp -f $$i /tmp/tools/`dirname $$i`; done
 
 %.x: %.ml
 	$(OCAMLOPT) unix.cmxa -o $@ $<
