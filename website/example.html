@@ -50,24 +50,24 @@ mysql> grant all privileges on genet_example.* to genet@localhost;
 </sh>
 </subsection>
 
-<subsection id="createconfig" title="Create the configuration file">
-<p>
-We also create the configuration file of our project, <icode>config.txt</icode>.
-It contains information regarding the project name, database connection and
-web interface:
-</p>
-<ocaml defer_="1"><include file="./example/config.txt" raw="true"/></ocaml>
-</subsection>
-
 <subsection id="init-dir" title="Create the project directory">
 <p>
 Then we have to create the directory of our project, in <icode>/tmp/genet-example</icode>.
 The structure of this directory is described
 <elt href="doc-user#setup:init-dir">here</elt>. To do so,
-we use the <icode>genet</icode> tool, then copy our configuration file
-into the project directory. At last, we make <icode>/tmp/genet-example/in</icode> a git repository:
+we use the <icode>genet</icode> tool. At last, we make <icode>/tmp/genet-example/in</icode> a git repository:
 </p>
 <incsh id="initdir"/>
+</subsection>
+
+<subsection id="createconfig" title="Setup the configuration file">
+<p>
+The initialization of the directory creates a default <icode>config.txt</icode> file
+in the project directory.
+It contains information regarding the project name, database connection and
+web interface. We edit this file to:
+</p>
+<ocaml defer_="1"><include file="./example/config.txt" raw="true"/></ocaml>
 </subsection>
 
 <subsection id="init-db" title="Initialize the project database">

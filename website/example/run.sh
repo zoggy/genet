@@ -5,9 +5,9 @@ export PATH=/home/guesdon/devel/genet/src:$PATH
 
 #id=initdir
 genet init-dir /tmp/genet-example
-cp config.txt /tmp/genet-example/
 git init /tmp/genet-example/in
 
+cp config.txt /tmp/genet-example/
 cp -f in/chains/test.gnt /tmp/genet-example/in/chains/
 cp -r in/data/test1 /tmp/genet-example/in/data/
 
