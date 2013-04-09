@@ -1,4 +1,6 @@
 Next release:
+add: genet exec --force option: remove previously instanciated chain to
+     re-execute. Useful in manual mode, when setting up interfaces.
 fix: verify syntactic correctness of filetype names before adding
 fix: various error handling
 mod: genet init-dir now creates a default configuration file in the
