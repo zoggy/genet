@@ -53,7 +53,8 @@ let exec_one opts reporter ~force input =
         | e -> Printexc.to_string e
       in
       reporter#error msg;
-      reporter#incr_errors
+      reporter#incr_errors;
+      []
 ;;
 
 let all = ref false;;
@@ -72,9 +73,14 @@ let com_exec ctx opts =
         [] -> failwith "Please give the name of at least one input or --all"
       | l -> List.map Fname.relative l
   in
-  List.iter (exec_one opts reporter ~force: !force) inputs;
+  let f_input acc input =
+    let uris = exec_one opts reporter ~force: !force input in
+    uris :: acc
+  in
+  let uris = List.flatten (List.fold_left f_input [] inputs) in
   let errors = reporter#total_errors in
-  print_endline (Reporter.string_of_msg_list reporter#messages);
+  prerr_endline (Reporter.string_of_msg_list reporter#messages);
+  List.iter (fun uri -> print_endline (Rdf_uri.string uri)) uris;
   if errors > 0 then
     prerr_endline
     (Printf.sprintf "%d error%s" errors (if errors > 1 then "s" else ""));

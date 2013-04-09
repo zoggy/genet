@@ -57,7 +57,7 @@ let last_flat_chain ctx chain_name =
 
 let exec_chain_comb ctx reporter ?force spec uri_fchain comb =
   try
-    ignore(Chn_inst.instanciate ctx reporter ?force uri_fchain spec comb)
+    Chn_inst.instanciate ctx reporter ?force uri_fchain spec comb
   with
     Not_found as e -> raise e
   | exc ->
@@ -73,8 +73,8 @@ let exec_chain ctx reporter spec ?force chain_name =
   match last_flat_chain ctx chain_name with
     None ->
       error
-      (Printf.sprintf "No flat chain for chain %S"
-       (Chn_types.string_of_chain_name chain_name))
+        (Printf.sprintf "No flat chain for chain %S"
+         (Chn_types.string_of_chain_name chain_name))
   | Some fchain ->
       let combs = Chn_inst.version_combinations ctx fchain in
       match combs with
@@ -83,13 +83,16 @@ let exec_chain ctx reporter spec ?force chain_name =
           (Printf.sprintf "No version combination to execute %S"
            (Chn_types.string_of_chain_name chain_name))
       | _ ->
-          let f comb =
-            try exec_chain_comb ctx reporter ?force spec fchain comb
+          let f acc comb =
+            try
+              let uri = exec_chain_comb ctx reporter ?force spec fchain comb in
+              uri :: acc
             with Error msg ->
               reporter#error msg;
-              reporter#incr_errors
+              reporter#incr_errors;
+              acc
           in
-          List.iter f combs
+          List.fold_left f [] combs
 ;;
 
 let exec_chain_str ctx reporter ?force spec s_chain_name =
@@ -98,12 +101,15 @@ let exec_chain_str ctx reporter ?force spec s_chain_name =
 ;;
 
 let exec ctx reporter ?force spec =
-  let f s =
-    try exec_chain_str ctx reporter ?force spec s
+  let f acc s =
+    try
+      let uris = exec_chain_str ctx reporter ?force spec s in
+      uris :: acc
     with Failure s
     | Error s ->
         reporter#error s;
-        reporter#incr_errors
+        reporter#incr_errors;
+        acc
   in
-  List.iter f spec.Ind_types.chains
+  List.flatten (List.fold_left f [] spec.Ind_types.chains)
 ;;

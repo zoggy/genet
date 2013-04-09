@@ -3,7 +3,7 @@
 - add to schema: genet_file_ext, genet_desc
 
 Add information:
-- description of interfaces
+- description of interfaces ?
 - a class and resources for /tools/xxx/interfaces/yyy/input
 - a class and resources for /tools/xxx/interfaces/yyy/output
 
@@ -15,11 +15,6 @@ Chains:
 - after parsing: check all orphan ports refer to a port of the chain
 - after parsing: check all out ports are connected
 - after parsing: warning for unused (=not connected) input ports
-
-Exec:
-- genet exec should put the reporter messages in a file, and print
-  only the list of instanciated chains.
-
 
 Filetypes:
 - allow various extensions for each filetype
