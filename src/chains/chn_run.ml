@@ -315,6 +315,7 @@ let new_file ctx tmp_dir ?path state inst_port =
           None -> Fname.concat tmp_dir file
         | Some p -> Fname.concat p file
       in
+      if is_dir then Misc.mkdir (Fname.abs_string file);
       let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
       (file, state)
 ;;
@@ -626,7 +627,6 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     (new_expl_node :: expl_nodes, state)
   in
   let insert_graph (state, cpt) in_file =
-    (*let in_file = Misc.path_under ~parent: tmp_dir in_file in*)
     let (expl_nodes, state) = Guriset.fold (f_node cpt in_file) exploded_nodes ([], state) in
     let state = add_implode_ports
       ctx inst_implode orig_impl_in_port
@@ -643,7 +643,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
 ;;
 
 (* implode only gather input files to output directory;
-  it also acts as a synchronsation point before allowing successors to run. *)
+  it also acts as a synchronisation point before allowing successors to run. *)
 let run_implode ctx reporter inst tmp_dir inst_node state =
   dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (g_uri_string inst_node));
   let in_files = get_port_input_files ctx state (in_ports state inst_node) in

@@ -3,6 +3,8 @@ fix: verify syntactic correctness of filetype names before adding
 fix: various error handling
 mod: genet init-dir now creates a default configuration file in the
      given project directory; update doc accordingly
+mod: when an interface takes a directory in output parameter, the
+     directory is created before calling the interface
 
 0.2:
 fix: fix handling of explode/implode ("foreach" construction)
