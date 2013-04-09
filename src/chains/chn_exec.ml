@@ -55,9 +55,9 @@ let last_flat_chain ctx chain_name =
       match d with None -> None | Some _ -> Some uri
 ;;
 
-let exec_chain_comb ctx reporter spec uri_fchain comb =
+let exec_chain_comb ctx reporter ?force spec uri_fchain comb =
   try
-    ignore(Chn_inst.instanciate ctx reporter uri_fchain spec comb)
+    ignore(Chn_inst.instanciate ctx reporter ?force uri_fchain spec comb)
   with
     Not_found as e -> raise e
   | exc ->
@@ -69,7 +69,7 @@ let exec_chain_comb ctx reporter spec uri_fchain comb =
       error msg
 ;;
 
-let exec_chain ctx reporter spec chain_name =
+let exec_chain ctx reporter spec ?force chain_name =
   match last_flat_chain ctx chain_name with
     None ->
       error
@@ -84,7 +84,7 @@ let exec_chain ctx reporter spec chain_name =
            (Chn_types.string_of_chain_name chain_name))
       | _ ->
           let f comb =
-            try exec_chain_comb ctx reporter spec fchain comb
+            try exec_chain_comb ctx reporter ?force spec fchain comb
             with Error msg ->
               reporter#error msg;
               reporter#incr_errors
@@ -92,14 +92,14 @@ let exec_chain ctx reporter spec chain_name =
           List.iter f combs
 ;;
 
-let exec_chain_str ctx reporter spec s_chain_name =
+let exec_chain_str ctx reporter ?force spec s_chain_name =
   let chain_name = Chn_types.chain_name_of_string s_chain_name in
-  exec_chain ctx reporter spec chain_name
+  exec_chain ctx reporter ?force spec chain_name
 ;;
 
-let exec ctx reporter spec =
+let exec ctx reporter ?force spec =
   let f s =
-    try exec_chain_str ctx reporter spec s
+    try exec_chain_str ctx reporter ?force spec s
     with Failure s
     | Error s ->
         reporter#error s;

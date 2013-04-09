@@ -303,8 +303,21 @@ let do_instanciate ctx reporter uri_fchain input comb =
       uri_inst
 ;;
 
-let instanciate ctx reporter uri_fchain input comb =
-  match inst_chain_exists ctx uri_fchain input comb with
+let remove_inst_chain ctx uri =
+  ()
+;;
+
+let instanciate ctx reporter ?(force=false) uri_fchain input comb =
+  match
+    match inst_chain_exists ctx uri_fchain input comb with
+      Some uri when not force -> Some uri
+    | Some uri ->
+        reporter#push_context ("Removing previous inst chain " ^ (Rdf_uri.string uri));
+        remove_inst_chain ctx uri;
+        reporter#pop_context;
+        None
+    | None -> None
+  with
     Some uri -> uri
   | None ->
       ctx.ctx_rdf.wld_graph.transaction_start ();

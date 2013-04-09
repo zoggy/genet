@@ -33,14 +33,14 @@ let verbose opts ?(level=1) msg =
     prerr_endline msg
 ;;
 
-let exec_one opts reporter input =
+let exec_one opts reporter ~force input =
   try
     let config = Config.read_config opts.Options.config_file in
     let rdf_wld = Grdf_init.open_graph config in
     let ctx = { Chn_types.ctx_rdf = rdf_wld ; ctx_cfg = config ; ctx_user = None } in
     let spec_dir = Fname.concat (Config.data_dir config) input in
     let spec = Ind_io.load config spec_dir in
-    Chn_exec.exec ctx reporter spec
+    Chn_exec.exec ctx reporter ~force spec
   with
     Assert_failure _ | Not_found as exc -> raise exc
   | exc ->
@@ -59,6 +59,9 @@ let exec_one opts reporter input =
 let all = ref false;;
 let option_all = ("--all", Cmdline.Set all, " Execute all inputs");;
 
+let force = ref false;;
+let option_force = ("--force", Cmdline.Set force, " Force execution of already executed chains");;
+
 let com_exec ctx opts =
   let reporter = new Reporter.reporter opts.Options.verb_level in
   let inputs =
@@ -69,7 +72,7 @@ let com_exec ctx opts =
         [] -> failwith "Please give the name of at least one input or --all"
       | l -> List.map Fname.relative l
   in
-  List.iter (exec_one opts reporter) inputs;
+  List.iter (exec_one opts reporter ~force: !force) inputs;
  let errors = reporter#total_errors in
   print_endline (Reporter.string_of_msg_list reporter#messages);
   if errors > 0 then
