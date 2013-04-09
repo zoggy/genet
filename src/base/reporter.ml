@@ -66,7 +66,7 @@ class reporter ?(context="") verb_level =
       in
       try
         let (label2, n2, l2) = Stack.pop contexts in
-        Stack.push (label2, n2 + n, (Context (label, n, l)) :: l) contexts
+        Stack.push (label2, n2 + n, (Context (label, n, l)) :: l2) contexts
       with
         Stack.Empty ->
           Stack.push (label, n, l) contexts;
