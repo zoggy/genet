@@ -34,7 +34,7 @@ let init_dir opts =
   let dir =
     match opts.Options.args with
       [] -> Fname.absolute (Sys.getcwd())
-    | dir :: _ -> 
+    | dir :: _ ->
         if Filename.is_relative dir then
           Fname.concat (Fname.absolute (Sys.getcwd())) (Fname.relative dir)
         else
@@ -44,7 +44,7 @@ let init_dir opts =
   let mkdir = Misc.mkdir ~verbose in
   mkdir (Fname.abs_string dir);
   let config_file = Install.default_config_file in
-  let config = Config.read_config config_file in
+  let config = Config.read_config (Filename.concat (Fname.abs_string dir) config_file) in
   let config = { config with Config.root_dir = dir } in
   mkdir (Fname.abs_string (Config.out_dir config));
   let in_dir = Config.in_dir config in
