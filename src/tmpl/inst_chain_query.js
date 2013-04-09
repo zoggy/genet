@@ -31,7 +31,7 @@ function filter()
         if (v != '') { the_query += v + ',' }
     }
   }
-  document.getElementById('query').innerHTML=the_query;
+  //document.getElementById('query').innerHTML=the_query;
   xmlhttp.open('GET',the_query,false);
   xmlhttp.send();
 

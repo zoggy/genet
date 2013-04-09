@@ -10,13 +10,8 @@ Add information:
 - a class and resources for /tools/xxx/interfaces/yyy/output
 
 Web interface:
-- version: show branch tree above the version
-  in a b1 / b2 / ... way
-- rather than in/raw/ use /in/file?raw=true ?
-
-Ids:
-In ids: forbid '-' (as in filetype ids): else can't match between ids in
-.gnt file and ids in uri
+- rather than /in/raw/ use /in/file?raw=true ?
+- allow selection of two inst chains and click "show diff" in "out files" tab
 
 Chains:
 - after parsing: check all operations refer to known operations
@@ -25,7 +20,7 @@ Chains:
 - after parsing: warning for unused (=not connected) input ports
 
 Exec:
-- genet-exec should put the reporter messages in a file, and print
+- genet exec should put the reporter messages in a file, and print
   only the list of instanciated chains.
 
 
@@ -34,3 +29,6 @@ Filetypes:
 
 Command line:
 - check for version name validity (only some characters allowed)
+
+Clean:
+- add "genet clean" to remove out files not referenced anymore from the database
