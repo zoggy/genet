@@ -3,9 +3,7 @@
 - add to schema: genet_file_ext, genet_desc
 
 Add information:
-- date of versions
 - description of interfaces
-- instanciated chains
 - a class and resources for /tools/xxx/interfaces/yyy/input
 - a class and resources for /tools/xxx/interfaces/yyy/output
 

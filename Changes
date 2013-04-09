@@ -1,4 +1,5 @@
 Next release:
+add: display creation date in version list
 add: "out files" tab now contains a form to display diffs between two selected
      instanciation chains
 add: genet exec --force option: remove previously instanciated chain to

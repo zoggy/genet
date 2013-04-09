@@ -551,10 +551,15 @@ let xhtml_of_branches_of ctx uri =
 let xhtml_of_versions_of ctx uri =
   let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true uri in
   let versions = List.sort Rdf_uri.compare versions in
-  let heads = ["Active" ; "Version" ; "Date"] in
+  let heads = ["Version" ; "Active" ; "Date"] in
   let f version =
     let active = if Grdfs.is_active_uri ctx.ctx_rdf version then "yes" else "no" in
-    [ [Xtmpl.D active] ; [a_version ctx version] ; [Xtmpl.D ""] ]
+    let date =
+      match Grdfs.creation_date_uri ctx.ctx_rdf version with
+        None -> ""
+      | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
+    in
+    [ [a_version ctx version] ; [Xtmpl.D active] ; [Xtmpl.D date] ]
   in
   let rows = List.map f versions in
   [ table ~heads rows ]

@@ -88,6 +88,7 @@ let add wld ~parent name =
       ~pred: (Uri Grdfs.genet_hasversion)
       ~obj:  (Uri uri);
       Grdfs.set_is_active_uri wld uri true;
+      Grdfs.set_creation_date_uri wld uri ();
       uri
 ;;
 
