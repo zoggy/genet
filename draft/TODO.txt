@@ -11,7 +11,6 @@ Add information:
 
 Web interface:
 - rather than /in/raw/ use /in/file?raw=true ?
-- allow selection of two inst chains and click "show diff" in "out files" tab
 
 Chains:
 - after parsing: check all operations refer to known operations
