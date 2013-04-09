@@ -1,3 +1,9 @@
+Next release:
+fix: verify syntactic correctness of filetype names before adding
+fix: various error handling
+mod: genet init-dir now creates a default configuration file in the
+     given project directory; update doc accordingly
+
 0.2:
 fix: fix handling of explode/implode ("foreach" construction)
 add: use type system to ensure use of absolute filenames
