@@ -303,19 +303,67 @@ let do_instanciate ctx reporter uri_fchain input comb =
       uri_inst
 ;;
 
+let remove_inst_port ctx (reporter : Reporter.reporter) uri =
+  let node = Rdf_node.Uri uri in
+  let triples = ctx.ctx_rdf.wld_graph.Rdf_graph.find ~sub: node () in
+  let f (_, pred, obj) =
+    let upred = match pred with Rdf_node.Uri u -> u | _ -> assert false in
+    let p u = Rdf_uri.equal upred u in
+    begin
+      match upred with
+      | _ when p Grdfs.rdf_type -> ()
+      | _ when p Grdfs.genet_opfrom -> ()
+      | _ when p Grdfs.genet_hastype -> ()
+      | _ when p Grdfs.genet_filemd5 -> ()
+      | _ when p Grdfs.genet_produces -> ()
+      | _ when p Grdfs.genet_consumes -> ()
+      | _ ->
+          let msg = "Predicate "^(Rdf_uri.string upred)^" not handled for inst port; will remove triple anyway" in
+          reporter#msg msg
+    end;
+    Grdfs.rem_triple ctx.ctx_rdf ~sub: node ~pred ~obj
+  in
+  List.iter f triples
+;;
+
+let remove_inst_opn ctx (reporter : Reporter.reporter) uri =
+  let node = Rdf_node.Uri uri in
+  let triples = ctx.ctx_rdf.wld_graph.Rdf_graph.find ~sub: node () in
+  let f (_, pred, obj) =
+    let upred = match pred with Rdf_node.Uri u -> u | _ -> assert false in
+    let p u = Rdf_uri.equal upred u in
+    begin
+      match upred with
+      | _ when p Grdfs.rdf_type -> ()
+      | _ when p Grdfs.genet_commandoutput -> ()
+      | _ when p Grdfs.genet_startedon -> ()
+      | _ when p Grdfs.genet_stoppedon -> ()
+      | _ when p Grdfs.genet_opfrom -> ()
+      | _ when p Grdfs.genet_consumes ->
+          let uri = match obj with Rdf_node.Uri u -> u | _ -> assert false in
+          remove_inst_port ctx reporter uri
+      | _ when p Grdfs.genet_produces ->
+          let uri = match obj with Rdf_node.Uri u -> u | _ -> assert false in
+          remove_inst_port ctx reporter uri
+      | _ ->
+          let msg = "Predicate "^(Rdf_uri.string upred)^" not handled for inst opn; will remove triple anyway" in
+          reporter#msg msg
+    end;
+    Grdfs.rem_triple ctx.ctx_rdf ~sub: node ~pred ~obj
+  in
+  List.iter f triples
+;;
+
 let remove_inst_chain ctx (reporter : Reporter.reporter) uri =
   let node = Rdf_node.Uri uri in
   let triples = ctx.ctx_rdf.wld_graph.Rdf_graph.find ~sub: node () in
   let f (_, pred, obj) =
-    let upred =
-      match pred with
-        Rdf_node.Uri u -> u
-      | _ -> assert false
-    in
+    let upred = match pred with Rdf_node.Uri u -> u | _ -> assert false in
     let p u = Rdf_uri.equal upred u in
     begin
       match upred with
-        _ when p Grdfs.genet_useversion -> ()
+      | _ when p Grdfs.rdf_type -> ()
+      | _ when p Grdfs.genet_useversion -> ()
       | _ when p Grdfs.genet_useinputcommitid -> ()
       | _ when p Grdfs.genet_useinput -> ()
       | _ when p Grdfs.genet_startedon -> ()
@@ -323,10 +371,21 @@ let remove_inst_chain ctx (reporter : Reporter.reporter) uri =
       | _ when p Grdfs.genet_stoppedon -> ()
       | _ when p Grdfs.genet_opfrom -> ()
       | _ when p Grdfs.genet_instanciate -> ()
-      | _ when p Grdfs.rdf_type -> ()
-
+      | _ when p Grdfs.genet_consumes ->
+          let uri = match obj with Rdf_node.Uri u -> u | _ -> assert false in
+          remove_inst_port ctx reporter uri
+      | _ when p Grdfs.genet_produces ->
+          let uri = match obj with Rdf_node.Uri u -> u | _ -> assert false in
+          remove_inst_port ctx reporter uri
+      | _ when p Grdfs.genet_containsop ->
+          begin
+          match obj with
+            | Rdf_node.Uri opn ->
+               remove_inst_opn ctx reporter opn
+            | _ ->  ()
+          end
       | _ ->
-          let msg = "Predicate "^(Rdf_uri.string upred)^" not handled; will remove triple anyway" in
+          let msg = "Predicate "^(Rdf_uri.string upred)^" not handled for inst chain; will remove triple anyway" in
           reporter#msg msg
     end;
     Grdfs.rem_triple ctx.ctx_rdf ~sub: node ~pred ~obj
