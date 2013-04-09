@@ -846,7 +846,7 @@ let get_chain ctx fullname =
   let contents =
     [
       Xtmpl.E (("", "section"), [], svg) ;
-      Xtmpl.E (("", "section"), 
+      Xtmpl.E (("", "section"),
        [("","title"), "Source from "^(Fname.quote file)], code) ;
     ]
   in
@@ -1400,7 +1400,7 @@ let get_input_file ctx ~raw ~input file_path =
 ;;
 
 let xhtml_inst_list ctx list =
-  let heads = [ "Execution" ; "Date" ] in
+  let heads = [ "" ; "" ; "Execution" ; "Date" ] in
   let list = List.map
     (fun uri -> (uri, Grdfs.creation_date_uri ctx.ctx_rdf uri)) list
   in
@@ -1423,11 +1423,28 @@ let xhtml_inst_list ctx list =
                false ->  [link]
              | true -> [link ; Xtmpl.D " " ; Rest_xpage.star ~label: "Reference instanciation chain" ()]
            in
-           [ a_ichain ; [Xtmpl.D date]]
+           let mk_option n =
+             [ Xtmpl.E (("","input"),
+                [ ("","type"),"radio" ;
+                  ("","name"), "inst"^(string_of_int n) ;
+                  ("","value"), Rdf_uri.string uri_inst], []) ]
+           in
+           let inst1_option = mk_option 1 in
+           let inst2_option = mk_option 2 in
+           [  inst1_option ; inst2_option ; a_ichain ; [Xtmpl.D date] ]
     )
     list
   in
-  table ~heads rows
+  let table = table ~heads rows in
+  let action =
+    let uri = Rdf_uri.concat ctx.ctx_cfg.Config.rest_api Grdfs.suffix_diff in
+    let uri = Rdf_uri.concat uri Grdfs.suffix_ichains in
+    Rdf_uri.string uri
+  in
+  Xtmpl.E (("", "form"), [("", "action"), action],
+    [ table ;
+      Xtmpl.E (("","input"), [("","value"),"Show diffs" ; ("","type"), "submit"], []) ;
+    ])
 ;;
 
 let inst_chain_query_of_args args =
@@ -1481,10 +1498,14 @@ let get_inst_chains ctx args =
       begin
         let title = "Executions" in
         let javascript = Buffer.create 256 in
-        let file = List.fold_left Fname.concat_s (Config.web_dir ctx.ctx_cfg)
-          ["tmpl" ; "inst_chain_query.js"]
+        let add_js file =
+          let file = List.fold_left Fname.concat_s (Config.web_dir ctx.ctx_cfg)
+            ["tmpl" ; file]
+          in
+          Buffer.add_string javascript (Misc.string_of_file (Fname.abs_string file))
         in
-        Buffer.add_string javascript (Misc.string_of_file (Fname.abs_string file));
+        List.iter add_js [ "inst_chain_query.js" ];
+
         let iq = inst_chain_query_of_args args in
         let input_options _ _ _ =
           let inputs = Ind_io.list_inputs ctx.ctx_cfg in
