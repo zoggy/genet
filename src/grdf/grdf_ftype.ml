@@ -40,7 +40,7 @@ let filetypes wld =
     ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_filetype)
 ;;
 
-let parse_filetype_id str =
+let parse_filetype_ident str =
   let lexbuf = Lexing.from_string str in
   try Grdf_parser.filetype_ident Lexer.main lexbuf
   with

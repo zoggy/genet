@@ -139,7 +139,7 @@ let add_filetype config wld options =
   | [name ; extension ; desc] ->
       if String.length name <= 0 then failwith "Name must not be empty";
       let name =
-        try Grdf_ftype.parse_filetype_id name
+        try Grdf_ftype.parse_filetype_ident name
         with _ -> failwith (Printf.sprintf "Invalid filetype name %S" name)
       in
       let len_ext = String.length extension in
@@ -179,7 +179,13 @@ let add_port config wld options =
         | Grdf_port.Invalid_type_id s ->
             failwith (Printf.sprintf "Invalid type id: %s" s)
       in
-      let name = match q with [] -> None | s :: _ -> Some s in
+      let name =
+        match q with
+          [] -> None
+        | name :: _ ->
+            try Some (Grdf_ftype.parse_filetype_ident name)
+            with _ -> failwith (Printf.sprintf "Invalid port name %S" name)
+      in
       if Grdf_intf.intf_exists wld uri_intf = None then
         failwith (Printf.sprintf "Unknown interface %S" (Rdf_uri.string uri_intf));
       begin

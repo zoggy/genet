@@ -65,6 +65,16 @@ let rec map_port_type f = function
 exception Invalid_type of string
 exception Invalid_type_id of string
 
+let parse_port_ident str =
+  let lexbuf = Lexing.from_string str in
+  try Grdf_parser.port_ident Lexer.main lexbuf
+  with
+    Grdf_parser.Error ->
+      let pos = lexbuf.Lexing.lex_curr_p in
+      let loc = { Loc.loc_start = pos ; Loc.loc_end = pos } in
+      Loc.raise_problem loc (Printf.sprintf "Invalid port ident: %s" str)
+;;
+
 let parse_port_type str =
   let lexbuf = Lexing.from_string str in
   try Grdf_parser.port_type Lexer.main lexbuf

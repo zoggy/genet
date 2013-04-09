@@ -27,6 +27,7 @@
 
 %start <string Grdf_types.port_type> port_type
 %start <string> filetype_ident
+%start <string> port_ident
 
 %%
 
@@ -39,3 +40,4 @@ the_port_type:
 | LPAR l=separated_nonempty_list (STAR, the_port_type) RPAR { Grdf_types.Tuple l }
 
 filetype_ident: s=Ident option(EOF) { s }
+port_ident: s=Ident option(EOF) { s }
