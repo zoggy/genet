@@ -902,6 +902,56 @@ let get_fchain_list ctx fchain_name =
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
+let xhtml_inst_list ctx list =
+  let heads = [ "" ; "" ; "Execution" ; "Date" ] in
+  let list = List.map
+    (fun uri -> (uri, Grdfs.creation_date_uri ctx.ctx_rdf uri)) list
+  in
+  let list = List.sort
+    (fun (_,d1) (_,d2) -> Pervasives.compare d2 d1) list
+  in
+  let rows = List.map
+    (fun (uri_inst, date) ->
+       match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_inst with
+         None -> [ [Xtmpl.D ("bad ichain "^(Rdf_uri.string uri_inst))] ; [Xtmpl.D ""] ]
+       | Some name ->
+           let date =
+             match date with
+               None -> ""
+             | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
+           in
+           let a_ichain =
+             let link = a_ichain ctx name in
+             match Chn_inst.inst_is_reference ctx uri_inst with
+               false ->  [link]
+             | true -> [link ; Xtmpl.D " " ; Rest_xpage.star ~label: "Reference instanciation chain" ()]
+           in
+           let mk_option n =
+             [ Xtmpl.E (("","input"),
+                [ ("","type"),"radio" ;
+                  ("","name"), "inst"^(string_of_int n) ;
+                  ("","value"), Rdf_uri.string uri_inst],
+                [])
+             ]
+           in
+           let inst1_option = mk_option 1 in
+           let inst2_option = mk_option 2 in
+           [  inst1_option ; inst2_option ; a_ichain ; [Xtmpl.D date] ]
+    )
+    list
+  in
+  let table = table ~heads rows in
+  let action =
+    let uri = Rdf_uri.concat ctx.ctx_cfg.Config.rest_api Grdfs.suffix_diff in
+    let uri = Rdf_uri.concat uri Grdfs.suffix_ichains in
+    Rdf_uri.string uri
+  in
+  Xtmpl.E (("", "form"), [("", "action"), action],
+    [ table ;
+      Xtmpl.E (("","input"), [("","value"),"Show diffs" ; ("","type"), "submit"], []) ;
+    ])
+;;
+
 let get_fchain ctx uri =
   let fchain_name =
     match Chn_types.is_uri_fchain ctx uri with
@@ -932,6 +982,14 @@ let get_fchain ctx uri =
     let dot = Rest_xpage.dot_of_fchain ctx fchain_name in
     dot_to_svg ~svg_h: 600 dot
   in
+  let ichains =
+    let l = Chn_inst.instances ctx uri in
+    match l with
+      [] -> []
+    | _ ->
+       let l = List.map (fun (uri, _, _) -> uri) l in
+        [ Xtmpl.E (("","section"), [("","title"), "Instanciated chains"], [xhtml_inst_list ctx l]) ]
+  in
 (*  let uri_fchain = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in*)
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx uri) in
   let contents =
@@ -948,7 +1006,7 @@ let get_fchain ctx uri =
        (Xtmpl.E (("","strong"), [], [ Xtmpl.D "Module ids:" ])) ::
          module_ids
        )
-    ] @ svg
+    ] @ svg @ ichains
   in
   ([ctype ()], chain_page ctx ~title ~wtitle ~navpath contents)
 ;;
@@ -1399,55 +1457,7 @@ let get_input_file ctx ~raw ~input file_path =
       ([ctype ()], in_page ctx ~title ~wtitle ~navpath contents)
 ;;
 
-let xhtml_inst_list ctx list =
-  let heads = [ "" ; "" ; "Execution" ; "Date" ] in
-  let list = List.map
-    (fun uri -> (uri, Grdfs.creation_date_uri ctx.ctx_rdf uri)) list
-  in
-  let list = List.sort
-    (fun (_,d1) (_,d2) -> Pervasives.compare d2 d1) list
-  in
-  let rows = List.map
-    (fun (uri_inst, date) ->
-       match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri_inst with
-         None -> [ [Xtmpl.D ("bad ichain "^(Rdf_uri.string uri_inst))] ; [Xtmpl.D ""] ]
-       | Some name ->
-           let date =
-             match date with
-               None -> ""
-             | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
-           in
-           let a_ichain =
-             let link = a_ichain ctx name in
-             match Chn_inst.inst_is_reference ctx uri_inst with
-               false ->  [link]
-             | true -> [link ; Xtmpl.D " " ; Rest_xpage.star ~label: "Reference instanciation chain" ()]
-           in
-           let mk_option n =
-             [ Xtmpl.E (("","input"),
-                [ ("","type"),"radio" ;
-                  ("","name"), "inst"^(string_of_int n) ;
-                  ("","value"), Rdf_uri.string uri_inst],
-                [])
-             ]
-           in
-           let inst1_option = mk_option 1 in
-           let inst2_option = mk_option 2 in
-           [  inst1_option ; inst2_option ; a_ichain ; [Xtmpl.D date] ]
-    )
-    list
-  in
-  let table = table ~heads rows in
-  let action =
-    let uri = Rdf_uri.concat ctx.ctx_cfg.Config.rest_api Grdfs.suffix_diff in
-    let uri = Rdf_uri.concat uri Grdfs.suffix_ichains in
-    Rdf_uri.string uri
-  in
-  Xtmpl.E (("", "form"), [("", "action"), action],
-    [ table ;
-      Xtmpl.E (("","input"), [("","value"),"Show diffs" ; ("","type"), "submit"], []) ;
-    ])
-;;
+
 
 let inst_chain_query_of_args args =
   let input =
