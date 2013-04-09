@@ -303,17 +303,44 @@ let do_instanciate ctx reporter uri_fchain input comb =
       uri_inst
 ;;
 
-let remove_inst_chain ctx uri =
-  ()
+let remove_inst_chain ctx (reporter : Reporter.reporter) uri =
+  let node = Rdf_node.Uri uri in
+  let triples = ctx.ctx_rdf.wld_graph.Rdf_graph.find ~sub: node () in
+  let f (_, pred, obj) =
+    let upred =
+      match pred with
+        Rdf_node.Uri u -> u
+      | _ -> assert false
+    in
+    let p u = Rdf_uri.equal upred u in
+    begin
+      match upred with
+        _ when p Grdfs.genet_useversion -> ()
+      | _ when p Grdfs.genet_useinputcommitid -> ()
+      | _ when p Grdfs.genet_useinput -> ()
+      | _ when p Grdfs.genet_startedon -> ()
+      | _ when p Grdfs.genet_createdon -> ()
+      | _ when p Grdfs.genet_stoppedon -> ()
+      | _ when p Grdfs.genet_opfrom -> ()
+      | _ when p Grdfs.genet_instanciate -> ()
+      | _ when p Grdfs.rdf_type -> ()
+
+      | _ ->
+          let msg = "Predicate "^(Rdf_uri.string upred)^" not handled; will remove triple anyway" in
+          reporter#msg msg
+    end;
+    Grdfs.rem_triple ctx.ctx_rdf ~sub: node ~pred ~obj
+  in
+  List.iter f triples
 ;;
 
-let instanciate ctx reporter ?(force=false) uri_fchain input comb =
+let instanciate ctx (reporter:  Reporter.reporter) ?(force=false) uri_fchain input comb =
   match
     match inst_chain_exists ctx uri_fchain input comb with
       Some uri when not force -> Some uri
     | Some uri ->
         reporter#push_context ("Removing previous inst chain " ^ (Rdf_uri.string uri));
-        remove_inst_chain ctx uri;
+        remove_inst_chain ctx reporter uri;
         reporter#pop_context;
         None
     | None -> None

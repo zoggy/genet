@@ -73,7 +73,7 @@ let com_exec ctx opts =
       | l -> List.map Fname.relative l
   in
   List.iter (exec_one opts reporter ~force: !force) inputs;
- let errors = reporter#total_errors in
+  let errors = reporter#total_errors in
   print_endline (Reporter.string_of_msg_list reporter#messages);
   if errors > 0 then
     prerr_endline
@@ -82,7 +82,7 @@ let com_exec ctx opts =
 ;;
 
 let com_exec = {
-    com_options = [ option_all ] ;
+    com_options = [ option_all ; option_force ] ;
     com_usage = "[<input name1> [<input name2> ...]]" ;
     com_compl = [ Cmdline.Complist Main_cmd.compl_input_name ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun com_exec) ;
