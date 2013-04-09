@@ -1427,7 +1427,9 @@ let xhtml_inst_list ctx list =
              [ Xtmpl.E (("","input"),
                 [ ("","type"),"radio" ;
                   ("","name"), "inst"^(string_of_int n) ;
-                  ("","value"), Rdf_uri.string uri_inst], []) ]
+                  ("","value"), Rdf_uri.string uri_inst],
+                [])
+             ]
            in
            let inst1_option = mk_option 1 in
            let inst2_option = mk_option 2 in
