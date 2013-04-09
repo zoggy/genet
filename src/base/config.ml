@@ -50,7 +50,11 @@ let read_config file =
   let dbpasswd_cp = new CF.string_cp ~group ["db"; "password"] "" "" in
   let rest_api_cp = new CF.string_cp ~group ["rest_api"] "http://localhost:8082/" "do not forget ending /" in
 
-  group#read file;
+  begin
+    try group#read file
+    with Stream.Error _ ->
+      failwith (Printf.sprintf "Syntax error in config file %S" file)
+  end;
   let rest_api =
     let s = rest_api_cp#get in
     let s = Misc.strip_string s in
