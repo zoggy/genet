@@ -40,6 +40,16 @@ let filetypes wld =
     ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_filetype)
 ;;
 
+let parse_filetype_id str =
+  let lexbuf = Lexing.from_string str in
+  try Grdf_parser.filetype_ident Lexer.main lexbuf
+  with
+    Grdf_parser.Error ->
+      let pos = lexbuf.Lexing.lex_curr_p in
+      let loc = { Loc.loc_start = pos ; Loc.loc_end = pos } in
+      Loc.raise_problem loc (Printf.sprintf "Invalid filetype ident: %s" str)
+;;
+
 let name wld uri = Grdfs.name wld (Uri uri);;
 
 let desc wld uri = Grdfs.desc wld (Uri uri);;

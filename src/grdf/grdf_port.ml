@@ -67,7 +67,7 @@ exception Invalid_type_id of string
 
 let parse_port_type str =
   let lexbuf = Lexing.from_string str in
-   try Grdf_parser.port_type Lexer.main lexbuf
+  try Grdf_parser.port_type Lexer.main lexbuf
   with
     Grdf_parser.Error ->
       let pos = lexbuf.Lexing.lex_curr_p in

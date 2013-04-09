@@ -138,6 +138,10 @@ let add_filetype config wld options =
   match options.args with
   | [name ; extension ; desc] ->
       if String.length name <= 0 then failwith "Name must not be empty";
+      let name =
+        try Grdf_ftype.parse_filetype_id name
+        with _ -> failwith (Printf.sprintf "Invalid filetype name %S" name)
+      in
       let len_ext = String.length extension in
       if len_ext <= 0 then failwith "Extension must not be empty";
       let extension =

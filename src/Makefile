@@ -155,9 +155,9 @@ GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/rdf_sparql.cmx \
 	grdf/grdfs.cmx \
 	grdf/grdf_branch.cmx \
+	grdf/grdf_parser.cmx \
 	grdf/grdf_ftype.cmx \
 	grdf/grdf_version.cmx \
-	grdf/grdf_parser.cmx \
 	grdf/grdf_port.cmx \
 	grdf/grdf_intf.cmx \
 	grdf/grdf_tool.cmx \
