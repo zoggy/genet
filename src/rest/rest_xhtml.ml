@@ -624,8 +624,8 @@ let get_intf ctx uri =
        ])
     in
     [
-      of_dir "Input" Grdf_port.In ;
-      of_dir "Output" Grdf_port.Out ;
+      of_dir "Input : " Grdf_port.In ;
+      of_dir "Output : " Grdf_port.Out ;
     ]
   in
   let branches_yes =
