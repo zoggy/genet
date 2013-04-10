@@ -71,6 +71,7 @@ let genet_instopn = genet_ "InstOperation";;
 let genet_implode = genet_"Implode";;
 let genet_explode = genet_"Explode";;
 let genet_subgraph = genet_"Subgraph";;
+let genet_diffcommand = genet_"DiffCommand";;
 
 let string_of_class = function
   s when Rdf_uri.equal s genet_tool -> "tool"
@@ -82,6 +83,7 @@ let string_of_class = function
 | s when Rdf_uri.equal s genet_flatchain -> "flatchain"
 | s when Rdf_uri.equal s genet_instchain -> "instchain"
 | s when Rdf_uri.equal s genet_instopn -> "instopn"
+| s when Rdf_uri.equal s genet_diffcommand -> "diffcommand"
 | _ -> ""
 ;;
 
@@ -337,6 +339,12 @@ let uri_version ~tool ~version =
   Rdf_uri.concat (uri_versions tool) version;;
 let uri_tool_of_version uri = Rdf_uri.parent (Rdf_uri.parent uri);;
 
+(** {3 Diff commands} *)
+
+let suffix_diffcommands = "diff-commands"
+let uri_diffcommands ~prefix = Rdf_uri.concat prefix suffix_diffcommands
+let uri_diffcommand ~prefix ~name = Rdf_uri.concat (uri_diffcommands ~prefix) name
+
 (** {3 Interfaces} *)
 
 let suffix_intfs = "interfaces"
@@ -433,6 +441,8 @@ let uri_input_file_path ?(raw=false) prefix path file_path =
 
 (** {2 Utilities} *)
 
+let uriset_of_list = List.fold_left (fun set x -> Uriset.add x set) Uriset.empty ;;
+
 let uri_basename uri =
   match List.rev (Rdf_uri.path uri) with
     [] -> ""
@@ -460,6 +470,7 @@ let is_a_version = is_a_ genet_version;;
 let is_a_intf = is_a_ genet_intf;;
 let is_a_filetype = is_a_ genet_filetype;;
 let is_a_instopn = is_a_ genet_instopn;;
+let is_a_diffcommand = is_a_ genet_diffcommand;;
 
 let is_uri_for_ f_is string wld uri =
   match uri_basename uri with
