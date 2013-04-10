@@ -51,7 +51,7 @@ let mkdir ctx ports main_dir n =
   Misc.mkdir (Fname.abs_string dir) ;
   let make_link n port =
     let file = file_of_out_port ctx port in
-    try Unix.symlink (Fname.abs_string file) 
+    try Unix.symlink (Fname.abs_string file)
       (Fname.abs_string (Fname.concat_s dir (string_of_int n)))
     with Unix.Unix_error (e,s1,s2) ->
       let msg = Printf.sprintf "%s: %s %s" (Unix.error_message e) s1 s2 in
@@ -60,7 +60,7 @@ let mkdir ctx ports main_dir n =
   List.iteri make_link ports
 ;;
 
-let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r -u") inst1 inst2 =
+let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?diff inst1 inst2 =
   let ports1 = Grdf_port.ports ctx.ctx_rdf inst1 Grdf_port.Out in
   let ports2 = Grdf_port.ports ctx.ctx_rdf inst2 Grdf_port.Out in
   let main_dir = Fname.absolute (Filename.temp_file "genet" "diff") in
@@ -69,6 +69,15 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r 
   mkdir ctx ports1 main_dir 1 ;
   mkdir ctx ports2 main_dir 2 ;
   let res = Fname.absolute (Filename.temp_file "genetdiff" "result") in
+  let diff =
+    match diff with
+      None -> "diff -r -u"
+    | Some s ->
+        let uri = Grdfs.uri_diffcommand ~prefix: ctx.ctx_cfg.Config.rest_api ~name: s in
+        match Grdf_diff.command_path ctx.ctx_rdf uri with
+          None -> s
+        | Some path -> path
+  in
   let com =
     Printf.sprintf "(cd %s && %s 1 2 %s) > %s 2>&1"
       (Fname.quote main_dir)
@@ -80,7 +89,7 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?(diff="diff -r 
       )
       (Fname.quote res)
   in
-    prerr_endline com;
+  prerr_endline com;
   match Sys.command com with
     2 -> failwith (Printf.sprintf "Command failed: %s" com)
   | _ ->

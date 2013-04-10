@@ -157,7 +157,7 @@ let parse ?(args=Sys.argv) com =
     prerr_endline (Printf.sprintf "current=%d" !current);
 *)
     let options = merge_options ~options ~more: com.com_options in
-    let arg_options = specs_to_arg_specs options in
+    let arg_options = Arg.align (specs_to_arg_specs options) in
     try
       match com.com_kind with
         Final f ->

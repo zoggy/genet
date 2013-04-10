@@ -39,7 +39,7 @@ let options =
   [
     "--diff", Cmdline.String
     (Some Main_cmd.compl_file, fun c -> diff_command := Some c),
-    "<com> use com as diff command; default is diff -r -u" ;
+    "<name|com> use <com> or command associated to <name> ; default is diff -r -u" ;
 
     "--html", Cmdline.Set html_output, " output HTML instead of raw diff output" ;
 
