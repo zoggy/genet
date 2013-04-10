@@ -29,6 +29,3 @@ Lib:
 - install a genet library so that one can develop additional tools for
   his/her own purpose
 
-Diff command: allowing any command in web form is dangerous
-- allow definition of predefined diff commands
-- web intf: in "Diffs" tab, allow selection of one predefined command
