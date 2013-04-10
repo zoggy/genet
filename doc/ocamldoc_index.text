@@ -21,6 +21,7 @@ Version
 {modgraph[width=600]
 Grdf_branch
 Grdf_constant
+Grdf_diff
 Grdf_dot
 Grdf_ftype
 Grdf_init
@@ -42,6 +43,7 @@ Chn_ast
 Chn_diff
 Chn_exec
 Chn_flat
+Chn_lookup
 Chn_inst
 Chn_inst_query
 Chn_io
@@ -87,6 +89,7 @@ Main_genrdfs
 Main_gui
 Main_init
 Main_query
+Main_rdf
 Main_rest
 Options
 }

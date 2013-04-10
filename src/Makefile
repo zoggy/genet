@@ -438,6 +438,11 @@ doc: all dump.odoc
 
 dot: all dump.odoc
 
+missingdocmods:
+	@for i in `ls */*.ml */*.mli | cut -d'/' -f 2 | cut -d'.' -f 1 | sort -u`; do \
+		grep -i $$i ../doc/ocamldoc_index.text > /dev/null 2>&1 || echo missing $$i; \
+	done
+
 
 # backup, clean and depend :
 ############################
