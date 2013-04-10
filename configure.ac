@@ -28,7 +28,7 @@ AC_INIT(master.Makefile.in)
 
 REVISION=`(git log | head -n 1 | cut -d' ' -f 2) 2>/dev/null || echo`
 if test "${REVISION}" != "" ; then ADD_REVISION=+${REVISION}; fi
-VERSION=0.2${ADD_REVISION}
+VERSION=0.3${ADD_REVISION}
 
 # The root directory where we will compile
 ROOT=`pwd`
