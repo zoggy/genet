@@ -84,3 +84,13 @@ let add prefix wld ?(force=false) ~name ~path =
   end;
   uri
 ;;
+
+let parse_diffcommand_ident str =
+  let lexbuf = Lexing.from_string str in
+  try Grdf_parser.diffcommand_ident Lexer.main lexbuf
+  with
+    Grdf_parser.Error ->
+      let pos = lexbuf.Lexing.lex_curr_p in
+      let loc = { Loc.loc_start = pos ; Loc.loc_end = pos } in
+      Loc.raise_problem loc (Printf.sprintf "Invalid diffcommand ident: %s" str)
+;;

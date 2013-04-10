@@ -28,6 +28,7 @@
 %start <string Grdf_types.port_type> port_type
 %start <string> filetype_ident
 %start <string> port_ident
+%start <string> diffcommand_ident
 
 %%
 
@@ -41,3 +42,4 @@ the_port_type:
 
 filetype_ident: s=Ident option(EOF) { s }
 port_ident: s=Ident option(EOF) { s }
+diffcommand_ident: s=Ident option(EOF) { s }

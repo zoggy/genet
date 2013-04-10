@@ -134,6 +134,32 @@ let com_add_no_intf = {
   }
 ;;
 
+let force_add_diffcommand = ref false;;
+let add_diffcommand config wld options =
+  match options.args with
+  | [name ; path] ->
+      let name =
+        try Grdf_diff.parse_diffcommand_ident name
+        with _ -> failwith (Printf.sprintf "Invalid diff command name %S" name)
+      in
+      let uri = Grdf_diff.add config.Config.rest_api
+        wld ~force: !force_add_diffcommand ~name ~path
+      in
+      print_endline (Rdf_uri.string uri)
+  | _ -> failwith "Please give a name and a command"
+;;
+
+let com_add_diffcommand = {
+  com_options = [
+      "--force", Cmdline.Set force_add_diffcommand,
+      " if a diff command with same name exists, replace the associated command";
+    ];
+  com_usage = "<name> <command>" ;
+  com_compl = [ ] ;
+  com_kind = Main_cmd.mk_final_fun add_diffcommand ;
+  }
+;;
+
 let add_filetype config wld options =
   match options.args with
   | [name ; extension ; desc] ->
@@ -312,6 +338,7 @@ let add_commands = [
     "port", com_add_port, "add new port" ;
     "input", com_add_input, "add new input";
     "refinst", com_add_refinst, "set an instanciated chain as reference";
+    "diff-command", com_add_diffcommand, "add a predefined diff command";
   ]
 ;;
 let com_add = {
