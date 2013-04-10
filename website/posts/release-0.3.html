@@ -1,0 +1,31 @@
+<post title="Release 0.3"
+date="2013/04/10"
+keywords="release"
+topics="genet"
+>
+<p>
+A third release of Genet is available from the <elt href="download"/> page.
+</p>
+<sep_/>
+<p>
+Changes include:
+</p>
+<ul id="changes">
+<li>add: <code>make install</code> now also installs genet libraries,</li>
+<li>add: allow definition of predefined diff commands (<code>genet add diff-command</code>),</li>
+<li>mod (web interface): in "Diffs" tab, allow selection of one predefined diff command,</li>
+<li>mod: <code>genet exec</code> now prints the list of instanciated chains on stdout,
+     and execution report on stderr,</li>
+<li>add (web interface): display creation date in version list,</li>
+<li>add (web interface): "Out files" tab now contains a form to display diffs between
+     two selected instanciated chains,</li>
+<li>add: <code>--force</code> option for <code>genet exec</code>: remove previously
+     instanciated chain to re-execute. Useful in manual mode, when setting up interfaces,</li>
+<li>fix: verify syntactic correctness of filetype names before adding,</li>
+<li>fix: various error handling,</li>
+<li>mod: <code>genet init-dir</code> now creates a default configuration file in the
+     given project directory; update doc accordingly,</li>
+<li>mod: when an interface takes a directory in output parameter, the
+     directory is created before calling the interface.</li>
+</ul>
+</post>
