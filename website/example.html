@@ -333,6 +333,8 @@ new version of the tool will be used when computing the combinations of tools
 to use to execute the last chain flattened from <icode>Test.words_avg_length</icode>:
 </p>
 <incsh id="execchain"/>
+</section>
+<section id="diffs" title="Comparing executions">
 <p>
 Then, we can compare this new instanciated chain with the reference instanciated chain:
 </p>
@@ -352,6 +354,23 @@ The <icode>--url-if-diff</icode> option of <icode>genet diff</icode>
 prints a url to the comparison results if there is a difference. This is useful for example
 to nightly compare new executions with reference executions, and send an email with
 the url of differences, if any.
+</p>
+<p>
+The default diff command used to compare execution results can be specified in two ways.
+First, one can use the <icode>--diff</icode> option of <icode>genet diff</icode> to specify
+a command to run, instead of the default one (<icode>diff -r -u</icode>).
+</p>
+<p>
+Another way is to define a diff command associated to a name, using the following command:
+</p>
+<incsh id="adddiffcommand"/>
+<p>
+Then, the name <icode>mydiff</icode> can be given to the <icode>--diff</icode> option
+of <icode>genet diff</icode>, to use the associated command.
+</p>
+<p class="alert alert-warning">
+Note that the web interface does not allow using arbitrary diff command, for security reasons.
+Only predefined diff commands added with <icode>genet add diff-command</icode> can be used.
 </p>
 </section>
 

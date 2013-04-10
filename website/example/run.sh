@@ -100,6 +100,9 @@ genet add version http://localhost:8082/tools/words/branches/0.x 0.4
 
 genet exec test1
 
+#id=adddiffcommand
+genet add diff-command "mydiff" "diff -r -w -u"
+
 #id=addnewaverage
 genet add version http://localhost:8082/tools/average/branches/0.x 0.2
   # http://localhost:8082/tools/average/versions/0.2

@@ -25,7 +25,3 @@ Command line:
 Clean:
 - add "genet clean" to remove out files not referenced anymore from the database
 
-Lib:
-- install a genet library so that one can develop additional tools for
-  his/her own purpose
-
