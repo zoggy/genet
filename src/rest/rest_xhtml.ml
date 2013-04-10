@@ -1687,6 +1687,15 @@ let get_diff_ichains ctx args =
     | Some inst1, Some inst2 ->
         let inst1 = Rdf_uri.uri inst1 in
         let inst2 = Rdf_uri.uri inst2 in
+        let diffcmd =
+          match diffcmd with
+            None -> None
+          | Some s ->
+              (* ensure this is a predefined diff command, so that a malicious
+                 user cannot issue commands like "rm -fr /" or worse ... *)
+              let uri = Grdfs.uri_diffcommand ~prefix: ctx.ctx_cfg.Config.rest_api ~name: s in
+              Grdf_diff.command_path ctx.ctx_rdf uri
+        in
         Chn_diff.diff ctx ~html: true ?diff: diffcmd ~fragment: true inst1 inst2
     | None, _
     | _, None -> "Please give two urls."
