@@ -422,7 +422,8 @@ dump.odoc: base/*.ml base/*.mli \
 	rest/*.ml rest/*.mli \
 	gui/*.ml gui/*.mli \
 	driver/*.ml driver/*.mli
-	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
+	OCAMLFIND_COMMANDS="ocamldoc=ocamldoc.opt" \
+	$(OCAMLFIND) ocamldoc $(OF_FLAGS) -predicates native \
 	-v \
 	-m A \
 	-keep-code $(COMPFLAGS) -rectypes -sort -dump $@ \
@@ -431,9 +432,10 @@ dump.odoc: base/*.ml base/*.mli \
 doc: all dump.odoc
 	$(MKDIR) ocamldoc
 	$(CP) ../doc/ocamldoc_style.css ocamldoc/style.css
-	$(OCAMLFIND) ocamldoc $(OF_FLAGS) \
+	OCAMLFIND_COMMANDS="ocamldoc=ocamldoc.opt" \
+	$(OCAMLFIND) ocamldoc $(OF_FLAGS) -predicates native \
 	$(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
-	-t "Genet library reference" -g odoc_depgraph.cma \
+	-t "Genet library reference" -g odoc_depgraph.cmxa \
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc
