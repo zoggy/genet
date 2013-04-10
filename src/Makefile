@@ -71,17 +71,6 @@ LIBS_GUI_BYTE=$(LIB_BASE_GUI_BYTE) $(LIB_GRDF_GUI_BYTE) $(LIB_CHN_GUI_BYTE)
 RDF_LIBS=ocamlrdf.cmxa
 RDF_LIBS_BYTE=ocamlrdf.cma
 
-#OCAMLNET_LIBS= \
-#	bigarray.cmxa pcre.cmxa \
-#	netsys_oothr_mt.cmxa netsys.cmxa equeue.cmxa \
-#	netstring.cmxa netcgi.cmxa rpc.cmxa \
-#	netplex.cmxa nethttpd.cmxa netsys_oothr_mt_init.cmx
-#OCAMLNET_LIBS_BYTE= \
-#	bigarray.cma pcre.cma \
-#	netsys_oothr_mt.cma netsys.cma equeue.cma \
-#	netstring.cma netcgi.cma rpc.cma \
-#	netplex.cma nethttpd.cma netsys_oothr_mt_init.cmo
-
 #JSON_LIBS= easy_format.cmx biniou.cmxa yojson.cmx
 #JSON_LIBS_BYTE= easy_format.cmo biniou.cma yojson.cmo
 
@@ -90,7 +79,7 @@ RDF_LIBS_BYTE=ocamlrdf.cma
 
 # Base library
 
-LIB_BASE=base/base.cmxa
+LIB_BASE=base/genet_base.cmxa
 LIB_BASE_BYTE=$(LIB_BASE:.cmxa=.cma)
 LIB_BASE_CMI=$(LIB_BASE:.cmxa=.cmi)
 LIB_BASE_A=$(LIB_BASE:.cmxa=.a)
@@ -134,7 +123,7 @@ BASE_GUI_CMXFILES=
 BASE_GUI_CMIFILES=$(BASE_GUI_CMXFILES:.cmx=.cmi)
 BASE_GUI_CMOFILES=$(BASE_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_BASE_GUI=base/basegui.cmxa
+LIB_BASE_GUI=base/genet_basegui.cmxa
 LIB_BASE_GUI_BYTE=$(LIB_BASE_GUI:.cmxa=.cma)
 LIB_BASE_GUI_CMI=$(LIB_BASE_GUI:.cmxa=.cmi)
 LIB_BASE_GUI_A=$(LIB_BASE_GUI:.cmxa=.a)
@@ -143,7 +132,7 @@ BASE_GUI_LIBS=$(LIB_BASE_GUI) $(LIB_BASE_GUI_BYTE) $(LIB_BASE_GUI_CMI) $(LIB_BAS
 
 # Grdf library
 
-LIB_GRDF=grdf/grdf.cmxa
+LIB_GRDF=grdf/genet_grdf.cmxa
 LIB_GRDF_BYTE=$(LIB_GRDF:.cmxa=.cma)
 LIB_GRDF_CMI=$(LIB_GRDF:.cmxa=.cmi)
 LIB_GRDF_A=$(LIB_GRDF:.cmxa=.a)
@@ -174,7 +163,7 @@ GRDF_GUI_CMXFILES=gui/toolgui.cmx
 GRDF_GUI_CMIFILES=$(GRDF_GUI_CMXFILES:.cmx=.cmi)
 GRDF_GUI_CMOFILES=$(GRDF_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_GRDF_GUI=grdf/grdfgui.cmxa
+LIB_GRDF_GUI=grdf/genet_grdfgui.cmxa
 LIB_GRDF_GUI_BYTE=$(LIB_GRDF_GUI:.cmxa=.cma)
 LIB_GRDF_GUI_CMI=$(LIB_GRDF_GUI:.cmxa=.cmi)
 LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
@@ -182,7 +171,7 @@ LIB_GRDF_GUI_A=$(LIB_GRDF_GUI:.cmxa=.a)
 GRDF_GUI_LIBS=$(LIB_GRDF_GUI) $(LIB_GRDF_GUI_BYTE) $(LIB_GRDF_GUI_CMI) $(LIB_GRDF_GUI_A)
 
 # Indata library
-LIB_IND=indata/indata.cmxa
+LIB_IND=indata/genet_indata.cmxa
 LIB_IND_BYTE=$(LIB_IND:.cmxa=.cma)
 LIB_IND_CMI=$(LIB_IND:.cmxa=.cmi)
 LIB_IND_A=$(LIB_IND:.cmxa=.a)
@@ -199,7 +188,7 @@ IND_GUI_CMXFILES=
 IND_GUI_CMIFILES=$(IND_GUI_CMXFILES:.cmx=.cmi)
 IND_GUI_CMOFILES=$(IND_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_IND_GUI=indata/indatagui.cmxa
+LIB_IND_GUI=indata/genet_indatagui.cmxa
 LIB_IND_GUI_BYTE=$(LIB_IND_GUI:.cmxa=.cma)
 LIB_IND_GUI_CMI=$(LIB_IND_GUI:.cmxa=.cmi)
 LIB_IND_GUI_A=$(LIB_IND_GUI:.cmxa=.a)
@@ -207,7 +196,7 @@ LIB_IND_GUI_A=$(LIB_IND_GUI:.cmxa=.a)
 IND_GUI_LIBS=$(LIB_IND_GUI) $(LIB_IND_GUI_BYTE) $(LIB_IND_GUI_CMI) $(LIB_IND_GUI_A)
 
 # Chains library
-LIB_CHN=chains/chains.cmxa
+LIB_CHN=chains/genet_chains.cmxa
 LIB_CHN_BYTE=$(LIB_CHN:.cmxa=.cma)
 LIB_CHN_CMI=$(LIB_CHN:.cmxa=.cmi)
 LIB_CHN_A=$(LIB_CHN:.cmxa=.a)
@@ -235,7 +224,7 @@ CHN_GUI_CMXFILES= \
 CHN_GUI_CMIFILES=$(CHN_GUI_CMXFILES:.cmx=.cmi)
 CHN_GUI_CMOFILES=$(CHN_GUI_CMXFILES:.cmx=.cmo)
 
-LIB_CHN_GUI=gui/chainsgui.cmxa
+LIB_CHN_GUI=gui/genet_chainsgui.cmxa
 LIB_CHN_GUI_BYTE=$(LIB_CHN_GUI:.cmxa=.cma)
 LIB_CHN_GUI_CMI=$(LIB_CHN_GUI:.cmxa=.cmi)
 LIB_CHN_GUI_A=$(LIB_CHN_GUI:.cmxa=.a)
@@ -244,7 +233,7 @@ CHN_GUI_LIBS=$(LIB_CHN_GUI) $(LIB_CHN_GUI_BYTE) $(LIB_CHN_GUI_CMI) $(LIB_CHN_GUI
 
 # Rest library
 
-LIB_REST=rest/rest.cmxa
+LIB_REST=rest/genet_rest.cmxa
 LIB_REST_BYTE=$(LIB_REST:.cmxa=.cma)
 LIB_REST_CMI=$(LIB_REST:.cmxa=.cmi)
 LIB_REST_A=$(LIB_REST:.cmxa=.a)
