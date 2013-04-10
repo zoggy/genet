@@ -31,7 +31,7 @@ package "indata" (
 )
 package "rest" (
   description = "Genet library: Rest modules"
-  requires = "genet.base,genet.chains,genet.grdf,genet.indata"
+  requires = "equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix,genet.base,genet.chains,genet.grdf,genet.indata"
   archive(byte) = "genet_rest.cma"
   archive(native) = "genet_rest.cmxa"
 )

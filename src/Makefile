@@ -25,6 +25,9 @@
 
 include ../master.Makefile
 
+PACKAGE=genet
+
+# DO NOT FORGET TO UPDATE META.in ACCORDINGLY WHEN MODIFYING *_PACKAGES
 BASE_PACKAGES=unix,str,config-file,$(RDF_MYSQL),$(RDF_POSTGRESQL),xtmpl,menhirLib
 NET_PACKAGES=equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix
 REST_PACKAGES=#,yojson
@@ -483,12 +486,17 @@ include .depend
 #################
 # Installation
 #################
-install: install-web-files install-bin
+install: install-web-files install-libs install-bin
 
 install-bin:
 	$(MKDIR) $(BINDIR) $(GLADEDIR)
 	$(CP) $(TOOLS) $(TOOLS_BYTE) $(BINDIR)/
 	$(CP) gui/genet.glade $(GLADEDIR)/
+
+install-libs:
+	$(OCAMLFIND) install $(PACKAGE) META ../LICENSE \
+	$(LIBS) $(LIBS_BYTE) $(LIBS:.cmxa=.a) \
+	$(BASE_CMIFILES) $(GRDF_CMIFILES) $(IND_CMIFILES) $(CHN_CMIFILES) $(REST_CMIFILES)
 
 install-web-files:
 	$(MKDIR) $(SHAREDIR)/genet-web
@@ -496,11 +504,14 @@ install-web-files:
 	$(CP) $(ROOT)/website/genet-logo.svg $(ROOT)/website/star.svg $(SHAREDIR)/genet-web/
 	$(CP) $(ROOT)/website/style.css $(SHAREDIR)/genet-web/style.css
 
-uninstall: uninstall-web-files uninstall-bin
+uninstall: uninstall-web-files uninstall-libs uninstall-bin
 
 uninstall-bin:
 	for i in $(TOOLS) $(TOOLS_BYTE); do $(RM) $(BINDIR)/$$i; done
 	$(RM) $(GLADEDIR)/genet.glade
+
+uninstall-libs:
+	$(OCAMLFIND) remove genet
 
 uninstall-web-files:
 	$(RM) -fr $(SHAREDIR)/genet-web
