@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -179,7 +180,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(new_expl_node&nbsp;::&nbsp;expl_nodes,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insert_graph&nbsp;(state,&nbsp;cpt)&nbsp;in_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*let&nbsp;in_file&nbsp;=&nbsp;Misc.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;in*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;add_implode_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;inst_implode&nbsp;orig_impl_in_port<br>

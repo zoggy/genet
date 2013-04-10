@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -109,6 +110,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.dot_of_fchain&nbsp;ctx&nbsp;fchain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;dot_to_svg&nbsp;~svg_h:&nbsp;600&nbsp;dot<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ichains&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instances&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;l&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;(uri,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri)&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"section"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Instanciated&nbsp;chains"</span>],&nbsp;[xhtml_inst_list&nbsp;ctx&nbsp;l])&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 <span class="comment">(*&nbsp;&nbsp;let&nbsp;uri_fchain&nbsp;=&nbsp;Chn_types.uri_fchain&nbsp;ctx.ctx_cfg.Config.rest_api&nbsp;fchain_name&nbsp;in*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Chn_flat</span>.fchain_creation_date&nbsp;ctx&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
@@ -125,6 +134,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"strong"</span>),&nbsp;[],&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"Module&nbsp;ids:"</span>&nbsp;]))&nbsp;::<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;module_ids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;@&nbsp;svg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;@&nbsp;svg&nbsp;@&nbsp;ichains<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;chain_page&nbsp;ctx&nbsp;~title&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)</code></body></html>

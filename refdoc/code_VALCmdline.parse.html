@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -92,7 +93,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(Printf.sprintf&nbsp;"current=%d"&nbsp;!current);<br>
 *)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;options&nbsp;=&nbsp;merge_options&nbsp;~options&nbsp;~more:&nbsp;com.com_options&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;arg_options&nbsp;=&nbsp;specs_to_arg_specs&nbsp;options&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;arg_options&nbsp;=&nbsp;<span class="constructor">Arg</span>.align&nbsp;(specs_to_arg_specs&nbsp;options)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;com.com_kind&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Final</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span><br>

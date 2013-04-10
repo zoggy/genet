@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -79,7 +80,7 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_diff.diff</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;diff&nbsp;ctx&nbsp;?(html=<span class="keyword">false</span>)&nbsp;?(fragment=<span class="keyword">false</span>)&nbsp;?(keepfiles=<span class="keyword">false</span>)&nbsp;?(diff=<span class="string">"diff&nbsp;-r&nbsp;-u"</span>)&nbsp;inst1&nbsp;inst2&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;diff&nbsp;ctx&nbsp;?(html=<span class="keyword">false</span>)&nbsp;?(fragment=<span class="keyword">false</span>)&nbsp;?(keepfiles=<span class="keyword">false</span>)&nbsp;?diff&nbsp;inst1&nbsp;inst2&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports1&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;inst1&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports2&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;inst2&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;main_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">"diff"</span>)&nbsp;<span class="keyword">in</span><br>
@@ -88,6 +89,15 @@
 &nbsp;&nbsp;mkdir&nbsp;ctx&nbsp;ports1&nbsp;main_dir&nbsp;1&nbsp;;<br>
 &nbsp;&nbsp;mkdir&nbsp;ctx&nbsp;ports2&nbsp;main_dir&nbsp;2&nbsp;;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;res&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genetdiff"</span>&nbsp;<span class="string">"result"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;diff&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diff&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"diff&nbsp;-r&nbsp;-u"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_diffcommand&nbsp;~prefix:&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;~name:&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_diff</span>.command_path&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;path<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"(cd&nbsp;%s&nbsp;&amp;&amp;&nbsp;%s&nbsp;1&nbsp;2&nbsp;%s)&nbsp;&gt;&nbsp;%s&nbsp;2&gt;&amp;1"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;main_dir)<br>
@@ -99,7 +109,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;res)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;com;<br>
+&nbsp;&nbsp;prerr_endline&nbsp;com;<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed:&nbsp;%s"</span>&nbsp;com)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>

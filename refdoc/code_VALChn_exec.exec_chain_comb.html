@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -79,9 +80,9 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_exec.exec_chain_comb</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;ignore(<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;uri_fchain&nbsp;spec&nbsp;comb)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;uri_fchain&nbsp;spec&nbsp;comb<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span><br>

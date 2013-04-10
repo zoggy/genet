@@ -54,18 +54,10 @@ let usage = Printf.sprintf "Usage: %s [-p] infile <outfile|outdir>" Sys.argv.(0)
 
 let separators = [' ' ; '\t' ; '\n' ; '.' ; ',' ; ';' ; '?' ; '!' ; ':'];;
 
-let mkdir ?(verbose=false) dir =
-  let com = Printf.sprintf "mkdir -p %s" (Filename.quote dir) in
-  match Sys.command com with
-    0 -> ()
-  | _ -> failwith (Printf.sprintf "Could not create directoy %s" dir)
-;;
-
 let split_in_pars infile outdir =
   let text = string_of_file infile in
   let len = String.length text in
   let b = Buffer.create 256 in
-  mkdir outdir;
   let make_file n s =
     let oc = open_out (Filename.concat outdir (string_of_int n)) in
     output_string oc s;

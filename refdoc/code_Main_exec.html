@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -114,14 +115,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;msg<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec_one&nbsp;opts&nbsp;reporter&nbsp;input&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;exec_one&nbsp;opts&nbsp;reporter&nbsp;~force&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rdf_wld&nbsp;=&nbsp;<span class="constructor">Grdf_init</span>.open_graph&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;rdf_wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.concat&nbsp;(<span class="constructor">Config</span>.data_dir&nbsp;config)&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spec&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.load&nbsp;config&nbsp;spec_dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_exec</span>.exec&nbsp;ctx&nbsp;reporter&nbsp;spec<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_exec</span>.exec&nbsp;ctx&nbsp;reporter&nbsp;~force&nbsp;spec<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Assert_failure</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keyword">as</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;exc<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -134,11 +135,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printexc</span>.to_string&nbsp;e<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;msg;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
 <span class="keyword">let</span>&nbsp;option_all&nbsp;=&nbsp;(<span class="string">"--all"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;all,&nbsp;<span class="string">"&nbsp;Execute&nbsp;all&nbsp;inputs"</span>);;<br>
+<br>
+<span class="keyword">let</span>&nbsp;force&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
+<span class="keyword">let</span>&nbsp;option_force&nbsp;=&nbsp;(<span class="string">"--force"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;force,&nbsp;<span class="string">"&nbsp;Force&nbsp;execution&nbsp;of&nbsp;already&nbsp;executed&nbsp;chains"</span>);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;com_exec&nbsp;ctx&nbsp;opts&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;reporter&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Reporter</span>.reporter&nbsp;opts.<span class="constructor">Options</span>.verb_level&nbsp;<span class="keyword">in</span><br>
@@ -150,9 +155,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;the&nbsp;name&nbsp;of&nbsp;at&nbsp;least&nbsp;one&nbsp;input&nbsp;or&nbsp;--all"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.relative&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(exec_one&nbsp;opts&nbsp;reporter)&nbsp;inputs;<br>
-&nbsp;<span class="keyword">let</span>&nbsp;errors&nbsp;=&nbsp;reporter<span class="keywordsign">#</span>total_errors&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Reporter</span>.string_of_msg_list&nbsp;reporter<span class="keywordsign">#</span>messages);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_input&nbsp;acc&nbsp;input&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uris&nbsp;=&nbsp;exec_one&nbsp;opts&nbsp;reporter&nbsp;~force:&nbsp;!force&nbsp;input&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;uris&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uris&nbsp;=&nbsp;<span class="constructor">List</span>.flatten&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;f_input&nbsp;[]&nbsp;inputs)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;errors&nbsp;=&nbsp;reporter<span class="keywordsign">#</span>total_errors&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Reporter</span>.string_of_msg_list&nbsp;reporter<span class="keywordsign">#</span>messages);<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))&nbsp;uris;<br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;errors&nbsp;&gt;&nbsp;0&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;prerr_endline<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%d&nbsp;error%s"</span>&nbsp;errors&nbsp;(<span class="keyword">if</span>&nbsp;errors&nbsp;&gt;&nbsp;1&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"s"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span>));<br>
@@ -160,7 +170,7 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;com_exec&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[&nbsp;option_all&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[&nbsp;option_all&nbsp;;&nbsp;option_force&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;input&nbsp;name1&gt;&nbsp;[&lt;input&nbsp;name2&gt;&nbsp;...]]"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_input_name&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;com_exec)&nbsp;;<br>

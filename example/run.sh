@@ -5,9 +5,9 @@ export PATH=/home/guesdon/devel/genet/src:$PATH
 
 #id=initdir
 genet init-dir /tmp/genet-example
-cp config.txt /tmp/genet-example/
 git init /tmp/genet-example/in
 
+cp config.txt /tmp/genet-example/
 cp -f in/chains/test.gnt /tmp/genet-example/in/chains/
 cp -r in/data/test1 /tmp/genet-example/in/data/
 
@@ -99,6 +99,9 @@ genet add version http://localhost:8082/tools/words/branches/0.x 0.4
   # http://localhost:8082/tools/words/versions/0.4
 
 genet exec test1
+
+#id=adddiffcommand
+genet add diff-command "mydiff" "diff -r -w -u"
 
 #id=addnewaverage
 genet add version http://localhost:8082/tools/average/branches/0.x 0.2

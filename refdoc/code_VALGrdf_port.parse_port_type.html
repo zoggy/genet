@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -81,7 +82,7 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;parse_port_type&nbsp;str&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_parser</span>.port_type&nbsp;<span class="constructor">Lexer</span>.main&nbsp;lexbuf<br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_parser</span>.port_type&nbsp;<span class="constructor">Lexer</span>.main&nbsp;lexbuf<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_parser</span>.<span class="constructor">Error</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>

@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -152,6 +153,7 @@
 <span class="keyword">let</span>&nbsp;genet_implode&nbsp;=&nbsp;genet_<span class="string">"Implode"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_explode&nbsp;=&nbsp;genet_<span class="string">"Explode"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_subgraph&nbsp;=&nbsp;genet_<span class="string">"Subgraph"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_diffcommand&nbsp;=&nbsp;genet_<span class="string">"DiffCommand"</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;string_of_class&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_tool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"tool"</span><br>
@@ -163,6 +165,7 @@
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_flatchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatchain"</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instchain"</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instopn"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_diffcommand&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"diffcommand"</span><br>
 <span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
 ;;<br>
 <br>
@@ -418,6 +421,12 @@
 &nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_versions&nbsp;tool)&nbsp;version;;<br>
 <span class="keyword">let</span>&nbsp;uri_tool_of_version&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri);;<br>
 <br>
+</code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Diffcommands">Diff commands</h3> *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">let</span>&nbsp;suffix_diffcommands&nbsp;=&nbsp;<span class="string">"diff-commands"</span><br>
+<span class="keyword">let</span>&nbsp;uri_diffcommands&nbsp;~prefix&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;prefix&nbsp;suffix_diffcommands<br>
+<span class="keyword">let</span>&nbsp;uri_diffcommand&nbsp;~prefix&nbsp;~name&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(uri_diffcommands&nbsp;~prefix)&nbsp;name<br>
+<br>
 </code><table><tr><td></td><td><span class="comment">(** <h3 id="3_Interfaces">Interfaces</h3> *)</span></td></tr></table><code class="code"><br>
 <br>
 <span class="keyword">let</span>&nbsp;suffix_intfs&nbsp;=&nbsp;<span class="string">"interfaces"</span><br>
@@ -514,6 +523,8 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** <h2 id="2_Utilities">Utilities</h2> *)</span></td></tr></table><code class="code"><br>
 <br>
+<span class="keyword">let</span>&nbsp;uriset_of_list&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.add&nbsp;x&nbsp;set)&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;uri_basename&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;uri)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
@@ -541,6 +552,7 @@
 <span class="keyword">let</span>&nbsp;is_a_intf&nbsp;=&nbsp;is_a_&nbsp;genet_intf;;<br>
 <span class="keyword">let</span>&nbsp;is_a_filetype&nbsp;=&nbsp;is_a_&nbsp;genet_filetype;;<br>
 <span class="keyword">let</span>&nbsp;is_a_instopn&nbsp;=&nbsp;is_a_&nbsp;genet_instopn;;<br>
+<span class="keyword">let</span>&nbsp;is_a_diffcommand&nbsp;=&nbsp;is_a_&nbsp;genet_diffcommand;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;is_uri_for_&nbsp;f_is&nbsp;string&nbsp;wld&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;uri_basename&nbsp;uri&nbsp;<span class="keyword">with</span><br>

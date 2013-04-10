@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -136,9 +137,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;d&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;ignore(<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;uri_fchain&nbsp;spec&nbsp;comb)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;uri_fchain&nbsp;spec&nbsp;comb<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -150,12 +151,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error&nbsp;msg<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec_chain&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;chain_name&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;exec_chain&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;?force&nbsp;chain_name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;last_flat_chain&nbsp;ctx&nbsp;chain_name&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;error<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;flat&nbsp;chain&nbsp;for&nbsp;chain&nbsp;%S"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;chain_name))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;flat&nbsp;chain&nbsp;for&nbsp;chain&nbsp;%S"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;chain_name))<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;fchain&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;combs&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.version_combinations&nbsp;ctx&nbsp;fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;combs&nbsp;<span class="keyword">with</span><br>
@@ -164,28 +165,34 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;version&nbsp;combination&nbsp;to&nbsp;execute&nbsp;%S"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;chain_name))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;comb&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;fchain&nbsp;comb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;comb&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;fchain&nbsp;comb&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Error</span>&nbsp;msg&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;msg;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;combs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;combs<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;s_chain_name&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;s_chain_name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;s_chain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;exec_chain&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;chain_name<br>
+&nbsp;&nbsp;exec_chain&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;chain_name<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;spec&nbsp;s<br>
+<span class="keyword">let</span>&nbsp;exec&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uris&nbsp;=&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uris&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Failure</span>&nbsp;s<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;s;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;spec.<span class="constructor">Ind_types</span>.chains<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.flatten&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;[]&nbsp;spec.<span class="constructor">Ind_types</span>.chains)<br>
 ;;<br>
 </code></body></html>

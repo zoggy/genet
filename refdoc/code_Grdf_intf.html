@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -113,12 +114,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"GENET_GRDF_INTF_DEBUG_LEVEL"</span><br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uriset_of_list&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.add&nbsp;x&nbsp;set)&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;;;<br>
-<br>
 <span class="keyword">let</span>&nbsp;intfs&nbsp;wld&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_intf.intfs"</span>);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;wld&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;uriset_of_list&nbsp;l<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uriset_of_list&nbsp;l<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;name&nbsp;wld&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.name&nbsp;wld&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);;<br>
@@ -203,11 +202,11 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;explicit_intfs_of&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;uriset_of_list&nbsp;(<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uriset_of_list&nbsp;(<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;explicit_no_intfs_of&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;uriset_of_list&nbsp;(<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uriset_of_list&nbsp;(<span class="constructor">Grdfs</span>.object_uris&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;intfs_of&nbsp;wld&nbsp;?(recur=<span class="keyword">false</span>)&nbsp;uri&nbsp;=<br>

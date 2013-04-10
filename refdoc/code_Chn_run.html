@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -393,6 +394,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.concat&nbsp;tmp_dir&nbsp;file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.concat&nbsp;p&nbsp;file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;is_dir&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Gurimap</span>.add&nbsp;inst_port&nbsp;file&nbsp;state.port_to_file&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file,&nbsp;state)<br>
 ;;<br>
@@ -704,7 +706,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(new_expl_node&nbsp;::&nbsp;expl_nodes,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insert_graph&nbsp;(state,&nbsp;cpt)&nbsp;in_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*let&nbsp;in_file&nbsp;=&nbsp;Misc.path_under&nbsp;~parent:&nbsp;tmp_dir&nbsp;in_file&nbsp;in*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;add_implode_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;inst_implode&nbsp;orig_impl_in_port<br>
@@ -721,7 +722,7 @@
 ;;<br>
 <br>
 <span class="comment">(*&nbsp;implode&nbsp;only&nbsp;gather&nbsp;input&nbsp;files&nbsp;to&nbsp;output&nbsp;directory;<br>
-&nbsp;&nbsp;it&nbsp;also&nbsp;acts&nbsp;as&nbsp;a&nbsp;synchronsation&nbsp;point&nbsp;before&nbsp;allowing&nbsp;successors&nbsp;to&nbsp;run.&nbsp;*)</span><br>
+&nbsp;&nbsp;it&nbsp;also&nbsp;acts&nbsp;as&nbsp;a&nbsp;synchronisation&nbsp;point&nbsp;before&nbsp;allowing&nbsp;successors&nbsp;to&nbsp;run.&nbsp;*)</span><br>
 <span class="keyword">let</span>&nbsp;run_implode&nbsp;ctx&nbsp;reporter&nbsp;inst&nbsp;tmp_dir&nbsp;inst_node&nbsp;state&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_implode&nbsp;inst_node=%S"</span>&nbsp;(g_uri_string&nbsp;inst_node));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_files&nbsp;=&nbsp;get_port_input_files&nbsp;ctx&nbsp;state&nbsp;(in_ports&nbsp;state&nbsp;inst_node)&nbsp;<span class="keyword">in</span><br>

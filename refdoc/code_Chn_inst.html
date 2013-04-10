@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -384,8 +385,107 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri_inst<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;instanciate&nbsp;ctx&nbsp;reporter&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;remove_inst_port&nbsp;ctx&nbsp;(reporter&nbsp;:&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;triples&nbsp;=&nbsp;ctx.ctx_rdf.wld_graph.<span class="constructor">Rdf_graph</span>.find&nbsp;~sub:&nbsp;node&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(_,&nbsp;pred,&nbsp;obj)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;upred&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;p&nbsp;u&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;upred&nbsp;u&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;upred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_filemd5&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_consumes&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"Predicate&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;upred)^<span class="string">"&nbsp;not&nbsp;handled&nbsp;for&nbsp;inst&nbsp;port;&nbsp;will&nbsp;remove&nbsp;triple&nbsp;anyway"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;node&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;triples<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_inst_opn&nbsp;ctx&nbsp;(reporter&nbsp;:&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;triples&nbsp;=&nbsp;ctx.ctx_rdf.wld_graph.<span class="constructor">Rdf_graph</span>.find&nbsp;~sub:&nbsp;node&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(_,&nbsp;pred,&nbsp;obj)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;upred&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;p&nbsp;u&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;upred&nbsp;u&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;upred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_commandoutput&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_startedon&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_stoppedon&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_consumes&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;obj&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_port&nbsp;ctx&nbsp;reporter&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;obj&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_port&nbsp;ctx&nbsp;reporter&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"Predicate&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;upred)^<span class="string">"&nbsp;not&nbsp;handled&nbsp;for&nbsp;inst&nbsp;opn;&nbsp;will&nbsp;remove&nbsp;triple&nbsp;anyway"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;node&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;triples<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;remove_inst_chain&nbsp;ctx&nbsp;(reporter&nbsp;:&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;triples&nbsp;=&nbsp;ctx.ctx_rdf.wld_graph.<span class="constructor">Rdf_graph</span>.find&nbsp;~sub:&nbsp;node&nbsp;()&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(_,&nbsp;pred,&nbsp;obj)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;upred&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;p&nbsp;u&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;upred&nbsp;u&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;upred&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_useversion&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_useinputcommitid&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_useinput&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_startedon&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_createdon&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_stoppedon&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_instanciate&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_consumes&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;obj&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_port&nbsp;ctx&nbsp;reporter&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;obj&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;u&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;u&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_port&nbsp;ctx&nbsp;reporter&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;p&nbsp;<span class="constructor">Grdfs</span>.genet_containsop&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;obj&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;opn&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_opn&nbsp;ctx&nbsp;reporter&nbsp;opn<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="string">"Predicate&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;upred)^<span class="string">"&nbsp;not&nbsp;handled&nbsp;for&nbsp;inst&nbsp;chain;&nbsp;will&nbsp;remove&nbsp;triple&nbsp;anyway"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>msg&nbsp;msg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;node&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;triples<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;instanciate&nbsp;ctx&nbsp;(reporter:&nbsp;&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;?(force=<span class="keyword">false</span>)&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keyword">when</span>&nbsp;not&nbsp;force&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>push_context&nbsp;(<span class="string">"Removing&nbsp;previous&nbsp;inst&nbsp;chain&nbsp;"</span>&nbsp;^&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_chain&nbsp;ctx&nbsp;reporter&nbsp;uri;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>pop_context;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx.ctx_rdf.wld_graph.transaction_start&nbsp;();<br>

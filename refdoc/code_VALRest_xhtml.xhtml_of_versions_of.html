@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -82,10 +83,15 @@
 <code class="code"><span class="keyword">let</span>&nbsp;xhtml_of_versions_of&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;ctx.ctx_rdf&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">List</span>.sort&nbsp;<span class="constructor">Rdf_uri</span>.compare&nbsp;versions&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Active"</span>&nbsp;;&nbsp;<span class="string">"Version"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Version"</span>&nbsp;;&nbsp;<span class="string">"Active"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;version&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;active&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdfs</span>.is_active_uri&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"yes"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"no"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;active]&nbsp;;&nbsp;[a_version&nbsp;ctx&nbsp;version]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[a_version&nbsp;ctx&nbsp;version]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;active]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date]&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;versions&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;[&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;]</code></body></html>

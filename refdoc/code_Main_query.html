@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -367,6 +368,23 @@
 &nbsp;&nbsp;&nbsp;<span class="string">"print&nbsp;reference&nbsp;inst&nbsp;chain,&nbsp;if&nbsp;any,&nbsp;from&nbsp;given&nbsp;input&nbsp;name&nbsp;and&nbsp;chain&nbsp;fullname"</span>)<br>
 ;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;list_diffcommands&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Grdf_diff</span>.command_path&nbsp;wld&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_diff</span>.diffcommands&nbsp;wld)<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_diffcommands&nbsp;=<br>
+&nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_diffcommands&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<span class="keyword">let</span>&nbsp;com_diffcommands&nbsp;=&nbsp;(<span class="string">"diff-commands"</span>,&nbsp;com_diffcommands,&nbsp;<span class="string">"list&nbsp;predefined&nbsp;diff&nbsp;commands"</span>);;<br>
+<br>
 <span class="keyword">let</span>&nbsp;command&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">""</span>&nbsp;;<br>
@@ -386,6 +404,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_filename&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ref_inst&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_ref_inst_of_inst&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com_diffcommands&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];<br>
 &nbsp;&nbsp;}<br>
 ;;<br>

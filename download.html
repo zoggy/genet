@@ -46,7 +46,25 @@ Then read the <a href="http://zoggy.github.com/genet/doc-install.html">Installat
 </div>
 <div class="section"><div class="section-title" id="releases">Releases</div>
 <ul>
-<li><a hreg="genet-0.2.tar.gz">0.2</a> [2013-03-18].<ul id="changes">
+<li><strong><a href="genet-0.3.tar.gz">0.3</a></strong> [2013-04-10].<ul id="changes">
+<li>add: <code>make install</code> now also installs genet libraries,</li>
+<li>add: allow definition of predefined diff commands (<code>genet add diff-command</code>),</li>
+<li>mod (web interface): in &quot;Diffs&quot; tab, allow selection of one predefined diff command,</li>
+<li>mod: <code>genet exec</code> now prints the list of instanciated chains on stdout,
+     and execution report on stderr,</li>
+<li>add (web interface): display creation date in version list,</li>
+<li>add (web interface): &quot;Out files&quot; tab now contains a form to display diffs between
+     two selected instanciated chains,</li>
+<li>add: <code>--force</code> option for <code>genet exec</code>: remove previously
+     instanciated chain to re-execute. Useful in manual mode, when setting up interfaces,</li>
+<li>fix: verify syntactic correctness of filetype names before adding,</li>
+<li>fix: various error handling,</li>
+<li>mod: <code>genet init-dir</code> now creates a default configuration file in the
+     given project directory; update doc accordingly,</li>
+<li>mod: when an interface takes a directory in output parameter, the
+     directory is created before calling the interface.</li>
+</ul></li>
+<li><strong><a href="genet-0.2.tar.gz">0.2</a></strong> [2013-03-18].<ul id="changes">
 <li>fix handling of explode/implode (<span class="icode"><span class="hl kwb">foreach</span></span> construction),</li>
 <li>add subcommands: <code>genet query fchains</code>,
  <code>genet query inputs</code>,
@@ -60,7 +78,7 @@ Then read the <a href="http://zoggy.github.com/genet/doc-install.html">Installat
 <li><code>genet-chain</code> is replaced by subcommands <code>chain</code>, <code>flatten</code>,
      and <code>flatten-all</code> of <code>genet</code>.</li>
 </ul></li>
-<li><a href="genet-0.1.tar.gz">0.1</a> [2013-02-21]: Initial release.</li>
+<li><strong><a href="genet-0.1.tar.gz">0.1</a></strong> [2013-02-21]: Initial release.</li>
 </ul>
 </div>
 

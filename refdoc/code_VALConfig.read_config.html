@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -83,14 +84,18 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;group&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.group&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pname_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"project_name"</span>]&nbsp;<span class="string">"Foo"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pid_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"project_id"</span>]&nbsp;<span class="string">"foo"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbengine_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"engine"</span>]&nbsp;<span class="string">"postgresql"</span>&nbsp;<span class="string">"postgresql&nbsp;or&nbsp;mysql"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbengine_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"engine"</span>]&nbsp;<span class="string">"mysql"</span>&nbsp;<span class="string">"postgresql&nbsp;or&nbsp;mysql"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbname_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"name"</span>]&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbuser_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"user"</span>]&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbhost_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"host"</span>]&nbsp;<span class="string">"localhost"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbpasswd_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"password"</span>]&nbsp;<span class="string">""</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rest_api_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"rest_api"</span>]&nbsp;<span class="string">"http://localhost:8082/"</span>&nbsp;<span class="string">"do&nbsp;not&nbsp;forget&nbsp;ending&nbsp;/"</span>&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;group<span class="keywordsign">#</span>read&nbsp;file;<br>
+&nbsp;&nbsp;<span class="keyword">begin</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;group<span class="keywordsign">#</span>read&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Stream</span>.<span class="constructor">Error</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Syntax&nbsp;error&nbsp;in&nbsp;config&nbsp;file&nbsp;%S"</span>&nbsp;file)<br>
+&nbsp;&nbsp;<span class="keyword">end</span>;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rest_api&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;rest_api_cp<span class="keywordsign">#</span>get&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Misc</span>.strip_string&nbsp;s&nbsp;<span class="keyword">in</span><br>

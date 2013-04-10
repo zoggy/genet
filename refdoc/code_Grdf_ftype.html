@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -119,6 +120,16 @@
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_ftype.filetypes"</span>);<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype)<br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;parse_filetype_ident&nbsp;str&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lexbuf&nbsp;=&nbsp;<span class="constructor">Lexing</span>.from_string&nbsp;str&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_parser</span>.filetype_ident&nbsp;<span class="constructor">Lexer</span>.main&nbsp;lexbuf<br>
+&nbsp;&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_parser</span>.<span class="constructor">Error</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;lexbuf.<span class="constructor">Lexing</span>.lex_curr_p&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;loc&nbsp;=&nbsp;{&nbsp;<span class="constructor">Loc</span>.loc_start&nbsp;=&nbsp;pos&nbsp;;&nbsp;<span class="constructor">Loc</span>.loc_end&nbsp;=&nbsp;pos&nbsp;}&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Loc</span>.raise_problem&nbsp;loc&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;filetype&nbsp;ident:&nbsp;%s"</span>&nbsp;str)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;name&nbsp;wld&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.name&nbsp;wld&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);;<br>

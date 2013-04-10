@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -215,10 +216,40 @@
 &nbsp;&nbsp;}<br>
 ;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;force_add_diffcommand&nbsp;=&nbsp;ref&nbsp;<span class="keyword">false</span>;;<br>
+<span class="keyword">let</span>&nbsp;add_diffcommand&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[name&nbsp;;&nbsp;path]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_diff</span>.parse_diffcommand_ident&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;diff&nbsp;command&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_diff</span>.add&nbsp;config.<span class="constructor">Config</span>.rest_api<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wld&nbsp;~force:&nbsp;!force_add_diffcommand&nbsp;~name&nbsp;~path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;a&nbsp;name&nbsp;and&nbsp;a&nbsp;command"</span><br>
+;;<br>
+<br>
+<span class="keyword">let</span>&nbsp;com_add_diffcommand&nbsp;=&nbsp;{<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"--force"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Set</span>&nbsp;force_add_diffcommand,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&nbsp;if&nbsp;a&nbsp;diff&nbsp;command&nbsp;with&nbsp;same&nbsp;name&nbsp;exists,&nbsp;replace&nbsp;the&nbsp;associated&nbsp;command"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;];<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;name&gt;&nbsp;&lt;command&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_diffcommand&nbsp;;<br>
+&nbsp;&nbsp;}<br>
+;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;add_filetype&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[name&nbsp;;&nbsp;extension&nbsp;;&nbsp;desc]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">String</span>.length&nbsp;name&nbsp;&lt;=&nbsp;0&nbsp;<span class="keyword">then</span>&nbsp;failwith&nbsp;<span class="string">"Name&nbsp;must&nbsp;not&nbsp;be&nbsp;empty"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_ftype</span>.parse_filetype_ident&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;filetype&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len_ext&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;extension&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;len_ext&nbsp;&lt;=&nbsp;0&nbsp;<span class="keyword">then</span>&nbsp;failwith&nbsp;<span class="string">"Extension&nbsp;must&nbsp;not&nbsp;be&nbsp;empty"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;extension&nbsp;=<br>
@@ -256,7 +287,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Invalid_type_id</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;type&nbsp;id:&nbsp;%s"</span>&nbsp;s)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;name&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdf_ftype</span>.parse_filetype_ident&nbsp;name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;port&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;interface&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_intf));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
@@ -382,6 +419,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"port"</span>,&nbsp;com_add_port,&nbsp;<span class="string">"add&nbsp;new&nbsp;port"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"input"</span>,&nbsp;com_add_input,&nbsp;<span class="string">"add&nbsp;new&nbsp;input"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"refinst"</span>,&nbsp;com_add_refinst,&nbsp;<span class="string">"set&nbsp;an&nbsp;instanciated&nbsp;chain&nbsp;as&nbsp;reference"</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"diff-command"</span>,&nbsp;com_add_diffcommand,&nbsp;<span class="string">"add&nbsp;a&nbsp;predefined&nbsp;diff&nbsp;command"</span>;<br>
 &nbsp;&nbsp;]<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_add&nbsp;=&nbsp;{<br>

@@ -30,6 +30,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -632,10 +633,15 @@
 <span class="keyword">let</span>&nbsp;xhtml_of_versions_of&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;ctx.ctx_rdf&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">List</span>.sort&nbsp;<span class="constructor">Rdf_uri</span>.compare&nbsp;versions&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Active"</span>&nbsp;;&nbsp;<span class="string">"Version"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[<span class="string">"Version"</span>&nbsp;;&nbsp;<span class="string">"Active"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;version&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;active&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdfs</span>.is_active_uri&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"yes"</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">"no"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;active]&nbsp;;&nbsp;[a_version&nbsp;ctx&nbsp;version]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[a_version&nbsp;ctx&nbsp;version]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;active]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date]&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;versions&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;[&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;]<br>
@@ -700,8 +706,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of_dir&nbsp;<span class="string">"Input"</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of_dir&nbsp;<span class="string">"Output"</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of_dir&nbsp;<span class="string">"Input&nbsp;:&nbsp;"</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of_dir&nbsp;<span class="string">"Output&nbsp;:&nbsp;"</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches_yes&nbsp;=<br>
@@ -927,7 +933,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[],&nbsp;svg)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Source&nbsp;from&nbsp;"</span>^(<span class="constructor">Fname</span>.quote&nbsp;file)],&nbsp;code)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -983,6 +989,56 @@
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;chain_page&nbsp;ctx&nbsp;~title&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;xhtml_inst_list&nbsp;ctx&nbsp;list&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[&nbsp;<span class="string">""</span>&nbsp;;&nbsp;<span class="string">""</span>&nbsp;;&nbsp;<span class="string">"Execution"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>&nbsp;]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(uri,&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri))&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(_,d1)&nbsp;(_,d2)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;d2&nbsp;d1)&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(uri_inst,&nbsp;date)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"bad&nbsp;ichain&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_inst))]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;date&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;a_ichain&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;a_ichain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.inst_is_reference&nbsp;ctx&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;[link]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[link&nbsp;;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"&nbsp;"</span>&nbsp;;&nbsp;<span class="constructor">Rest_xpage</span>.star&nbsp;~label:&nbsp;<span class="string">"Reference&nbsp;instanciation&nbsp;chain"</span>&nbsp;()]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mk_option&nbsp;n&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"input"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;(<span class="string">""</span>,<span class="string">"type"</span>),<span class="string">"radio"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"name"</span>),&nbsp;<span class="string">"inst"</span>^(string_of_int&nbsp;n)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"value"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri_inst],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst1_option&nbsp;=&nbsp;mk_option&nbsp;1&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst2_option&nbsp;=&nbsp;mk_option&nbsp;2&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;&nbsp;inst1_option&nbsp;;&nbsp;inst2_option&nbsp;;&nbsp;a_ichain&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date]&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;action&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="constructor">Grdfs</span>.suffix_diff&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;uri&nbsp;<span class="constructor">Grdfs</span>.suffix_ichains&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"form"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"action"</span>),&nbsp;action],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;table&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"input"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"value"</span>),<span class="string">"Show&nbsp;diffs"</span>&nbsp;;&nbsp;(<span class="string">""</span>,<span class="string">"type"</span>),&nbsp;<span class="string">"submit"</span>],&nbsp;[])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;])<br>
+;;<br>
+<br>
 <span class="keyword">let</span>&nbsp;get_fchain&nbsp;ctx&nbsp;uri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchain_name&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_fchain&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
@@ -1013,6 +1069,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.dot_of_fchain&nbsp;ctx&nbsp;fchain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;dot_to_svg&nbsp;~svg_h:&nbsp;600&nbsp;dot<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ichains&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instances&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;l&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;(uri,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri)&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"section"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Instanciated&nbsp;chains"</span>],&nbsp;[xhtml_inst_list&nbsp;ctx&nbsp;l])&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 <span class="comment">(*&nbsp;&nbsp;let&nbsp;uri_fchain&nbsp;=&nbsp;Chn_types.uri_fchain&nbsp;ctx.ctx_cfg.Config.rest_api&nbsp;fchain_name&nbsp;in*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Chn_flat</span>.fchain_creation_date&nbsp;ctx&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
@@ -1029,7 +1093,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"strong"</span>),&nbsp;[],&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"Module&nbsp;ids:"</span>&nbsp;]))&nbsp;::<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;module_ids<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;@&nbsp;svg<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;@&nbsp;svg&nbsp;@&nbsp;ichains<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;chain_page&nbsp;ctx&nbsp;~title&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
@@ -1480,36 +1544,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;([ctype&nbsp;()],&nbsp;in_page&nbsp;ctx&nbsp;~title&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;xhtml_inst_list&nbsp;ctx&nbsp;list&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[&nbsp;<span class="string">"Execution"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>&nbsp;]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(uri,&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri))&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(_,d1)&nbsp;(_,d2)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;d2&nbsp;d1)&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(uri_inst,&nbsp;date)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"bad&nbsp;ichain&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_inst))]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;date&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;a_ichain&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;a_ichain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.inst_is_reference&nbsp;ctx&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;[link]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[link&nbsp;;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"&nbsp;"</span>&nbsp;;&nbsp;<span class="constructor">Rest_xpage</span>.star&nbsp;~label:&nbsp;<span class="string">"Reference&nbsp;instanciation&nbsp;chain"</span>&nbsp;()]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a_ichain&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date]]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;table&nbsp;~heads&nbsp;rows<br>
-;;<br>
+<br>
 <br>
 <span class="keyword">let</span>&nbsp;inst_chain_query_of_args&nbsp;args&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=<br>
@@ -1562,10 +1597,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=&nbsp;<span class="string">"Executions"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;javascript&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.web_dir&nbsp;ctx.ctx_cfg)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"tmpl"</span>&nbsp;;&nbsp;<span class="string">"inst_chain_query.js"</span>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_js&nbsp;file&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;(<span class="constructor">Config</span>.web_dir&nbsp;ctx.ctx_cfg)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"tmpl"</span>&nbsp;;&nbsp;file]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;javascript&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;javascript&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;add_js&nbsp;[&nbsp;<span class="string">"inst_chain_query.js"</span>&nbsp;];<br>
+<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iq&nbsp;=&nbsp;inst_chain_query_of_args&nbsp;args&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_options&nbsp;_&nbsp;_&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inputs&nbsp;=&nbsp;<span class="constructor">Ind_io</span>.list_inputs&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
@@ -1730,6 +1769,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;inst1,&nbsp;<span class="constructor">Some</span>&nbsp;inst2&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst1&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;inst1&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst2&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;inst2&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;diffcmd&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diffcmd&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;ensure&nbsp;this&nbsp;is&nbsp;a&nbsp;predefined&nbsp;diff&nbsp;command,&nbsp;so&nbsp;that&nbsp;a&nbsp;malicious<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;cannot&nbsp;issue&nbsp;commands&nbsp;like&nbsp;"rm&nbsp;-fr&nbsp;/"&nbsp;or&nbsp;worse&nbsp;...&nbsp;*)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_diffcommand&nbsp;~prefix:&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;~name:&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_diff</span>.command_path&nbsp;ctx.ctx_rdf&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_diff</span>.diff&nbsp;ctx&nbsp;~html:&nbsp;<span class="keyword">true</span>&nbsp;?diff:&nbsp;diffcmd&nbsp;~fragment:&nbsp;<span class="keyword">true</span>&nbsp;inst1&nbsp;inst2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>,&nbsp;_<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Please&nbsp;give&nbsp;two&nbsp;urls."</span><br>
@@ -1754,11 +1802,31 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"true"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"true"</span><br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;diffcmd_choices&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cmds&nbsp;=&nbsp;<span class="constructor">Grdf_diff</span>.diffcommands&nbsp;ctx.ctx_rdf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Uriset</span>.fold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;acc&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_diff</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_diff</span>.command_path&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;command&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;atts&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,<span class="string">"value"</span>),&nbsp;name)&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;diffcmd&nbsp;=&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keyword">then</span>&nbsp;[(<span class="string">""</span>,<span class="string">"selected"</span>),<span class="string">"true"</span>]&nbsp;<span class="keyword">else</span>&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"option"</span>),&nbsp;atts,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(command^<span class="string">"&nbsp;("</span>^name^<span class="string">")"</span>)])&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"option"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"value"</span>),&nbsp;<span class="string">""</span>],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"&lt;default&gt;"</span>)]))&nbsp;::&nbsp;l<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"show-form"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;show_form]))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"inst1"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Misc</span>.string_of_opt&nbsp;inst1)]))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"inst2"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Misc</span>.string_of_opt&nbsp;inst2)]))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"diffcmd-choices"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;diffcmd_choices))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"diffcmd"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="keyword">match</span>&nbsp;diffcmd&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s])));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"diff"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;diff]))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"action"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;action]))&nbsp;;<br>

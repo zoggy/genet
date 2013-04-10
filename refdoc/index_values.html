@@ -31,6 +31,7 @@
 <link title="Graph" rel="Chapter" href="Graph.html">
 <link title="Grdf_branch" rel="Chapter" href="Grdf_branch.html">
 <link title="Grdf_constant" rel="Chapter" href="Grdf_constant.html">
+<link title="Grdf_diff" rel="Chapter" href="Grdf_diff.html">
 <link title="Grdf_dot" rel="Chapter" href="Grdf_dot.html">
 <link title="Grdf_ftype" rel="Chapter" href="Grdf_ftype.html">
 <link title="Grdf_init" rel="Chapter" href="Grdf_init.html">
@@ -138,6 +139,8 @@
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALadd">add</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALadd">add</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdf_branch.html#VALadd">add</a> [<a href="Grdf_branch.html">Grdf_branch</a>]</td>
 <td></td></tr>
 <tr><td><a href="Graph.S.html#VALadd">add</a> [<a href="Graph.S.html">Graph.S</a>]</td>
@@ -159,6 +162,8 @@
 <tr><td><a href="Chn_flat.html#VALadd_containsop">add_containsop</a> [<a href="Chn_flat.html">Chn_flat</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALadd_desc">add_desc</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_edit.html#VALadd_diffcommand">add_diffcommand</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_flat.html#VALadd_edges_from_maps">add_edges_from_maps</a> [<a href="Chn_flat.html">Chn_flat</a>]</td>
 <td></td></tr>
@@ -304,6 +309,8 @@ Création d'un résultat de vérification.
 <td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_branch">com_add_branch</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
+<tr><td><a href="Main_edit.html#VALcom_add_diffcommand">com_add_diffcommand</a> [<a href="Main_edit.html">Main_edit</a>]</td>
+<td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_filetype">com_add_filetype</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_edit.html#VALcom_add_input">com_add_input</a> [<a href="Main_edit.html">Main_edit</a>]</td>
@@ -323,6 +330,8 @@ Création d'un résultat de vérification.
 <tr><td><a href="Main_query.html#VALcom_branches">com_branches</a> [<a href="Main_query.html">Main_query</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_query.html#VALcom_chains">com_chains</a> [<a href="Main_query.html">Main_query</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_query.html#VALcom_diffcommands">com_diffcommands</a> [<a href="Main_query.html">Main_query</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_query.html#VALcom_dot">com_dot</a> [<a href="Main_query.html">Main_query</a>]</td>
 <td></td></tr>
@@ -385,6 +394,8 @@ Création d'un résultat de vérification.
 <tr><td><a href="Grdfs.html#VALcommand_output">command_output</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_intf.html#VALcommand_path">command_path</a> [<a href="Grdf_intf.html">Grdf_intf</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALcommand_path">command_path</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
 <td></td></tr>
 <tr><td><a href="Lexer.html#VALcomment">comment</a> [<a href="Lexer.html">Lexer</a>]</td>
 <td></td></tr>
@@ -531,6 +542,8 @@ Same as <code class="code">create_log_fun</code> but also return a function to c
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALdbg">dbg</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALdbg">dbg</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdf_branch.html#VALdbg">dbg</a> [<a href="Grdf_branch.html">Grdf_branch</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_run.html#VALdbg">dbg</a> [<a href="Chn_run.html">Chn_run</a>]</td>
@@ -565,6 +578,14 @@ Same as <code class="code">create_log_fun</code> but also return a function to c
 <td></td></tr>
 <tr><td><a href="Chn_diff.html#VALdiff_url">diff_url</a> [<a href="Chn_diff.html">Chn_diff</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALdiffcommand_exists">diffcommand_exists</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_parser.html#VALdiffcommand_ident">diffcommand_ident</a> [<a href="Grdf_parser.html">Grdf_parser</a>]</td>
+<td></td></tr>
+<tr><td><a href="Chn_parser.html#VALdiffcommand_ident">diffcommand_ident</a> [<a href="Chn_parser.html">Chn_parser</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALdiffcommands">diffcommands</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
 <tr><td><a href="Misc.html#VALdir_md5sum">dir_md5sum</a> [<a href="Misc.html">Misc</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_port.html#VALdir_of_string">dir_of_string</a> [<a href="Grdf_port.html">Grdf_port</a>]</td>
@@ -576,6 +597,8 @@ Same as <code class="code">create_log_fun</code> but also return a function to c
 <tr><td><a href="Grdf_intf.html#VALdo_add">do_add</a> [<a href="Grdf_intf.html">Grdf_intf</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALdo_add">do_add</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALdo_add">do_add</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_branch.html#VALdo_add">do_add</a> [<a href="Grdf_branch.html">Grdf_branch</a>]</td>
 <td></td></tr>
@@ -704,6 +727,10 @@ Aucun problème.
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALfiletype_exists">filetype_exists</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdf_parser.html#VALfiletype_ident">filetype_ident</a> [<a href="Grdf_parser.html">Grdf_parser</a>]</td>
+<td></td></tr>
+<tr><td><a href="Chn_parser.html#VALfiletype_ident">filetype_ident</a> [<a href="Chn_parser.html">Chn_parser</a>]</td>
+<td></td></tr>
 <tr><td><a href="Rest_xhtml.html#VALfiletype_page">filetype_page</a> [<a href="Rest_xhtml.html">Rest_xhtml</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALfiletypes">filetypes</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
@@ -746,6 +773,10 @@ Fonction facilitant l'enchaînement de plusieurs vérifications.
 <tr><td><a href="Grdf_parser.html#VALfoo">foo</a> [<a href="Grdf_parser.html">Grdf_parser</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_parser.html#VALfoo">foo</a> [<a href="Chn_parser.html">Chn_parser</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_exec.html#VALforce">force</a> [<a href="Main_exec.html">Main_exec</a>]</td>
+<td></td></tr>
+<tr><td><a href="Main_edit.html#VALforce_add_diffcommand">force_add_diffcommand</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_dot.html#VALftype_bgcolor">ftype_bgcolor</a> [<a href="Grdf_dot.html">Grdf_dot</a>]</td>
 <td></td></tr>
@@ -817,6 +848,8 @@ Fonction facilitant l'enchaînement de plusieurs vérifications.
 <tr><td><a href="Grdfs.html#VALgenet_createdon">genet_createdon</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALgenet_desc">genet_desc</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdfs.html#VALgenet_diffcommand">genet_diffcommand</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALgenet_explode">genet_explode</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
@@ -1124,6 +1157,8 @@ Get the git last commit id of the given file, or raise <code class="code">Failur
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALis_a_branch">is_a_branch</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdfs.html#VALis_a_diffcommand">is_a_diffcommand</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdfs.html#VALis_a_filetype">is_a_filetype</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALis_a_instopn">is_a_instopn</a> [<a href="Grdfs.html">Grdfs</a>]</td>
@@ -1240,6 +1275,8 @@ Same as <a href="Graph.S.html#VALiter_succ"><code class="code">Graph.S.iter_succ
 <code class="code">list_diff l1 l2</code> returns the list <code class="code">l1 - l2</code>.
 </div>
 </td></tr>
+<tr><td><a href="Main_query.html#VALlist_diffcommands">list_diffcommands</a> [<a href="Main_query.html">Main_query</a>]</td>
+<td></td></tr>
 <tr><td><a href="Main_query.html#VALlist_fchains">list_fchains</a> [<a href="Main_query.html">Main_query</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_query.html#VALlist_filetypes">list_filetypes</a> [<a href="Main_query.html">Main_query</a>]</td>
@@ -1335,6 +1372,8 @@ Fusion de deux résultats de vérification.
 <td></td></tr>
 <tr><td><a href="Grdf_ftype.html#VALname">name</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALname">name</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdf_branch.html#VALname">name</a> [<a href="Grdf_branch.html">Grdf_branch</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALname_of_uri_string">name_of_uri_string</a> [<a href="Grdfs.html">Grdfs</a>]</td>
@@ -1399,6 +1438,8 @@ Fusion de deux résultats de vérification.
 <td></td></tr>
 <tr><td><a href="Main_chain.html#VALoption_dot">option_dot</a> [<a href="Main_chain.html">Main_chain</a>]</td>
 <td></td></tr>
+<tr><td><a href="Main_exec.html#VALoption_force">option_force</a> [<a href="Main_exec.html">Main_exec</a>]</td>
+<td></td></tr>
 <tr><td><a href="Options.html#VALoption_ntriples">option_ntriples</a> [<a href="Options.html">Options</a>]</td>
 <td></td></tr>
 <tr><td><a href="Options.html#VALoption_rdfxml">option_rdfxml</a> [<a href="Options.html">Options</a>]</td>
@@ -1455,6 +1496,12 @@ Fusion de deux résultats de vérification.
   specification or type <a href="Cmdline.html#TYPEcommand"><code class="code">Cmdline.command</code></a> .
 </div>
 </td></tr>
+<tr><td><a href="Grdf_diff.html#VALparse_diffcommand_ident">parse_diffcommand_ident</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_ftype.html#VALparse_filetype_ident">parse_filetype_ident</a> [<a href="Grdf_ftype.html">Grdf_ftype</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_port.html#VALparse_port_ident">parse_port_ident</a> [<a href="Grdf_port.html">Grdf_port</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdf_port.html#VALparse_port_type">parse_port_type</a> [<a href="Grdf_port.html">Grdf_port</a>]</td>
 <td></td></tr>
 <tr><td><a href="Misc.html#VALpath_under">path_under</a> [<a href="Misc.html">Misc</a>]</td>
@@ -1477,6 +1524,10 @@ Fusion de deux résultats de vérification.
 <tr><td><a href="Grdfs.html#VALport_dir_string">port_dir_string</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_port.html#VALport_file_type_uri">port_file_type_uri</a> [<a href="Grdf_port.html">Grdf_port</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_parser.html#VALport_ident">port_ident</a> [<a href="Grdf_parser.html">Grdf_parser</a>]</td>
+<td></td></tr>
+<tr><td><a href="Chn_parser.html#VALport_ident">port_ident</a> [<a href="Chn_parser.html">Chn_parser</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_flat.html#VALport_info">port_info</a> [<a href="Chn_flat.html">Chn_flat</a>]</td>
 <td></td></tr>
@@ -1661,6 +1712,12 @@ Same as <a href="Graph.S.html#VALrecursive_succs"><code class="code">Graph.S.rec
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALremove_date_uri_">remove_date_uri_</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
+<tr><td><a href="Chn_inst.html#VALremove_inst_chain">remove_inst_chain</a> [<a href="Chn_inst.html">Chn_inst</a>]</td>
+<td></td></tr>
+<tr><td><a href="Chn_inst.html#VALremove_inst_opn">remove_inst_opn</a> [<a href="Chn_inst.html">Chn_inst</a>]</td>
+<td></td></tr>
+<tr><td><a href="Chn_inst.html#VALremove_inst_port">remove_inst_port</a> [<a href="Chn_inst.html">Chn_inst</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdfs.html#VALremove_is_active_uri">remove_is_active_uri</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Graph.S.html#VALremove_node">remove_node</a> [<a href="Graph.S.html">Graph.S</a>]</td>
@@ -1725,6 +1782,8 @@ Same as <a href="Graph.S.html#VALrecursive_succs"><code class="code">Graph.S.rec
 <tr><td><a href="Grdfs.html#VALset_command_output">set_command_output</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdf_intf.html#VALset_command_path">set_command_path</a> [<a href="Grdf_intf.html">Grdf_intf</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdf_diff.html#VALset_command_path">set_command_path</a> [<a href="Grdf_diff.html">Grdf_diff</a>]</td>
 <td></td></tr>
 <tr><td><a href="Main_edit.html#VALset_commands">set_commands</a> [<a href="Main_edit.html">Main_edit</a>]</td>
 <td></td></tr>
@@ -1941,6 +2000,8 @@ Same as <a href="Graph.S.html#VALpred_roots"><code class="code">Graph.S.pred_roo
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALsuffix_diff">suffix_diff</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdfs.html#VALsuffix_diffcommands">suffix_diffcommands</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdfs.html#VALsuffix_fchains">suffix_fchains</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALsuffix_filetypes">suffix_filetypes</a> [<a href="Grdfs.html">Grdfs</a>]</td>
@@ -2043,6 +2104,10 @@ Unmarshal.
 <td></td></tr>
 <tr><td><a href="Grdfs.html#VALuri_chains">uri_chains</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
+<tr><td><a href="Grdfs.html#VALuri_diffcommand">uri_diffcommand</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
+<tr><td><a href="Grdfs.html#VALuri_diffcommands">uri_diffcommands</a> [<a href="Grdfs.html">Grdfs</a>]</td>
+<td></td></tr>
 <tr><td><a href="Grdfs.html#VALuri_fchain">uri_fchain</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_types.html#VALuri_fchain">uri_fchain</a> [<a href="Chn_types.html">Chn_types</a>]</td>
@@ -2123,7 +2188,7 @@ Unmarshal.
 <td></td></tr>
 <tr><td><a href="Chn_inst_query.html#VALuriset_add">uriset_add</a> [<a href="Chn_inst_query.html">Chn_inst_query</a>]</td>
 <td></td></tr>
-<tr><td><a href="Grdf_intf.html#VALuriset_of_list">uriset_of_list</a> [<a href="Grdf_intf.html">Grdf_intf</a>]</td>
+<tr><td><a href="Grdfs.html#VALuriset_of_list">uriset_of_list</a> [<a href="Grdfs.html">Grdfs</a>]</td>
 <td></td></tr>
 <tr><td><a href="Chn_inst_query.html#VALuriset_of_list">uriset_of_list</a> [<a href="Chn_inst_query.html">Chn_inst_query</a>]</td>
 <td></td></tr>

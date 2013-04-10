@@ -40,7 +40,7 @@ All required tools and files are available in the Genet distribution,
 in directory <span class="icode">website/example</span>.
 </p>
 
-<ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#init">Initialisation</a></li><li class="toc-section"><a href="#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="#tools">Adding tools</a></li><li class="toc-section"><a href="#chains">Defining a chain</a></li><li class="toc-section"><a href="#input">Defining an input</a></li><li class="toc-section"><a href="#flattening">Flattening chains</a></li><li class="toc-section"><a href="#inst">Executing chains</a></li><li class="toc-section"><a href="#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="#newaverage">A new version of the average tool</a></li><li class="toc-section"><a href="#activeversion">Active versions</a></li><li class="toc-section"><a href="#scripts">Using scripts</a></li></ul>
+<ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#init">Initialisation</a></li><li class="toc-section"><a href="#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="#tools">Adding tools</a></li><li class="toc-section"><a href="#chains">Defining a chain</a></li><li class="toc-section"><a href="#input">Defining an input</a></li><li class="toc-section"><a href="#flattening">Flattening chains</a></li><li class="toc-section"><a href="#inst">Executing chains</a></li><li class="toc-section"><a href="#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="#diffs">Comparing executions</a></li><li class="toc-section"><a href="#newaverage">A new version of the average tool</a></li><li class="toc-section"><a href="#activeversion">Active versions</a></li><li class="toc-section"><a href="#scripts">Using scripts</a></li></ul>
 <div class="section"><div class="section-title" id="intro">Introduction</div>
 <p>The example project, called &quot;genet-example&quot;, defines three tools:
 </p>
@@ -76,11 +76,23 @@ mysql<span class="hl opt">&gt;</span> create database genet_example<span class="
 mysql<span class="hl opt">&gt;</span> grant all privileges on genet_example.<span class="hl opt">*</span> to genet@localhost<span class="hl opt">;</span></pre>
 </div>
 
-<div class="subsection"><div class="subsection-title" id="createconfig">Create the configuration file</div>
+<div class="subsection"><div class="subsection-title" id="init-dir">Create the project directory</div>
 <p>
-We also create the configuration file of our project, <span class="icode">config.txt</span>.
+Then we have to create the directory of our project, in <span class="icode">/tmp/genet-example</span>.
+The structure of this directory is described
+<a href="http://zoggy.github.com/genet/doc-user.html#setup%3Ainit-dir">here</a>. To do so,
+we use the <span class="icode">genet</span> tool. At last, we make <span class="icode">/tmp/genet-example/in</span> a git repository:
+</p>
+<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example
+$ git init <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span><span class="hl kwa">in</span></pre>
+</div>
+
+<div class="subsection"><div class="subsection-title" id="createconfig">Setup the configuration file</div>
+<p>
+The initialization of the directory creates a default <span class="icode">config.txt</span> file
+in the project directory.
 It contains information regarding the project name, database connection and
-web interface:
+web interface. We edit this file to:
 </p>
 <pre class="code-ocaml">project_name <span class="hl opt">=</span> <span class="hl str">&quot;Genet-example&quot;</span>
 project_id <span class="hl opt">=</span> <span class="hl str">&quot;genet-example&quot;</span>
@@ -94,19 +106,6 @@ db <span class="hl opt">= {</span>
 <span class="hl opt">}</span>
 <span class="hl com">(* do not forget ending / *)</span>
 rest_api <span class="hl opt">=</span> <span class="hl str">&quot;http://localhost:8082/&quot;</span></pre>
-</div>
-
-<div class="subsection"><div class="subsection-title" id="init-dir">Create the project directory</div>
-<p>
-Then we have to create the directory of our project, in <span class="icode">/tmp/genet-example</span>.
-The structure of this directory is described
-<a href="http://zoggy.github.com/genet/doc-user.html#setup:init-dir">here</a>. To do so,
-we use the <span class="icode">genet</span> tool, then copy our configuration file
-into the project directory. At last, we make <span class="icode">/tmp/genet-example/in</span> a git repository:
-</p>
-<pre class="code-sh">$ genet init<span class="hl opt">-</span>dir <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example
-$ <span class="hl kwc">cp</span> config.txt <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span>
-$ git init <span class="hl opt">/</span>tmp<span class="hl opt">/</span>genet<span class="hl opt">-</span>example<span class="hl opt">/</span><span class="hl kwa">in</span></pre>
 </div>
 
 <div class="subsection"><div class="subsection-title" id="init-db">Initialize the project database</div>
@@ -424,6 +423,8 @@ new version of the tool will be used when computing the combinations of tools
 to use to execute the last chain flattened from <span class="icode">Test.words_avg_length</span>:
 </p>
 <pre class="code-sh">$ genet <span class="hl kwb">exec</span> test1</pre>
+</div>
+<div class="section"><div class="section-title" id="diffs">Comparing executions</div>
 <p>
 Then, we can compare this new instanciated chain with the reference instanciated chain:
 </p>
@@ -443,6 +444,23 @@ The <span class="icode">--url-if-diff</span> option of <span class="icode">genet
 prints a url to the comparison results if there is a difference. This is useful for example
 to nightly compare new executions with reference executions, and send an email with
 the url of differences, if any.
+</p>
+<p>
+The default diff command used to compare execution results can be specified in two ways.
+First, one can use the <span class="icode">--diff</span> option of <span class="icode">genet diff</span> to specify
+a command to run, instead of the default one (<span class="icode">diff -r -u</span>).
+</p>
+<p>
+Another way is to define a diff command associated to a name, using the following command:
+</p>
+<pre class="code-sh">$ genet add <span class="hl kwc">diff</span><span class="hl opt">-</span><span class="hl kwb">command</span> <span class="hl str">&quot;mydiff&quot;</span> <span class="hl str">&quot;diff -r -w -u&quot;</span></pre>
+<p>
+Then, the name <span class="icode">mydiff</span> can be given to the <span class="icode">--diff</span> option
+of <span class="icode">genet diff</span>, to use the associated command.
+</p>
+<p class="alert alert-warning">
+Note that the web interface does not allow using arbitrary diff command, for security reasons.
+Only predefined diff commands added with <span class="icode">genet add diff-command</span> can be used.
 </p>
 </div>
 
