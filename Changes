@@ -1,4 +1,5 @@
 Next release:
+add: 'make install' now also install genet libraries
 add: allow definition of predefined diff commands ('genet add diff-command')
 mod: web intf: in "Diffs" tab, allow selection of one predefined diff command
 mod: "genet exec" now prints the list of instanciated chains on stdout,

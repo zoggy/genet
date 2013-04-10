@@ -10,29 +10,34 @@ package "base" (
   requires = "genet"
   archive(byte) = "genet_base.cma"
   archive(native) = "genet_base.cmxa"
+  version = "@VERSION@"
 )
 package "chains" (
   description = "Genet library: Chains"
   requires = "genet.base,genet.grdf"
   archive(byte) = "genet_chains.cma"
   archive(native) = "genet_chains.cmxa"
+  version = "@VERSION@"
 )
 package "grdf" (
   description = "Genet library: Semantic web"
   requires = "genet.base"
   archive(byte) = "genet_grdf.cma"
   archive(native) = "genet_grdf.cmxa"
+  version = "@VERSION@"
 )
 package "indata" (
   description = "Genet library: Input specifications"
   requires = "genet.base"
   archive(byte) = "genet_indata.cma"
   archive(native) = "genet_indata.cmxa"
+  version = "@VERSION@"
 )
 package "rest" (
   description = "Genet library: Rest modules"
   requires = "equeue,pcre,netcgi2,netsys,netstring,rpc,netplex,nethttpd,threads.posix,genet.base,genet.chains,genet.grdf,genet.indata"
   archive(byte) = "genet_rest.cma"
   archive(native) = "genet_rest.cmxa"
+  version = "@VERSION@"
 )
 
