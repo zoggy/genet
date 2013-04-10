@@ -1849,7 +1849,7 @@ fi
 
 
 
-ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
+ACFILES="master.Makefile src/META src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
 
 ac_config_files="$ac_config_files $ACFILES"
 
@@ -3009,6 +3009,7 @@ $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
 
 chmod a-w master.Makefile
+chmod a-w src/META
 chmod a-w src/base/version.ml
 chmod a-w src/base/install.ml
 chmod a-w src/gui/gui_install.ml
@@ -3018,7 +3019,6 @@ echo "
 ### Results of configuration ###
 
 Binaries will be installed in ${BINDIR}
-Libraries will be installed in ${LIBDIR}
 Shared files will be installed in ${SHAREDIR}
 Glade file will be installed in ${GLADEDIR}
 

@@ -1,0 +1,38 @@
+description = "Genet library"
+requires = "unix,str,config-file,@RDF_MYSQL@,@RDF_POSTGRESQL@,xtmpl,menhirLib"
+version = "@VERSION@"
+
+archive(byte) = ""
+archive(native) = ""
+
+package "base" (
+  description = "Genet library: Base modules"
+  requires = "genet"
+  archive(byte) = "genet_base.cma"
+  archive(native) = "genet_base.cmxa"
+)
+package "chains" (
+  description = "Genet library: Chains"
+  requires = "genet.base,genet.grdf"
+  archive(byte) = "genet_chains.cma"
+  archive(native) = "genet_chains.cmxa"
+)
+package "grdf" (
+  description = "Genet library: Semantic web"
+  requires = "genet.base"
+  archive(byte) = "genet_grdf.cma"
+  archive(native) = "genet_grdf.cmxa"
+)
+package "indata" (
+  description = "Genet library: Input specifications"
+  requires = "genet.base"
+  archive(byte) = "genet_indata.cma"
+  archive(native) = "genet_indata.cmxa"
+)
+package "rest" (
+  description = "Genet library: Rest modules"
+  requires = "genet.base,genet.chains,genet.grdf,genet.indata"
+  archive(byte) = "genet_rest.cma"
+  archive(native) = "genet_rest.cmxa"
+)
+

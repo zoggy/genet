@@ -167,10 +167,11 @@ AC_SUBST(RDF_MYSQL)
 AC_SUBST(RDF_POSTGRESQL)
 AC_SUBST(MT_FLAGS)
 
-ACFILES="master.Makefile src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
+ACFILES="master.Makefile src/META src/base/version.ml src/base/install.ml src/gui/gui_install.ml"
 
 AC_OUTPUT($ACFILES)
 chmod a-w master.Makefile
+chmod a-w src/META
 chmod a-w src/base/version.ml
 chmod a-w src/base/install.ml
 chmod a-w src/gui/gui_install.ml
@@ -180,7 +181,6 @@ echo "
 ### Results of configuration ###
 
 Binaries will be installed in ${BINDIR}
-Libraries will be installed in ${LIBDIR}
 Shared files will be installed in ${SHAREDIR}
 Glade file will be installed in ${GLADEDIR}
 
