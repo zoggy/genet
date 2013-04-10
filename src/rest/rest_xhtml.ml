@@ -1720,11 +1720,31 @@ let get_diff_ichains ctx args =
       | _ -> "true"
     with Not_found -> "true"
   in
+  let diffcmd_choices =
+    let cmds = Grdf_diff.diffcommands ctx.ctx_rdf in
+    let l = Uriset.fold
+      (fun uri acc ->
+         let name = Grdf_diff.name ctx.ctx_rdf uri in
+         match Grdf_diff.command_path ctx.ctx_rdf uri with
+           None -> acc
+         | Some command ->
+             let atts =
+               (("","value"), name) ::
+               (if diffcmd = Some name then [("","selected"),"true"] else [])
+             in
+             Xtmpl.E (("","option"), atts, [Xtmpl.D (command^" ("^name^")")]) :: acc
+      )
+      cmds
+      []
+    in
+    (Xtmpl.E (("","option"), [("","value"), ""], [Xtmpl.D ("<default>")])) :: l
+  in
   let env = Xtmpl.env_of_list
     [
      (("", "show-form"), (fun _ _ _ -> [Xtmpl.D show_form])) ;
      (("", "inst1"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst1)])) ;
      (("", "inst2"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst2)])) ;
+     (("", "diffcmd-choices"), (fun _ _ _ -> diffcmd_choices)) ;
      (("", "diffcmd"), (fun _ _ _ -> (match diffcmd  with None -> [] | Some s -> [Xtmpl.D s])));
      (("", "diff"), (fun _ _ _ -> [Xtmpl.xml_of_string diff])) ;
      (("", "action"), (fun _ _ _ -> [Xtmpl.D action])) ;
