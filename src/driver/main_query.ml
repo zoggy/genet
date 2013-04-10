@@ -286,6 +286,23 @@ let com_ref_inst =
    "print reference inst chain, if any, from given input name and chain fullname")
 ;;
 
+let list_diffcommands _ wld _ =
+  Uriset.iter
+    (fun uri ->
+       let path = Misc.string_of_opt (Grdf_diff.command_path wld uri) in
+       print_endline (Printf.sprintf "%s : %s" (Rdf_uri.string uri) path)
+    )
+    (Grdf_diff.diffcommands wld)
+;;
+let com_diffcommands =
+  { Cmdline.com_options = [] ;
+    com_usage = "" ;
+    com_compl = [] ;
+    com_kind = Main_cmd.mk_final_fun list_diffcommands ;
+  }
+;;
+let com_diffcommands = ("diff-commands", com_diffcommands, "list predefined diff commands");;
+
 let command =
   { Cmdline.com_options = [] ;
     com_usage = "" ;
@@ -305,6 +322,7 @@ let command =
         com_filename ;
         com_ref_inst ;
         com_ref_inst_of_inst ;
+        com_diffcommands ;
       ];
   }
 ;;

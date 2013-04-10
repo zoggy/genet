@@ -33,7 +33,7 @@ let dbg = Misc.create_log_fun
     "GENET_GRDF_DIFF_DEBUG_LEVEL"
 ;;
 
-let diff_commands wld =
+let diffcommands wld =
   dbg ~level: 1 (fun () -> "Grdf_diff.diff_commands");
   let l = Grdfs.subject_uris wld ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_diffcommand) in
   Grdfs.uriset_of_list l
