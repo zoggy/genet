@@ -427,7 +427,7 @@ doc: all dump.odoc
 	OCAMLFIND_COMMANDS="ocamldoc=ocamldoc.opt" \
 	$(OCAMLFIND) ocamldoc $(OF_FLAGS) -predicates native \
 	$(COMPFLAGS) -v -d ocamldoc -load dump.odoc \
-	-t "Genet library reference" -g odoc_depgraph.cmxa \
+	-t "Genet library reference" -g odoc_depgraph.cmxs \
 	-intro ../doc/ocamldoc_index.text
 
 dot: all dump.odoc
