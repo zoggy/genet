@@ -23,8 +23,7 @@
 (*                                                                               *)
 (*********************************************************************************)
 
-(** Generation of cheat sheet and bash completion parameters for main command
-  line tool. *)
+(** Generation of cheat sheet and bash completion parameters for main command line tool. *)
 
 open Cmdline;;
 
