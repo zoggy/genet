@@ -1,4 +1,4 @@
-{2 Base modules (in [base/])}
+{2:base Base modules (in [base/])}
 {modgraph[width=600]
 Checks
 Cmdline
@@ -17,7 +17,7 @@ Tokens
 Version
 }
 
-{2 Semantic web modules (in [grdf/])}
+{2:grdf Semantic web modules (in [grdf/])}
 {modgraph[width=600]
 Grdf_branch
 Grdf_constant
@@ -37,7 +37,7 @@ Urimap
 Uriset
 }
 
-{2 Chains (in [chains/])}
+{2:chains Chains (in [chains/])}
 {modgraph[width=600]
 Chn_ast
 Chn_diff
@@ -52,13 +52,13 @@ Chn_run
 Chn_types
 }
 
-{2 Inputs (in [indata/])}
+{2:indata Inputs (in [indata/])}
 {modgraph[width=600]
 Ind_io
 Ind_types
 }
 
-{2 Rest interface (in [rest/])}
+{2:rest Rest interface (in [rest/])}
 {modgraph[width=600]
 Rest_query
 Rest_types
@@ -66,7 +66,7 @@ Rest_xhtml
 Rest_xpage
 }
 
-{2 Graphical interface (in [gui/])}
+{2:gui Graphical interface (in [gui/])}
 {modgraph[width=600]
 Chngui
 Gui_base
@@ -76,7 +76,7 @@ Instgui
 Toolgui.ml
 }
 
-{2 Application modules (in [driver/])}
+{2:driver Application modules (in [driver/])}
 {modgraph[width=600]
 Main
 Main_chain
@@ -94,5 +94,5 @@ Main_rest
 Options
 }
 
-{2 All}
+{2:all All}
 {modgraph[width=1000, height=700] }

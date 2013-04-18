@@ -1,0 +1,32 @@
+digraph architecture {
+  node [ shape="rect", style="rounded,filled" color="red", fillcolor="lightgrey", fontcolor="black" ];
+
+  Base [ label="Base\n(genet_base.cm[x]a)", tooltip="Basic modules", href="refdoc/index.html#base"] ;
+  Chains [ label="Chains\n(genet_chains.cm[x]a)", tooltip="Handling chains", href="refdoc/index.html#chains" ] ;
+  Grdf [ label="Grdf\n(genet_grdf.cm[x]a)", tooltip="Representation of model and executions with a semantic graph", href="refdoc/index.html#grdf" ] ;
+  Indata [ label="Indata\n(genet_indata.cm[x]a)", tooltip="Reading/Writing input data", href="refdoc/index.html#indata" ] ;
+  Rest [ label="Rest\n(genet_rest.cm[x]a)", tooltip="Rest interface, including HTML", href="refdoc/index.html#rest" ] ;
+  Main [ label="genet\n(main.ml)", tooltip="Main module of the genet tool", href="refdoc/Main.html" ] ;
+  Main_rest [ label="genet-rest\n(main_rest.ml)", tooltip="Main module of the REST HTTP server", href="refdoc/Main_rest.html" ] ;
+
+  Grdf -> Base ;
+
+  Indata -> Base ;
+
+  Chains -> Base ;
+  Chains -> Grdf ;
+  Chains -> Indata ;
+
+  Rest -> Base ;
+  Rest -> Chains ;
+  Rest -> Grdf ;
+  Rest -> Indata ;
+
+  Main -> Base ;
+  Main -> Chains ;
+  Main -> Grdf ;
+  Main -> Indata ;
+
+  Main_rest -> Rest
+
+}

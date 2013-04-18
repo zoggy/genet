@@ -1,5 +1,7 @@
 example/*/*.x
 cmdline_doc.xml
 .stog/cache
+arch.svg
+
 
 

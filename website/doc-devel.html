@@ -1,11 +1,13 @@
 <page title="Development documentation"
+navbar-doc="active"
 >
 <div class="alert alert-info">This page is not finished yet.</div>
 <prepare-toc depth="2">
 <toc>Table of contents</toc>
 <section id="sources" title="Organisation of source code">
 <p>
-Source code is versionned with git on Github:
+Source code is versionned with
+<ext-a href="http://www.git-scm.com">Git</ext-a> on Github:
  <ext-a href="https://github.com/zoggy/genet">https://github.com/zoggy/genet</ext-a>.
 </p>
 <p>
@@ -20,22 +22,30 @@ The code is organised as follows:
 <li><icode>/src</icode>: OCaml source code for executables and some templates:
   <ul>
   <li><icode>/base</icode>: base library, with modules used by other parts of the code.</li>
-  <li><icode>/indata</icode>: management of input files (reading, writing).</li>
-  <li><icode>/grdf</icode>: semantic graph manipulation (storing, modifying, ...).</li>
   <li><icode>/chains</icode>: handling chains (parsing, flattening, storing, executing, ...).</li>
-  <li><icode>/rest</icode>: REST interface, including web interface.</li>
   <li><icode>/driver</icode>: main programs and additional modules shared among these
   programs (options and command line management, ...).</li>
-  <li><icode>/tmpl</icode>: templates used in web interface (XML files used with Xtmpl).</li>
+  <li><icode>/grdf</icode>: semantic graph manipulation (storing, modifying, querying, ...).</li>
+  <li><icode>/gui</icode>: source code of GUI.</li>
+  <li><icode>/indata</icode>: management of input files (reading, writing).</li>
+  <li><icode>/rest</icode>: REST interface, including web interface.</li>
   <li><icode>/tests</icode>: some test files.</li>
+  <li><icode>/tmpl</icode>: templates used in web interface (XML files used with Xtmpl).</li>
   </ul>
 </li>
 <li><icode>/draft</icode>: some notes, figures, test files, ...
   <ul>
-    <li><icode>/proval</icode>: test scripts using tools from the Proval team.</li>
+    <li><icode>/proval</icode>: test scripts using tools from the Proval/Toccata team.</li>
   </ul>
 </li>
 </ul>
+</section>
+
+<section id="arch" title="Architecture">
+<p>
+Here is a dependency graph of libraries and tools:
+</p>
+<include file="./arch.svg" />
 </section>
 
 </prepare-toc>

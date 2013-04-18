@@ -12,7 +12,7 @@ build:
 style.css: less/*.less
 	$(LESSC) less/style.less > $@
 
-site: genet_plugin.cmxs cmdline_doc.xml style.css
+site: genet_plugin.cmxs cmdline_doc.xml style.css arch.svg
 	$(STOG) $(STOG_OPTIONS) --plugin $< .
 	$(CP) style.css $(DEST_DIR)/style.css
 	mkdir -p $(DEST_DIR)/refdoc
@@ -20,6 +20,9 @@ site: genet_plugin.cmxs cmdline_doc.xml style.css
 
 cmdline_doc.xml: ../src/genet-cheat
 	$< --doc > $@
+
+arch.svg: arch.dot
+	dot -Tsvg $^ | tail -n +4 > $@
 
 test:
 	$(MAKE) BASE_URL_OPTION="--site-url file://$(DEST_DIR)" site
