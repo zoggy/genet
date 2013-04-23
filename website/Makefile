@@ -35,6 +35,3 @@ clean:
 
 examples:
 	cd example && $(MAKE) all
-
-
-	

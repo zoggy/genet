@@ -1,7 +1,19 @@
 <page title="Development documentation"
 navbar-doc="active"
+with-contents="true"
 >
+<refdoc mod="" val="">
+<if val="">
+<code><a href="refdoc/&lt;mod/&gt;.html"><mod/></a></code>
+<code><a href="refdoc/&lt;mod/&gt;.html#VAL&lt;val/&gt;"><mod/>.<val/></a></code>
+</if>
+</refdoc>
+<contents>
 <div class="alert alert-info">This page is not finished yet.</div>
+<p>
+You will find here some information regarding source code organisation
+and the starting points of some operations.
+</p>
 <prepare-toc depth="2">
 <toc>Table of contents</toc>
 <section id="sources" title="Organisation of source code">
@@ -48,5 +60,70 @@ Here is a dependency graph of libraries and tools:
 <include file="./arch.svg" />
 </section>
 
+<section id="chains" title="Chains">
+<subsection id="chains:def" title="Definition of chains">
+<p>
+Chains are described with a domain specific language (DSL), using the common
+lexer from <refdoc mod="Lexer"/> and the parser defined in <refdoc mod="Chn_parser"/>.
+The resulting structure is defined in <refdoc mod="Chn_ast"/>.
+</p>
+</subsection>
+<subsection id="chains:flatten" title="Flattening chains">
+<p>
+Before applying a chain, i.e. running the commands associated to the interfaces
+used in the chain definition, the chain must be flattened, that is all the
+referenced chains are recursively replaced by their dataflow definition, composed
+of interfaces and references to other chains. At the end of the flattening,
+the final chain, called a "flat chain", contains only references to interfaces.
+</p>
+<p>The flattening is performed by <refdoc mod="Chn_flat" val="flatten"/>.</p>
+<p>
+When a chain is flattened, the flat chain is stored in the model, with
+a reference to the original chain and its git id. If the chain source file
+was not commited or not handled by git, then the flat chain is not stored.
+</p>
+<p>
+When a chain is referenced from the chain to flatten, the referenced chain
+is flattened (and stored in the model), then this flat chain is used to
+replace the original reference. So the flattening is done "bottom-up".
+</p>
+<p>
+When the special construction <code>foreach</code> is used (see
+<elt href="example2#addchain">this example</elt>), "Explode" and "Implode"
+nodes are added, to represent the distribution and gathering of data to and from
+the repeated operations.
+</p>
+<p>The flattening process also checks types of connected ports of interfaces
+to make sure they are compatible.
+</p>
+</subsection>
+<subsection id="chains:run" title="Running chains">
+<p>
+Running a chain is also called instanciating a chain, as the interfaces used
+in the chain are instanciated with a combination of the versions of the
+corresponding tools.
+</p>
+<p>The instanciation is perform by the <refdoc mod="Chn_inst" val="instanciate"/> function.
+</p>
+<p>
+If the same chain is already instanciated for the same input and the same tool
+version combination, then it is not re-instanciated, except if the <code>force</code>
+parameter is set to <code>true</code>. In this case, the previous instanciation
+is removed from the database and the flat chain is executed again.
+</p>
+<p>
+Instanciated chains are linked to the original flat chain, the input data (i.e.
+the input directory and its git id), and the combination of versions of the various
+tools involved in the chain definition.
+</p>
+<p>
+Instanciation is performed in a transaction: if an unexpected error occurs, a rollback
+is performed. An execution error of one of the interfaces is not considered as an
+unexpected error: the execution error is recorded and the instanciated chain is
+simply not complete.
+</p>
+</subsection>
+</section>
 </prepare-toc>
+</contents>
 </page>
