@@ -1,3 +1,6 @@
+0.4:
+fix: remove module Rdf_sparql to compile with ocaml-rdf
+
 0.3:
 add: 'make install' now also installs genet libraries
 add: allow definition of predefined diff commands ('genet add diff-command')
