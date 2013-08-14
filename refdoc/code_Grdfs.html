@@ -65,7 +65,6 @@
 <link title="Main_rest" rel="Chapter" href="Main_rest.html">
 <link title="Misc" rel="Chapter" href="Misc.html">
 <link title="Options" rel="Chapter" href="Options.html">
-<link title="Rdf_sparql" rel="Chapter" href="Rdf_sparql.html">
 <link title="Reporter" rel="Chapter" href="Reporter.html">
 <link title="Rest_query" rel="Chapter" href="Rest_query.html">
 <link title="Rest_types" rel="Chapter" href="Rest_types.html">
@@ -757,20 +756,20 @@ let&nbsp;fold_target_sequence&nbsp;f&nbsp;acc&nbsp;wld&nbsp;~source&nbsp;~pred&n
 ;;<br>
 *)</span><br>
 <br>
-<br>
-<span class="keyword">let</span>&nbsp;delete_from_sparql&nbsp;wld&nbsp;query&nbsp;=<br>
+<span class="comment">(*<br>
+let&nbsp;delete_from_sparql&nbsp;wld&nbsp;query&nbsp;=<br>
 &nbsp;&nbsp;prerr_endline<br>
-&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"delete&nbsp;from&nbsp;sparql&nbsp;query=%s"</span>&nbsp;(<span class="constructor">Rdf_sparql</span>.string_of_construct&nbsp;query));<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;_stream&nbsp;=&nbsp;<span class="constructor">Rdf_sparql</span>.exec_construct&nbsp;wld&nbsp;query&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
-&nbsp;&nbsp;<span class="comment">(*Rdf_stream.iter<br>
+&nbsp;&nbsp;(Printf.sprintf&nbsp;"delete&nbsp;from&nbsp;sparql&nbsp;query=%s"&nbsp;(Rdf_sparql.string_of_construct&nbsp;query));<br>
+&nbsp;&nbsp;let&nbsp;_stream&nbsp;=&nbsp;Rdf_sparql.exec_construct&nbsp;wld&nbsp;query&nbsp;in<br>
+&nbsp;&nbsp;assert&nbsp;false<br>
+&nbsp;&nbsp;(*Rdf_stream.iter<br>
 &nbsp;&nbsp;(fun&nbsp;st&nbsp;-&gt;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(Rdf_statement.to_string&nbsp;st);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rdf_model.remove_statement&nbsp;wld.wld_model&nbsp;st<br>
 &nbsp;&nbsp;)<br>
-&nbsp;&nbsp;stream*)</span><br>
+&nbsp;&nbsp;stream*)<br>
 ;;<br>
-<br>
+*)</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;class_of&nbsp;wld&nbsp;sub&nbsp;=<br>
 &nbsp;&nbsp;object_uri&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;rdf_type;;<br>

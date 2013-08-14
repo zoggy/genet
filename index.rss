@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0"><channel><title>Genet</title><link>http://zoggy.github.io/genet/index.rss</link><description></description><managingEditor>foo@bar.com</managingEditor><pubDate>10 Apr 2013 08:00:00 +0000</pubDate><lastBuildDate>10 Apr 2013 08:00:00 +0000</lastBuildDate><generator>Stog</generator><image><url>http://zoggy.github.io/genet/</url><title>Genet</title><link>http://zoggy.github.io/genet</link></image><item><title>Release 0.3</title><link>http://zoggy.github.io/genet/posts/release-0.3.html</link><description>
+<rss version="2.0"><channel><title>Genet</title><link>http://zoggy.github.io/genet/index.rss</link><description></description><managingEditor>foo@bar.com</managingEditor><pubDate>14 AUg 2013 08:00:00 +0000</pubDate><lastBuildDate>14 AUg 2013 08:00:00 +0000</lastBuildDate><generator>Stog</generator><image><url>http://zoggy.github.io/genet</url><title>Genet</title><link>http://zoggy.github.io/genet</link></image><item><title>Release 0.4</title><link>http://zoggy.github.io/genet/posts/release-0.4.html</link><description>
+&lt;p&gt;
+Release 0.4 is available from the &lt;elt href=&quot;download&quot;/&gt; page.
+&lt;/p&gt;
+&lt;a href=&quot;http://zoggy.github.io/genet/posts/release-0.4.html&quot;&gt;&lt;img src=&quot;http://zoggy.github.io/genet/next.png&quot; alt=&quot;next&quot;/&gt;&lt;/a&gt;</description><pubDate>14 AUg 2013 08:00:00 +0000</pubDate><category>genet</category><category>release</category><guid isPermaLink="true">http://zoggy.github.io/genet/posts/release-0.4.html</guid></item><item><title>Release 0.3</title><link>http://zoggy.github.io/genet/posts/release-0.3.html</link><description>
 &lt;p&gt;
 A third release of Genet is available from the &lt;elt href=&quot;download&quot;/&gt; page.
 &lt;/p&gt;
