@@ -27,7 +27,6 @@
 
 open Rdf_node;;
 open Grdf_types;;
-open Rdf_sparql;;
 
 let dbg = Misc.create_log_fun
   ~prefix: "Grdf_version"

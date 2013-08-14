@@ -144,7 +144,6 @@ GRDF_CMXFILES=grdf/grdf_constant.cmx \
 	grdf/uriset.cmx \
 	grdf/urimap.cmx \
 	grdf/grdf_types.cmx \
-	grdf/rdf_sparql.cmx \
 	grdf/grdfs.cmx \
 	grdf/grdf_branch.cmx \
 	grdf/grdf_parser.cmx \

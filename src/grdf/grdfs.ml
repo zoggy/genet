@@ -675,7 +675,7 @@ let fold_target_sequence f acc wld ~source ~pred =
 ;;
 *)
 
-
+(*
 let delete_from_sparql wld query =
   prerr_endline
   (Printf.sprintf "delete from sparql query=%s" (Rdf_sparql.string_of_construct query));
@@ -688,7 +688,7 @@ let delete_from_sparql wld query =
   )
   stream*)
 ;;
-
+*)
 
 let class_of wld sub =
   object_uri wld ~sub ~pred: rdf_type;;
