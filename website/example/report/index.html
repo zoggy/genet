@@ -18,7 +18,7 @@ stog:site-url="file:///tmp/"
   WHERE { ?ichain a genet:Instchain .
           ?ichain genet:stoppedOn ?date .
           OPTIONAL { ?ichain genet:failedCommand ?instnode } .
-          FILTER (YEAR(?date)=2013)
+          FILTER (YEAR(?date)=YEAR(NOW()) && MONTH(?date)=MONTH(NOW()) && DAY(?date)=DAY(NOW()))
         }]]>
   </query>
 </rdf-select>
