@@ -1,7 +1,7 @@
 project_name = "Genet-example"
 project_id = "genet-example"
 db = {
-  (* postgresql or mysql *)
+  (* postgresql or mysql[2] *)
   engine = mysql2
   name = "genet_example"
   user = genet

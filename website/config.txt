@@ -1,7 +1,7 @@
 project_name = Foo
 project_id = foo
 db = {
-  (* postgresql or mysql *)
+  (* postgresql or mysql[2] *)
   engine = mysql
   name = genet
   user = genet
