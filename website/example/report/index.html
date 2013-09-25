@@ -2,5 +2,17 @@
 main="true"
 stog:site-url="file:///tmp/"
 >
-
+<ul>
+<rdf-select with-xmls="true">
+  <query><![CDATA[
+  SELECT ?ichain
+  FROM <http://localhost:8082/>
+  WHERE { ?ichain a genet:Instchain .
+        }]]>
+  </query>
+  <tmpl>
+  <li> <a href="&lt;ichain/&gt;"><ichain/></a></li>
+  </tmpl>
+</rdf-select>
+</ul>
 </page>

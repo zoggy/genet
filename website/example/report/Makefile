@@ -1,8 +1,8 @@
 
 all: stog
-	./stog -d /tmp
+	./stog -d /tmp . -v -v
 
 stog:
-	mk-stog -package stog-rdf -o $@
+	mk-stog -package stog-rdf,rdf.mysql -o $@
 
 	
