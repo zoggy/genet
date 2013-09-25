@@ -1,5 +1,7 @@
 0.5:
-Upgrade to OCaml-RDF 0.7.0 .
+- Upgrade to OCaml-RDF 0.7.0 .
+- Configuration field formerly called "engine" is now called "storage"
+  and the "engine" field can be used according to OCaml-RDF backends.
 
 0.4:
 fix: remove module Rdf_sparql to compile with ocaml-rdf

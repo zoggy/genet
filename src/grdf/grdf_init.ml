@@ -34,7 +34,8 @@ let open_graph config =
       "database", config.db_name ;
       "user", config.db_user ;
       "password", config.db_passwd ;
-      "storage", config.db_engine ;
+      "storage", config.db_storage ;
+      "engine", config.db_engine ;
     ]
   in
   let prefix = config.rest_api in

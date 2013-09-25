@@ -30,6 +30,7 @@ module CF = Config_file
 type t =
   { project_name : string ;
     project_id : string ;
+    db_storage : string ;
     db_engine : string ;
     db_name : string ;
     db_user : string ;
@@ -43,7 +44,8 @@ let read_config file =
   let group = new CF.group in
   let pname_cp = new CF.string_cp ~group ["project_name"] "Foo" "" in
   let pid_cp = new CF.string_cp ~group ["project_id"] "foo" "" in
-  let dbengine_cp = new CF.string_cp ~group ["db"; "engine"] "mysql" "postgresql or mysql[2]" in
+  let dbstorage_cp = new CF.string_cp ~group ["db"; "storage"] "mysql" "postgresql or mysql[2]" in
+  let dbengine_cp = new CF.string_cp ~group ["db"; "engine"] "" "DB engine (for example MyISAM)" in
   let dbname_cp = new CF.string_cp ~group ["db"; "name"] "genet" "" in
   let dbuser_cp = new CF.string_cp ~group ["db"; "user"] "genet" "" in
   let dbhost_cp = new CF.string_cp ~group ["db"; "host"] "localhost" "" in
@@ -63,6 +65,7 @@ let read_config file =
   in
   { project_name = pname_cp#get ;
     project_id = pid_cp#get ;
+    db_storage = dbstorage_cp#get ;
     db_engine = dbengine_cp#get ;
     db_name = dbname_cp#get ;
     db_user = dbuser_cp#get ;
@@ -77,6 +80,7 @@ let string_of_config c =
   let b = Buffer.create 256 in
   Printf.bprintf b "project_name=%s\n" c.project_name ;
   Printf.bprintf b "project_id=%s\n" c.project_id ;
+  Printf.bprintf b "db_storage=%s\n" c.db_storage ;
   Printf.bprintf b "db_engine=%s\n" c.db_engine ;
   Printf.bprintf b "db_name=%s\n" c.db_name ;
   Printf.bprintf b "db_user=%s\n" c.db_user ;

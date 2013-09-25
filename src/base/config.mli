@@ -28,6 +28,7 @@
 type t = {
   project_name : string;
   project_id : string;
+  db_storage : string;
   db_engine : string;
   db_name : string;
   db_user : string;

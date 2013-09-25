@@ -2,7 +2,7 @@ project_name = Foo
 project_id = foo
 db = {
   (* postgresql or mysql[2] *)
-  engine = mysql
+  storage = mysql
   name = genet
   user = genet
   host = localhost
