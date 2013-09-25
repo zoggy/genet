@@ -2,6 +2,8 @@
 
 open Chn_types;;
 
+module Iriset = Rdf_iri.Iriset
+
 type kind = [`Tool | `Branch | `Intf | `Version]
 
 let string_of_kind = function
@@ -11,49 +13,49 @@ let string_of_kind = function
 | `Version -> "V"
 ;;
 
-type elt = kind * Rdf_uri.uri
+type elt = kind * Rdf_iri.iri
 
 let tools ctx () =
-  List.map (fun uri -> (`Tool, uri)) (Grdf_tool.tools ctx.ctx_rdf)
+  List.map (fun iri -> (`Tool, iri)) (Grdf_tool.tools ctx.ctx_rdf)
 ;;
 
-let get_name ctx uri =
-  match Grdfs.name ctx.ctx_rdf (Rdf_node.Uri uri) with
-    "" -> Rdf_uri.string uri
+let get_name ctx iri =
+  match Grdfs.name ctx.ctx_rdf (Rdf_term.Iri iri) with
+    "" -> Rdf_iri.string iri
   | s -> s
 ;;
 
-let uriset_to_elt_list k set =
-  Uriset.fold
-    (fun uri acc -> (k, uri) :: acc) set []
+let iriset_to_elt_list k set =
+  Iriset.fold
+    (fun iri acc -> (k, iri) :: acc) set []
 ;;
 
 let children ctx = function
-  `Tool, uri
-| `Branch, uri ->
+  `Tool, iri
+| `Branch, iri ->
     let wld = ctx.ctx_rdf in
-    let intfs = uriset_to_elt_list `Intf (Grdf_intf.intfs_of wld uri) in
-    let branches = List.map (fun uri -> (`Branch, uri)) (Grdf_branch.subs wld uri) in
-    let versions = List.map (fun uri -> (`Version, uri)) (Grdf_version.versions_of wld uri) in
+    let intfs = iriset_to_elt_list `Intf (Grdf_intf.intfs_of wld iri) in
+    let branches = List.map (fun iri -> (`Branch, iri)) (Grdf_branch.subs wld iri) in
+    let versions = List.map (fun iri -> (`Version, iri)) (Grdf_version.versions_of wld iri) in
     intfs @ branches @ versions
 | `Intf, _ -> []
 | `Version, _ -> []
 ;;
 
 
-class tool_tree ctx wuri =
+class tool_tree ctx wiri =
   let f_roots = tools ctx in
   let f_children = children ctx in
   let f_contents = function
-    (k, uri) -> [`String (get_name ctx uri)]
+    (k, iri) -> [`String (get_name ctx iri)]
   in
   let box = GPack.vbox () in
   object(self)
     inherit [elt] Gmytree.tree_edit ~f_roots ~f_children ~f_contents [`String ""]
     method coerce = box#coerce
 
-    method on_select (_,uri) = wuri#set_text (Rdf_uri.string uri)
-    method on_unselect _ = wuri#set_text ""
+    method on_select (_,iri) = wiri#set_text (Rdf_iri.string iri)
+    method on_unselect _ = wiri#set_text ""
 
 
     initializer
@@ -65,8 +67,8 @@ class tool_tree ctx wuri =
 class box ctx =
   let paned = GPack.paned `HORIZONTAL () in
   let vbox = GPack.vbox () in
-  let wuri = GMisc.label ~xalign: 0. ~text: "" ~packing: (vbox#pack ~expand: false ~fill: true) () in
-  let treebox = new tool_tree ctx wuri in
+  let wiri = GMisc.label ~xalign: 0. ~text: "" ~packing: (vbox#pack ~expand: false ~fill: true) () in
+  let treebox = new tool_tree ctx wiri in
   object(self)
     method coerce = paned#coerce
 

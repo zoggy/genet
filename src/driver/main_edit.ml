@@ -32,8 +32,8 @@ let add_tool config wld options =
   match options.args with
   | [name] ->
       begin
-        let uri = Grdf_tool.add_tool wld name in
-        print_endline (Rdf_uri.string uri)
+        let iri = Grdf_tool.add_tool wld name in
+        print_endline (Rdf_iri.string iri)
       end
   | _ -> failwith "Please give one and only one tool name"
 ;;
@@ -47,12 +47,12 @@ let com_add_tool = {
 let add_branch config wld options =
   match options.args with
   | [parent ; name] ->
-      let uri = Grdf_branch.add wld (Rdf_uri.uri parent) name in
-      print_endline (Rdf_uri.string uri)
-  | _ -> failwith "Please give parent uri and name of the new branch"
+      let iri = Grdf_branch.add wld (Rdf_iri.iri parent) name in
+      print_endline (Rdf_iri.string iri)
+  | _ -> failwith "Please give parent iri and name of the new branch"
 ;;
 let com_add_branch = {
-  com_options = [] ; com_usage = "<parent uri> <branch name>" ;
+  com_options = [] ; com_usage = "<parent iri> <branch name>" ;
   com_compl = [ Cmdline.Compfun Main_cmd.compl_tool_or_branch ] ;
   com_kind = Main_cmd.mk_final_fun add_branch ;
   }
@@ -61,13 +61,13 @@ let com_add_branch = {
 let add_version config wld options =
   match options.args with
   | [parent ; name] ->
-      let parent = Rdf_uri.uri parent in
-      let uri = Grdf_version.add wld ~parent name in
-      print_endline (Rdf_uri.string uri)
-  | _ -> failwith "Please give tool or branch uri and name of the new version"
+      let parent = Rdf_iri.iri parent in
+      let iri = Grdf_version.add wld ~parent name in
+      print_endline (Rdf_iri.string iri)
+  | _ -> failwith "Please give tool or branch iri and name of the new version"
 ;;
 let com_add_version = {
-  com_options = [] ; com_usage = "<(tool|branch) uri> <name>" ;
+  com_options = [] ; com_usage = "<(tool|branch) iri> <name>" ;
   com_compl = [
       Cmdline.Compfun Main_cmd.compl_tool_or_branch ;
     ] ;
@@ -82,22 +82,22 @@ let add_intf config wld options =
   let tools = !intf_tools in
   match options.args with
   | [parent ; name] ->
-      let parent = Rdf_uri.uri parent in
-      let uri = Grdf_intf.add wld ~parent name in
+      let parent = Rdf_iri.iri parent in
+      let iri = Grdf_intf.add wld ~parent name in
       (match !intf_path with
          None -> ()
-       | Some p -> Grdf_intf.set_command_path wld uri p
+       | Some p -> Grdf_intf.set_command_path wld iri p
       );
       let f_tool tool =
-        let uri_tool = Grdfs.uri_tool config.Config.rest_api tool in
-        match Grdf_tool.tool_exists wld uri_tool with
+        let iri_tool = Grdfs.iri_tool config.Config.rest_api tool in
+        match Grdf_tool.tool_exists wld iri_tool with
           None -> failwith (Printf.sprintf "Unknown tool %S" tool)
-        | _ -> Grdfs.add_triple_uris wld
-          ~sub: uri ~pred: Grdfs.genet_usetool ~obj: uri_tool
+        | _ -> Grdfs.add_triple_iris wld
+          ~sub: iri ~pred: Grdfs.genet_usetool ~obj: iri_tool
       in
       List.iter f_tool tools;
-      print_endline (Rdf_uri.string uri)
-  | _ -> failwith "Please give tool or branch uri and name of the new interface"
+      print_endline (Rdf_iri.string iri)
+  | _ -> failwith "Please give tool or branch iri and name of the new interface"
 ;;
 
 let com_add_intf = {
@@ -108,7 +108,7 @@ let com_add_intf = {
       "-t", Cmdline.String (Some Main_cmd.compl_tool_name, fun s -> intf_tools := !intf_tools @ [s]),
       "<toolname> make interface depend on tool\n\t (when used, %{version-name>} will be replaced by version of tool)" ;
     ];
-  com_usage = "<tool|branch uri> <name>" ;
+  com_usage = "<tool|branch iri> <name>" ;
   com_compl = [ Cmdline.Compfun Main_cmd.compl_tool_or_branch ] ;
   com_kind = Main_cmd.mk_final_fun add_intf ;
   }
@@ -117,15 +117,15 @@ let com_add_intf = {
 let add_no_intf config wld options =
   match options.args with
   | [parent; intf] ->
-      let parent = Rdf_uri.uri parent in
-      let intf = Rdf_uri.uri intf in
+      let parent = Rdf_iri.iri parent in
+      let intf = Rdf_iri.iri intf in
       Grdf_intf.add_no_intf wld ~parent intf
-  | _ -> failwith "Please give (branch|version) uri and interface uri"
+  | _ -> failwith "Please give (branch|version) iri and interface iri"
 ;;
 
 let com_add_no_intf = {
   com_options = [];
-  com_usage = "<branch|version uri> <interface uri>" ;
+  com_usage = "<branch|version iri> <interface iri>" ;
   com_compl = [
       Cmdline.Compfun Main_cmd.compl_branch_or_version ;
       Cmdline.Compfun Main_cmd.compl_intf ;
@@ -142,10 +142,10 @@ let add_diffcommand config wld options =
         try Grdf_diff.parse_diffcommand_ident name
         with _ -> failwith (Printf.sprintf "Invalid diff command name %S" name)
       in
-      let uri = Grdf_diff.add config.Config.rest_api
+      let iri = Grdf_diff.add config.Config.rest_api
         wld ~force: !force_add_diffcommand ~name ~path
       in
-      print_endline (Rdf_uri.string uri)
+      print_endline (Rdf_iri.string iri)
   | _ -> failwith "Please give a name and a command"
 ;;
 
@@ -178,8 +178,8 @@ let add_filetype config wld options =
             String.sub extension 1 (len_ext - 1)
         | _ -> extension
       in
-      let uri = Grdf_ftype.add wld ~name ~desc ~extension in
-      print_endline (Rdf_uri.string uri)
+      let iri = Grdf_ftype.add wld ~name ~desc ~extension in
+      print_endline (Rdf_iri.string iri)
   | _ -> failwith "Please give the name, file extension and description of the new filetype"
 ;;
 let com_add_filetype = {
@@ -195,7 +195,7 @@ let add_port config wld options =
   let pos = !port_position in
   match options.args with
     s_intf :: s_dir :: ptype :: q ->
-      let uri_intf = Rdf_uri.uri s_intf in
+      let iri_intf = Rdf_iri.iri s_intf in
       let dir = Grdf_port.dir_of_string s_dir in
       let ptype =
         try Grdf_port.parse_port_type ptype
@@ -212,22 +212,22 @@ let add_port config wld options =
             try Some (Grdf_ftype.parse_filetype_ident name)
             with _ -> failwith (Printf.sprintf "Invalid port name %S" name)
       in
-      if Grdf_intf.intf_exists wld uri_intf = None then
-        failwith (Printf.sprintf "Unknown interface %S" (Rdf_uri.string uri_intf));
+      if Grdf_intf.intf_exists wld iri_intf = None then
+        failwith (Printf.sprintf "Unknown interface %S" (Rdf_iri.string iri_intf));
       begin
-        match Grdf_port.port_file_type_uri config.Config.rest_api ptype with
+        match Grdf_port.port_file_type_iri config.Config.rest_api ptype with
           None -> ()
-        | Some uri_ftype ->
-            if Grdf_ftype.filetype_exists wld uri_ftype = None then
-              failwith (Printf.sprintf "Unknown filetype %S" (Rdf_uri.string uri_ftype))
+        | Some iri_ftype ->
+            if Grdf_ftype.filetype_exists wld iri_ftype = None then
+              failwith (Printf.sprintf "Unknown filetype %S" (Rdf_iri.string iri_ftype))
       end;
 
-      Grdf_port.add_port wld uri_intf dir ?pos ?name ptype;
-      let uri_port = Grdf_intf.get_port wld uri_intf ?pos dir in
-      print_endline (Rdf_uri.string uri_port)
+      Grdf_port.add_port wld iri_intf dir ?pos ?name ptype;
+      let iri_port = Grdf_intf.get_port wld iri_intf ?pos dir in
+      print_endline (Rdf_iri.string iri_port)
   | _ ->
       failwith
-        "Please give at least the interface uri, \
+        "Please give at least the interface iri, \
          the direction (in|out) and the filetype name"
 ;;
 let com_add_port = {
@@ -235,7 +235,7 @@ let com_add_port = {
       "-p", Cmdline.Int (None, fun n -> port_position := Some n),
       "<n> 1-based position to insert port at; default is to append" ;
     ];
-    com_usage = "<interface uri> <in|out> <filetype-name> [port name]" ;
+    com_usage = "<interface iri> <in|out> <filetype-name> [port name]" ;
     com_compl = [
       Cmdline.Compfun Main_cmd.compl_intf ;
       Cmdline.Compfun Main_cmd.compl_in_out ;
@@ -246,12 +246,12 @@ let com_add_port = {
 
 let rem_port config wld options =
   match options.args with
-    [] -> failwith "Please give at least one port uri"
+    [] -> failwith "Please give at least one port iri"
   | ports ->
-      List.iter (fun s -> Grdf_port.delete_port wld (Rdf_uri.uri s)) ports
+      List.iter (fun s -> Grdf_port.delete_port wld (Rdf_iri.iri s)) ports
 ;;
 let com_rem_port = {
-  com_options = [] ; com_usage = "<port uris>" ;
+  com_options = [] ; com_usage = "<port iris>" ;
   com_compl = [ Cmdline.Complist Main_cmd.compl_port ] ;
   com_kind = Main_cmd.mk_final_fun rem_port ;
   }
@@ -281,12 +281,12 @@ let com_add_input = {
 
 let add_ref_inst config wld options =
   match options.args with
-    [input ; chainname ; inst_uri] ->
+    [input ; chainname ; inst_iri] ->
       begin
         let input = Fname.relative input in
         let chain = Chn_types.chain_name_of_string chainname in
-        let chain = Chn_types.uri_chain config.Config.rest_api chain in
-        let inst = Rdf_uri.uri inst_uri in
+        let chain = Chn_types.iri_chain config.Config.rest_api chain in
+        let inst = Rdf_iri.iri inst_iri in
         let ctx =  { Chn_types.ctx_rdf = wld ; ctx_cfg = config ; ctx_user = None } in
         Chn_inst.add_reference_inst ctx ~input ~chain ~inst
       end
@@ -313,10 +313,10 @@ let set_active config wld options =
       let msg = Printf.sprintf "Usage: %s set active <url of version> [true|false]" Sys.argv.(0) in
       failwith msg
   in
-  let uri = Rdf_uri.uri url in
-  match Grdf_version.version_exists wld uri with
-    None -> failwith (Printf.sprintf "Unknown version %S" (Rdf_uri.string uri))
-  | Some _ -> Grdfs.set_is_active_uri wld uri active
+  let iri = Rdf_iri.iri url in
+  match Grdf_version.version_exists wld iri with
+    None -> failwith (Printf.sprintf "Unknown version %S" (Rdf_iri.string iri))
+  | Some _ -> Grdfs.set_is_active_iri wld iri active
 ;;
 let com_set_active = {
   com_options = [] ; com_usage = "<url of tool version> [true|false]" ;

@@ -33,21 +33,21 @@ let dbg = Misc.create_log_fun
     "GENET_CHN_RUN_DEBUG_LEVEL"
 ;;
 
-let ichain_start_date ctx uri =
-  match Grdfs.start_date_uri ctx.ctx_rdf uri with
+let ichain_start_date ctx iri =
+  match Grdfs.start_date_iri ctx.ctx_rdf iri with
     None -> None
   | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
 ;;
 
-let ichain_stop_date ctx uri =
-  match Grdfs.stop_date_uri ctx.ctx_rdf uri with
+let ichain_stop_date ctx iri =
+  match Grdfs.stop_date_iri ctx.ctx_rdf iri with
     None -> None
   | Some d -> Some (Netdate.mk_mail_date (Netdate.since_epoch d))
 ;;
 
-let return_code ctx uri =
+let return_code ctx iri =
   match Grdfs.object_literal ctx.ctx_rdf
-    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_returncode
+    ~sub: (Rdf_term.Iri iri) ~pred: Grdfs.genet_returncode
   with
     None -> 0
   | Some s ->
@@ -56,67 +56,67 @@ let return_code ctx uri =
           failwith (Printf.sprintf "Invalid command return code %s" s)
 ;;
 
-type g_uri = Flat of Rdf_uri.uri | Inst of Rdf_uri.uri;;
-let compare_g_uri t1 t2 =
+type g_iri = Flat of Rdf_iri.iri | Inst of Rdf_iri.iri;;
+let compare_g_iri t1 t2 =
   match t1, t2 with
-    Flat uri1, Flat uri2
-  | Flat uri1, Inst uri2
-  | Inst uri1, Flat uri2
-  | Inst uri1, Inst uri2 -> Rdf_uri.compare uri1 uri2
+    Flat iri1, Flat iri2
+  | Flat iri1, Inst iri2
+  | Inst iri1, Flat iri2
+  | Inst iri1, Inst iri2 -> Rdf_iri.compare iri1 iri2
 ;;
-let compare_g_uri_pair   (p1, p2) (p3, p4) =
-  match compare_g_uri p1 p3 with
-    0 -> compare_g_uri p2 p4
+let compare_g_iri_pair   (p1, p2) (p3, p4) =
+  match compare_g_iri p1 p3 with
+    0 -> compare_g_iri p2 p4
   | n -> n
 ;;
-let uri_of_g_uri = function Flat u -> u | Inst u -> u;;
-let g_uri_string u = Rdf_uri.string (uri_of_g_uri u);;
-module Guri_ord_type = struct type t = g_uri let compare = compare_g_uri end;;
+let iri_of_g_iri = function Flat u -> u | Inst u -> u;;
+let g_iri_string u = Rdf_iri.string (iri_of_g_iri u);;
+module Giri_ord_type = struct type t = g_iri let compare = compare_g_iri end;;
 
-module Guriset = Set.Make(Guri_ord_type)
-module Gurimap = Map.Make(Guri_ord_type)
-module Graph = Graph.Make_with_map (Guri_ord_type)
+module Giriset = Set.Make(Giri_ord_type)
+module Girimap = Map.Make(Giri_ord_type)
+module Graph = Graph.Make_with_map (Giri_ord_type)
   (struct
-     type t = g_uri * g_uri
-     let compare = compare_g_uri_pair
+     type t = g_iri * g_iri
+     let compare = compare_g_iri_pair
    end)
 ;;
 
-let rec get_origin ctx uri =
-  dbg ~level: 3 (fun() -> Printf.sprintf "get_origin uri=%S" (Rdf_uri.string uri));
-  match Grdfs.object_uri ctx.Chn_types.ctx_rdf
-    ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_opfrom
+let rec get_origin ctx iri =
+  dbg ~level: 3 (fun() -> Printf.sprintf "get_origin iri=%S" (Rdf_iri.string iri));
+  match Grdfs.object_iri ctx.Chn_types.ctx_rdf
+    ~sub: (Rdf_term.Iri iri) ~pred: Grdfs.genet_opfrom
   with
-    None -> uri
-  | Some uri -> get_origin ctx uri
+    None -> iri
+  | Some iri -> get_origin ctx iri
 ;;
 
 let dot_of_graph ctx g =
   let f_edge (p1, p2) =
     let kind = function Inst _ -> "(i)" | Flat _ -> "(f)" in
     let k1 = kind p1 and k2 = kind p2 in
-    let p1 = uri_of_g_uri p1 in
-    let p2 = uri_of_g_uri p2 in
+    let p1 = iri_of_g_iri p1 in
+    let p2 = iri_of_g_iri p2 in
     let type1 = Grdf_port.port_type ctx.ctx_rdf (get_origin ctx p1) in
     let type2 = Grdf_port.port_type ctx.ctx_rdf (get_origin ctx p2) in
     let f p = Grdf_port.string_of_port_type (fun x -> x) p in
     let label = Printf.sprintf "%s%s:%s%s" k1 (f type1) k2 (f type2) in
     (label, [])
   in
-  let f_node uri =
-    let color = match uri with Flat _ -> "orange" | Inst _ -> "green" in
-    let uri = uri_of_g_uri uri in
+  let f_node iri =
+    let color = match iri with Flat _ -> "orange" | Inst _ -> "green" in
+    let iri = iri_of_g_iri iri in
     let label =
       try
-        let uri_from = Chn_flat.get_op_origin ctx uri in
-        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
-          None -> Filename.basename (Rdf_uri.string uri)
+        let iri_from = Chn_flat.get_op_origin ctx iri in
+        match Grdf_intf.intf_exists ctx.ctx_rdf iri_from with
+          None -> Filename.basename (Rdf_iri.string iri)
         | Some name -> name
       with
         _ ->
-          Filename.basename (Rdf_uri.string uri)
+          Filename.basename (Rdf_iri.string iri)
     in
-    let href = Rdf_uri.string uri in
+    let href = Rdf_iri.string iri in
     let id = "n"^(Digest.to_hex (Digest.string href)) in
     (id, label, [ "href", href ; "style", "filled"; "fillcolor", color])
   in
@@ -150,7 +150,7 @@ let filename_of_md5 ctx md5 =
   Fname.concat_s (Config.out_dir ctx.ctx_cfg) md5
 ;;
 
-let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file uri =
+let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file iri =
   let file_s = Fname.abs_string file in
   if not (Sys.file_exists file_s) then
     failwith (Printf.sprintf "File %S not found (pwd=%s)" file_s (Sys.getcwd()));
@@ -164,44 +164,44 @@ let record_file ctx reporter ?(pred=Grdfs.genet_filemd5) file uri =
   if not (Sys.file_exists (Fname.abs_string outfile)) then
     Misc.copy_file ~src: file_s ~dst: (Fname.abs_string outfile);
   Grdfs.add_triple ctx.ctx_rdf
-    ~sub: (Rdf_node.Uri (uri_of_g_uri uri)) ~pred: (Rdf_node.Uri pred)
-    ~obj: (Rdf_node.node_of_literal_string md5)
+    ~sub: (Rdf_term.Iri (iri_of_g_iri iri)) ~pred
+    ~obj: (Rdf_term.term_of_literal_string md5)
 ;;
 
 let compute_version_replacement ctx comb =
-  let (versions, comb) = Urimap.fold
-    (fun uri version (versions, comb) ->
+  let (versions, comb) = Rdf_iri.Irimap.fold
+    (fun iri version (versions, comb) ->
       let s = Printf.sprintf "%%{version-%s}"
-         (Grdf_tool.name ctx.ctx_rdf uri)
+         (Grdf_tool.name ctx.ctx_rdf iri)
        in
        let re = Str.regexp_string s in
        let v = Grdf_version.name ctx.ctx_rdf version in
-       ((re, v) :: versions, Urimap.add uri v comb)
+       ((re, v) :: versions, Rdf_iri.Irimap.add iri v comb)
     )
     comb
-    ([], Urimap.empty)
+    ([], Rdf_iri.Irimap.empty)
   in
   fun default_tool s ->
-    let version = Urimap.find default_tool comb in
+    let version = Rdf_iri.Irimap.find default_tool comb in
     let versions = (Str.regexp_string "%v", version) :: versions in
     List.fold_right (fun (re,v) s -> Str.global_replace re v s) versions s
 ;;
 
 type state =
   { g : Graph.t ;
-    port_to_file : [`Absolute] Fname.filename Gurimap.t ;
-    nodes_run : Guriset.t ;
-    replace_versions : Rdf_uri.uri -> string -> string ;
+    port_to_file : [`Absolute] Fname.filename Girimap.t ;
+    nodes_run : Giriset.t ;
+    replace_versions : Rdf_iri.iri -> string -> string ;
   }
 
-exception Exec_failed of state * uri * g_uri * string * int
+exception Exec_failed of state * iri * g_iri * string * int
   (** state * inst_chain * inst_node * command * return code *)
 
 let sort_ports =
   let comp p1 p2 =
     Pervasives.compare
-    (Grdf_port.port_rank (uri_of_g_uri p1))
-    (Grdf_port.port_rank (uri_of_g_uri p2))
+    (Grdf_port.port_rank (iri_of_g_iri p1))
+    (Grdf_port.port_rank (iri_of_g_iri p2))
   in
   List.sort comp
 ;;
@@ -209,15 +209,15 @@ let sort_ports =
 let in_ports state node =
   let preds = Graph.pred state.g node in
   sort_ports
-  (Guriset.elements
-   (List.fold_left (fun set (_,(_,p)) -> Guriset.add p set) Guriset.empty preds)
+  (Giriset.elements
+   (List.fold_left (fun set (_,(_,p)) -> Giriset.add p set) Giriset.empty preds)
   )
 ;;
 let out_ports state node =
   let preds = Graph.succ state.g node in
   sort_ports
-  (Guriset.elements
-   (List.fold_left (fun set (_,(p,_)) -> Guriset.add p set) Guriset.empty preds)
+  (Giriset.elements
+   (List.fold_left (fun set (_,(p,_)) -> Giriset.add p set) Giriset.empty preds)
   )
 ;;
 
@@ -253,9 +253,9 @@ let run_command ctx (reporter: Reporter.reporter)
       let msg = Printf.sprintf "command failed [%d]: %s" n com in
       dbg ~level: 1 (fun () -> msg);
       Grdfs.add_triple ctx.ctx_rdf
-        ~sub: (Rdf_node.Uri (uri_of_g_uri inst_node))
-        ~pred: (Rdf_node.Uri Grdfs.genet_returncode)
-        ~obj: (Rdf_node.node_of_literal_string ~typ: Grdfs.datatype_integer (string_of_int n));
+        ~sub: (Rdf_term.Iri (iri_of_g_iri inst_node))
+        ~pred: Grdfs.genet_returncode
+        ~obj: (Rdf_term.term_of_literal_string ~typ: Grdfs.datatype_integer (string_of_int n));
       link_output ~error: true ();
       raise (Exec_failed (state, inst_chain, inst_node, com, n))
 ;;
@@ -267,19 +267,19 @@ let gen_file =
 ;;
 
 let copy_flat_port ctx ~inst ~container ?cpt flat_port =
-  let flat_port = uri_of_g_uri flat_port in
-  let container = uri_of_g_uri container in
-  let inst_port = Chn_types.uri_inst_port_of_flat_port ~ichain: true ?cpt
+  let flat_port = iri_of_g_iri flat_port in
+  let container = iri_of_g_iri container in
+  let inst_port = Chn_types.iri_inst_port_of_flat_port ~ichain: true ?cpt
     ctx ~inst ~flat: flat_port
   in
   let ptype = Grdf_port.port_type ctx.ctx_rdf flat_port in
   Grdf_port.set_port_type ctx.ctx_rdf inst_port ptype;
-  Grdfs.add_triple_uris ctx.ctx_rdf
+  Grdfs.add_triple_iris ctx.ctx_rdf
     ~sub: inst_port ~pred: Grdfs.genet_opfrom ~obj: flat_port;
 
   let dir = Grdf_port.port_dir flat_port in
   let pred = Grdf_port.pred_of_dir dir in
-  Grdfs.add_triple_uris ctx.ctx_rdf ~sub: container ~pred ~obj: inst_port;
+  Grdfs.add_triple_iris ctx.ctx_rdf ~sub: container ~pred ~obj: inst_port;
   Inst inst_port
 ;;
 
@@ -287,9 +287,9 @@ let copy_flat_port ctx ~inst ~container ?cpt flat_port =
 let copy_flat_ports ctx ~inst ~container ?cpt flat_ports =
   let f flat_port (inst_ports, port_map) =
     let inst_port = copy_flat_port ctx ~inst ~container ?cpt flat_port in
-    (inst_port :: inst_ports, Gurimap.add flat_port inst_port port_map)
+    (inst_port :: inst_ports, Girimap.add flat_port inst_port port_map)
   in
-  List.fold_right f flat_ports ([], Gurimap.empty)
+  List.fold_right f flat_ports ([], Girimap.empty)
 ;;
 
 (* do not create a new file if one is already associated
@@ -297,15 +297,15 @@ let copy_flat_ports ctx ~inst ~container ?cpt flat_ports =
   operations, which are created by [run_explode] operations
   so that they output their result in the implode directory. *)
 let new_file ctx tmp_dir ?path state inst_port =
-  try (Gurimap.find inst_port state.port_to_file, state)
+  try (Girimap.find inst_port state.port_to_file, state)
   with Not_found ->
-      dbg ~level: 2 (fun () -> Printf.sprintf "New file for port %S" (g_uri_string inst_port));
+      dbg ~level: 2 (fun () -> Printf.sprintf "New file for port %S" (g_iri_string inst_port));
       let (ext, is_dir) =
-        let typ = Grdf_port.port_type ctx.ctx_rdf (uri_of_g_uri inst_port) in
+        let typ = Grdf_port.port_type ctx.ctx_rdf (iri_of_g_iri inst_port) in
         match typ with
           Grdf_types.T s ->
-            let uri = Grdfs.uri_filetype ctx.ctx_cfg.Config.rest_api s in
-            (Some (Grdf_ftype.extension ctx.ctx_rdf uri), false)
+            let iri = Grdfs.iri_filetype ctx.ctx_cfg.Config.rest_api s in
+            (Some (Grdf_ftype.extension ctx.ctx_rdf iri), false)
         | Var _ -> None, false
         | Set _ | Tuple _ -> (None, true)
       in
@@ -316,7 +316,7 @@ let new_file ctx tmp_dir ?path state inst_port =
         | Some p -> Fname.concat p file
       in
       if is_dir then Misc.mkdir (Fname.abs_string file);
-      let state = { state with port_to_file = Gurimap.add inst_port file state.port_to_file } in
+      let state = { state with port_to_file = Girimap.add inst_port file state.port_to_file } in
       (file, state)
 ;;
 
@@ -330,45 +330,45 @@ let new_files ctx tmp_dir ?path state inst_ports =
 ;;
 
 let runnable_nodes state =
-  let g = Guriset.fold (fun node g -> Graph.remove_node g node)
+  let g = Giriset.fold (fun node g -> Graph.remove_node g node)
     state.nodes_run state.g
   in
   Graph.pred_roots g
 ;;
 
 let set_node_as_run state node =
-  { state with nodes_run = Guriset.add node state.nodes_run }
+  { state with nodes_run = Giriset.add node state.nodes_run }
 ;;
 
-let rem_pred data x = compare_g_uri_pair data x = 0 ;;
+let rem_pred data x = compare_g_iri_pair data x = 0 ;;
 
 let new_inst_node ctx ~inst ?cpt node =
-  dbg ~level: 1 (fun () -> Printf.sprintf "new_inst_node node=%S" (g_uri_string node));
-  let node = uri_of_g_uri node in
+  dbg ~level: 1 (fun () -> Printf.sprintf "new_inst_node node=%S" (g_iri_string node));
+  let node = iri_of_g_iri node in
 
-  let inst_node = Chn_types.uri_inst_opn_of_flat_opn ~ichain: true ?cpt
+  let inst_node = Chn_types.iri_inst_opn_of_flat_opn ~ichain: true ?cpt
       ~prefix: ctx.ctx_cfg.Config.rest_api ~inst ~flat: node
   in
-  Grdfs.add_triple_uris ctx.ctx_rdf
+  Grdfs.add_triple_iris ctx.ctx_rdf
   ~sub: inst_node ~pred: Grdfs.genet_opfrom ~obj: node;
 
-  if not (Rdf_uri.equal inst inst_node) then
+  if not (Rdf_iri.equal inst inst_node) then
     (
      Chn_flat.add_containsop ctx ~src: inst ~dst: inst_node;
      Grdfs.add_type ctx.ctx_rdf
-     ~sub: (Rdf_node.Uri inst_node) ~obj: (Rdf_node.Uri Grdfs.genet_instopn)
+     ~sub: (Rdf_term.Iri inst_node) ~obj: (Rdf_term.Iri Grdfs.genet_instopn)
     );
   Inst inst_node
 ;;
 
-let string_of_guriset set = String.concat "\n"
-  (Guriset.fold (fun x acc -> (g_uri_string x) :: acc) set [])
+let string_of_giriset set = String.concat "\n"
+  (Giriset.fold (fun x acc -> (g_iri_string x) :: acc) set [])
 ;;
 
 let copy_node ctx ~inst ?cpt orig_node ?inports ?outports state =
   dbg ~level: 1
   (fun () -> Printf.sprintf "copying node %S (cpt=%s)"
-     (g_uri_string orig_node) (match cpt with None -> "_" | Some n -> string_of_int n));
+     (g_iri_string orig_node) (match cpt with None -> "_" | Some n -> string_of_int n));
   let in_ports = match inports with None -> in_ports state orig_node | Some l -> l in
   let out_ports = match outports with None -> out_ports state orig_node | Some l -> l in
   let new_node = new_inst_node ctx ~inst ?cpt orig_node in
@@ -377,8 +377,8 @@ let copy_node ctx ~inst ?cpt orig_node ?inports ?outports state =
   let f_succ cpt g (succ,(p1,p2)) =
     try
       let p1 =
-        try Gurimap.find p1 port_map_out
-        with Not_found -> Gurimap.find p1 port_map_in
+        try Girimap.find p1 port_map_out
+        with Not_found -> Girimap.find p1 port_map_in
       in
       Graph.add g (new_node,succ,(p1,p2))
     with Not_found -> g
@@ -387,8 +387,8 @@ let copy_node ctx ~inst ?cpt orig_node ?inports ?outports state =
   let f_pred cpt g (pred,(p1,p2)) =
     try
       let p2 =
-        try Gurimap.find p2 port_map_in
-        with Not_found -> Gurimap.find p2 port_map_out
+        try Girimap.find p2 port_map_in
+        with Not_found -> Girimap.find p2 port_map_out
       in
       Graph.add g (pred,new_node,(p1,p2))
     with Not_found -> g
@@ -403,11 +403,11 @@ let copy_node ctx ~inst ?cpt orig_node ?inports ?outports state =
 
 let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
   let in_files = input.Ind_types.in_files in
-  dbg ~level: 1 (fun () -> Printf.sprintf "inst = %S" (Rdf_uri.string inst));
+  dbg ~level: 1 (fun () -> Printf.sprintf "inst = %S" (Rdf_iri.string inst));
   let state = {
       g ;
-      port_to_file = Gurimap.empty ;
-      nodes_run = Guriset.empty ;
+      port_to_file = Girimap.empty ;
+      nodes_run = Giriset.empty ;
       replace_versions = compute_version_replacement ctx comb ;
     }
   in
@@ -416,7 +416,7 @@ let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
   let inst_in_ports = out_ports state inst_node in
   dbg ~level: 2
     (fun () -> Printf.sprintf "run_init: in_ports =\n%s"
-      (String.concat "\n" (List.map g_uri_string inst_in_ports))
+      (String.concat "\n" (List.map g_iri_string inst_in_ports))
     );
 
   let nb_in_files = List.length in_files in
@@ -438,30 +438,30 @@ let init_run ctx reporter comb ~inst ~fchain input tmp_dir g =
 ;;
 
 let get_port_input_file ctx state port =
-  let node = Grdfs.port_container (uri_of_g_uri port) in
+  let node = Grdfs.port_container (iri_of_g_iri port) in
   dbg ~level: 1
-  (fun () -> Printf.sprintf "get_port_input_file port=%S uri=%S" (g_uri_string port) (Rdf_uri.string node));
+  (fun () -> Printf.sprintf "get_port_input_file port=%S iri=%S" (g_iri_string port) (Rdf_iri.string node));
   let src =
     let preds =
       try Graph.pred state.g (Inst node)
       with Not_found ->
           try Graph.pred state.g (Flat node)
           with Not_found ->
-              failwith (Printf.sprintf "port container %S not in graph" (g_uri_string port))
+              failwith (Printf.sprintf "port container %S not in graph" (g_iri_string port))
     in
     let (_,(src,_)) =
       try List.find
         (fun (_,(src,dst)) ->
-          (*prerr_endline (Printf.sprintf "src=%S\ndst=%S" (g_uri_string src) (g_uri_string dst)) ;*)
-          compare_g_uri dst port = 0) preds
+          (*prerr_endline (Printf.sprintf "src=%S\ndst=%S" (g_iri_string src) (g_iri_string dst)) ;*)
+          compare_g_iri dst port = 0) preds
       with Not_found ->
-          failwith (Printf.sprintf "No ancestor found for port %S" (g_uri_string port))
+          failwith (Printf.sprintf "No ancestor found for port %S" (g_iri_string port))
     in
     src
   in
-  try Gurimap.find src state.port_to_file
+  try Girimap.find src state.port_to_file
   with Not_found ->
-      failwith (Printf.sprintf "No file for inst port %S" (g_uri_string src))
+      failwith (Printf.sprintf "No file for inst port %S" (g_iri_string src))
 ;;
 
 let get_port_input_files ctx state ports =
@@ -472,7 +472,7 @@ let get_port_input_files ctx state ports =
 let copy_expl_node ctx ~inst cpt orig_pred_node pred_node pred_out_port state expl_node =
   let (new_expl_node, _, _, state) = copy_node ctx ~inst ~cpt expl_node state in
   let f_pred cpt g (pred,(p1,p2)) =
-    if compare_g_uri pred orig_pred_node = 0 then
+    if compare_g_iri pred orig_pred_node = 0 then
       (
        let g = Graph.rem g (pred,new_expl_node) (rem_pred (p1,p2)) in
        Graph.add g (pred_node, new_expl_node, (pred_out_port, p2))
@@ -483,7 +483,7 @@ let copy_expl_node ctx ~inst cpt orig_pred_node pred_node pred_out_port state ex
   let preds = Graph.pred state.g new_expl_node in
   let g = List.fold_left (f_pred cpt) state.g preds in
   dbg ~level: 2
-  (fun () -> Printf.sprintf "%S: %d in ports" (g_uri_string new_expl_node)
+  (fun () -> Printf.sprintf "%S: %d in ports" (g_iri_string new_expl_node)
      (List.length (in_ports state new_expl_node)));
   (new_expl_node, { state with g })
 ;;
@@ -493,7 +493,7 @@ let add_implode_ports ctx inst_implode orig_impl_in_port tmp_dir impl_out_file c
     [p] -> p | _ -> assert false
   in
   let (in_type, path) =
-    match Grdf_port.port_type ctx.ctx_rdf (uri_of_g_uri out_port) with
+    match Grdf_port.port_type ctx.ctx_rdf (iri_of_g_iri out_port) with
     | Var _ | T _ | Tuple _ -> assert false
     | Set t ->
         match t with
@@ -501,15 +501,15 @@ let add_implode_ports ctx inst_implode orig_impl_in_port tmp_dir impl_out_file c
         | Set _ | Tuple _ -> (t, Some (Fname.concat_s tmp_dir (string_of_int cpt)))
   in
   let in_port =
-    let uri = Grdfs.uri_intf_in_port (uri_of_g_uri inst_implode) cpt in
-    Grdf_port.set_port_type ctx.ctx_rdf uri in_type;
+    let iri = Grdfs.iri_intf_in_port (iri_of_g_iri inst_implode) cpt in
+    Grdf_port.set_port_type ctx.ctx_rdf iri in_type;
     let pred = Grdf_port.pred_of_dir Grdf_port.In in
-    Grdfs.add_triple_uris ctx.ctx_rdf ~sub: (uri_of_g_uri inst_implode) ~pred ~obj: uri;
-    Grdfs.add_triple_uris ctx.ctx_rdf ~sub: uri
-    ~pred: Grdfs.genet_opfrom ~obj: (uri_of_g_uri orig_impl_in_port);
-    Inst uri
+    Grdfs.add_triple_iris ctx.ctx_rdf ~sub: (iri_of_g_iri inst_implode) ~pred ~obj: iri;
+    Grdfs.add_triple_iris ctx.ctx_rdf ~sub: iri
+    ~pred: Grdfs.genet_opfrom ~obj: (iri_of_g_iri orig_impl_in_port);
+    Inst iri
   in
-  let state = { state with port_to_file = Gurimap.add in_port impl_out_file state.port_to_file } in
+  let state = { state with port_to_file = Girimap.add in_port impl_out_file state.port_to_file } in
   let state =
     List.fold_left
     (fun state expl_node ->
@@ -528,7 +528,7 @@ let add_implode_ports ctx inst_implode orig_impl_in_port tmp_dir impl_out_file c
 ;;
 
 let run_explode ctx reporter inst tmp_dir ~orig_node state =
-  dbg ~level:1 (fun () -> Printf.sprintf "run_explode orig_node=%S" (g_uri_string orig_node));
+  dbg ~level:1 (fun () -> Printf.sprintf "run_explode orig_node=%S" (g_iri_string orig_node));
   let orig_in_port =
     match in_ports state orig_node with
       [p] -> p
@@ -542,7 +542,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     | _ -> assert false
   in
   let (inst_node, _, _, state) = copy_node ctx ~inst orig_node ~outports: [] state in
-  dbg ~level:1 (fun () -> Printf.sprintf "run_explode inst_node=%S" (g_uri_string inst_node));
+  dbg ~level:1 (fun () -> Printf.sprintf "run_explode inst_node=%S" (g_iri_string inst_node));
   let inst_in_port = match in_ports state inst_node with
     [p] -> p | [] -> assert false | _ -> assert false
   in
@@ -553,12 +553,12 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
      let entries = List.filter ((<>) root_s) entries in
      List.map Fname.absolute entries
   in
-  let uri_implode =
-    match Grdfs.object_uri ctx.ctx_rdf
-      ~sub: (Rdf_node.Uri (uri_of_g_uri orig_node)) ~pred: Grdfs.genet_hasimplode
+  let iri_implode =
+    match Grdfs.object_iri ctx.ctx_rdf
+      ~sub: (Rdf_term.Iri (iri_of_g_iri orig_node)) ~pred: Grdfs.genet_hasimplode
     with
       None -> failwith "No implode node associated to explode!"
-    | Some uri -> uri
+    | Some iri -> iri
   in
   let exploded_nodes =
     (* remove main node to prevent cycling and getting all nodes *)
@@ -566,22 +566,22 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     (* FIXME: maybe a problem here in case of nested explodes: how to find the correct
        implode, which may be a Inst node now ? *)
     let after_implode =
-      let l = Graph.recursive_succs g (Flat uri_implode) in
-      List.fold_right Guriset.add (Flat uri_implode :: l) Guriset.empty
+      let l = Graph.recursive_succs g (Flat iri_implode) in
+      List.fold_right Giriset.add (Flat iri_implode :: l) Giriset.empty
     in
     let after_explode =
       let l = Graph.recursive_succs g orig_node in
-      List.fold_right Guriset.add l Guriset.empty
+      List.fold_right Giriset.add l Giriset.empty
     in
     dbg ~level: 1
     (fun () -> Printf.sprintf "after_implode=\n%s\nafter_explode=\n%s"
-       (string_of_guriset after_implode) (string_of_guriset after_explode));
-    Guriset.diff after_explode after_implode
+       (string_of_giriset after_implode) (string_of_giriset after_explode));
+    Giriset.diff after_explode after_implode
   in
-  assert (Guriset.cardinal exploded_nodes > 0);
+  assert (Giriset.cardinal exploded_nodes > 0);
 
   let f_pred g (pred,(p1,p2)) =
-    if compare_g_uri p2 inst_in_port = 0 then
+    if compare_g_iri p2 inst_in_port = 0 then
       Graph.add g (pred,inst_node, (p1,inst_in_port))
     else
       Graph.add g (pred,inst_node, (p1,p2))
@@ -590,7 +590,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
   let state = { state with g } in
 
   (* FIXME: handle nested foreach: implode may already be an inst node *)
-  let orig_implode = Flat uri_implode in
+  let orig_implode = Flat iri_implode in
   let (inst_implode, map_imp_in, map_imp_out, state) =
     copy_node ctx ~inst orig_implode ~inports: [] state
   in
@@ -605,17 +605,17 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
 
   let new_out_port =
     fun cpt state in_file ->
-      let uri = Grdfs.uri_intf_out_port (uri_of_g_uri inst_node) cpt in
-      Grdfs.add_triple_uris ctx.ctx_rdf
-      ~sub: uri ~pred: Grdfs.genet_opfrom ~obj: (uri_of_g_uri orig_out_port);
+      let iri = Grdfs.iri_intf_out_port (iri_of_g_iri inst_node) cpt in
+      Grdfs.add_triple_iris ctx.ctx_rdf
+      ~sub: iri ~pred: Grdfs.genet_opfrom ~obj: (iri_of_g_iri orig_out_port);
 
       let pred = Grdf_port.pred_of_dir Grdf_port.Out in
-      Grdfs.add_triple_uris ctx.ctx_rdf ~sub: (uri_of_g_uri inst_node) ~pred ~obj: uri;
+      Grdfs.add_triple_iris ctx.ctx_rdf ~sub: (iri_of_g_iri inst_node) ~pred ~obj: iri;
 
-      record_file ctx reporter in_file (Inst uri);
-      let port = Inst uri in
+      record_file ctx reporter in_file (Inst iri);
+      let port = Inst iri in
       (port,
-       { state with port_to_file = Gurimap.add port in_file state.port_to_file }
+       { state with port_to_file = Girimap.add port in_file state.port_to_file }
       )
   in
 
@@ -627,7 +627,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     (new_expl_node :: expl_nodes, state)
   in
   let insert_graph (state, cpt) in_file =
-    let (expl_nodes, state) = Guriset.fold (f_node cpt in_file) exploded_nodes ([], state) in
+    let (expl_nodes, state) = Giriset.fold (f_node cpt in_file) exploded_nodes ([], state) in
     let state = add_implode_ports
       ctx inst_implode orig_impl_in_port
       tmp_dir impl_out_file cpt state expl_nodes
@@ -635,7 +635,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
     (state, cpt+1)
   in
   let (state,_) = List.fold_left insert_graph (state,1) in_files in
-  let g = Guriset.fold (fun node g -> Graph.remove_node g node) exploded_nodes state.g in
+  let g = Giriset.fold (fun node g -> Graph.remove_node g node) exploded_nodes state.g in
   let state = { state with g } in
   let state = set_node_as_run state inst_node in
   let g = Graph.remove_node g orig_node in
@@ -645,7 +645,7 @@ let run_explode ctx reporter inst tmp_dir ~orig_node state =
 (* implode only gather input files to output directory;
   it also acts as a synchronisation point before allowing successors to run. *)
 let run_implode ctx reporter inst tmp_dir inst_node state =
-  dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (g_uri_string inst_node));
+  dbg ~level:1 (fun () -> Printf.sprintf "run_implode inst_node=%S" (g_iri_string inst_node));
   let in_files = get_port_input_files ctx state (in_ports state inst_node) in
   let (out_port, out_file, state) =
     match out_ports state inst_node with
@@ -661,7 +661,7 @@ let run_implode ctx reporter inst tmp_dir inst_node state =
 ;;
 
 let rec run_node ctx reporter inst tmp_dir state orig_node =
-  let msg = Printf.sprintf "run_node %S" (g_uri_string orig_node) in
+  let msg = Printf.sprintf "run_node %S" (g_iri_string orig_node) in
   dbg ~level: 1 (fun () -> msg);
   reporter#push_context msg;
 
@@ -675,7 +675,7 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
   let in_files = get_port_input_files ctx state orig_in_ports in
   dbg ~level: 2
   (fun () -> Printf.sprintf "run_node: %d in_files for %S"
-     (List.length in_files) (g_uri_string orig_node));
+     (List.length in_files) (g_iri_string orig_node));
 
   let test file =
      let file_s = Fname.abs_string file in
@@ -684,20 +684,20 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
   in
   List.iter test in_files;
 
-  let uri_from = Chn_flat.get_op_origin ctx (uri_of_g_uri orig_node) in
+  let iri_from = Chn_flat.get_op_origin ctx (iri_of_g_iri orig_node) in
   let state =
-    match uri_from with
-    | _ when Rdf_uri.equal uri_from Grdfs.genet_explode ->
+    match iri_from with
+    | _ when Rdf_iri.equal iri_from Grdfs.genet_explode ->
         run_explode ctx reporter inst tmp_dir ~orig_node state
-    | _ when Rdf_uri.equal uri_from Grdfs.genet_implode ->
+    | _ when Rdf_iri.equal iri_from Grdfs.genet_implode ->
         run_implode ctx reporter inst tmp_dir orig_node state
     | _ ->
-        match Grdf_intf.intf_exists ctx.ctx_rdf uri_from with
+        match Grdf_intf.intf_exists ctx.ctx_rdf iri_from with
           None -> assert false
         | Some _ ->
-            match Grdf_intf.command_path ctx.ctx_rdf uri_from with
+            match Grdf_intf.command_path ctx.ctx_rdf iri_from with
               None ->
-                error ("No path for interface " ^ (Rdf_uri.string uri_from))
+                error ("No path for interface " ^ (Rdf_iri.string iri_from))
             | Some path ->
                 let (inst_node, port_map_in, port_map_out, state) =
                  (* FIXME: handled correctly in case of nested foreach *)
@@ -706,8 +706,8 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
                   | Inst _ ->
                       (* already instanciated *)
                       (orig_node,
-                       List.fold_left (fun acc p -> Gurimap.add p p acc) Gurimap.empty (in_ports state orig_node),
-                       List.fold_left (fun acc p -> Gurimap.add p p acc) Gurimap.empty (out_ports state orig_node),
+                       List.fold_left (fun acc p -> Girimap.add p p acc) Girimap.empty (in_ports state orig_node),
+                       List.fold_left (fun acc p -> Girimap.add p p acc) Girimap.empty (out_ports state orig_node),
                        state)
                 in
                 let inst_out_ports = out_ports state inst_node in
@@ -715,7 +715,7 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
                 let g =
                   let f_succ g (succ, (src, dst)) =
                     try
-                      let src2 = Gurimap.find src port_map_out in
+                      let src2 = Girimap.find src port_map_out in
                       let g = Graph.rem g (orig_node, succ) (rem_pred (src, dst)) in
                       Graph.add g (inst_node, succ, (src2, dst))
                     with Not_found -> g
@@ -729,17 +729,17 @@ let rec run_node ctx reporter inst tmp_dir state orig_node =
                   g
                 in
                 let state = { state with g } in
-                let tool = Grdf_intf.tool_of_intf uri_from in
+                let tool = Grdf_intf.tool_of_intf iri_from in
                 let path = state.replace_versions tool path in
                 (*prerr_endline (Printf.sprintf "path = %s" path);*)
-                Grdfs.set_start_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
+                Grdfs.set_start_date_iri ctx.ctx_rdf (iri_of_g_iri inst_node) ();
                 begin
                   try
                     run_command ctx reporter state inst tmp_dir inst_node path in_files inst_out_ports out_files;
-                    Grdfs.set_stop_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
+                    Grdfs.set_stop_date_iri ctx.ctx_rdf (iri_of_g_iri inst_node) ();
                   with
                     e ->
-                      Grdfs.set_stop_date_uri ctx.ctx_rdf (uri_of_g_uri inst_node) ();
+                      Grdfs.set_stop_date_iri ctx.ctx_rdf (iri_of_g_iri inst_node) ();
                       raise e
                 end;
                 let g = match orig_node with
@@ -761,18 +761,18 @@ and run_nodes ctx reporter inst tmp_dir state =
       dbg ~level: 1
       (fun () ->
          Printf.sprintf "run_nodes: runnable nodes:\n%s"
-         (String.concat "\n" (List.map g_uri_string (node::q)))
+         (String.concat "\n" (List.map g_iri_string (node::q)))
       );
       dbg ~level: 2
       (fun () ->
-         let file = Printf.sprintf "/tmp/inst_run-%d.dot" (Guriset.cardinal state.nodes_run) in
+         let file = Printf.sprintf "/tmp/inst_run-%d.dot" (Giriset.cardinal state.nodes_run) in
          Misc.file_of_string ~file (dot_of_graph ctx state.g);
          Printf.sprintf "Graph generated in %S" file);
       run_node ctx reporter inst tmp_dir state node
 ;;
 
 let run ctx reporter ~inst ~fchain input comb g =
-  Grdfs.set_start_date_uri ctx.ctx_rdf inst ();
+  Grdfs.set_start_date_iri ctx.ctx_rdf inst ();
 
   let tmp_dir = Fname.absolute (Filename.temp_file "genet-run" ".dir") in
   Sys.remove (Fname.string tmp_dir);
@@ -790,17 +790,17 @@ let run ctx reporter ~inst ~fchain input comb g =
   let (state, run_ok) =
     try (run_nodes ctx reporter inst tmp_dir state, true)
     with Exec_failed (state, _, inst_node, _, _) ->
-        Grdfs.add_triple_uris ctx.ctx_rdf
+        Grdfs.add_triple_iris ctx.ctx_rdf
         ~sub: inst
         ~pred: Grdfs.genet_failedcommand
-        ~obj: (uri_of_g_uri inst_node);
-        Grdfs.set_stop_date_uri ctx.ctx_rdf inst ();
+        ~obj: (iri_of_g_iri inst_node);
+        Grdfs.set_stop_date_iri ctx.ctx_rdf inst ();
         (state, false)
   in
 
   dbg ~level: 2
       (fun () ->
-         let file = Printf.sprintf "/tmp/inst_run-%d.dot" (Guriset.cardinal state.nodes_run) in
+         let file = Printf.sprintf "/tmp/inst_run-%d.dot" (Giriset.cardinal state.nodes_run) in
          Misc.file_of_string ~file (dot_of_graph ctx state.g);
          Printf.sprintf "Graph generated in %S" file);
 
@@ -815,14 +815,14 @@ let run ctx reporter ~inst ~fchain input comb g =
 
       List.iter2 (record_file ctx reporter) out_files inst_out_ports;
     end;
-  Grdfs.set_stop_date_uri ctx.ctx_rdf inst ();
+  Grdfs.set_stop_date_iri ctx.ctx_rdf inst ();
 
   (* add "consumes" links in database between instanciated ports of the final graph,
     to be able to display correctly the execution graph *)
   let f_edge (_, (p1, p2)) =
     match p1, p2 with
       Inst sub, Inst obj ->
-        Grdfs.add_triple_uris ctx.ctx_rdf ~sub ~pred: Grdfs.genet_produces ~obj
+        Grdfs.add_triple_iris ctx.ctx_rdf ~sub ~pred: Grdfs.genet_produces ~obj
     | _ -> ()
   in
   let f_succ _ l = List.iter f_edge l in
@@ -833,7 +833,7 @@ let run ctx reporter ~inst ~fchain input comb g =
     begin
       let not_executed = Graph.fold_pred state.g
         (fun node _ acc ->
-           if Guriset.mem node state.nodes_run then acc else (g_uri_string node) :: acc)
+           if Giriset.mem node state.nodes_run then acc else (g_iri_string node) :: acc)
         []
       in
       match not_executed with

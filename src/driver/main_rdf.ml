@@ -52,10 +52,10 @@ let import_rdf config rdf_wld opts =
   let f_import file =
     verbose opts (Printf.sprintf "Import file %S..." file);
     let base =
-      let uri = Printf.sprintf "file://%s"
+      let iri = Printf.sprintf "file://%s"
         (Filename.concat (Sys.getcwd()) file)
       in
-      Rdf_uri.uri uri
+      Rdf_iri.iri iri
     in
     Rdf_xml.from_file rdf_wld.Grdf_types.wld_graph ~base file;
     verbose opts " ok"

@@ -138,7 +138,7 @@ let compl_intf_provider () =
   Cmdline.compl_choices ~words ()
 ;;
 
-let compl_file_uri () = Cmdline.compl_choices ~words: ["http://"] ();;
+let compl_file_iri () = Cmdline.compl_choices ~words: ["http://"] ();;
 
 let compl_input_name () =
  Cmdline.compl_choices ~words:

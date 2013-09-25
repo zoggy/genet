@@ -27,11 +27,13 @@
 
 open Grdf_tool;;
 
-let pruri_endline uri = print_endline (Rdf_uri.string uri);;
+module Iriset = Rdf_iri.Iriset
+
+let priri_endline iri = print_endline (Rdf_iri.string iri);;
 
 let list_tools _ wld _ =
   let tools = Grdf_tool.tools wld in
-  List.iter pruri_endline tools
+  List.iter priri_endline tools
 ;;
 let com_tools = {
   Cmdline.com_options = [] ;
@@ -45,20 +47,20 @@ let com_tools = ("tools", com_tools, "print tools") ;;
 let list_branches _ wld options =
   let branches =
     match options.Options.args with
-      [] -> List.map (fun b -> b.Grdf_branch.bch_uri) (Grdf_branch.branches wld)
+      [] -> List.map (fun b -> b.Grdf_branch.bch_iri) (Grdf_branch.branches wld)
     | l ->
-        let add set elt = Uriset.add elt set in
-        let f set s_uri =
-          List.fold_left add set (Grdf_branch.subs wld (Rdf_uri.uri s_uri))
+        let add set elt = Iriset.add elt set in
+        let f set s_iri =
+          List.fold_left add set (Grdf_branch.subs wld (Rdf_iri.iri s_iri))
         in
-        let set = List.fold_left f Uriset.empty l in
-        Uriset.elements set
+        let set = List.fold_left f Iriset.empty l in
+        Iriset.elements set
   in
-  List.iter pruri_endline branches
+  List.iter priri_endline branches
 ;;
 let com_branches = {
   Cmdline.com_options = [] ;
-  com_usage = "[anscestor uris]" ;
+  com_usage = "[anscestor iris]" ;
   com_compl = [Cmdline.Complist Main_cmd.compl_tool_or_branch] ;
   com_kind = Main_cmd.mk_final_fun list_branches ;
   }
@@ -70,19 +72,19 @@ let list_versions _ wld options =
     match options.Options.args with
       [] -> Grdf_version.versions wld
     | l ->
-        let add set elt = Uriset.add elt set in
-        let f set s_uri =
+        let add set elt = Iriset.add elt set in
+        let f set s_iri =
           List.fold_left add set
-          (Grdf_version.versions_of ~recur: true wld (Rdf_uri.uri s_uri))
+          (Grdf_version.versions_of ~recur: true wld (Rdf_iri.iri s_iri))
         in
-        let set = List.fold_left f Uriset.empty l in
-        Uriset.elements set
+        let set = List.fold_left f Iriset.empty l in
+        Iriset.elements set
   in
-  List.iter pruri_endline versions
+  List.iter priri_endline versions
 ;;
 let com_versions =
   { Cmdline.com_options = [] ;
-    com_usage = "[<uri1>] [<uri2> ...]" ;
+    com_usage = "[<iri1>] [<iri2> ...]" ;
     com_compl = [ Cmdline.Complist Main_cmd.compl_tool_or_branch ] ;
     com_kind = Main_cmd.mk_final_fun list_versions ;
   }
@@ -94,19 +96,19 @@ let list_interfaces _ wld options =
     match options.Options.args with
       [] -> Grdf_intf.intfs wld
     | l ->
-        let f set s_uri =
+        let f set s_iri =
           let (explicit, explicit_no, inherited) =
-            Grdf_intf.compute_intfs_of wld (Rdf_uri.uri s_uri)
+            Grdf_intf.compute_intfs_of wld (Rdf_iri.iri s_iri)
           in
-          Uriset.diff (Uriset.union set (Uriset.union explicit inherited)) explicit_no
+          Iriset.diff (Iriset.union set (Iriset.union explicit inherited)) explicit_no
         in
-        List.fold_left f Uriset.empty l
+        List.fold_left f Iriset.empty l
   in
-  Uriset.iter (fun uri -> print_endline (Grdf_intf.string_of_intf wld uri)) intfs
+  Iriset.iter (fun iri -> print_endline (Grdf_intf.string_of_intf wld iri)) intfs
 ;;
 let com_intfs =
   { Cmdline.com_options = [] ;
-    com_usage = "[<uri1>] [<uri2> ...]" ;
+    com_usage = "[<iri1>] [<iri2> ...]" ;
     com_compl = [ Cmdline.Complist Main_cmd.compl_intf_provider ] ;
     com_kind = Main_cmd.mk_final_fun list_interfaces ;
   }
@@ -162,7 +164,7 @@ let com_inputs = ("inputs", com_inputs, "list inputs");;
 
 let list_fchains _ wld _ =
   let l = Chn_flat.flat_chains wld in
-  List.iter pruri_endline l
+  List.iter priri_endline l
 ;;
 let com_fchains =
   { Cmdline.com_options = [] ;
@@ -175,7 +177,7 @@ let com_fchains = ("fchains", com_fchains, "list flat chains");;
 
 let list_ichains _ wld _ =
   let l = Chn_inst.inst_chains wld in
-  List.iter pruri_endline l
+  List.iter priri_endline l
 ;;
 let com_ichains =
   { Cmdline.com_options = [] ;
@@ -199,13 +201,13 @@ let com_dot = ("dot", com_dot, "output graph in graphviz format");;
 let print_filename_of_url config wld opts =
   match opts.Options.args with
   | [] | _ :: _ :: _ ->
-      failwith "Please give only one uri"
+      failwith "Please give only one iri"
   | [s] ->
       let prefix = config.Config.rest_api in
-      let out_pref = Grdfs.uri_outfile_path prefix [] in
-      let out_pref_raw = Grdfs.uri_outfile_path ~raw: true prefix [] in
-      let in_pref = Grdfs.uri_input_path prefix [] in
-      let in_pref_raw = Grdfs.uri_input_path ~raw: true prefix  [] in
+      let out_pref = Grdfs.iri_outfile_path prefix [] in
+      let out_pref_raw = Grdfs.iri_outfile_path ~raw: true prefix [] in
+      let in_pref = Grdfs.iri_input_path prefix [] in
+      let in_pref_raw = Grdfs.iri_input_path ~raw: true prefix  [] in
       let out_dir = Config.out_dir config in
       let in_dir = Config.data_dir config in
       let prefixes = (* order matters as raw prefixes are prefix of "not raw" *)
@@ -217,7 +219,7 @@ let print_filename_of_url config wld opts =
         [] -> raise Not_found
       | (prefix, dir) :: q ->
           try
-            let path = Misc.path_under ~parent: (Rdf_uri.string prefix) s in
+            let path = Misc.path_under ~parent: (Rdf_iri.string prefix) s in
             Fname.concat_s dir path
           with _ -> f q
       in
@@ -228,28 +230,28 @@ let print_filename_of_url config wld opts =
 ;;
 let com_filename =
   { Cmdline.com_options = [] ;
-    com_usage = "<uri>" ;
-    com_compl = [ Cmdline.Compfun Main_cmd.compl_file_uri ] ;
+    com_usage = "<iri>" ;
+    com_compl = [ Cmdline.Compfun Main_cmd.compl_file_iri ] ;
     com_kind = Main_cmd.mk_final_fun print_filename_of_url ;
   }
 ;;
 let com_filename =
-  ("filename", com_filename, "print the filename corresponding to the given file uri")
+  ("filename", com_filename, "print the filename corresponding to the given file iri")
 ;;
 
 let ref_inst_of_inst ctx opts =
   match opts.Options.args with
   | [] | _ :: _ :: _ ->
-    failwith "Please give one and only one inst chain uri"
+    failwith "Please give one and only one inst chain iri"
   | [s] ->
-      let uri = Rdf_uri.uri s in
-      match Chn_inst.reference_inst_of_inst ctx uri with
+      let iri = Rdf_iri.iri s in
+      match Chn_inst.reference_inst_of_inst ctx iri with
         None -> ()
-      | Some uri -> print_endline (Rdf_uri.string uri)
+      | Some iri -> print_endline (Rdf_iri.string iri)
 ;;
 let com_ref_inst_of_inst =
   { Cmdline.com_options = [] ;
-    com_usage = "<uri>" ;
+    com_usage = "<iri>" ;
     com_compl = [ Cmdline.Compfun Main_cmd.compl_ichain ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun ref_inst_of_inst) ;
   }
@@ -264,9 +266,9 @@ let ref_inst ctx opts =
   | [input ; chain_name] ->
       let input = Fname.relative input in
       let chain_name = Chn_types.chain_name_of_string chain_name in
-      let chain = Chn_types.uri_chain ctx.Chn_types.ctx_cfg.Config.rest_api chain_name in
+      let chain = Chn_types.iri_chain ctx.Chn_types.ctx_cfg.Config.rest_api chain_name in
       let l = Chn_inst.reference_insts ctx ~input ~chain in
-      List.iter (fun uri -> print_endline (Rdf_uri.string uri)) l
+      List.iter (fun iri -> print_endline (Rdf_iri.string iri)) l
   | _ ->
       failwith "Please give input name and chain fullname, no less, no more"
 ;;
@@ -287,10 +289,10 @@ let com_ref_inst =
 ;;
 
 let list_diffcommands _ wld _ =
-  Uriset.iter
-    (fun uri ->
-       let path = Misc.string_of_opt (Grdf_diff.command_path wld uri) in
-       print_endline (Printf.sprintf "%s : %s" (Rdf_uri.string uri) path)
+  Iriset.iter
+    (fun iri ->
+       let path = Misc.string_of_opt (Grdf_diff.command_path wld iri) in
+       print_endline (Printf.sprintf "%s : %s" (Rdf_iri.string iri) path)
     )
     (Grdf_diff.diffcommands wld)
 ;;
@@ -336,16 +338,16 @@ let options =
      "<url> look for other executions 'almost' like the given one") ;
 
 let lookup_insts ctx s =
-  let _uri_inst = Rdf_uri.uri s in
+  let _iri_inst = Rdf_iri.iri s in
   []
 ;;
 
 let lookup_and_print_insts ctx s =
   let insts = lookup_insts ctx s in
   List.iter
-    (fun uri -> print_endline (Rdf_uri.string uri))
+    (fun iri -> print_endline (Rdf_iri.string iri))
     insts;
-  let dot = Chn_lookup.make_graph ctx (Rdf_uri.uri s) in
+  let dot = Chn_lookup.make_graph ctx (Rdf_iri.iri s) in
   let svg = Grdf_dot.dot_to_svg ~program: "circo" dot in
   print_endline (Xtmpl.string_of_xmls svg)
 ;;

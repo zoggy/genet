@@ -26,8 +26,8 @@
 (** Defining and accessing tools. *)
 
 
-val tools : Grdf_types.world -> Grdf_types.uri list
+val tools : Grdf_types.world -> Grdf_types.iri list
 
-val tool_exists : Grdf_types.world -> Grdf_types.uri -> string option
-val add_tool : Grdf_types.world -> string -> Grdf_types.uri
-val name : Grdf_types.world -> Grdf_types.uri -> string
+val tool_exists : Grdf_types.world -> Grdf_types.iri -> string option
+val add_tool : Grdf_types.world -> string -> Grdf_types.iri
+val name : Grdf_types.world -> Grdf_types.iri -> string

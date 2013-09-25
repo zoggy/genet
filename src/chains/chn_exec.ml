@@ -34,30 +34,30 @@ let error msg = raise (Error msg);;
 let last_flat_chain ctx chain_name =
   let flats = Chn_flat.flat_chains_of_chain ctx chain_name in
   let flats = List.map
-    (fun uri ->
-       (uri, Misc.map_opt Netdate.since_epoch (Grdfs.creation_date_uri ctx.ctx_rdf uri)))
+    (fun iri ->
+       (iri, Misc.map_opt Netdate.since_epoch (Grdfs.creation_date_iri ctx.ctx_rdf iri)))
     flats
   in
   match flats with
     [] -> None
   | h :: q ->
-      let f (last_uri, last_date) (uri, date) =
+      let f (last_iri, last_date) (iri, date) =
         match last_date, date with
-          None, _ -> (uri, date)
-        | _, None -> (last_uri, last_date)
+          None, _ -> (iri, date)
+        | _, None -> (last_iri, last_date)
         | Some d1, Some d2 ->
             if d1 < d2 then
-              (uri, date)
+              (iri, date)
             else
-              (last_uri, last_date)
+              (last_iri, last_date)
       in
-      let (uri, d) = List.fold_left f h q in
-      match d with None -> None | Some _ -> Some uri
+      let (iri, d) = List.fold_left f h q in
+      match d with None -> None | Some _ -> Some iri
 ;;
 
-let exec_chain_comb ctx reporter ?force spec uri_fchain comb =
+let exec_chain_comb ctx reporter ?force spec iri_fchain comb =
   try
-    Chn_inst.instanciate ctx reporter ?force uri_fchain spec comb
+    Chn_inst.instanciate ctx reporter ?force iri_fchain spec comb
   with
     Not_found as e -> raise e
   | exc ->
@@ -85,8 +85,8 @@ let exec_chain ctx reporter spec ?force chain_name =
       | _ ->
           let f acc comb =
             try
-              let uri = exec_chain_comb ctx reporter ?force spec fchain comb in
-              uri :: acc
+              let iri = exec_chain_comb ctx reporter ?force spec fchain comb in
+              iri :: acc
             with Error msg ->
               reporter#error msg;
               reporter#incr_errors;
@@ -103,8 +103,8 @@ let exec_chain_str ctx reporter ?force spec s_chain_name =
 let exec ctx reporter ?force spec =
   let f acc s =
     try
-      let uris = exec_chain_str ctx reporter ?force spec s in
-      uris :: acc
+      let iris = exec_chain_str ctx reporter ?force spec s in
+      iris :: acc
     with Failure s
     | Error s ->
         reporter#error s;

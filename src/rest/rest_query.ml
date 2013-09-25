@@ -25,14 +25,14 @@
 
 (** *)
 
-open Rdf_node;;
+open Rdf_term;;
 open Rest_types;;
 
 exception Not_implemented of string;;
 let not_implemented msg = raise (Not_implemented msg);;
 
 let rest_api_path config =
-  let path = Neturl.join_path (Rdf_uri.path config.Config.rest_api) in
+  let path = Neturl.join_path (Rdf_iri.path config.Config.rest_api) in
   let path =
     let len = String.length path in
     if len <= 0 || path.[len-1] <> '/' then
@@ -46,7 +46,7 @@ let rest_api_path config =
 let allowed_files config =
   List.map
   (fun (f, t) ->
-     (Rdf_uri.concat config.Config.rest_api f, (f, t)))
+     (Rdf_iri.string (Rdf_iri.concat config.Config.rest_api f), (f, t)))
   [ "style.css", "text/css" ;
     "genet-logo.svg", "image/svg+xml" ;
     "star.svg", "image/svg+xml" ;
@@ -69,6 +69,7 @@ let json_handlers =
   }
 
 
+(*
 let uri_of_query_path ctx path =
   let url = Rdf_uri.neturl ctx.ctx_cfg.Config.rest_api in
   let url = Neturl.modify_url ~path: [] url in
@@ -77,6 +78,7 @@ let uri_of_query_path ctx path =
   (*prerr_endline (Printf.sprintf "uri_of_query_path: path=%s => uri=%s" path uri);*)
   Rdf_uri.uri uri
 ;;
+*)
 
 (*
 let try_is_uri_of ctx uri =
@@ -179,11 +181,12 @@ let rec thing_of_path ctx path =
 (** Return the path relative to the application, i.e. the path to
   analyse to know what to do and return. *)
 let application_path ctx path =
-  let prefix = ctx.ctx_cfg.Config.rest_api in
+  let prefix = Rdf_iri.to_uri ctx.ctx_cfg.Config.rest_api in
   let prefix_path = String.concat "/" (Rdf_uri.path prefix) in
   Neturl.split_path (Misc.path_under ~parent: prefix_path path)
 ;;
 
+(*
 let uri_append uri s =
   let s_uri = Rdf_uri.string uri in
   let len = String.length s_uri in
@@ -192,31 +195,32 @@ let uri_append uri s =
   prerr_endline (Printf.sprintf "uri_append => %s" s_uri);
   Rdf_uri.uri s_uri
 ;;
+*)
 
-let rec read_path_branch uri_parent = function
+let rec read_path_branch iri_parent = function
   [] -> assert false
 | s :: q ->
-    let uri = uri_append uri_parent s in
+    let iri = Rdf_iri.concat iri_parent s in
     match q with
-      [] | [""] -> Branch uri
-    | _ -> read_path_branch uri q
+      [] | [""] -> Branch iri
+    | _ -> read_path_branch iri q
 ;;
 
-let read_path_branches uri_parent cur_uri = function
-  [] | [""] -> Branches uri_parent
-| q -> read_path_branch cur_uri q
+let read_path_branches iri_parent cur_iri = function
+  [] | [""] -> Branches iri_parent
+| q -> read_path_branch cur_iri q
 ;;
 
-let read_path_intfs uri cur_uri = function
-  [] | [""] -> Intfs uri
-| [s] -> Intf (uri_append cur_uri s)
-| _ -> Other uri
+let read_path_intfs iri cur_iri = function
+  [] | [""] -> Intfs iri
+| [s] -> Intf (Rdf_iri.concat cur_iri s)
+| _ -> Other iri
 ;;
 
-let read_path_versions uri cur_uri = function
-  [] | [""] -> Versions uri
-| [s] -> Version (uri_append cur_uri s)
-| _ -> Tool uri
+let read_path_versions iri cur_iri = function
+  [] | [""] -> Versions iri
+| [s] -> Version (Rdf_iri.concat cur_iri s)
+| _ -> Tool iri
 ;;
 
 let read_path_tools =
@@ -227,39 +231,39 @@ let read_path_tools =
       Grdfs.suffix_versions, read_path_versions ;
     ]
   in
-  fun _ uri -> function
+  fun _ iri -> function
     | [] | [""] -> Tools
-    | [tool] -> Tool (uri_append uri tool)
+    | [tool] -> Tool (Rdf_iri.concat iri tool)
     | tool :: s :: q ->
-        let uri_tool = uri_append uri tool in
-        try (List.assoc s next) uri_tool (uri_append uri_tool s) q
-        with Not_found -> Tool uri
+        let iri_tool = Rdf_iri.concat iri tool in
+        try (List.assoc s next) iri_tool (Rdf_iri.concat iri_tool s) q
+        with Not_found -> Tool iri
 ;;
 
-let rec read_path_chain uri modpath = function
+let rec read_path_chain iri modpath = function
   [] | [""] ->
     Chain_module
      (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
 | m :: q when String.capitalize m = m ->
-    read_path_chain uri (m :: modpath) q
+    read_path_chain iri (m :: modpath) q
 | basename :: _ ->
     let name = String.concat "." (List.rev (basename :: modpath)) in
     let chain_name = Chn_types.chain_name_of_string name in
     Chain chain_name
 ;;
 
-let read_path_chains _ uri = function
+let read_path_chains _ iri = function
   [] | [""] -> Chains
 | modname :: q ->
-    read_path_chain uri [modname] q
+    read_path_chain iri [modname] q
 ;;
 
-let rec read_path_fchain ctx uri modpath = function
+let rec read_path_fchain ctx iri modpath = function
   [] | [""] ->
     Flat_chain_module
      (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
 | m :: q when String.capitalize m = m ->
-    read_path_fchain ctx uri (m :: modpath) q
+    read_path_fchain ctx iri (m :: modpath) q
 | basename :: q ->
     let name = String.concat "." (List.rev (basename :: modpath)) in
     let chain_name = Chn_types.chain_name_of_string name in
@@ -269,22 +273,22 @@ let rec read_path_fchain ctx uri modpath = function
         Flat_chain_list fchain_name
     | id :: _ ->
         let fchain_name = Chn_types.mk_fchain_name chain_name id in
-        let uri = Chn_types.uri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
-        Flat_chain uri
+        let iri = Chn_types.iri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in
+        Flat_chain iri
 ;;
 
-let read_path_fchains ctx uri = function
+let read_path_fchains ctx iri = function
   [] | [""] -> Flat_chains
 | modname :: q ->
-    read_path_fchain ctx uri [modname] q
+    read_path_fchain ctx iri [modname] q
 ;;
 
-let rec read_path_ichain ctx uri modpath = function
+let rec read_path_ichain ctx iri modpath = function
   [] | [""] -> (* TODO: define and handle Inst_chain_module *)
     Flat_chain_module
      (Chn_types.chain_modname_of_string (String.concat "." (List.rev modpath)))
 | m :: q when String.capitalize m = m ->
-    read_path_ichain ctx uri (m :: modpath) q
+    read_path_ichain ctx iri (m :: modpath) q
 | basename :: q ->
     let name = String.concat "." (List.rev (basename :: modpath)) in
     let chain_name = Chn_types.chain_name_of_string name in
@@ -294,24 +298,24 @@ let rec read_path_ichain ctx uri modpath = function
         Flat_chain_list fchain_name
     | id :: q ->
         let ichain_name = Chn_types.mk_ichain_name chain_name id in
-        let uri = Chn_types.uri_ichain ctx.ctx_cfg.Config.rest_api ichain_name in
+        let iri = Chn_types.iri_ichain ctx.ctx_cfg.Config.rest_api ichain_name in
         match q with
-          [] -> Inst_chain uri
+          [] -> Inst_chain iri
         | path ->
-            let uri_op = Chn_types.uri_ichain_op uri path in
-            Inst_chain_op uri_op
+            let iri_op = Chn_types.iri_ichain_op iri path in
+            Inst_chain_op iri_op
 ;;
 
-let read_path_ichains ctx uri = function
+let read_path_ichains ctx iri = function
   [] | [""] -> Inst_chains
 | s :: path when s = Grdfs.suffix_producers_of -> Inst_producers_of path
 | modname :: q ->
-    read_path_ichain ctx uri [modname] q
+    read_path_ichain ctx iri [modname] q
 ;;
 
-let read_path_filetypes ctx uri = function
+let read_path_filetypes ctx iri = function
   [] | [""] -> Filetypes
-| s :: _ -> Filetype (uri_append uri s)
+| s :: _ -> Filetype (Rdf_iri.concat iri s)
 ;;
 
 let rec read_path_out_path ?(raw=false) outpath = function
@@ -319,7 +323,7 @@ let rec read_path_out_path ?(raw=false) outpath = function
 | s :: q -> read_path_out_path ~raw (s :: outpath) q
 ;;
 
-let read_path_out ctx uri = function
+let read_path_out ctx iri = function
   [] -> (* TODO: define and handle Outfiles *) Inst_chains
 | "raw" :: s :: q -> read_path_out_path ~raw: true [s] q
 | s :: q -> read_path_out_path [s] q
@@ -342,13 +346,13 @@ let rec read_path_in_path ctx raw inpath = function
       read_path_in_path ctx raw (s :: inpath) q
 ;;
 
-let read_path_in ctx uri = function
+let read_path_in ctx iri = function
   [] -> Inputs
 | "raw" :: path -> read_path_in_path ctx true [] path
 | path -> read_path_in_path ctx false [] path
 ;;
 
-let read_path_diff ctx uri = function
+let read_path_diff ctx iri = function
 | h :: _ when h = Grdfs.suffix_ichains ->
     Diff_inst_chains
 | _ -> Diff_inst_chains (* FIXME: show a menu for diffs ? *)
@@ -366,28 +370,31 @@ let read_path =
       Grdfs.suffix_diff, read_path_diff ;
     ]
   in
-  fun ctx uri -> function
+  fun ctx -> function
     | [] | [""] -> Tools
     | s :: q ->
-        try (List.assoc s next) ctx (uri_append ctx.ctx_cfg.Config.rest_api s) q
+        try (List.assoc s next) ctx (Rdf_iri.concat ctx.ctx_cfg.Config.rest_api s) q
         with Not_found ->
+            let iri = List.fold_left Rdf_iri.concat
+              ctx.ctx_cfg.Config.rest_api
+                (s :: q)
+            in
             try
               let static_files = allowed_files ctx.ctx_cfg in
-              let (f, t) = List.assoc uri static_files in
+              let (f, t) = List.assoc (Rdf_iri.string iri) static_files in
               let f = List.fold_left Fname.concat_s ctx.ctx_cfg.Config.root_dir
                 ["in" ; "web" ; f]
               in
               Static_file (Fname.abs_string f, t)
             with
-              Not_found -> Other uri
+              Not_found ->
+                Other iri
 ;;
 
 
 let rec thing_of_path ctx path =
-  (* we must change the path to an uri according to rest_api *)
-  let uri = uri_of_query_path ctx path in
   let app_path = application_path ctx path in
-  read_path ctx uri app_path
+  read_path ctx app_path
 ;;
 
 let handler_by_method h ctx = function

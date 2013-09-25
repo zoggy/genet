@@ -33,7 +33,7 @@ type t = {
   db_user : string;
   db_passwd : string;
   db_host : string;
-  rest_api : Rdf_uri.uri ;
+  rest_api : Rdf_iri.iri ;
   root_dir : [`Absolute] Fname.filename ;
 }
 val read_config : string -> t

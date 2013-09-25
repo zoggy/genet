@@ -25,11 +25,11 @@
 
 (** Types *)
 
-type uri = Rdf_uri.uri
+type iri = Rdf_iri.iri
 
 type world =
   { wld_graph : Rdf_graph.graph ;
-    wld_prefix : uri ;
+    wld_prefix : iri ;
   }
 
 type error =
@@ -38,11 +38,11 @@ type error =
   | Version_exists of string
   | Intf_exists of string
   | Filetype_exists of string
-  | Not_tool_or_branch of uri
-  | Not_branch_or_version of uri
-  | Not_a_tool of uri
-  | Not_a_version of uri
-  | Tool_of_branch_differs of uri * uri * uri
+  | Not_tool_or_branch of iri
+  | Not_branch_or_version of iri
+  | Not_a_tool of iri
+  | Not_a_version of iri
+  | Tool_of_branch_differs of iri * iri * iri
 
 exception Error of error
 

@@ -51,12 +51,12 @@ val compare_chain_modname : chain_modname -> chain_modname -> int
 val compare_chain_basename : chain_basename -> chain_basename -> int
 val compare_chain_name : chain_name -> chain_name -> int
 
-val uri_chain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
-val uri_chain : Grdf_types.uri -> chain_name -> Grdf_types.uri
+val iri_chain_module : Grdf_types.iri -> chain_modname -> Grdf_types.iri
+val iri_chain : Grdf_types.iri -> chain_name -> Grdf_types.iri
 
-val is_uri_chain_module : Grdf_types.uri -> Grdf_types.uri -> chain_modname option
-val is_uri_chain : Grdf_types.uri -> Grdf_types.uri -> chain_name option
-val uri_intf_of_interface_spec : prefix: Grdf_types.uri -> string -> Grdf_types.uri
+val is_iri_chain_module : Grdf_types.iri -> Grdf_types.iri -> chain_modname option
+val is_iri_chain : Grdf_types.iri -> Grdf_types.iri -> chain_name option
+val iri_intf_of_interface_spec : prefix: Grdf_types.iri -> string -> Grdf_types.iri
 
 type fchain_name
 val fchain_id : fchain_name -> version_id option
@@ -65,11 +65,11 @@ val fchain_modname : fchain_name -> chain_modname
 val fchain_basename : fchain_name -> chain_basename
 val mk_fchain_name : chain_name -> version_id -> fchain_name
 
-val uri_fchain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
-val uri_fchain : Grdf_types.uri -> fchain_name -> Grdf_types.uri
+val iri_fchain_module : Grdf_types.iri -> chain_modname -> Grdf_types.iri
+val iri_fchain : Grdf_types.iri -> fchain_name -> Grdf_types.iri
 
-val is_uri_fchain_module : Grdf_types.uri -> Grdf_types.uri -> chain_modname option
-val is_uri_fchain : context -> Grdf_types.uri -> fchain_name option
+val is_iri_fchain_module : Grdf_types.iri -> Grdf_types.iri -> chain_modname option
+val is_iri_fchain : context -> Grdf_types.iri -> fchain_name option
 
 type ichain_name
 val ichain_id : ichain_name -> string
@@ -79,19 +79,19 @@ val ichain_basename : ichain_name -> chain_basename
 val mk_ichain_name : chain_name -> string -> ichain_name
 val string_of_ichain_name : ichain_name -> string
 
-val uri_ichain_module : Grdf_types.uri -> chain_modname -> Grdf_types.uri
-val uri_ichain : Grdf_types.uri -> ichain_name -> Grdf_types.uri
+val iri_ichain_module : Grdf_types.iri -> chain_modname -> Grdf_types.iri
+val iri_ichain : Grdf_types.iri -> ichain_name -> Grdf_types.iri
 
-val uri_inst_opn_of_flat_opn :
+val iri_inst_opn_of_flat_opn :
   ?ichain: bool -> ?cpt: int ->
-  prefix: Grdf_types.uri -> inst: Grdf_types.uri -> flat: Grdf_types.uri
-  -> Grdf_types.uri
+  prefix: Grdf_types.iri -> inst: Grdf_types.iri -> flat: Grdf_types.iri
+  -> Grdf_types.iri
 
-val uri_inst_port_of_flat_port :
-  ?ichain: bool -> ?cpt: int ->  context -> inst: Grdf_types.uri -> flat: Grdf_types.uri -> Grdf_types.uri
+val iri_inst_port_of_flat_port :
+  ?ichain: bool -> ?cpt: int ->  context -> inst: Grdf_types.iri -> flat: Grdf_types.iri -> Grdf_types.iri
 
-val is_uri_ichain : Grdf_types.uri -> Grdf_types.uri -> ichain_name option
+val is_iri_ichain : Grdf_types.iri -> Grdf_types.iri -> ichain_name option
 
-val ichain_op_name : ichain:Rdf_uri.uri -> Rdf_uri.uri -> string
-val uri_ichain_op : Rdf_uri.uri -> string list -> Rdf_uri.uri
+val ichain_op_name : ichain:Rdf_iri.iri -> Rdf_iri.iri -> string
+val iri_ichain_op : Rdf_iri.iri -> string list -> Rdf_iri.iri
 

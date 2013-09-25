@@ -3,12 +3,15 @@
 open Chn_types ;;
 open Chn_ast ;;
 
-class tool_version_selection ctx uri on_change =
-  let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur:true uri in
+module Irimap = Rdf_iri.Irimap
+module Iriset = Rdf_iri.Iriset
+
+class tool_version_selection ctx iri on_change =
+  let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur:true iri in
   let map = List.fold_left
-    (fun acc uri ->
-      let name = Grdf_version.name ctx.ctx_rdf uri in
-      Smap.add name uri acc
+    (fun acc iri ->
+      let name = Grdf_version.name ctx.ctx_rdf iri in
+      Smap.add name iri acc
     )
     Smap.empty versions
   in
@@ -28,7 +31,7 @@ class tool_version_selection ctx uri on_change =
         try Some (Smap.find s map)
         with Not_found -> None
 
-    method tool = uri
+    method tool = iri
 
     initializer
       let choices = Smap.fold (fun name _ acc -> name :: acc) map [] in
@@ -55,11 +58,11 @@ class tool_selection ctx on_change =
         tool_versions
 
     initializer
-      let add_tool i uri =
-        let name = Grdf_tool.name ctx.ctx_rdf uri in
+      let add_tool i iri =
+        let name = Grdf_tool.name ctx.ctx_rdf iri in
         let label = GMisc.label ~xpad: 3 ~xalign: 1. ~text: name () in
         wtable#attach ~left: 0 ~top: i label#coerce;
-        let version_sel = new tool_version_selection ctx uri on_change in
+        let version_sel = new tool_version_selection ctx iri on_change in
         wtable#attach ~left: 1 ~top: i ~expand: `X version_sel#coerce;
         version_sel
       in
@@ -110,22 +113,22 @@ class fchain_selection ctx on_change =
           with Not_found -> None
 
     initializer
-      let f_fchain acc uri =
-        match Chn_types.is_uri_fchain ctx uri with
+      let f_fchain acc iri =
+        match Chn_types.is_iri_fchain ctx iri with
         | None -> acc
         | Some name ->
             match Chn_types.fchain_id name with
               None -> acc
             | Some id ->
                 let s = " "^id in
-                map <- Smap.add s uri map;
+                map <- Smap.add s iri map;
                 s :: acc
       in
       let f_chain modname acc chn =
         let name = Chn_types.mk_chain_name modname chn.Chn_ast.chn_name in
-        let uri = Chn_types.uri_chain ctx.ctx_cfg.Config.rest_api name in
+        let iri = Chn_types.iri_chain ctx.ctx_cfg.Config.rest_api name in
         let s_name = Chn_types.string_of_chain_name name in
-        map <- Smap.add s_name uri map ;
+        map <- Smap.add s_name iri map ;
         let acc = s_name :: acc in
         let flats = Chn_flat.flat_chains_of_chain ctx name in
         List.fold_left f_fchain acc flats
@@ -152,21 +155,21 @@ class fchain_selection ctx on_change =
   end
 ;;
 
-let inst_chain_date ctx uri =
-  match Grdfs.creation_date_uri ctx.ctx_rdf uri with
+let inst_chain_date ctx iri =
+  match Grdfs.creation_date_iri ctx.ctx_rdf iri with
     None -> "??"
   | Some d -> Netdate.mk_mail_date (Netdate.since_epoch d)
 ;;
 
-let inst_chain_name ctx uri =
-  match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
-    None -> Printf.sprintf "%S is not an inst. chain" (Rdf_uri.string uri)
+let inst_chain_name ctx iri =
+  match Chn_types.is_iri_ichain ctx.ctx_cfg.Config.rest_api iri with
+    None -> Printf.sprintf "%S is not an inst. chain" (Rdf_iri.string iri)
   | Some icname -> Chn_types.string_of_ichain_name icname
 ;;
 
 class inst_list ctx on_sel_change =
   object(self)
-    inherit [Rdf_uri.uri] Gmylist.plist `SINGLE
+    inherit [Rdf_iri.iri] Gmylist.plist `SINGLE
       [ None, Gmylist.String (inst_chain_name ctx);
         None, Gmylist.String (inst_chain_date ctx) ;
       ]
@@ -205,10 +208,10 @@ class inst_fig ctx =
 
     method display_inst = function
       None -> graph <- empty_dot_graph ; self#refresh ()
-    | Some uri ->
+    | Some iri ->
         let ichain_name =
-          match Chn_types.is_uri_ichain ctx.ctx_cfg.Config.rest_api uri with
-            None -> failwith (Printf.sprintf "Not an instanciated chain uri: %S" (Rdf_uri.string uri))
+          match Chn_types.is_iri_ichain ctx.ctx_cfg.Config.rest_api iri with
+            None -> failwith (Printf.sprintf "Not an instanciated chain iri: %S" (Rdf_iri.string iri))
           | Some n -> n
         in
         let dot = Rest_xpage.dot_of_ichain ctx ichain_name in
@@ -218,8 +221,8 @@ class inst_fig ctx =
 
 type inst_filter =
   { filt_input : string option ;
-    filt_fchain : Rdf_uri.uri option ;
-    filt_tools : (Rdf_uri.uri * Rdf_uri.uri) list ;
+    filt_fchain : Rdf_iri.iri option ;
+    filt_tools : (Rdf_iri.iri * Rdf_iri.iri) list ;
   }
 
 class inst_chain_box ctx on_sel_change =
@@ -278,8 +281,8 @@ class inst_chain_box ctx on_sel_change =
           | Some s -> Some (Misc.split_filename s, None)
         in
         let tools = List.fold_left
-          (fun map (tool, version) -> Urimap.add tool version map)
-          Urimap.empty filter.filt_tools
+          (fun map (tool, version) -> Irimap.add tool version map)
+          Irimap.empty filter.filt_tools
         in
         let list = Chn_inst_query.query_instances ctx
           ?input: input

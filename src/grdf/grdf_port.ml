@@ -25,7 +25,7 @@
 
 (** *)
 
-open Rdf_node;;
+open Rdf_term;;
 open Grdf_types;;
 
 let dbg = Misc.create_log_fun
@@ -47,7 +47,7 @@ let string_of_dir = function
 | In -> "in"
 | Out -> "out"
 
-let port_name wld port = Grdfs.name wld (Uri port);;
+let port_name wld port = Grdfs.name wld (Iri port);;
 let port_rank = Grdfs.port_rank ;;
 
 let port_dir port =
@@ -96,15 +96,15 @@ let string_of_port_type =
 ;;
 
 let port_type wld port =
-  match Grdfs.object_literal wld ~sub: (Uri port) ~pred: Grdfs.genet_hastype with
+  match Grdfs.object_literal wld ~sub: (Iri port) ~pred: Grdfs.genet_hastype with
     Some s_type -> parse_port_type s_type
-  | None -> failwith (Printf.sprintf "No type for port %s" (Rdf_uri.string port))
+  | None -> failwith (Printf.sprintf "No type for port %s" (Rdf_iri.string port))
 ;;
 
-let port_file_type_uri =
+let port_file_type_iri =
   let rec iter prefix = function
     Var _ -> None
-  | T s -> Some (Grdfs.uri_filetype prefix s)
+  | T s -> Some (Grdfs.iri_filetype prefix s)
   | Set t -> iter prefix t
   | Tuple [] -> None
   | Tuple (h::_) -> iter prefix h
@@ -118,13 +118,13 @@ let sort_ports l =
 ;;
 let ports wld intf dir =
   let pred = pred_of_dir dir in
-  sort_ports (Grdfs.object_uris wld ~sub: (Uri intf) ~pred)
+  sort_ports (Grdfs.object_iris wld ~sub: (Iri intf) ~pred)
 ;;
 
 
 let unset_port_type wld port =
-  let sub = Uri port in
-  let pred = Uri Grdfs.genet_hastype in
+  let sub = Iri port in
+  let pred = Grdfs.genet_hastype in
   List.iter
   (fun obj -> Grdfs.rem_triple wld ~sub ~pred ~obj)
   (Grdfs.objects wld ~sub ~pred)
@@ -135,53 +135,52 @@ let set_port_type wld port typ =
   let pred = Grdfs.genet_hastype in
   unset_port_type wld port;
   Grdfs.add_triple wld
-     ~sub: (Uri port)
-     ~pred: (Uri pred)
-     ~obj: (Rdf_node.node_of_literal_string str)
+     ~sub: (Iri port)
+     ~pred
+     ~obj: (Rdf_term.term_of_literal_string str)
 ;;
 
-let uri_intf_port_of_dir = function
-  In -> Grdfs.uri_intf_in_port
-| Out -> Grdfs.uri_intf_out_port
+let iri_intf_port_of_dir = function
+  In -> Grdfs.iri_intf_in_port
+| Out -> Grdfs.iri_intf_out_port
 ;;
 
 let insert_port wld intf dir (n, typ, name) =
   let pred = pred_of_dir dir in
-  let uri = (uri_intf_port_of_dir dir) intf n in
-  let sub = Uri intf in
-  let pred = Uri pred in
-  let obj = Uri uri in
+  let iri = (iri_intf_port_of_dir dir) intf n in
+  let sub = Iri intf in
+  let obj = Iri iri in
   Grdfs.add_triple wld ~sub ~pred ~obj;
-  set_port_type wld uri typ;
+  set_port_type wld iri typ;
   match name with None -> () | Some name -> Grdfs.add_name wld sub name
 ;;
 
-let delete_ports wld uri dir =
+let delete_ports wld iri dir =
   let dir_pred = pred_of_dir dir in
-  let sub = Uri uri in
-  let pred = Uri Grdfs.genet_hastype in
-  let ports = Grdfs.object_uris wld ~sub ~pred: dir_pred in
+  let sub = Iri iri in
+  let pred = Grdfs.genet_hastype in
+  let ports = Grdfs.object_iris wld ~sub ~pred: dir_pred in
   List.iter
-  (fun obj -> Grdfs.rem_triple wld ~sub ~pred: (Uri dir_pred) ~obj: (Uri obj))
+  (fun obj -> Grdfs.rem_triple wld ~sub ~pred: dir_pred ~obj: (Iri obj))
   ports;
   let f port =
     List.iter
-    (fun obj -> Grdfs.rem_triple wld ~sub: (Uri port) ~pred ~obj)
-    (Grdfs.objects wld ~sub: (Uri port) ~pred: pred)
+    (fun obj -> Grdfs.rem_triple wld ~sub: (Iri port) ~pred ~obj)
+    (Grdfs.objects wld ~sub: (Iri port) ~pred: pred)
   in
   List.iter f ports
 ;;
 (*
-let delete_ports wld dir uri =
+let delete_ports wld dir iri =
   let pred = pred_of_dir dir in
   let query =
     let triples1 = [
-        (`I uri, [ `I pred, [`V "seq"] ] );
-        (`V "seq", [ `V "seq_index", [`V "uri"] ]) ;
+        (`I iri, [ `I pred, [`V "seq"] ] );
+        (`V "seq", [ `V "seq_index", [`V "iri"] ]) ;
       ]
     in
     let triples2 =
-      [ (`V "uri", [ `I Grdfs.genet_listof, [ `V "uri2"]]) ]
+      [ (`V "iri", [ `I Grdfs.genet_listof, [ `V "iri2"]]) ]
     in
     { Rdf_sparql.delins_insert = None ;
       delins_delete = Some (Some (triples1 @ triples2), []) ;
@@ -197,14 +196,14 @@ let set_ports wld intf dir ports =
   List.iter (insert_port wld intf dir) ports
 ;;
 
-let delete_port wld uri =
-  let dir = port_dir uri in
+let delete_port wld iri =
+  let dir = port_dir iri in
   let pred = pred_of_dir dir in
-  match Grdfs.subject_uri wld ~pred ~obj: (Uri uri) with
+  match Grdfs.subject_iri wld ~pred ~obj: (Iri iri) with
     None -> ()
   | Some sub ->
       let ports = ports wld sub dir in
-      let ports = List.filter (fun p -> not (Rdf_uri.equal p uri)) ports in
+      let ports = List.filter (fun p -> not (Rdf_iri.equal p iri)) ports in
       let rec iter m acc = function
         [] -> List.rev acc
       | p :: q ->
@@ -221,16 +220,16 @@ let copy_ports wld ~src ~dst =
   dbg ~level:2 ~loc:"copy_ports"
     (fun () ->
       Printf.sprintf "src=%s dst=%s"
-        (Rdf_uri.string src) (Rdf_uri.string dst));
-  let map uri =
-    (port_rank uri, port_type wld uri, Some (port_name wld uri))
+        (Rdf_iri.string src) (Rdf_iri.string dst));
+  let map iri =
+    (port_rank iri, port_type wld iri, Some (port_name wld iri))
   in
   let f_dir dir =
     let src_ports = ports wld src dir in
     set_ports wld dst dir (List.map map src_ports);
     let dst_ports = ports wld dst dir in
-    List.fold_left2 (fun acc p1 p2 -> Urimap.add p1 p2 acc)
-      Urimap.empty src_ports dst_ports
+    List.fold_left2 (fun acc p1 p2 -> Rdf_iri.Irimap.add p1 p2 acc)
+      Rdf_iri.Irimap.empty src_ports dst_ports
   in
   let map_in = f_dir In in
   let map_out = f_dir Out in
@@ -241,9 +240,9 @@ let add_port wld intf dir ?(pos=max_int) ?name filetype =
   let pos = max 1 pos in
   let prev_ports = ports wld intf dir in
   let prev_ports = List.map
-    (fun uri ->
-       (port_rank uri, port_type wld uri,
-        Misc.opt_of_string (port_name wld uri))
+    (fun iri ->
+       (port_rank iri, port_type wld iri,
+        Misc.opt_of_string (port_name wld iri))
     )
     prev_ports
   in
@@ -267,7 +266,7 @@ let add_port wld intf dir ?(pos=max_int) ?name filetype =
   set_ports wld intf dir new_ports
 ;;
 
-let string_of_uri_port_type wld t =
+let string_of_iri_port_type wld t =
   let f = Grdf_ftype.extension wld in
   string_of_port_type f t
 ;;

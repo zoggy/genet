@@ -54,20 +54,20 @@ let options =
 let diff ctx opts =
   let (inst1, inst2) =
     match opts.Options.args with
-      [uri1] ->
+      [iri1] ->
         begin
-          let uri1 = Rdf_uri.uri uri1 in
-          match Chn_inst.reference_inst_of_inst ctx uri1 with
+          let iri1 = Rdf_iri.iri iri1 in
+          match Chn_inst.reference_inst_of_inst ctx iri1 with
             None ->
               let msg = Printf.sprintf
                 "No reference inst chain found for inst chain %S"
-                (Rdf_uri.string uri1)
+                (Rdf_iri.string iri1)
               in
               failwith msg
-          | Some uri2 ->
-              (uri2, uri1)
+          | Some iri2 ->
+              (iri2, iri1)
         end
-    | [uri1 ; uri2] -> (Rdf_uri.uri uri1, Rdf_uri.uri uri2)
+    | [iri1 ; iri2] -> (Rdf_iri.iri iri1, Rdf_iri.iri iri2)
     | _ -> failwith usage
   in
   let output = Chn_diff.diff ctx

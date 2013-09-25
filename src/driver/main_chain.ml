@@ -29,6 +29,8 @@ open Chn_types;;
 open Chn_ast;;
 open Cmdline;;
 
+module Irimap = Rdf_iri.Irimap
+
 let gendot = ref (None : string option);;
 let option_dot =
   ("--dot", Cmdline.String
@@ -93,23 +95,23 @@ let string_of_comb ctx comb =
     in
     s :: acc
   in
-  String.concat ", " (Urimap.fold f_version comb [])
+  String.concat ", " (Irimap.fold f_version comb [])
 ;;
 
 let show_combinations ctx opts =
   match opts.Options.args with
     [s] ->
-      let uri = Rdf_uri.uri s in
-      let combs = Chn_inst.version_combinations ctx uri in
-      print_endline (Printf.sprintf "combinations for %s:" (Rdf_uri.string uri));
+      let iri = Rdf_iri.iri s in
+      let combs = Chn_inst.version_combinations ctx iri in
+      print_endline (Printf.sprintf "combinations for %s:" (Rdf_iri.string iri));
       let f_comb comb = print_endline (string_of_comb ctx comb) in
       List.iter f_comb combs
   | _ ->
-      failwith "Please give one and only one flat chain uri"
+      failwith "Please give one and only one flat chain iri"
 ;;
 let com_showcombs = {
     com_options = [] ;
-    com_usage = "<flat chain uri>" ;
+    com_usage = "<flat chain iri>" ;
     com_compl = [ Cmdline.Compfun Main_cmd.compl_fchain ] ;
     com_kind = Main_cmd.mk_final_fun (Main_cmd.mk_ctx_fun show_combinations) ;
   };;
@@ -135,12 +137,12 @@ let flatten ctx opts =
     [s] ->
       begin
         try let fullname = Chn_types.chain_name_of_string s in
-          let uri = Chn_flat.flatten ctx fullname in
-          print_endline (Printf.sprintf "%s => %s" s (Rdf_uri.string uri));
+          let iri = Chn_flat.flatten ctx fullname in
+          print_endline (Printf.sprintf "%s => %s" s (Rdf_iri.string iri));
           begin
             match !gendot with
               None -> ()
-            | Some file -> gen_fchain_dot ctx file uri
+            | Some file -> gen_fchain_dot ctx file iri
           end
         with
           e ->
@@ -169,9 +171,9 @@ let flatten_all ctx opts =
   let f_chain mod_name acc chain =
     let fullname = Chn_types.mk_chain_name mod_name chain.chn_name in
     try
-      let uri = Chn_flat.flatten ctx fullname in
+      let iri = Chn_flat.flatten ctx fullname in
       print_endline (Printf.sprintf "%s => %s"
-       (Chn_types.string_of_chain_name fullname) (Rdf_uri.string uri));
+       (Chn_types.string_of_chain_name fullname) (Rdf_iri.string iri));
       acc
     with
       e ->

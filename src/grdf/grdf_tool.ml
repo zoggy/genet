@@ -25,7 +25,7 @@
 
 (** *)
 
-open Rdf_node;;
+open Rdf_term;;
 open Grdf_types;;
 
 let dbg = Misc.create_log_fun
@@ -34,31 +34,31 @@ let dbg = Misc.create_log_fun
 ;;
 
 let tools wld =
-  Grdfs.subject_uris wld
+  Grdfs.subject_iris wld
     ~pred: Grdfs.rdf_type
-    ~obj: (Uri Grdfs.genet_tool)
+    ~obj: (Iri Grdfs.genet_tool)
 ;;
 
-let name wld uri = Grdfs.name wld (Uri uri)
+let name wld iri = Grdfs.name wld (Iri iri)
 ;;
 
-let tool_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_tool.tool_exists uri="^(Rdf_uri.string uri));
-  if Grdfs.is_a_tool wld uri then
-    Some (name wld uri)
+let tool_exists wld iri =
+  dbg ~level: 1 (fun () -> "Grdf_tool.tool_exists iri="^(Rdf_iri.string iri));
+  if Grdfs.is_a_tool wld iri then
+    Some (name wld iri)
   else
     None
 ;;
 
 let add_tool wld name =
-  let uri = Grdfs.uri_tool ~prefix: wld.wld_prefix ~tool: name in
-  match tool_exists wld uri with
+  let iri = Grdfs.iri_tool ~prefix: wld.wld_prefix ~tool: name in
+  match tool_exists wld iri with
     Some name2 -> Grdf_types.error (Grdf_types.Tool_exists name2)
   | None ->
-      let sub = Uri uri in
-      Grdfs.add_type wld ~sub ~obj: (Uri Grdfs.genet_tool);
+      let sub = Iri iri in
+      Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_tool);
       Grdfs.add_name wld sub name;
-      uri
+      iri
 ;;
 
-let branches wld uri = Grdf_branch.subs wld uri;;
+let branches wld iri = Grdf_branch.subs wld iri;;

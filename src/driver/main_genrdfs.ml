@@ -25,37 +25,37 @@
 
 (** Main module of the program generating the RDFschema of genet. *)
 
-open Rdf_node;;
+open Rdf_term;;
 
 let add_triple = Grdfs.add_triple;;
 
 let add_isdefined_by_genet wld sub =
-  let pred = Uri (Grdfs.rdfs_"isDefinedBy") in
-  let obj = Uri Grdfs.genet in
+  let pred = Grdfs.rdfs_"isDefinedBy" in
+  let obj = Iri Grdfs.genet in
   add_triple wld ~sub ~pred ~obj
 ;;
 
 let add_label wld sub label =
-  let pred = Uri (Grdfs.rdfs_"label") in
-  let obj = Rdf_node.node_of_literal_string label in
+  let pred = Grdfs.rdfs_"label" in
+  let obj = Rdf_term.term_of_literal_string label in
   add_triple wld ~sub ~pred ~obj
 ;;
 
 let add_comment wld sub label =
-  let pred = Uri (Grdfs.rdfs_"comment") in
-  let obj = Rdf_node.node_of_literal_string label in
+  let pred = Grdfs.rdfs_"comment" in
+  let obj = Rdf_term.term_of_literal_string label in
   add_triple wld ~sub ~pred ~obj
 ;;
 
 let add_type = Grdfs.add_type;;
 
 let add_istype_class wld sub =
-  let obj = Uri (Grdfs.rdfs_"Class") in
+  let obj = Iri (Grdfs.rdfs_"Class") in
   add_type wld ~sub ~obj
 ;;
 
 let add_istype_property wld sub =
-  let obj = Uri (Grdfs.rdfs_"Property") in
+  let obj = Iri (Grdfs.rdfs_"Property") in
   add_type wld ~sub ~obj
 ;;
 
@@ -65,54 +65,54 @@ let add_property wld
   add_label wld sub label;
   add_comment wld sub comment;
 
-  let pred = Uri (Grdfs.rdfs_"isDefinedBy") in
+  let pred = Grdfs.rdfs_"isDefinedBy" in
   add_triple wld ~sub ~pred ~obj: definedby;
 
   (match domain with
      None -> ()
    | Some obj ->
-       let pred = Uri (Grdfs.rdfs_"domain") in
+       let pred = Grdfs.rdfs_"domain" in
        add_triple wld ~sub ~pred ~obj
   );
 
   (match range with
      None -> ()
    | Some obj ->
-       let pred = Uri (Grdfs.rdfs_"range") in
+       let pred = Grdfs.rdfs_"range" in
        add_triple wld ~sub ~pred ~obj
   )
 ;;
 
 let add_tool_class wld =
-  let uri_tool = Uri Grdfs.genet_tool in
+  let uri_tool = Iri Grdfs.genet_tool in
   add_istype_class wld uri_tool;
   add_isdefined_by_genet wld uri_tool;
   add_label wld uri_tool "Tool"
 ;;
 
 let add_branch_class wld =
-  let uri_branch = Uri Grdfs.genet_branch in
+  let uri_branch = Iri Grdfs.genet_branch in
   add_istype_class wld uri_branch;
   add_isdefined_by_genet wld uri_branch;
   add_label wld uri_branch "Branch"
 ;;
 
 let add_intf_class wld =
-  let uri_intf = Uri Grdfs.genet_intf in
+  let uri_intf = Iri Grdfs.genet_intf in
   add_istype_class wld uri_intf;
   add_isdefined_by_genet wld uri_intf;
   add_label wld uri_intf "Interface"
 ;;
 
 let add_version_class wld =
-  let uri_version = Uri Grdfs.genet_version in
+  let uri_version = Iri Grdfs.genet_version in
   add_istype_class wld uri_version;
   add_isdefined_by_genet wld uri_version;
   add_label wld uri_version "Version"
 ;;
 
 let add_filetype_class wld =
-  let uri_ft = Uri Grdfs.genet_filetype in
+  let uri_ft = Iri Grdfs.genet_filetype in
   add_istype_class wld uri_ft;
   add_isdefined_by_genet wld uri_ft;
   add_label wld uri_ft "Filetype"
@@ -125,12 +125,12 @@ let add_vocabulary wld =
   add_version_class wld;
   add_filetype_class wld;
 
-  let node_literal = Uri (Grdfs.rdfs_"Literal") in
-  let node_branch = Uri Grdfs.genet_branch in
-  let node_intf = Uri Grdfs.genet_intf in
-  let node_version = Uri Grdfs.genet_version in
-  let node_filetype = Uri Grdfs.genet_filetype in
-  let node_seq = Uri (Grdfs.rdf_"Seq") in
+  let node_literal = Iri (Grdfs.rdfs_"Literal") in
+  let node_branch = Iri Grdfs.genet_branch in
+  let node_intf = Iri Grdfs.genet_intf in
+  let node_version = Iri Grdfs.genet_version in
+  let node_filetype = Iri Grdfs.genet_filetype in
+  let node_seq = Iri (Grdfs.rdf_"Seq") in
   let props = [
       (Grdfs.genet_name, "has name", "Name", None, Some node_literal) ;
       (Grdfs.genet_hasbranch, "has branch", "Has a branch", None, Some node_branch) ;
@@ -144,12 +144,12 @@ let add_vocabulary wld =
       (Grdfs.genet_produces, "produces", "Filetypes produced, ordered", Some node_intf, Some node_seq);
     ]
   in
-  let definedby = Uri Grdfs.genet in
+  let definedby = Iri Grdfs.genet in
   List.iter
   (fun (uri, label, comment, domain, range) ->
      add_property wld
      ~label ~comment ~definedby ?domain ?range
-     (Uri uri)
+     (Iri uri)
   )
   props
 ;;

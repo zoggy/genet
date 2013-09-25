@@ -23,7 +23,7 @@
 (*                                                                               *)
 (*********************************************************************************)
 
-open Rdf_node;;
+open Rdf_term;;
 open Grdf_types;;
 
 let dbg = Misc.create_log_fun
@@ -33,41 +33,41 @@ let dbg = Misc.create_log_fun
 
 let intfs wld =
   dbg ~level: 1 (fun () -> "Grdf_intf.intfs");
-  let l = Grdfs.subject_uris wld ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_intf) in
-  Grdfs.uriset_of_list l
+  let l = Grdfs.subject_iris wld ~pred: Grdfs.rdf_type ~obj: (Iri Grdfs.genet_intf) in
+  Grdfs.iriset_of_list l
 ;;
 
-let name wld uri = Grdfs.name wld (Uri uri);;
+let name wld iri = Grdfs.name wld (Iri iri);;
 
-let command_path wld uri =
+let command_path wld iri =
   let pred = Grdfs.genet_haspath in
-  Grdfs.object_literal wld ~sub: (Uri uri) ~pred
+  Grdfs.object_literal wld ~sub: (Iri iri) ~pred
 ;;
 
-let set_command_path wld uri path =
-  let pred = Rdf_node.Uri Grdfs.genet_haspath in
-  Grdfs.add_triple wld ~sub: (Rdf_node.Uri uri) ~pred
-    ~obj: (Rdf_node.node_of_literal_string path)
+let set_command_path wld iri path =
+  let pred = Grdfs.genet_haspath in
+  Grdfs.add_triple wld ~sub: (Rdf_term.Iri iri) ~pred
+    ~obj: (Rdf_term.term_of_literal_string path)
 ;;
 
-let intf_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_intf.intf_exists uri="^(Rdf_uri.string uri));
-  if Grdfs.is_a_intf wld uri then
-    Some (name wld uri)
+let intf_exists wld iri =
+  dbg ~level: 1 (fun () -> "Grdf_intf.intf_exists iri="^(Rdf_iri.string iri));
+  if Grdfs.is_a_intf wld iri then
+    Some (name wld iri)
   else
     None
 ;;
 
-let do_add wld uri name =
-  dbg ~level: 1 (fun () -> "Grdf_intf.do_add uri="^(Rdf_uri.string uri)^" name="^name);
-  let sub = Uri uri in
-  Grdfs.add_type wld ~sub ~obj: (Uri Grdfs.genet_intf);
+let do_add wld iri name =
+  dbg ~level: 1 (fun () -> "Grdf_intf.do_add iri="^(Rdf_iri.string iri)^" name="^name);
+  let sub = Iri iri in
+  Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_intf);
   Grdfs.add_name wld sub name
 ;;
 
 let add wld ~parent name =
-  dbg ~level: 1 (fun () -> "Grdf_intf.add parent="^(Rdf_uri.string parent)^" name="^name);
-  let node_parent = Uri parent in
+  dbg ~level: 1 (fun () -> "Grdf_intf.add parent="^(Rdf_iri.string parent)^" name="^name);
+  let node_parent = Iri parent in
   let parent_is_tool = Grdfs.is_a_tool wld parent in
   let parent_is_branch = Grdfs.is_a_branch wld parent in
   if not (parent_is_tool || parent_is_branch) then
@@ -76,160 +76,160 @@ let add wld ~parent name =
   let tool = Grdf_branch.tool wld parent in
   if not (Grdfs.is_a_tool wld tool) then
     Grdf_types.error (Grdf_types.Not_a_tool tool);
-  let uri = Grdfs.uri_intf ~tool ~intf: name in
+  let iri = Grdfs.iri_intf ~tool ~intf: name in
   begin
-    match intf_exists wld uri with
+    match intf_exists wld iri with
       Some _ -> ()
-    | None -> do_add wld uri name
+    | None -> do_add wld iri name
   end;
   (* eventually remove information about not implementing this interface *)
   Grdfs.rem_triple wld
     ~sub: node_parent
-    ~pred: (Uri Grdfs.genet_nointf)
-    ~obj:  (Uri uri);
+    ~pred: Grdfs.genet_nointf
+    ~obj:  (Iri iri);
 
   Grdfs.add_triple wld
     ~sub: node_parent
-    ~pred: (Uri Grdfs.genet_hasintf)
-    ~obj:  (Uri uri);
+    ~pred: Grdfs.genet_hasintf
+    ~obj:  (Iri iri);
 
-  uri
+  iri
 ;;
 
-let add_no_intf wld ~parent uri =
-  dbg ~level: 1 (fun () -> "Grdf_intf.add_no_intf parent="^(Rdf_uri.string parent)^" uri="^(Rdf_uri.string uri));
-  match intf_exists wld uri with
-    None -> failwith (Printf.sprintf "No such interface: %S" (Rdf_uri.string uri))
+let add_no_intf wld ~parent iri =
+  dbg ~level: 1 (fun () -> "Grdf_intf.add_no_intf parent="^(Rdf_iri.string parent)^" iri="^(Rdf_iri.string iri));
+  match intf_exists wld iri with
+    None -> failwith (Printf.sprintf "No such interface: %S" (Rdf_iri.string iri))
   | Some _ ->
       let parent_is_branch = Grdfs.is_a_branch wld parent in
       let parent_is_version = Grdfs.is_a_version wld parent in
       if not (parent_is_branch || parent_is_version) then
         Grdf_types.error (Grdf_types.Not_branch_or_version parent);
-      let node_parent = Uri parent in
+      let node_parent = Iri parent in
       (* eventually remove information about implementing this interface *)
       Grdfs.rem_triple wld
         ~sub: node_parent
-        ~pred: (Uri Grdfs.genet_hasintf)
-        ~obj:  (Uri uri);
+        ~pred: Grdfs.genet_hasintf
+        ~obj:  (Iri iri);
 
       Grdfs.add_triple wld
         ~sub: node_parent
-        ~pred: (Uri Grdfs.genet_nointf)
-        ~obj:  (Uri uri)
+        ~pred: Grdfs.genet_nointf
+        ~obj:  (Iri iri)
 ;;
 
-let explicit_intfs_of wld uri =
-  Grdfs.uriset_of_list (Grdfs.object_uris wld ~sub: (Uri uri) ~pred: Grdfs.genet_hasintf)
+let explicit_intfs_of wld iri =
+  Grdfs.iriset_of_list (Grdfs.object_iris wld ~sub: (Iri iri) ~pred: Grdfs.genet_hasintf)
 ;;
 
-let explicit_no_intfs_of wld uri =
-  Grdfs.uriset_of_list (Grdfs.object_uris wld ~sub: (Uri uri) ~pred: Grdfs.genet_nointf)
+let explicit_no_intfs_of wld iri =
+  Grdfs.iriset_of_list (Grdfs.object_iris wld ~sub: (Iri iri) ~pred: Grdfs.genet_nointf)
 ;;
 
-let intfs_of wld ?(recur=false) uri =
-  dbg ~level: 1 (fun () -> "Grdf_intf.intfs uri="^(Rdf_uri.string uri));
+let intfs_of wld ?(recur=false) iri =
+  dbg ~level: 1 (fun () -> "Grdf_intf.intfs iri="^(Rdf_iri.string iri));
   if recur then
     begin
-      let rec iter set uri =
-        let uris = explicit_intfs_of wld uri in
-        let set = Uriset.union set uris in
-        match Grdf_branch.parent wld uri with
+      let rec iter set iri =
+        let iris = explicit_intfs_of wld iri in
+        let set = Rdf_iri.Iriset.union set iris in
+        match Grdf_branch.parent wld iri with
           None -> set
-        | Some (uri, _) -> iter set uri
+        | Some (iri, _) -> iter set iri
       in
-      iter Uriset.empty uri
+      iter Rdf_iri.Iriset.empty iri
     end
   else
-    explicit_intfs_of wld uri
+    explicit_intfs_of wld iri
 ;;
 
-let intfs_of_tool wld uri =
-  let branches = Grdf_branch.subs wld ~recur: true uri in
+let intfs_of_tool wld iri =
+  let branches = Grdf_branch.subs wld ~recur: true iri in
   List.fold_left
-    (fun acc b -> Uriset.union acc (intfs_of wld b))
-    (explicit_intfs_of wld uri) branches
+    (fun acc b -> Rdf_iri.Iriset.union acc (intfs_of wld b))
+    (explicit_intfs_of wld iri) branches
 ;;
 
-let compute_intfs_of wld uri =
+let compute_intfs_of wld iri =
   (*prerr_endline "Grdf_intf.compute_intfs_of: start";*)
   let rec inher = function
-    None -> Uriset.empty
-  | Some (uri, _) ->
-      let set = inher (Grdf_branch.parent wld uri) in
-      let explicit = explicit_intfs_of wld uri in
-      let explicit_no = explicit_no_intfs_of wld uri in
-      Uriset.union (Uriset.diff set explicit_no) explicit
+    None -> Rdf_iri.Iriset.empty
+  | Some (iri, _) ->
+      let set = inher (Grdf_branch.parent wld iri) in
+      let explicit = explicit_intfs_of wld iri in
+      let explicit_no = explicit_no_intfs_of wld iri in
+      Rdf_iri.Iriset.union (Rdf_iri.Iriset.diff set explicit_no) explicit
   in
-  (*prerr_endline ("Grdf_intf.compute_intfs_of: node ok, uri="^(Rdf_uri.string uri));*)
-  if Grdfs.is_a_tool wld uri then
+  (*prerr_endline ("Grdf_intf.compute_intfs_of: node ok, iri="^(Rdf_iri.string iri));*)
+  if Grdfs.is_a_tool wld iri then
     (* show all interfaces *)
     (
      (*prerr_endline "Grdf_intf.compute_intfs_of: then";*)
-     let ret = (intfs_of_tool wld uri, Uriset.empty, Uriset.empty) in
+     let ret = (intfs_of_tool wld iri, Rdf_iri.Iriset.empty, Rdf_iri.Iriset.empty) in
      (*prerr_endline "Grdf_intf.compute_intfs_of: ok";*)
      ret
     )
   else
     begin
       (*prerr_endline "Grdf_intf.compute_intfs_of: else";*)
-      let explicit = explicit_intfs_of wld uri in
+      let explicit = explicit_intfs_of wld iri in
       (*prerr_endline "Grdf_intf.compute_intfs_of: explicit ok";*)
       let parent =
-        if Grdfs.is_a_version wld uri then
+        if Grdfs.is_a_version wld iri then
           (
            (*prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: true";*)
-           match Grdf_version.parent wld uri with None -> None | Some uri -> Some (uri, false)
+           match Grdf_version.parent wld iri with None -> None | Some iri -> Some (iri, false)
           )
         else
           (
            (*prerr_endline "Grdf_intf.compute_intfs_of: is_a_version: false";*)
-           Grdf_branch.parent wld uri
+           Grdf_branch.parent wld iri
           )
       in
       (*prerr_endline "Grdf_intf.compute_intfs_of: parent ok";*)
       let inherited = inher parent in
-      let explicit_no = explicit_no_intfs_of wld uri in
+      let explicit_no = explicit_no_intfs_of wld iri in
       (*prerr_endline "Grdf_intf.compute_intfs_of: inherited ok";*)
       (explicit, explicit_no, inherited)
     end
 ;;
 
-let implementors wld uri =
-  Grdfs.subject_uris wld ~pred: Grdfs.genet_hasintf ~obj: (Uri uri)
+let implementors wld iri =
+  Grdfs.subject_iris wld ~pred: Grdfs.genet_hasintf ~obj: (Iri iri)
 ;;
 
-let not_implementors wld uri =
-  Grdfs.subject_uris wld ~pred: Grdfs.genet_nointf ~obj: (Uri uri)
+let not_implementors wld iri =
+  Grdfs.subject_iris wld ~pred: Grdfs.genet_nointf ~obj: (Iri iri)
 ;;
 
-let tool_of_intf uri = Grdfs.uri_tool_of_intf uri
+let tool_of_intf iri = Grdfs.iri_tool_of_intf iri
 
 let tools_of_intfs set =
-  let f uri_intf acc =
-    Uriset.add (tool_of_intf uri_intf) acc
+  let f iri_intf acc =
+    Rdf_iri.Iriset.add (tool_of_intf iri_intf) acc
   in
-  Uriset.fold f set Uriset.empty
+  Rdf_iri.Iriset.fold f set Rdf_iri.Iriset.empty
 ;;
 
-let string_of_intf wld ?(with_uri=true) uri =
-  let ports_in = Grdf_port.ports wld uri Grdf_port.In in
-  let ports_out = Grdf_port.ports wld uri Grdf_port.Out in
+let string_of_intf wld ?(with_iri=true) iri =
+  let ports_in = Grdf_port.ports wld iri Grdf_port.In in
+  let ports_out = Grdf_port.ports wld iri Grdf_port.Out in
   let f = Grdf_port.string_of_port_type (fun x -> x) in
   Printf.sprintf "%s%s -> %s"
-  (if with_uri then Printf.sprintf "%s : " (Rdf_uri.string uri) else "")
+  (if with_iri then Printf.sprintf "%s : " (Rdf_iri.string iri) else "")
   (Grdf_port.string_type_of_ports wld f ~sep: " -> " ports_in)
   (Grdf_port.string_type_of_ports wld f ~sep: " * " ports_out)
 ;;
 
-let get_port wld uri ?(pos=max_int) dir =
-  let n = List.length (Grdf_port.ports wld uri dir) in
+let get_port wld iri ?(pos=max_int) dir =
+  let n = List.length (Grdf_port.ports wld iri dir) in
   let p = max 1 (min n pos) in
-  let f = Grdf_port.uri_intf_port_of_dir dir in
-  f uri p
+  let f = Grdf_port.iri_intf_port_of_dir dir in
+  f iri p
 ;;
 
-let additional_tools_used wld uri =
-  Grdfs.object_uris wld ~sub: (Rdf_node.Uri uri) ~pred: Grdfs.genet_usetool
+let additional_tools_used wld iri =
+  Grdfs.object_iris wld ~sub: (Rdf_term.Iri iri) ~pred: Grdfs.genet_usetool
 ;;
 
 

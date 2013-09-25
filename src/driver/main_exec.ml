@@ -74,13 +74,13 @@ let com_exec ctx opts =
       | l -> List.map Fname.relative l
   in
   let f_input acc input =
-    let uris = exec_one opts reporter ~force: !force input in
-    uris :: acc
+    let iris = exec_one opts reporter ~force: !force input in
+    iris :: acc
   in
-  let uris = List.flatten (List.fold_left f_input [] inputs) in
+  let iris = List.flatten (List.fold_left f_input [] inputs) in
   let errors = reporter#total_errors in
   prerr_endline (Reporter.string_of_msg_list reporter#messages);
-  List.iter (fun uri -> print_endline (Rdf_uri.string uri)) uris;
+  List.iter (fun iri -> print_endline (Rdf_iri.string iri)) iris;
   if errors > 0 then
     prerr_endline
     (Printf.sprintf "%d error%s" errors (if errors > 1 then "s" else ""));

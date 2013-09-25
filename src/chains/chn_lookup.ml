@@ -25,17 +25,19 @@
 
 (** Looking up for instanciated chains. *)
 
+module Irimap = Rdf_iri.Irimap
+
 type ichain_info = {
-    ichain : Grdf_types.uri ;
-    fchain : Grdf_types.uri ;
+    ichain : Grdf_types.iri ;
+    fchain : Grdf_types.iri ;
     input : [`Relative] Fname.filename * string ; (* name * id *)
-    tools : Grdf_types.uri Urimap.t ; (* version (uri) of each used tool *)
+    tools : Grdf_types.iri Irimap.t ; (* version (iri) of each used tool *)
   }
 
 type dist = {
     dist : int ;
     on_input : bool ;
-    on_tools : (Grdf_types.uri option * Grdf_types.uri option) Urimap.t ;
+    on_tools : (Grdf_types.iri option * Grdf_types.iri option) Irimap.t ;
       (* v1 and v2 or each difference of version regarding a tool *)
 
     on_fchain : bool ;
@@ -44,36 +46,36 @@ type dist = {
 
 let dist_zero =
   { dist = 0 ;
-    on_input = false ; on_tools = Urimap.empty ;
+    on_input = false ; on_tools = Irimap.empty ;
     on_fchain = false ; on_chain = false ;
   }
 
 let tool_dist ctx dist tools1 tools2 =
-  let f uri_tool v1 v2 =
+  let f iri_tool v1 v2 =
     match v1, v2 with
-      Some uri1, Some uri2 when Rdf_uri.equal uri1 uri2 ->
+      Some iri1, Some iri2 when Rdf_iri.equal iri1 iri2 ->
         None
     | _ -> Some (v1, v2)
   in
-  let map = Urimap.merge f tools1 tools2 in
+  let map = Irimap.merge f tools1 tools2 in
   { dist with
-    dist = dist.dist + Urimap.cardinal map ;
+    dist = dist.dist + Irimap.cardinal map ;
     on_tools = map ;
   }
 ;;
 
 let inst_chain_dist ctx ii1 ii2 =
-  match Rdf_uri.equal ii1.ichain ii2.ichain with
+  match Rdf_iri.equal ii1.ichain ii2.ichain with
   | true -> dist_zero
   | false ->
       let dist = dist_zero in
       let dist =
-        match Rdf_uri.equal ii1.fchain ii2.fchain with
+        match Rdf_iri.equal ii1.fchain ii2.fchain with
           true -> dist
         | false ->
             let dist = { dist with dist = dist.dist + 1 ; on_fchain = true } in
-            match Chn_types.is_uri_fchain ctx ii1.fchain,
-              Chn_types.is_uri_fchain ctx ii2.fchain
+            match Chn_types.is_iri_fchain ctx ii1.fchain,
+              Chn_types.is_iri_fchain ctx ii2.fchain
             with
               None, _
             | _, None -> dist
@@ -94,87 +96,87 @@ let inst_chain_dist ctx ii1 ii2 =
       dist
 ;;
 
-let ichain_info ctx uri_inst =
+let ichain_info ctx iri_inst =
   let input =
-    match Chn_inst.inst_input ctx uri_inst with
+    match Chn_inst.inst_input ctx iri_inst with
       None -> assert false
     | Some x -> x
   in
   let fchain =
-    match Chn_inst.instance_source ctx uri_inst with
+    match Chn_inst.instance_source ctx iri_inst with
       None -> assert false
-    | Some uri -> uri
+    | Some iri -> iri
   in
-  { ichain = uri_inst ;
+  { ichain = iri_inst ;
     fchain ;
     input ;
-    tools = Chn_inst.inst_versions ctx uri_inst ;
+    tools = Chn_inst.inst_versions ctx iri_inst ;
   }
 ;;
 
-let get_dist_instances ctx uri_inst =
-  match Chn_inst.instance_source ctx uri_inst with
+let get_dist_instances ctx iri_inst =
+  match Chn_inst.instance_source ctx iri_inst with
     None -> assert false
-  | Some uri_fchain ->
-      (*let instances = Grdfs.subject_uris ctx.Chn_types.ctx_rdf
-        ~pred: Grdfs.genet_instanciate ~obj: (Rdf_node.Uri uri_fchain)
+  | Some iri_fchain ->
+      (*let instances = Grdfs.subject_iris ctx.Chn_types.ctx_rdf
+        ~pred: Grdfs.genet_instanciate ~obj: (Rdf_node.Iri iri_fchain)
       in*)
       let instances =
         let g = ctx.Chn_types.ctx_rdf.Grdf_types.wld_graph in
-        let l = g.Rdf_graph.find ~pred: (Rdf_node.Uri Grdfs.genet_instanciate) () in
+        let l = g.Rdf_graph.find ~pred: Grdfs.genet_instanciate () in
         let f acc = function
-          (Rdf_node.Uri uri, _, _) -> uri :: acc
+          (Rdf_term.Iri iri, _, _) -> iri :: acc
         | _ -> acc
         in
         List.fold_left f [] l
       in
       let infos = List.map (ichain_info ctx) instances in
-      let info_inst = ichain_info ctx uri_inst in
+      let info_inst = ichain_info ctx iri_inst in
       List.map
         (fun info -> (info.ichain, inst_chain_dist ctx info_inst info))
         infos
 ;;
 
-let make_graph ctx uri_inst =
-  let dists = get_dist_instances ctx uri_inst in
+let make_graph ctx iri_inst =
+  let dists = get_dist_instances ctx iri_inst in
   let edge_atts dist =
     let for_tools =
-      if Urimap.is_empty dist.on_tools then
+      if Irimap.is_empty dist.on_tools then
         ""
       else
         (
          let f_v = function
            None -> "-"
-         | Some uri -> Grdf_version.name ctx.Chn_types.ctx_rdf uri
+         | Some iri -> Grdf_version.name ctx.Chn_types.ctx_rdf iri
          in
          let f tool (v1, v2) acc =
            Printf.sprintf "%s %s:%s/%s" acc
              (Grdf_tool.name ctx.Chn_types.ctx_rdf tool)
              (f_v v1) (f_v v2)
          in
-         Urimap.fold f dist.on_tools ""
+         Irimap.fold f dist.on_tools ""
         )
      in
      Printf.sprintf "label=%S"
       (Printf.sprintf "%d%s" dist.dist for_tools)
   in
-  let node_atts uri =
-    match Chn_types.is_uri_ichain ctx.Chn_types.ctx_cfg.Config.rest_api uri with
+  let node_atts iri =
+    match Chn_types.is_iri_ichain ctx.Chn_types.ctx_cfg.Config.rest_api iri with
       None -> assert false
     | Some name ->
         Printf.sprintf "%slabel=%S, href=%S"
-          (if Rdf_uri.equal uri uri_inst then "root=true, " else "")
+          (if Rdf_iri.equal iri iri_inst then "root=true, " else "")
           (Chn_types.string_of_ichain_name name)
-          (Rdf_uri.string uri)
+          (Rdf_iri.string iri)
   in
-  let id uri = Grdf_dot.md5 (Rdf_uri.string uri) in
+  let id iri = Grdf_dot.md5 (Rdf_iri.string iri) in
   let b = Buffer.create 256 in
-  let print_node (uri,d) =
-    Printf.bprintf b "N%s [%s];\n" (id uri) (node_atts uri);
+  let print_node (iri,d) =
+    Printf.bprintf b "N%s [%s];\n" (id iri) (node_atts iri);
     if d <> dist_zero then
       begin
         Printf.bprintf b "N%s -> N%s [%s];\n"
-        (id uri_inst) (id uri) (edge_atts d)
+        (id iri_inst) (id iri) (edge_atts d)
       end
   in
   Buffer.add_string b "digraph g {\nranksep=\"5,4\";\n";

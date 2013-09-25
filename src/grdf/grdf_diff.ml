@@ -25,7 +25,7 @@
 
 (** *)
 
-open Rdf_node;;
+open Rdf_term;;
 open Grdf_types;;
 
 let dbg = Misc.create_log_fun
@@ -35,54 +35,54 @@ let dbg = Misc.create_log_fun
 
 let diffcommands wld =
   dbg ~level: 1 (fun () -> "Grdf_diff.diff_commands");
-  let l = Grdfs.subject_uris wld ~pred: Grdfs.rdf_type ~obj: (Uri Grdfs.genet_diffcommand) in
-  Grdfs.uriset_of_list l
+  let l = Grdfs.subject_iris wld ~pred: Grdfs.rdf_type ~obj: (Iri Grdfs.genet_diffcommand) in
+  Grdfs.iriset_of_list l
 ;;
 
-let name wld uri = Grdfs.name wld (Uri uri);;
+let name wld iri = Grdfs.name wld (Iri iri);;
 
-let command_path wld uri =
+let command_path wld iri =
   let pred = Grdfs.genet_haspath in
-  Grdfs.object_literal wld ~sub: (Uri uri) ~pred
+  Grdfs.object_literal wld ~sub: (Iri iri) ~pred
 ;;
 
-let set_command_path wld uri path =
-  let pred = Rdf_node.Uri Grdfs.genet_haspath in
-  Grdfs.add_triple wld ~sub: (Rdf_node.Uri uri) ~pred
-    ~obj: (Rdf_node.node_of_literal_string path)
+let set_command_path wld iri path =
+  let pred = Grdfs.genet_haspath in
+  Grdfs.add_triple wld ~sub: (Rdf_term.Iri iri) ~pred
+    ~obj: (Rdf_term.term_of_literal_string path)
 ;;
 
-let diffcommand_exists wld uri =
-  dbg ~level: 1 (fun () -> "Grdf_diff.diffcommand_exists uri="^(Rdf_uri.string uri));
-  if Grdfs.is_a_diffcommand wld uri then
-    Some (name wld uri)
+let diffcommand_exists wld iri =
+  dbg ~level: 1 (fun () -> "Grdf_diff.diffcommand_exists iri="^(Rdf_iri.string iri));
+  if Grdfs.is_a_diffcommand wld iri then
+    Some (name wld iri)
   else
     None
 ;;
 
-let do_add wld uri name =
-  dbg ~level: 1 (fun () -> "Grdf_diff.do_add uri="^(Rdf_uri.string uri)^" name="^name);
-  let sub = Uri uri in
-  Grdfs.add_type wld ~sub ~obj: (Uri Grdfs.genet_diffcommand);
+let do_add wld iri name =
+  dbg ~level: 1 (fun () -> "Grdf_diff.do_add iri="^(Rdf_iri.string iri)^" name="^name);
+  let sub = Iri iri in
+  Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_diffcommand);
   Grdfs.add_name wld sub name
 ;;
 
 let add prefix wld ?(force=false) ~name ~path =
   dbg ~level: 1 (fun () -> "Grdf_diff.add name="^name);
-  let uri = Grdfs.uri_diffcommand ~prefix ~name in
+  let iri = Grdfs.iri_diffcommand ~prefix ~name in
   begin
-    match diffcommand_exists wld uri with
+    match diffcommand_exists wld iri with
       Some _ ->
         begin
           match force with
-            false -> failwith ("Diff command already exists: "^(Rdf_uri.string uri))
-          | true -> set_command_path wld uri path
+            false -> failwith ("Diff command already exists: "^(Rdf_iri.string iri))
+          | true -> set_command_path wld iri path
         end
     | None ->
-        do_add wld uri name;
-        set_command_path wld uri path
+        do_add wld iri name;
+        set_command_path wld iri path
   end;
-  uri
+  iri
 ;;
 
 let parse_diffcommand_ident str =

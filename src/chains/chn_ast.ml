@@ -134,8 +134,8 @@ let compute_deps wld config cmods =
   | Interface s ->
       begin
         try
-          let uri = Chn_types.uri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
-          match Grdf_intf.intf_exists wld uri with
+          let iri = Chn_types.iri_intf_of_interface_spec ~prefix: config.Config.rest_api s in
+          match Grdf_intf.intf_exists wld iri with
             Some _ -> { d with dep_intfs = Sset.add s d.dep_intfs }
           | None -> raise Not_found
         with
@@ -185,7 +185,7 @@ class ast_printer =
 
     method string_of_op_origin = function
       Chain s -> Chn_types.string_of_chain_name s
-    | Interface uri -> Printf.sprintf "%S" uri
+    | Interface iri -> Printf.sprintf "%S" iri
     | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref port_ref)
     | Special _ -> assert false
@@ -248,15 +248,15 @@ class chain_dot_printer =
 
     method string_of_op_origin = function
       Chain s -> Chn_types.string_of_chain_name s
-    | Interface uri -> Printf.sprintf "%S" uri
+    | Interface iri -> Printf.sprintf "%S" iri
     | Foreach (origin, port_ref) -> Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref ~label: true Grdf_port.In port_ref)
     | Special _ -> assert false
 
-    method uri_of_op_origin prefix = function
-      Chain s -> Chn_types.uri_chain prefix s
-    | Interface uri -> Chn_types.uri_intf_of_interface_spec ~prefix uri
-    | Foreach (origin, _) -> self#uri_of_op_origin prefix origin
+    method iri_of_op_origin prefix = function
+      Chain s -> Chn_types.iri_chain prefix s
+    | Interface iri -> Chn_types.iri_intf_of_interface_spec ~prefix iri
+    | Foreach (origin, _) -> self#iri_of_op_origin prefix origin
     | Special _ -> assert false
 
     method color_of_op_origin = function
@@ -292,7 +292,7 @@ class chain_dot_printer =
       Printf.bprintf b "<TD ALIGN=\"CENTER\" HREF=\"%s\" CELLPADDING=\"4\">%s</TD>"
       (match prefix with
          None -> ""
-       | Some prefix -> Rdf_uri.string (self#uri_of_op_origin prefix op.op_from)
+       | Some prefix -> Rdf_iri.string (self#iri_of_op_origin prefix op.op_from)
       )
       (self#string_of_op_origin op.op_from);
       Printf.bprintf b "%s" (string_of_ports Grdf_port.Out self#color_out outputs);
@@ -346,16 +346,16 @@ class chain_dot_deps ?(chain_dot=new chain_dot_printer) () =
       in
       let id = self#chain_id fullname in
       Printf.bprintf b "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-        id label (Rdf_uri.string (Chn_types.uri_chain prefix fullname)) chain_dot#color_chain;
+        id label (Rdf_iri.string (Chn_types.iri_chain prefix fullname)) chain_dot#color_chain;
       Cset.iter (self#print_dep_chn b id) dep.dep_chains ;
       let intfs = Sset.fold (self#print_dep_intf b id) dep.dep_intfs intfs in
       intfs
 
     method print_intf b ~prefix intf =
-      let uri = Chn_types.uri_intf_of_interface_spec ~prefix intf in
+      let iri = Chn_types.iri_intf_of_interface_spec ~prefix intf in
       Printf.bprintf b
       "%s [label=\"%s\" shape=\"box\" href=\"%s\" style=\"filled\" fillcolor=\"%s\"];\n"
-      (self#intf_id intf) intf (Rdf_uri.string uri) chain_dot#color_interface
+      (self#intf_id intf) intf (Rdf_iri.string iri) chain_dot#color_interface
 
     method dot_of_deps prefix ?(fullnames=true) deps =
       let b = Buffer.create 256 in

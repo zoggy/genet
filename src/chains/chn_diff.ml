@@ -27,22 +27,22 @@
 
 open Chn_types;;
 
-let file_of_out_port ctx uri =
+let file_of_out_port ctx iri =
   let config = ctx.ctx_cfg in
   let prefix = config.Config.rest_api in
-  let file_uri = Chn_inst.instport_file_uri ctx uri in
-  let s_uri = Rdf_uri.string uri in
-  match file_uri with
-    None -> failwith (Printf.sprintf "No file associated to port uri %S" s_uri)
-  | Some file_uri ->
-      let s_file_uri = Rdf_uri.string file_uri in
+  let file_iri = Chn_inst.instport_file_iri ctx iri in
+  let s_iri = Rdf_iri.string iri in
+  match file_iri with
+    None -> failwith (Printf.sprintf "No file associated to port iri %S" s_iri)
+  | Some file_iri ->
+      let s_file_iri = Rdf_iri.string file_iri in
       let out_dir = Config.out_dir config in
-      let out_prefix = Grdfs.uri_outfile_path prefix [] in
+      let out_prefix = Grdfs.iri_outfile_path prefix [] in
       try
-        let path = Misc.path_under ~parent: (Rdf_uri.string out_prefix) s_file_uri in
+        let path = Misc.path_under ~parent: (Rdf_iri.string out_prefix) s_file_iri in
         Fname.concat_s out_dir path
       with _ ->
-          let msg = Printf.sprintf "%S is not an output file uri" s_file_uri in
+          let msg = Printf.sprintf "%S is not an output file iri" s_file_iri in
           failwith msg
 ;;
 
@@ -73,8 +73,8 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?diff inst1 inst
     match diff with
       None -> "diff -r -u"
     | Some s ->
-        let uri = Grdfs.uri_diffcommand ~prefix: ctx.ctx_cfg.Config.rest_api ~name: s in
-        match Grdf_diff.command_path ctx.ctx_rdf uri with
+        let iri = Grdfs.iri_diffcommand ~prefix: ctx.ctx_cfg.Config.rest_api ~name: s in
+        match Grdf_diff.command_path ctx.ctx_rdf iri with
           None -> s
         | Some path -> path
   in
@@ -105,14 +105,14 @@ let diff ctx ?(html=false) ?(fragment=false) ?(keepfiles=false) ?diff inst1 inst
 
 let diff_url ctx ?(form=false) ?diff_command ~inst1 ~inst2 () =
   let config = ctx.ctx_cfg in
-  let url = Rdf_uri.concat config.Config.rest_api Grdfs.suffix_diff in
-  let url = Rdf_uri.concat url Grdfs.suffix_ichains in
+  let url = Rdf_iri.concat config.Config.rest_api Grdfs.suffix_diff in
+  let url = Rdf_iri.concat url Grdfs.suffix_ichains in
   let query = Netencoding.Url.mk_url_encoded_parameters
     [ "form", (if form then "true" else "false") ;
-      "inst1", Rdf_uri.string inst1 ;
-      "inst2", Rdf_uri.string inst2 ;
+      "inst1", Rdf_iri.string inst1 ;
+      "inst2", Rdf_iri.string inst2 ;
       "diffcmd", (Misc.string_of_opt diff_command) ;
     ]
   in
-  Printf.sprintf "%s?%s" (Rdf_uri.string url) query
+  Printf.sprintf "%s?%s" (Rdf_uri.string (Rdf_iri.to_uri url)) query
 ;;
