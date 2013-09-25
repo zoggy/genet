@@ -60,9 +60,11 @@ let li_ n =
 ;;
 
 let iri_parent iri =
-  match List.rev (Rdf_iri.path iri) with
+  let path = Rdf_iri.path iri in
+  (*prerr_endline (Printf.sprintf "iri_parent iri=%s, path=%s" (Rdf_iri.string iri) (String.concat " | " path));*)
+  match List.rev path with
     [] -> iri
-  | _ :: q -> Rdf_iri.set_path iri q
+  | _ :: q -> Rdf_iri.set_path iri (List.rev q)
 ;;
 
 let rdf_type = rdf_"type";;

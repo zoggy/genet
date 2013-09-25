@@ -328,7 +328,7 @@ let xhtml_navpath_of_branches ctx iri =
 let xhtml_navpath_of_version ctx ?inc_iri iri =
   (match Grdf_version.parent ctx.ctx_rdf iri with
      None -> []
-   | Some uri -> xhtml_navpath_of_branch ctx ~inc_iri: true iri
+   | Some iri -> xhtml_navpath_of_branch ctx ~inc_iri: true iri
   )
 ;;
 
@@ -808,8 +808,8 @@ let get_chain_module ctx ?nav modname =
          chain.Chn_ast.chn_name
        in
        let flats = Chn_flat.flat_chains_of_chain ctx name in
-       let href = 
-         Rdf_iri.to_uri 
+       let href =
+         Rdf_iri.to_uri
            (Chn_types.iri_fchain config.Config.rest_api
             (Chn_types.mk_fchain_name name ""))
        in
@@ -1036,7 +1036,7 @@ let get_ichain_op ctx iri =
       ~pred: Grdfs.genet_containsop ~obj: (Iri iri)
     with
       None -> failwith (Printf.sprintf "%S is not contained" (Rdf_iri.string iri))
-    | Some u -> u
+    | Some i -> i
   in
   let ichain_name =
     match Chn_types.is_iri_ichain ctx.ctx_cfg.Config.rest_api inst_chain with
@@ -1460,7 +1460,7 @@ let get_input_file ctx ~raw ~input file_path =
         match kind with
           Unix.S_DIR -> []
         | _ ->
-            let href = Rdf_iri.to_uri 
+            let href = Rdf_iri.to_uri
               (Grdfs.iri_input_file_path ~raw: true prefix input file_path)
             in
             [ Xtmpl.D " [";
