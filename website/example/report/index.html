@@ -2,17 +2,25 @@
 main="true"
 stog:site-url="file:///tmp/"
 >
-<ul>
-<rdf-select with-xmls="true">
+<table class="table">
+<rdf-load name="http://localhost:8083/">
+<![CDATA[
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+<http://localhost:8082/inst-chains/Test/words_avg_length/2e5f-441c-8121-c8c5> a genet:Instchain .
+<http://localhost:8082/inst-chains/Test/words_avg_length/2e5f-441c-8121-c8c5> genet:stoppedOn "2013-09-25T09:07:16+00:00"^^xsd:dateTime.
+<http://localhost:8082/inst-chains/Test/words_avg_length/2e5f-441c-8121-c8c5> genet:failedCommand <http://foo.bar/>.
+]]>
+</rdf-load>
+<rdf-select with-xmls="true" tmpl="instchain.tmpl">
   <query><![CDATA[
-  SELECT ?ichain
+  SELECT ?ichain ?date ?instnode
   FROM <http://localhost:8082/>
   WHERE { ?ichain a genet:Instchain .
+          ?ichain genet:stoppedOn ?date .
+          OPTIONAL { ?ichain genet:failedCommand ?instnode } .
+          FILTER (YEAR(?date)=2013)
         }]]>
   </query>
-  <tmpl>
-  <li> <a href="&lt;ichain/&gt;"><ichain/></a></li>
-  </tmpl>
 </rdf-select>
-</ul>
+</table>
 </page>

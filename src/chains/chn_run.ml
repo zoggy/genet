@@ -255,7 +255,7 @@ let run_command ctx (reporter: Reporter.reporter)
       Grdfs.add_triple ctx.ctx_rdf
         ~sub: (Rdf_term.Iri (iri_of_g_iri inst_node))
         ~pred: Grdfs.genet_returncode
-        ~obj: (Rdf_term.term_of_literal_string ~typ: Grdfs.datatype_integer (string_of_int n));
+        ~obj: (Rdf_term.term_of_int n);
       link_output ~error: true ();
       raise (Exec_failed (state, inst_chain, inst_node, com, n))
 ;;
