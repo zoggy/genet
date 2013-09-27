@@ -1,0 +1,63 @@
+<post title="Generating reports with Stog-RDF"
+date="2013/09/27"
+topics="code"
+keywords="report,rdf,sparql,stog-rdf"
+>
+<p>
+Genet used information stored in RDF graphs: tools, branches,
+versions, interfaces, flatten chains, instanciations, ...
+Genet allows to build (part of) continuous integration performs.
+Wanting to generate reports is natural. Let's how to do this
+using <ext-a href="http://zoggy.github.io/stog/plugins/rdf.html">Stog-RDF</ext-a>.
+</p>
+<sep_/>
+<p>
+Stog-RDF is a plugin for <ext-a href="http://zoggy.github.io/stog/">Stog</ext-a>,
+a tool to generate static web sites (it is not only for web sites but
+it is what interests us right now). Stog-RDF adds new features to Stog:
+ability to define RDF graphs, load existing ones, and run Sparql queries
+to extract data while generating the XML documents.
+</p>
+<p>As an example, we will generate a simple page listing the executions
+(chains that were instanciated) of the day, indicating whether each one
+succeeded or failed.
+</p>
+<section id="query" title="The Sparql query">
+<p>
+The Sparql query to get these instanciations can be written as:
+</p>
+<hcode lang="sql"><![CDATA[
+PREFIX genet: <https://raw.github.com/zoggy/genet/master/doc/genet.ttl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?ichain ?date ?instnode
+FROM <http://localhost:8082/>
+WHERE { ?ichain a genet:Instchain .
+        ?ichain genet:stoppedOn ?date .
+        OPTIONAL { ?ichain genet:failedCommand ?instnode } .
+        FILTER (YEAR(?date)=YEAR(NOW()) && MONTH(?date)=MONTH(NOW()) && DAY(?date)=DAY(NOW()))
+      }
+]]>
+</hcode>
+<p>The query is quite simple: we look for all instanciations (<icode>?ichain</icode>)
+with their end date (<icode>?date</icode>),
+and, in case of error, the optional node (<icode>?instnode</icode>)
+corresponding to the command which failed.
+We filter the result to keep only the instanciations which ended on the current day.
+</p>
+<p class="alert alert-warning">
+The structure of the RDF graph is not documented yet.
+</p>
+<p>
+The <icode>FROM</icode> clause refer to the graph in our Genet database.
+It is created at startup, by defining it in the <icode>.stog/config-rdf</icode>
+file in our web site source directory:
+</p>
+<ocaml defer_="1"><include file="../example/report/.stog/config-rdf" raw="true"/></ocaml>
+<p>
+When Stog is launched with the stog-rdf plugin, this plugin loads this config file
+and creates the graphs described in <icode>sources</icode>.
+</p>
+<p>Now let's use this query.</p>
+</section>
+</post>
