@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.get_chain_module</title>
 </head>
 <body>
@@ -93,8 +91,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chain.<span class="constructor">Chn_ast</span>.chn_name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flats&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains_of_chain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_fchain&nbsp;config.<span class="constructor">Config</span>.rest_api<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.mk_fchain_name&nbsp;name&nbsp;<span class="string">""</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.to_uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.iri_fchain&nbsp;config.<span class="constructor">Config</span>.rest_api<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.mk_fchain_name&nbsp;name&nbsp;<span class="string">""</span>))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;text&nbsp;=&nbsp;string_of_int&nbsp;(<span class="constructor">List</span>.length&nbsp;flats)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[a_chain&nbsp;ctx&nbsp;name]&nbsp;;&nbsp;[a&nbsp;~href&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;text]]]<br>

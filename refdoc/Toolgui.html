@@ -5,7 +5,7 @@
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
 <link rel="previous" href="Tokens.html">
-<link rel="next" href="Urimap.html">
+<link rel="next" href="Version.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -79,22 +79,20 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Toolgui</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Tokens.html" title="Tokens">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Urimap.html" title="Urimap">Next</a>
+&nbsp;<a class="post" href="Version.html" title="Version">Next</a>
 </div>
 <h1>Module <a href="type_Toolgui.html">Toolgui</a> (<a href="code_Toolgui.html">.ml</a>)</h1>
 <pre><span class="keyword">module</span> Toolgui: <code class="code">sig</code> <a href="Toolgui.html">..</a> <code class="code">end</code></pre><div class="info">
 Gui elements for tools, interfaces, branches, versions.<br>
 </div>
 <hr width="100%">
-<pre><span id="TYPEkind"><span class="keyword">type</span> <code class="type"></code>kind</span> = <code class="type"><a href="Toolgui.html#TYPEkind">kind</a></code> </pre>
+<pre><span class="keyword">module</span> <a href="Toolgui.Iriset.html">Iriset</a>: <code class="type">Rdf_iri.Iriset</code></pre><pre><span id="TYPEkind"><span class="keyword">type</span> <code class="type"></code>kind</span> = <code class="type"><a href="Toolgui.html#TYPEkind">kind</a></code> </pre>
 
-<pre><span id="VALstring_of_kind"><span class="keyword">val</span> <a href="code_VALToolgui.string_of_kind.html">string_of_kind</a></span> : <code class="type">[< `Branch | `Intf | `Tool | `Version ] -> string</code></pre><pre><span id="TYPEelt"><span class="keyword">type</span> <code class="type"></code>elt</span> = <code class="type"><a href="Toolgui.html#TYPEkind">kind</a> * Rdf_uri.uri</code> </pre>
+<pre><span id="VALstring_of_kind"><span class="keyword">val</span> <a href="code_VALToolgui.string_of_kind.html">string_of_kind</a></span> : <code class="type">[< `Branch | `Intf | `Tool | `Version ] -> string</code></pre><pre><span id="TYPEelt"><span class="keyword">type</span> <code class="type"></code>elt</span> = <code class="type"><a href="Toolgui.html#TYPEkind">kind</a> * Rdf_iri.iri</code> </pre>
 
-<pre><span id="VALtools"><span class="keyword">val</span> <a href="code_VALToolgui.tools.html">tools</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> unit -> ([> `Tool ] * <a href="Grdf_types.html#TYPEuri">Grdf_types.uri</a>) list</code></pre><pre><span id="VALget_name"><span class="keyword">val</span> <a href="code_VALToolgui.get_name.html">get_name</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> Rdf_uri.uri -> string</code></pre><pre><span id="VALuriset_to_elt_list"><span class="keyword">val</span> <a href="code_VALToolgui.uriset_to_elt_list.html">uriset_to_elt_list</a></span> : <code class="type">'a -> Uriset.t -> ('a * Uriset.elt) list</code></pre><pre><span id="VALchildren"><span class="keyword">val</span> <a href="code_VALToolgui.children.html">children</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       [< `Branch | `Intf | `Tool | `Version ] * Uriset.elt -><br>       ([> `Branch | `Intf | `Version ] * Uriset.elt) list</code></pre><pre><span name="TYPEtool_tree"><span class="keyword">class</span> <a href="Toolgui.tool_tree-c.html">tool_tree</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> < set_text : string -> unit; .. > -> </code><code class="code">object</code> <a href="Toolgui.tool_tree-c.html">..</a> <code class="code">end</code></pre><pre><span name="TYPEbox"><span class="keyword">class</span> <a href="Toolgui.box-c.html">box</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> </code><code class="code">object</code> <a href="Toolgui.box-c.html">..</a> <code class="code">end</code></pre></body></html>
+<pre><span id="VALtools"><span class="keyword">val</span> <a href="code_VALToolgui.tools.html">tools</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> unit -> ([> `Tool ] * <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a>) list</code></pre><pre><span id="VALget_name"><span class="keyword">val</span> <a href="code_VALToolgui.get_name.html">get_name</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> Rdf_iri.iri -> string</code></pre><pre><span id="VALiriset_to_elt_list"><span class="keyword">val</span> <a href="code_VALToolgui.iriset_to_elt_list.html">iriset_to_elt_list</a></span> : <code class="type">'a -> Iriset.t -> ('a * Iriset.elt) list</code></pre><pre><span id="VALchildren"><span class="keyword">val</span> <a href="code_VALToolgui.children.html">children</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       [< `Branch | `Intf | `Tool | `Version ] * Rdf_iri.Iriset.elt -><br>       ([> `Branch | `Intf | `Version ] * Iriset.elt) list</code></pre><pre><span name="TYPEtool_tree"><span class="keyword">class</span> <a href="Toolgui.tool_tree-c.html">tool_tree</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> < set_text : string -> unit; .. > -> </code><code class="code">object</code> <a href="Toolgui.tool_tree-c.html">..</a> <code class="code">end</code></pre><pre><span name="TYPEbox"><span class="keyword">class</span> <a href="Toolgui.box-c.html">box</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> </code><code class="code">object</code> <a href="Toolgui.box-c.html">..</a> <code class="code">end</code></pre></body></html>

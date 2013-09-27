@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.sort_ports</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;sort_ports&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;comp&nbsp;p1&nbsp;p2&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pervasives</span>.compare<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(uri_of_g_uri&nbsp;p1))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(uri_of_g_uri&nbsp;p2))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p2))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.sort&nbsp;comp</code></body></html>

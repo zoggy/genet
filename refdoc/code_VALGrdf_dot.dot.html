@@ -74,22 +74,20 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_dot.dot</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;dot&nbsp;?(edge_labels=<span class="keyword">true</span>)&nbsp;wld&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;wld&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Grdf_branch</span>.bch_uri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Grdf_branch</span>.bch_iri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"digraph&nbsp;g&nbsp;{colorscheme=\"brewer\";\nrankdir=TB;\n"</span>;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_tool&nbsp;b&nbsp;wld)&nbsp;tools;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_version&nbsp;b&nbsp;wld)&nbsp;versions;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_branch&nbsp;b&nbsp;wld)&nbsp;branches;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;edge_labels&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasbranch&nbsp;b&nbsp;~label&nbsp;wld)&nbsp;(tools&nbsp;@&nbsp;branches);<br>

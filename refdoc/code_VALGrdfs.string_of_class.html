@@ -74,20 +74,18 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdfs.string_of_class</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;string_of_class&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_tool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"tool"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_branch&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"branch"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_intf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"interface"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_version&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"version"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_filetype&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"filetype"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"chain"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_flatchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatchain"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instchain"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_instopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instopn"</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;s&nbsp;genet_diffcommand&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"diffcommand"</span><br>
+&nbsp;&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_tool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"tool"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_branch&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"branch"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_intf&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"interface"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_version&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"version"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_filetype&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"filetype"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"chain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_flatchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatchain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_instchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instchain"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_instopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instopn"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_diffcommand&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"diffcommand"</span><br>
 <span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span></code></body></html>

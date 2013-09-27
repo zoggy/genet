@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_edit.set_active</title>
 </head>
 <body>
@@ -89,7 +87,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;set&nbsp;active&nbsp;&lt;url&nbsp;of&nbsp;version&gt;&nbsp;[true|false]"</span>&nbsp;<span class="constructor">Sys</span>.argv.(0)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;url&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_version</span>.version_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;version&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.set_is_active_uri&nbsp;wld&nbsp;uri&nbsp;active</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;url&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_version</span>.version_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;version&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.set_is_active_iri&nbsp;wld&nbsp;iri&nbsp;active</code></body></html>

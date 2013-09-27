@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.xhtml_ichain_dot_printer.port_link_and_name</title>
 </head>
 <body>
-<code class="code"><span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;ctx&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;(get_origin&nbsp;ctx&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;ctx&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;(get_origin&nbsp;ctx&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;ptype&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_uri&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_iri&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(link,&nbsp;name)</code></body></html>

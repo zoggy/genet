@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdfs.is_a</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;is_a&nbsp;wld&nbsp;~sub&nbsp;~obj&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdfs.is_a"</span>);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;rdf_type&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;rdf_type&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"contains_statement&nbsp;?"</span>);<br>
 &nbsp;&nbsp;wld.wld_graph.exists_t&nbsp;(sub,&nbsp;pred,&nbsp;obj)</code></body></html>

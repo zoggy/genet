@@ -74,17 +74,15 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query.read_path_chain</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_chain&nbsp;uri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_chain&nbsp;iri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain_module</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.chain_modname_of_string&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;modpath)))<br>
 <span class="keywordsign">|</span>&nbsp;m&nbsp;::&nbsp;q&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">String</span>.capitalize&nbsp;m&nbsp;=&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;uri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;iri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
 <span class="keywordsign">|</span>&nbsp;basename&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;(basename&nbsp;::&nbsp;modpath))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;name&nbsp;<span class="keyword">in</span><br>

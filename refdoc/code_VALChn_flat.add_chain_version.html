@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.add_chain_version</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;add_chain_version&nbsp;ctx&nbsp;uri_fchain&nbsp;(modname,&nbsp;id)&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string<br>
+<code class="code"><span class="keyword">let</span>&nbsp;add_chain_version&nbsp;ctx&nbsp;iri_fchain&nbsp;(modname,&nbsp;id)&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_term</span>.term_of_literal_string<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s/%s"</span>&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_modname&nbsp;modname)&nbsp;id)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri_fchain)<br>
-&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_useversion)&nbsp;~obj</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;iri_fchain)<br>
+&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_useversion&nbsp;~obj</code></body></html>

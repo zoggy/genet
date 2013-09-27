@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_edit.com_add_intf</title>
 </head>
 <body>
@@ -87,7 +85,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-t"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">String</span>&nbsp;(<span class="constructor">Some</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_name,&nbsp;<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intf_tools&nbsp;:=&nbsp;!intf_tools&nbsp;@&nbsp;[s]),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&lt;toolname&gt;&nbsp;make&nbsp;interface&nbsp;depend&nbsp;on&nbsp;tool\n\t&nbsp;(when&nbsp;used,&nbsp;%{version-name&gt;}&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by&nbsp;version&nbsp;of&nbsp;tool)"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;];<br>
-&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;tool|branch&nbsp;uri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;tool|branch&nbsp;iri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_intf&nbsp;;<br>
 &nbsp;&nbsp;}</code></body></html>

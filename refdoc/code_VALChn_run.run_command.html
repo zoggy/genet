@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.run_command</title>
 </head>
 <body>
@@ -111,8 +109,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"command&nbsp;failed&nbsp;[%d]:&nbsp;%s"</span>&nbsp;n&nbsp;com&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;msg);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;(uri_of_g_uri&nbsp;inst_node))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_returncode)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;~typ:&nbsp;<span class="constructor">Grdfs</span>.datatype_integer&nbsp;(string_of_int&nbsp;n));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;(iri_of_g_iri&nbsp;inst_node))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_returncode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_int&nbsp;n);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;link_output&nbsp;~error:&nbsp;<span class="keyword">true</span>&nbsp;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;(<span class="constructor">Exec_failed</span>&nbsp;(state,&nbsp;inst_chain,&nbsp;inst_node,&nbsp;com,&nbsp;n))</code></body></html>

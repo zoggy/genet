@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.inst_chain_exists</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insts&nbsp;=&nbsp;instances&nbsp;ctx&nbsp;uri_fchain&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insts&nbsp;=&nbsp;instances&nbsp;ctx&nbsp;iri_fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(input.<span class="constructor">Ind_types</span>.from_in_data,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.get_git_id&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;input.<span class="constructor">Ind_types</span>.dir))<br>
@@ -90,6 +88,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;input_info&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;=&nbsp;input)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(uri_i,&nbsp;_,&nbsp;_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;pred&nbsp;insts&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri_i<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(iri_i,&nbsp;_,&nbsp;_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;pred&nbsp;insts&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;iri_i<br>
 &nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span></code></body></html>

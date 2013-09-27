@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_query</title>
 </head>
 <body>
@@ -108,11 +106,13 @@
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Grdf_tool</span>;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;pruri_endline&nbsp;uri&nbsp;=&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri);;<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Iriset</span>&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span><br>
+<br>
+<span class="keyword">let</span>&nbsp;priri_endline&nbsp;iri&nbsp;=&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;list_tools&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;tools<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;tools<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_tools&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
@@ -126,20 +126,20 @@
 <span class="keyword">let</span>&nbsp;list_branches&nbsp;_&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;b&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;b.<span class="constructor">Grdf_branch</span>.bch_uri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;b&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;b.<span class="constructor">Grdf_branch</span>.bch_iri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Uriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;add&nbsp;set&nbsp;(<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Iriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;add&nbsp;set&nbsp;(<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s_iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.elements&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.elements&nbsp;set<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;branches<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;branches<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_branches&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
-&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[anscestor&nbsp;uris]"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[anscestor&nbsp;iris]"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_branches&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -151,19 +151,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_version</span>.versions&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Uriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Iriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;add&nbsp;set<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s_iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.elements&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.elements&nbsp;set<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;versions<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;versions<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_versions&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;uri1&gt;]&nbsp;[&lt;uri2&gt;&nbsp;...]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;iri1&gt;]&nbsp;[&lt;iri2&gt;&nbsp;...]"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_versions&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -175,19 +175,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s_iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.diff&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;set&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;explicit&nbsp;inherited))&nbsp;explicit_no<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.diff&nbsp;(<span class="constructor">Iriset</span>.union&nbsp;set&nbsp;(<span class="constructor">Iriset</span>.union&nbsp;explicit&nbsp;inherited))&nbsp;explicit_no<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;uri))&nbsp;intfs<br>
+&nbsp;&nbsp;<span class="constructor">Iriset</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;iri))&nbsp;intfs<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_intfs&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;uri1&gt;]&nbsp;[&lt;uri2&gt;&nbsp;...]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"[&lt;iri1&gt;]&nbsp;[&lt;iri2&gt;&nbsp;...]"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf_provider&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;list_interfaces&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -243,7 +243,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;list_fchains&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;l<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;l<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_fchains&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
@@ -256,7 +256,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;list_ichains&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.inst_chains&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;l<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;l<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_ichains&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
@@ -280,13 +280,13 @@
 <span class="keyword">let</span>&nbsp;print_filename_of_url&nbsp;config&nbsp;wld&nbsp;opts&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;::&nbsp;_&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;only&nbsp;one&nbsp;uri"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;only&nbsp;one&nbsp;iri"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_input_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_outfile_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_input_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_pref_raw&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_input_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;prefix&nbsp;&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.out_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.data_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefixes&nbsp;=&nbsp;<span class="comment">(*&nbsp;order&nbsp;matters&nbsp;as&nbsp;raw&nbsp;prefixes&nbsp;are&nbsp;prefix&nbsp;of&nbsp;"not&nbsp;raw"&nbsp;*)</span><br>
@@ -298,7 +298,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;<span class="constructor">Not_found</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;(prefix,&nbsp;dir)&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;prefix)&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;prefix)&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;dir&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;f&nbsp;q<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -309,28 +309,28 @@
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_filename&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;uri&gt;"</span>&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file_uri&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;iri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_file_iri&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;print_filename_of_url&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_filename&nbsp;=<br>
-&nbsp;&nbsp;(<span class="string">"filename"</span>,&nbsp;com_filename,&nbsp;<span class="string">"print&nbsp;the&nbsp;filename&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;file&nbsp;uri"</span>)<br>
+&nbsp;&nbsp;(<span class="string">"filename"</span>,&nbsp;com_filename,&nbsp;<span class="string">"print&nbsp;the&nbsp;filename&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;file&nbsp;iri"</span>)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;ref_inst_of_inst&nbsp;ctx&nbsp;opts&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;opts.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;::&nbsp;_&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;inst&nbsp;chain&nbsp;uri"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;inst&nbsp;chain&nbsp;iri"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.reference_inst_of_inst&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.reference_inst_of_inst&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_ref_inst_of_inst&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;<span class="constructor">Cmdline</span>.com_options&nbsp;=&nbsp;[]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;iri&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_ichain&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;(<span class="constructor">Main_cmd</span>.mk_ctx_fun&nbsp;ref_inst_of_inst)&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -345,9 +345,9 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[input&nbsp;;&nbsp;chain_name]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=&nbsp;<span class="constructor">Fname</span>.relative&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_chain&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.reference_insts&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))&nbsp;l<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))&nbsp;l<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;input&nbsp;name&nbsp;and&nbsp;chain&nbsp;fullname,&nbsp;no&nbsp;less,&nbsp;no&nbsp;more"</span><br>
 ;;<br>
@@ -368,10 +368,10 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;list_diffcommands&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Grdf_diff</span>.command_path&nbsp;wld&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;path)<br>
+&nbsp;&nbsp;<span class="constructor">Iriset</span>.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Grdf_diff</span>.command_path&nbsp;wld&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_diff</span>.diffcommands&nbsp;wld)<br>
 ;;<br>
@@ -417,16 +417,16 @@ let&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"&lt;url&gt;&nbsp;look&nbsp;for&nbsp;other&nbsp;executions&nbsp;'almost'&nbsp;like&nbsp;the&nbsp;given&nbsp;one")&nbsp;;<br>
 <br>
 let&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;let&nbsp;_uri_inst&nbsp;=&nbsp;Rdf_uri.uri&nbsp;s&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;_iri_inst&nbsp;=&nbsp;Rdf_iri.iri&nbsp;s&nbsp;in<br>
 &nbsp;&nbsp;[]<br>
 ;;<br>
 <br>
 let&nbsp;lookup_and_print_insts&nbsp;ctx&nbsp;s&nbsp;=<br>
 &nbsp;&nbsp;let&nbsp;insts&nbsp;=&nbsp;lookup_insts&nbsp;ctx&nbsp;s&nbsp;in<br>
 &nbsp;&nbsp;List.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(fun&nbsp;uri&nbsp;-&gt;&nbsp;print_endline&nbsp;(Rdf_uri.string&nbsp;uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(fun&nbsp;iri&nbsp;-&gt;&nbsp;print_endline&nbsp;(Rdf_iri.string&nbsp;iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;insts;<br>
-&nbsp;&nbsp;let&nbsp;dot&nbsp;=&nbsp;Chn_lookup.make_graph&nbsp;ctx&nbsp;(Rdf_uri.uri&nbsp;s)&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;dot&nbsp;=&nbsp;Chn_lookup.make_graph&nbsp;ctx&nbsp;(Rdf_iri.iri&nbsp;s)&nbsp;in<br>
 &nbsp;&nbsp;let&nbsp;svg&nbsp;=&nbsp;Grdf_dot.dot_to_svg&nbsp;~program:&nbsp;"circo"&nbsp;dot&nbsp;in<br>
 &nbsp;&nbsp;print_endline&nbsp;(Xtmpl.string_of_xmls&nbsp;svg)<br>
 ;;<br>

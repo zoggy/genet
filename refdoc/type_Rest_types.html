@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_types</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;arg&nbsp;=&nbsp;string&nbsp;*&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get_arg&nbsp;:&nbsp;<span class="constructor">Rest_types</span>.arg&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;path&nbsp;=&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;json&nbsp;=&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;met&nbsp;=<br>
@@ -92,31 +90,31 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Put</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.path&nbsp;*&nbsp;<span class="constructor">Rest_types</span>.json<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;content_type&nbsp;=&nbsp;<span class="constructor">Xhtml</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Json</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;inst_chain_query&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;iq_chain&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;iq_tools&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="constructor">Urimap</span>.t;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iq_chain&nbsp;:&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;option;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;iq_tools&nbsp;:&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span>.t;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;iq_input&nbsp;:&nbsp;(string&nbsp;list&nbsp;*&nbsp;string&nbsp;option)&nbsp;option;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;thing&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Tool</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branch</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Tool</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branch</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tools</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetypes</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Static_file</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;*&nbsp;string<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Other</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Other</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chains</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain_module</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chains</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_module</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_list</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out_file</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list&nbsp;*&nbsp;bool<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_producers_of</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inputs</span><br>
@@ -124,7 +122,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Input_file</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;list&nbsp;*&nbsp;string&nbsp;list&nbsp;*&nbsp;bool<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chains</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_query</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rest_types</span>.inst_chain_query<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Diff_inst_chains</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;response&nbsp;=&nbsp;<span class="constructor">Rest_types</span>.arg&nbsp;list&nbsp;*&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;user&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.user<br>

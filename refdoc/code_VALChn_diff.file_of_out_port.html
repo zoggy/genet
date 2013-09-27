@@ -74,25 +74,23 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_diff.file_of_out_port</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;file_of_out_port&nbsp;ctx&nbsp;uri&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;file_of_out_port&nbsp;ctx&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_uri&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_uri&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;file_uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;file&nbsp;associated&nbsp;to&nbsp;port&nbsp;uri&nbsp;%S"</span>&nbsp;s_uri)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file_uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_file_uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;file_uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file_iri&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_iri&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;file_iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;file&nbsp;associated&nbsp;to&nbsp;port&nbsp;iri&nbsp;%S"</span>&nbsp;s_iri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file_iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_file_iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;file_iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_dir&nbsp;=&nbsp;<span class="constructor">Config</span>.out_dir&nbsp;config&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_prefix&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_prefix&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_outfile_path&nbsp;prefix&nbsp;[]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;out_prefix)&nbsp;s_file_uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;out_prefix)&nbsp;s_file_iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;out_dir&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;output&nbsp;file&nbsp;uri"</span>&nbsp;s_file_uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;output&nbsp;file&nbsp;iri"</span>&nbsp;s_file_iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg</code></body></html>

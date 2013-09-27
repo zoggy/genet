@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.fchain_dot_printer.print_op</title>
 </head>
 <body>
-<code class="code"><span class="keyword">method</span>&nbsp;print_op&nbsp;ctx&nbsp;b&nbsp;?(maxdepth=max_int)&nbsp;~depth&nbsp;~cluster&nbsp;acc&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"print_op&nbsp;uri=%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+<code class="code"><span class="keyword">method</span>&nbsp;print_op&nbsp;ctx&nbsp;b&nbsp;?(maxdepth=max_int)&nbsp;~depth&nbsp;~cluster&nbsp;acc&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"print_op&nbsp;iri=%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;depth&nbsp;&gt;&nbsp;maxdepth&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<span class="keywordsign">#</span>do_print_op&nbsp;ctx&nbsp;b&nbsp;~maxdepth&nbsp;~depth&nbsp;~cluster&nbsp;acc&nbsp;uri</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<span class="keywordsign">#</span>do_print_op&nbsp;ctx&nbsp;b&nbsp;~maxdepth&nbsp;~depth&nbsp;~cluster&nbsp;acc&nbsp;iri</code></body></html>

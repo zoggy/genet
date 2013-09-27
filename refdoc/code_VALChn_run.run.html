@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.run</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;run&nbsp;ctx&nbsp;reporter&nbsp;~inst&nbsp;~fchain&nbsp;input&nbsp;comb&nbsp;g&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_start_date_uri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_start_date_iri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmp_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.temp_file&nbsp;<span class="string">"genet-run"</span>&nbsp;<span class="string">".dir"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Sys</span>.remove&nbsp;(<span class="constructor">Fname</span>.string&nbsp;tmp_dir);<br>
@@ -98,17 +96,17 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(state,&nbsp;run_ok)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(run_nodes&nbsp;ctx&nbsp;reporter&nbsp;inst&nbsp;tmp_dir&nbsp;state,&nbsp;<span class="keyword">true</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Exec_failed</span>&nbsp;(state,&nbsp;_,&nbsp;inst_node,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_failedcommand<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(uri_of_g_uri&nbsp;inst_node);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_stop_date_uri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(iri_of_g_iri&nbsp;inst_node);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_stop_date_iri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(state,&nbsp;<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"/tmp/inst_run-%d.dot"</span>&nbsp;(<span class="constructor">Guriset</span>.cardinal&nbsp;state.nodes_run)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"/tmp/inst_run-%d.dot"</span>&nbsp;(<span class="constructor">Giriset</span>.cardinal&nbsp;state.nodes_run)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.file_of_string&nbsp;~file&nbsp;(dot_of_graph&nbsp;ctx&nbsp;state.g);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Graph&nbsp;generated&nbsp;in&nbsp;%S"</span>&nbsp;file);<br>
 <br>
@@ -123,14 +121,14 @@
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter2&nbsp;(record_file&nbsp;ctx&nbsp;reporter)&nbsp;out_files&nbsp;inst_out_ports;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_stop_date_uri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_stop_date_iri&nbsp;ctx.ctx_rdf&nbsp;inst&nbsp;();<br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;add&nbsp;"consumes"&nbsp;links&nbsp;in&nbsp;database&nbsp;between&nbsp;instanciated&nbsp;ports&nbsp;of&nbsp;the&nbsp;final&nbsp;graph,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;be&nbsp;able&nbsp;to&nbsp;display&nbsp;correctly&nbsp;the&nbsp;execution&nbsp;graph&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_edge&nbsp;(_,&nbsp;(p1,&nbsp;p2))&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;p1,&nbsp;p2&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Inst</span>&nbsp;sub,&nbsp;<span class="constructor">Inst</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf&nbsp;~sub&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf&nbsp;~sub&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_succ&nbsp;_&nbsp;l&nbsp;=&nbsp;<span class="constructor">List</span>.iter&nbsp;f_edge&nbsp;l&nbsp;<span class="keyword">in</span><br>
@@ -141,7 +139,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;not_executed&nbsp;=&nbsp;<span class="constructor">Graph</span>.fold_pred&nbsp;state.g<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;node&nbsp;_&nbsp;acc&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Guriset</span>.mem&nbsp;node&nbsp;state.nodes_run&nbsp;<span class="keyword">then</span>&nbsp;acc&nbsp;<span class="keyword">else</span>&nbsp;(g_uri_string&nbsp;node)&nbsp;::&nbsp;acc)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Giriset</span>.mem&nbsp;node&nbsp;state.nodes_run&nbsp;<span class="keyword">then</span>&nbsp;acc&nbsp;<span class="keyword">else</span>&nbsp;(g_iri_string&nbsp;node)&nbsp;::&nbsp;acc)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;not_executed&nbsp;<span class="keyword">with</span><br>

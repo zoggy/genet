@@ -74,12 +74,10 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_version.versions</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;versions&nbsp;wld&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_version.versions"</span>);<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;wld<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version)</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version)</code></body></html>

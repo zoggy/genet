@@ -74,27 +74,25 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.add_edges_from_maps</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;add_edges_from_maps&nbsp;ctx&nbsp;map_in&nbsp;map_out&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;=&nbsp;merge_port_maps&nbsp;map_in&nbsp;map_out&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;find&nbsp;p&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Urimap</span>.find&nbsp;p&nbsp;map<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Irimap</span>.find&nbsp;p&nbsp;map<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"port&nbsp;%s&nbsp;could&nbsp;not&nbsp;be&nbsp;mapped"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;p))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"port&nbsp;%s&nbsp;could&nbsp;not&nbsp;be&nbsp;mapped"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;p))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_ports&nbsp;dir&nbsp;new_port&nbsp;ports&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;find&nbsp;ports&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;dir&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;sub&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;sub&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;new_port)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;new_port&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;ports<br>
@@ -105,4 +103,4 @@
 &nbsp;&nbsp;&nbsp;&nbsp;map_ports&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;new_port&nbsp;producers;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;map_ports&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;new_port&nbsp;consumers<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Urimap</span>.iter&nbsp;f_orig_port&nbsp;map</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Irimap</span>.iter&nbsp;f_orig_port&nbsp;map</code></body></html>

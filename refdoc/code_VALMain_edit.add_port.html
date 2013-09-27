@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_edit.add_port</title>
 </head>
 <body>
@@ -83,7 +81,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;!port_position&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s_intf&nbsp;::&nbsp;s_dir&nbsp;::&nbsp;ptype&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_intf&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;s_intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.dir_of_string&nbsp;s_dir&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_port</span>.parse_port_type&nbsp;ptype<br>
@@ -100,19 +98,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdf_ftype</span>.parse_filetype_ident&nbsp;name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;port&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;interface&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_intf));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;iri_intf&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;interface&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_intf));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_uri&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;ptype&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_iri&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;ptype&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri_ftype&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_ftype</span>.filetype_exists&nbsp;wld&nbsp;uri_ftype&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;filetype&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_ftype))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri_ftype&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_ftype</span>.filetype_exists&nbsp;wld&nbsp;iri_ftype&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;filetype&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_ftype))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.add_port&nbsp;wld&nbsp;uri_intf&nbsp;dir&nbsp;?pos&nbsp;?name&nbsp;ptype;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_port&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.get_port&nbsp;wld&nbsp;uri_intf&nbsp;?pos&nbsp;dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.add_port&nbsp;wld&nbsp;iri_intf&nbsp;dir&nbsp;?pos&nbsp;?name&nbsp;ptype;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_port&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.get_port&nbsp;wld&nbsp;iri_intf&nbsp;?pos&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_port)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;the&nbsp;interface&nbsp;uri,&nbsp;the&nbsp;direction&nbsp;(in|out)&nbsp;and&nbsp;the&nbsp;filetype&nbsp;name"</span></code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;the&nbsp;interface&nbsp;iri,&nbsp;the&nbsp;direction&nbsp;(in|out)&nbsp;and&nbsp;the&nbsp;filetype&nbsp;name"</span></code></body></html>

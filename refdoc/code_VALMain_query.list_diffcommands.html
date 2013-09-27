@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_query.list_diffcommands</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;list_diffcommands&nbsp;_&nbsp;wld&nbsp;_&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Grdf_diff</span>.command_path&nbsp;wld&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;path)<br>
+&nbsp;&nbsp;<span class="constructor">Iriset</span>.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Misc</span>.string_of_opt&nbsp;(<span class="constructor">Grdf_diff</span>.command_path&nbsp;wld&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;path)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_diff</span>.diffcommands&nbsp;wld)</code></body></html>

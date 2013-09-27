@@ -74,25 +74,23 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.xhtml_chain_dot_deps</title>
 </head>
 <body>
-<code class="code"><span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+<code class="code"><span class="constructor">Rdf_iri</span>.iri&nbsp;<span class="keywordsign">-&gt;</span><br>
 <span class="keyword">object</span><br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;chain_id&nbsp;:&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Cset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_deps&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?fullnames:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_deps&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Cmap</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;intf_id&nbsp;:&nbsp;<span class="constructor">Sset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_chn&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;fullnames:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Cmap</span>.key&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_deps&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_dep_chn&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.<span class="constructor">Cset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_dep_intf&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_intf&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_intf&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 <span class="keyword">end</span></code></body></html>

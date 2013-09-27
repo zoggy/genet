@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst_query.instances_of_fchain</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;instances_of_fchain&nbsp;ctx&nbsp;?acc&nbsp;uri_fchain&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
+<code class="code"><span class="keyword">let</span>&nbsp;instances_of_fchain&nbsp;ctx&nbsp;?acc&nbsp;iri_fchain&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_instanciate<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri_fchain)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri_fchain)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;uriset_of_list&nbsp;?acc&nbsp;list</code></body></html>
+&nbsp;&nbsp;iriset_of_list&nbsp;?acc&nbsp;list</code></body></html>

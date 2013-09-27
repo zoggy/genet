@@ -74,12 +74,10 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdfs.add_name</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;add_name&nbsp;wld&nbsp;sub&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;genet_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj</code></body></html>

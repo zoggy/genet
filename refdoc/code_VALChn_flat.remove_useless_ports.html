@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.remove_useless_ports</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;remove_useless_ports&nbsp;ctx&nbsp;uri_fchain&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_port&nbsp;uri_op&nbsp;p&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;remove_useless_ports&nbsp;ctx&nbsp;iri_fchain&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_port&nbsp;iri_op&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;producers&nbsp;=&nbsp;port_producers&nbsp;ctx&nbsp;p&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;consumers&nbsp;=&nbsp;port_consumers&nbsp;ctx&nbsp;p&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;producers,&nbsp;consumers&nbsp;<span class="keyword">with</span><br>
@@ -89,26 +87,26 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[],&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;::&nbsp;_&nbsp;::&nbsp;_,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Port&nbsp;%s&nbsp;has&nbsp;more&nbsp;than&nbsp;one&nbsp;producer!"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;p)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[producer],&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_succ&nbsp;p_succ&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;p&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;p_succ;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;producer&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;p;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;producer&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;p_succ<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_succ&nbsp;consumers<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_dir&nbsp;uri_op&nbsp;dir&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;uri_op&nbsp;dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(f_port&nbsp;uri_op)&nbsp;ports<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_dir&nbsp;iri_op&nbsp;dir&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;iri_op&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(f_port&nbsp;iri_op)&nbsp;ports<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_op&nbsp;uri_op&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;f_dir&nbsp;uri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;f_dir&nbsp;uri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_op&nbsp;iri_op&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f_dir&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f_dir&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>;<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_op&nbsp;(get_ops&nbsp;ctx&nbsp;uri_fchain)</code></body></html>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_op&nbsp;(get_ops&nbsp;ctx&nbsp;iri_fchain)</code></body></html>

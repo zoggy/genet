@@ -74,23 +74,21 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.copy_flat_port</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;copy_flat_port&nbsp;ctx&nbsp;~inst&nbsp;~container&nbsp;?cpt&nbsp;flat_port&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flat_port&nbsp;=&nbsp;uri_of_g_uri&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;container&nbsp;=&nbsp;uri_of_g_uri&nbsp;container&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_port&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_inst_port_of_flat_port&nbsp;~ichain:&nbsp;<span class="keyword">true</span>&nbsp;?cpt<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flat_port&nbsp;=&nbsp;iri_of_g_iri&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;container&nbsp;=&nbsp;iri_of_g_iri&nbsp;container&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_port&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_inst_port_of_flat_port&nbsp;~ichain:&nbsp;<span class="keyword">true</span>&nbsp;?cpt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;~inst&nbsp;~flat:&nbsp;flat_port<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Grdf_port</span>.set_port_type&nbsp;ctx.ctx_rdf&nbsp;inst_port&nbsp;ptype;<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst_port&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;flat_port;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_dir&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;container&nbsp;~pred&nbsp;~obj:&nbsp;inst_port;<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;container&nbsp;~pred&nbsp;~obj:&nbsp;inst_port;<br>
 &nbsp;&nbsp;<span class="constructor">Inst</span>&nbsp;inst_port</code></body></html>

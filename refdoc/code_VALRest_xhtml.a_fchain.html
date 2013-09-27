@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.a_fchain</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;a_fchain&nbsp;ctx&nbsp;?label&nbsp;fullname&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_fchain&nbsp;prefix&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_fchain&nbsp;prefix&nbsp;fullname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;label&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.string_of_chain_basename&nbsp;(<span class="constructor">Chn_types</span>.fchain_basename&nbsp;fullname)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>

@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.inst_chain_query</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;inst_chain_query&nbsp;ctx&nbsp;iq&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;iq.<span class="constructor">Rest_types</span>.iq_input,&nbsp;iq.<span class="constructor">Rest_types</span>.iq_chain,&nbsp;<span class="constructor">Urimap</span>.is_empty&nbsp;iq.<span class="constructor">Rest_types</span>.iq_tools&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;iq.<span class="constructor">Rest_types</span>.iq_input,&nbsp;iq.<span class="constructor">Rest_types</span>.iq_chain,&nbsp;<span class="constructor">Irimap</span>.is_empty&nbsp;iq.<span class="constructor">Rest_types</span>.iq_tools&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;one&nbsp;criterium"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_list&nbsp;=&nbsp;<span class="constructor">Chn_inst_query</span>.query_instances&nbsp;ctx<br>

@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.get</title>
 </head>
 <body>
@@ -83,24 +81,24 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;thing&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Other</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_root&nbsp;ctx<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Static_file</span>&nbsp;(f,&nbsp;t)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;([ctype&nbsp;~t&nbsp;()],&nbsp;<span class="constructor">Misc</span>.string_of_file&nbsp;f)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_tool&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_tool&nbsp;ctx&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tools</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_tools&nbsp;ctx<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branch</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branch&nbsp;ctx&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_version&nbsp;ctx&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intf&nbsp;ctx&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intfs&nbsp;ctx&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_filetype&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branch</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branch&nbsp;ctx&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_version&nbsp;ctx&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intf&nbsp;ctx&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_intfs&nbsp;ctx&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_filetype&nbsp;ctx&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetypes</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_filetypes&nbsp;ctx<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_versions&nbsp;ctx&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branches&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Versions</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_versions&nbsp;ctx&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Branches</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_branches&nbsp;ctx&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_chains&nbsp;ctx<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain_module</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_chain_module&nbsp;?nav:&nbsp;<span class="constructor">None</span>&nbsp;ctx)&nbsp;modname<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Chain</span>&nbsp;fullname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_chain&nbsp;ctx)&nbsp;fullname<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchains&nbsp;ctx<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_module</span>&nbsp;modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchain_module&nbsp;ctx&nbsp;modname<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_fchain&nbsp;ctx)&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_fchain&nbsp;ctx)&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Flat_chain_list</span>&nbsp;fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_fchain_list&nbsp;ctx&nbsp;fchain_name<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_ichain&nbsp;ctx&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_ichain&nbsp;ctx&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Out_file</span>&nbsp;(path,&nbsp;raw)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_outfile_error&nbsp;ctx&nbsp;(get_outfile&nbsp;ctx&nbsp;path)&nbsp;raw<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_producers_of</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inst_producers_of&nbsp;ctx&nbsp;path<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inputs</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inputs&nbsp;ctx<br>
@@ -109,5 +107,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handle_in_error&nbsp;ctx&nbsp;(get_input_file&nbsp;ctx&nbsp;~raw&nbsp;~input)&nbsp;file_path<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;get_inst_chains&nbsp;ctx&nbsp;args<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_query</span>&nbsp;iq&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;inst_chain_query&nbsp;ctx&nbsp;iq<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_ichain_op&nbsp;ctx)&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_ichain_op&nbsp;ctx)&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Diff_inst_chains</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;handle_chain_error&nbsp;ctx&nbsp;(get_diff_ichains&nbsp;ctx)&nbsp;args</code></body></html>

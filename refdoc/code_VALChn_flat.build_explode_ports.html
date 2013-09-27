@@ -74,24 +74,22 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.build_explode_ports</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;build_explode_ports&nbsp;ctx&nbsp;uri_op&nbsp;op_name&nbsp;port_ref&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;build_explode_ports&nbsp;ctx&nbsp;iri_op&nbsp;op_name&nbsp;port_ref&nbsp;=<br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;we&nbsp;assume&nbsp;that&nbsp;the&nbsp;operation&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;implode<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;was&nbsp;already&nbsp;flattened,&nbsp;so&nbsp;that&nbsp;we&nbsp;can&nbsp;retrieve&nbsp;ports&nbsp;from&nbsp;it&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we&nbsp;must&nbsp;to&nbsp;so&nbsp;because,&nbsp;in&nbsp;case&nbsp;this&nbsp;operation&nbsp;is&nbsp;another&nbsp;chain,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we&nbsp;must&nbsp;use&nbsp;the&nbsp;same&nbsp;version;&nbsp;reading&nbsp;the&nbsp;source&nbsp;file&nbsp;is&nbsp;less&nbsp;sure<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;using&nbsp;the&nbsp;already&nbsp;created&nbsp;flat&nbsp;operation&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_orig&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;uri_op)&nbsp;op_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;uri_orig&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_orig&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;(<span class="constructor">Grdfs</span>.iri_parent&nbsp;iri_op)&nbsp;op_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;iri_orig&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(port_type,&nbsp;name)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;iter&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Exploded&nbsp;port&nbsp;not&nbsp;found&nbsp;for&nbsp;operation&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_orig))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;uri&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(rank,&nbsp;typ,&nbsp;name)&nbsp;=&nbsp;port_info&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Exploded&nbsp;port&nbsp;not&nbsp;found&nbsp;for&nbsp;operation&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_orig))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;iri&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(rank,&nbsp;typ,&nbsp;name)&nbsp;=&nbsp;port_info&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;port_ref&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pint</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n&nbsp;=&nbsp;rank<br>

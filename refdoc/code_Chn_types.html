@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_types</title>
 </head>
 <body>
@@ -143,36 +141,36 @@
 <span class="keyword">let</span>&nbsp;compare_chain_basename&nbsp;=&nbsp;<span class="constructor">Pervasives</span>.compare;;<br>
 <span class="keyword">let</span>&nbsp;compare_chain_name&nbsp;=&nbsp;<span class="constructor">Pervasives</span>.compare;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_chain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_chain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;modname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_chain_module&nbsp;prefix&nbsp;s<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_chain_module&nbsp;prefix&nbsp;s<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_chain&nbsp;prefix&nbsp;fullname&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_chain&nbsp;prefix&nbsp;fullname&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(chain_modname&nbsp;fullname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;chain_basename&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_chain&nbsp;~prefix&nbsp;~modname&nbsp;name<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_chain&nbsp;~prefix&nbsp;~modname&nbsp;name<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;is_uri_chain_module&nbsp;prefix&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_uri_chain_module&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;is_iri_chain_module&nbsp;prefix&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_iri_chain_module&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;slashes_modname&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Misc</span>.split_string&nbsp;slashes_modname&nbsp;[<span class="string">'/'</span>])<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;is_uri_chain&nbsp;prefix&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_uri_chain&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;is_iri_chain&nbsp;prefix&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_iri_chain&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;(slashes_modname,&nbsp;name)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Misc</span>.split_string&nbsp;slashes_modname&nbsp;[<span class="string">'/'</span>],&nbsp;name)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_intf_of_interface_spec&nbsp;~prefix&nbsp;s&nbsp;&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_intf_of_interface_spec&nbsp;~prefix&nbsp;s&nbsp;&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;s&nbsp;[<span class="string">'/'</span>]&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[tool&nbsp;;&nbsp;intf]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_tool&nbsp;~prefix&nbsp;~tool&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_intf&nbsp;~tool&nbsp;~intf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_tool&nbsp;~prefix&nbsp;~tool&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_intf&nbsp;~tool&nbsp;~intf<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"invalid&nbsp;interface&nbsp;name:&nbsp;%S"</span>&nbsp;s)<br>
 ;;<br>
@@ -185,33 +183,33 @@
 <span class="keyword">let</span>&nbsp;fchain_basename&nbsp;(name,_)&nbsp;=&nbsp;chain_basename&nbsp;name;;<br>
 <span class="keyword">let</span>&nbsp;mk_fchain_name&nbsp;name&nbsp;id&nbsp;=&nbsp;(name,&nbsp;<span class="constructor">Misc</span>.opt_of_string&nbsp;id);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_fchain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_fchain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;modname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_fchain_module&nbsp;prefix&nbsp;s<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_fchain_module&nbsp;prefix&nbsp;s<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_fchain&nbsp;prefix&nbsp;(fullname,&nbsp;id)&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_fchain&nbsp;prefix&nbsp;(fullname,&nbsp;id)&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(chain_modname&nbsp;fullname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;chain_basename&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_fchain&nbsp;~prefix&nbsp;~modname&nbsp;?id&nbsp;~name<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_fchain&nbsp;~prefix&nbsp;~modname&nbsp;?id&nbsp;~name<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;is_uri_fchain_module&nbsp;prefix&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"is_uri_fchain_module&nbsp;%s"&nbsp;(Rdf_uri.string&nbsp;uri));*)</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_uri_fchain_module&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;is_iri_fchain_module&nbsp;prefix&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"is_iri_fchain_module&nbsp;%s"&nbsp;(Rdf_iri.string&nbsp;iri));*)</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_iri_fchain_module&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;slashes_modname&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;<span class="constructor">Misc</span>.split_string&nbsp;slashes_modname&nbsp;[<span class="string">'/'</span>]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(modname)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;is_uri_fchain&nbsp;ctx&nbsp;uri&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;is_iri_fchain&nbsp;ctx&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_uri_fchain&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_iri_fchain&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;((modname,&nbsp;name),&nbsp;id)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.subject_uri&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_flattenedto&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.subject_iri&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_flattenedto&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;((modname,&nbsp;name),&nbsp;<span class="constructor">Misc</span>.opt_of_string&nbsp;id)<br>
@@ -228,78 +226,78 @@
 &nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s/%s"</span>&nbsp;(string_of_chain_name&nbsp;chain_name)&nbsp;id<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_ichain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_ichain_module&nbsp;prefix&nbsp;modname&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;modname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_ichain_module&nbsp;prefix&nbsp;s<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_ichain_module&nbsp;prefix&nbsp;s<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_ichain&nbsp;prefix&nbsp;(fullname,&nbsp;id)&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_ichain&nbsp;prefix&nbsp;(fullname,&nbsp;id)&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;modname&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(chain_modname&nbsp;fullname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;chain_basename&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uri_ichain&nbsp;~prefix&nbsp;~modname&nbsp;~name&nbsp;~id<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iri_ichain&nbsp;~prefix&nbsp;~modname&nbsp;~name&nbsp;~id<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_inst_opn_of_flat_opn&nbsp;?(ichain=<span class="keyword">false</span>)&nbsp;?cpt&nbsp;~prefix&nbsp;~inst&nbsp;~flat&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_inst_opn_of_flat_opn&nbsp;?(ichain=<span class="keyword">false</span>)&nbsp;?cpt&nbsp;~prefix&nbsp;~inst&nbsp;~flat&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_in_fchains&nbsp;prefix&nbsp;flat&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">when</span>&nbsp;not&nbsp;ichain&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;a&nbsp;flat&nbsp;chain&nbsp;uri"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;flat))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;a&nbsp;flat&nbsp;chain&nbsp;iri"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;flat))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_in_ichains&nbsp;prefix&nbsp;flat&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;inst&nbsp;chain&nbsp;uri"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;flat))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;inst&nbsp;chain&nbsp;iri"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;flat))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.split_fchain_name&nbsp;base&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fchain_op</span>&nbsp;(_,_,path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;inst&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">`</span><span class="constructor">Fchain_op</span>&nbsp;(_,_,path)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;inst&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keywordsign">`</span><span class="constructor">Fullname</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;inst<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;a&nbsp;flat&nbsp;chain&nbsp;uri"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;flat)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;a&nbsp;flat&nbsp;chain&nbsp;iri"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;flat)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;cpt&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;inst<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;inst)&nbsp;<span class="keyword">with</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;name&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;(<span class="constructor">Rdf_uri</span>.parent&nbsp;inst)&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s-%d"</span>&nbsp;name&nbsp;n)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">List</span>.rev&nbsp;(<span class="constructor">Rdf_iri</span>.path&nbsp;inst)&nbsp;<span class="keyword">with</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;name&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;(<span class="constructor">Grdfs</span>.iri_parent&nbsp;inst)&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s-%d"</span>&nbsp;name&nbsp;n)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_inst_port_of_flat_port&nbsp;?ichain&nbsp;?cpt&nbsp;ctx&nbsp;~inst&nbsp;~flat&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;iri_inst_port_of_flat_port&nbsp;?ichain&nbsp;?cpt&nbsp;ctx&nbsp;~inst&nbsp;~flat&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flat_opn&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.port_container&nbsp;flat&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_opn&nbsp;=&nbsp;uri_inst_opn_of_flat_opn&nbsp;?ichain&nbsp;?cpt<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_opn&nbsp;=&nbsp;iri_inst_opn_of_flat_opn&nbsp;?ichain&nbsp;?cpt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~prefix:&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;~inst&nbsp;~flat:&nbsp;flat_opn&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_dir&nbsp;flat&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rank&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_rank&nbsp;flat&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;dir&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.uri_intf_in_port<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.uri_intf_out_port<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.iri_intf_in_port<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.iri_intf_out_port<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;inst_opn&nbsp;rank<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;inst_port<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;is_uri_ichain&nbsp;prefix&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_uri_ichain&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;is_iri_ichain&nbsp;prefix&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.is_iri_ichain&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;((modname,&nbsp;name),&nbsp;id)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;((modname,&nbsp;name),&nbsp;id)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;ichain_op_name&nbsp;~ichain&nbsp;op&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;ichain)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;op)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.path&nbsp;ichain)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.path&nbsp;op)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Misc</span>.path_under&nbsp;~parent&nbsp;path<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_ichain_op&nbsp;ichain&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;ichain&nbsp;path<br>
+<span class="keyword">let</span>&nbsp;iri_ichain_op&nbsp;ichain&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;ichain&nbsp;path<br>
 ;;<br>
 <br>
 <br>

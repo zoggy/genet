@@ -74,20 +74,18 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.reference_insts</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;reference_insts&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input))<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;chain)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_refs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;chain)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_input&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.add&nbsp;uri&nbsp;set)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;input_refs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Iriset</span>.add&nbsp;iri&nbsp;set)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;input_refs<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.mem&nbsp;uri&nbsp;set_input)&nbsp;chain_refs</code></body></html>
+&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Iriset</span>.mem&nbsp;iri&nbsp;set_input)&nbsp;chain_refs</code></body></html>

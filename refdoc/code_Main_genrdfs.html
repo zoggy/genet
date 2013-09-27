@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_genrdfs</title>
 </head>
 <body>
@@ -106,37 +104,37 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Main module of the program generating the RDFschema of genet. *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_term</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_triple&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.add_triple;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;sub&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_label&nbsp;wld&nbsp;sub&nbsp;label&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"label"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"label"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_comment&nbsp;wld&nbsp;sub&nbsp;label&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"comment"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"comment"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;label&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_type&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.add_type;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_istype_class&nbsp;wld&nbsp;sub&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Class"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Class"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_istype_property&nbsp;wld&nbsp;sub&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Property"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Property"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj<br>
 ;;<br>
 <br>
@@ -146,54 +144,54 @@
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;sub&nbsp;label;<br>
 &nbsp;&nbsp;add_comment&nbsp;wld&nbsp;sub&nbsp;comment;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"isDefinedBy"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj:&nbsp;definedby;<br>
 <br>
 &nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;domain&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"domain"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"domain"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
 &nbsp;&nbsp;);<br>
 <br>
 &nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;range&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"range"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.rdfs_<span class="string">"range"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
 &nbsp;&nbsp;)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_tool_class&nbsp;wld&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_tool&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_tool&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_tool&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_tool&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_tool;<br>
 &nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_tool;<br>
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_tool&nbsp;<span class="string">"Tool"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_branch_class&nbsp;wld&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_branch&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_branch&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_branch;<br>
 &nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_branch;<br>
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_branch&nbsp;<span class="string">"Branch"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_intf_class&nbsp;wld&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_intf;<br>
 &nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_intf;<br>
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_intf&nbsp;<span class="string">"Interface"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_version_class&nbsp;wld&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_version&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_version&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_version;<br>
 &nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_version;<br>
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_version&nbsp;<span class="string">"Version"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_filetype_class&nbsp;wld&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_ft&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_ft&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;add_istype_class&nbsp;wld&nbsp;uri_ft;<br>
 &nbsp;&nbsp;add_isdefined_by_genet&nbsp;wld&nbsp;uri_ft;<br>
 &nbsp;&nbsp;add_label&nbsp;wld&nbsp;uri_ft&nbsp;<span class="string">"Filetype"</span><br>
@@ -206,12 +204,12 @@
 &nbsp;&nbsp;add_version_class&nbsp;wld;<br>
 &nbsp;&nbsp;add_filetype_class&nbsp;wld;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_literal&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Literal"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_branch&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_intf&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_version&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_filetype&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_seq&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdf_<span class="string">"Seq"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_literal&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdfs_<span class="string">"Literal"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_branch&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_intf&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_version&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_version&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_filetype&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_filetype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_seq&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;(<span class="constructor">Grdfs</span>.rdf_<span class="string">"Seq"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;props&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_name,&nbsp;<span class="string">"has&nbsp;name"</span>,&nbsp;<span class="string">"Name"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_literal)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_hasbranch,&nbsp;<span class="string">"has&nbsp;branch"</span>,&nbsp;<span class="string">"Has&nbsp;a&nbsp;branch"</span>,&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_branch)&nbsp;;<br>
@@ -225,12 +223,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_produces,&nbsp;<span class="string">"produces"</span>,&nbsp;<span class="string">"Filetypes&nbsp;produced,&nbsp;ordered"</span>,&nbsp;<span class="constructor">Some</span>&nbsp;node_intf,&nbsp;<span class="constructor">Some</span>&nbsp;node_seq);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;definedby&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;definedby&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
 &nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(uri,&nbsp;label,&nbsp;comment,&nbsp;domain,&nbsp;range)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add_property&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~label&nbsp;~comment&nbsp;~definedby&nbsp;?domain&nbsp;?range<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Iri</span>&nbsp;uri)<br>
 &nbsp;&nbsp;)<br>
 &nbsp;&nbsp;props<br>
 ;;<br>

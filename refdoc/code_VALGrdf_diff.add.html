@@ -74,24 +74,22 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_diff.add</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;add&nbsp;prefix&nbsp;wld&nbsp;?(force=<span class="keyword">false</span>)&nbsp;~name&nbsp;~path&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.add&nbsp;name="</span>^name);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_diffcommand&nbsp;~prefix&nbsp;~name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_diffcommand&nbsp;~prefix&nbsp;~name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;force&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Diff&nbsp;command&nbsp;already&nbsp;exists:&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_command_path&nbsp;wld&nbsp;uri&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Diff&nbsp;command&nbsp;already&nbsp;exists:&nbsp;"</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_command_path&nbsp;wld&nbsp;iri&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_command_path&nbsp;wld&nbsp;uri&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do_add&nbsp;wld&nbsp;iri&nbsp;name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_command_path&nbsp;wld&nbsp;iri&nbsp;path<br>
 &nbsp;&nbsp;<span class="keyword">end</span>;<br>
-&nbsp;&nbsp;uri</code></body></html>
+&nbsp;&nbsp;iri</code></body></html>

@@ -74,25 +74,23 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.compute_version_replacement</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;compute_version_replacement&nbsp;ctx&nbsp;comb&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(versions,&nbsp;comb)&nbsp;=&nbsp;<span class="constructor">Urimap</span>.fold<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;version&nbsp;(versions,&nbsp;comb)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(versions,&nbsp;comb)&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span>.fold<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;version&nbsp;(versions,&nbsp;comb)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%%{version-%s}"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.ctx_rdf&nbsp;iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;re&nbsp;=&nbsp;<span class="constructor">Str</span>.regexp_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;v&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;ctx.ctx_rdf&nbsp;version&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((re,&nbsp;v)&nbsp;::&nbsp;versions,&nbsp;<span class="constructor">Urimap</span>.add&nbsp;uri&nbsp;v&nbsp;comb)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((re,&nbsp;v)&nbsp;::&nbsp;versions,&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span>.add&nbsp;iri&nbsp;v&nbsp;comb)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;comb<br>
-&nbsp;&nbsp;&nbsp;&nbsp;([],&nbsp;<span class="constructor">Urimap</span>.empty)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;([],&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span>.empty)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;default_tool&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version&nbsp;=&nbsp;<span class="constructor">Urimap</span>.find&nbsp;default_tool&nbsp;comb&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span>.find&nbsp;default_tool&nbsp;comb&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;(<span class="constructor">Str</span>.regexp_string&nbsp;<span class="string">"%v"</span>,&nbsp;version)&nbsp;::&nbsp;versions&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;(<span class="keyword">fun</span>&nbsp;(re,v)&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Str</span>.global_replace&nbsp;re&nbsp;v&nbsp;s)&nbsp;versions&nbsp;s</code></body></html>

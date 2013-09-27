@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_types</title>
 </head>
 <body>
@@ -106,11 +104,11 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">type</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+<span class="keyword">type</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 <br>
 <span class="keyword">type</span>&nbsp;world&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;wld_graph&nbsp;:&nbsp;<span class="constructor">Rdf_graph</span>.graph&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;wld_prefix&nbsp;:&nbsp;uri&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wld_prefix&nbsp;:&nbsp;iri&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 <br>
 <span class="keyword">type</span>&nbsp;error&nbsp;=<br>
@@ -119,11 +117,11 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Version_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype_exists</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;<span class="keyword">of</span>&nbsp;uri<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool_of_branch_differs</span>&nbsp;<span class="keyword">of</span>&nbsp;uri&nbsp;*&nbsp;uri&nbsp;*&nbsp;uri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;<span class="keyword">of</span>&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;<span class="keyword">of</span>&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;<span class="keyword">of</span>&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;<span class="keyword">of</span>&nbsp;iri<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool_of_branch_differs</span>&nbsp;<span class="keyword">of</span>&nbsp;iri&nbsp;*&nbsp;iri&nbsp;*&nbsp;iri<br>
 <br>
 <span class="keyword">exception</span>&nbsp;<span class="constructor">Error</span>&nbsp;<span class="keyword">of</span>&nbsp;error<br>
 <br>
@@ -135,13 +133,13 @@
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Version_exists</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Version&nbsp;%s&nbsp;already&nbsp;exists."</span>&nbsp;name<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Intf_exists</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Interface&nbsp;%s&nbsp;already&nbsp;exists."</span>&nbsp;name<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Filetype_exists</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Filetype&nbsp;%s&nbsp;already&nbsp;exists."</span>&nbsp;name<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;tool&nbsp;nor&nbsp;a&nbsp;branch."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;branch&nbsp;nor&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;tool."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_tool_or_branch</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;tool&nbsp;nor&nbsp;a&nbsp;branch."</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_branch_or_version</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;neither&nbsp;a&nbsp;branch&nbsp;nor&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_tool</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;tool."</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+<span class="keywordsign">|</span>&nbsp;<span class="constructor">Not_a_version</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;is&nbsp;not&nbsp;a&nbsp;version."</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 <span class="keywordsign">|</span>&nbsp;<span class="constructor">Tool_of_branch_differs</span>&nbsp;(branch,&nbsp;branch_tool,&nbsp;tool)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"The&nbsp;tool&nbsp;of&nbsp;branch&nbsp;%s&nbsp;is&nbsp;%s&nbsp;but&nbsp;%s&nbsp;was&nbsp;expected."</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;branch)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;branch_tool)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;tool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;branch)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;branch_tool)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;tool)<br>
 ;;<br>
 <br>
 <span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;port_type&nbsp;=&nbsp;<span class="constructor">Var</span>&nbsp;<span class="keyword">of</span>&nbsp;string&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">T</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;<span class="keyword">of</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;port_type&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;<span class="keyword">of</span>&nbsp;(<span class="keywordsign">'</span>a&nbsp;port_type&nbsp;list)&nbsp;;;<br>

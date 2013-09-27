@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_types</title>
 </head>
 <body>
@@ -107,15 +105,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.chain_basename&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_basename&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;compare_chain_name&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_chain_module&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_chain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_uri_chain_module&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;option<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_uri_chain&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;option<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_intf_of_interface_spec&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_chain_module&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_chain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_iri_chain_module&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_iri_chain&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_intf_of_interface_spec&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;fchain_name<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fchain_id&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.version_id&nbsp;option<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fchain_chainname&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name<br>
@@ -123,13 +121,13 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fchain_basename&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_basename<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mk_fchain_name&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.version_id&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_fchain_module&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_fchain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_uri_fchain_module&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;option<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_uri_fchain&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_fchain_module&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_fchain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_iri_fchain_module&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_iri_fchain&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_name&nbsp;option<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;ichain_name<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ichain_id&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ichain_chainname&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_name<br>
@@ -138,21 +136,21 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mk_ichain_name&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.chain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.ichain_name<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string_of_ichain_name&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_ichain_module&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_ichain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_inst_opn_of_flat_opn&nbsp;:<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_ichain_module&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.chain_modname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_ichain&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_inst_opn_of_flat_opn&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?ichain:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?cpt:int&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;inst:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flat:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_inst_port_of_flat_port&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;inst:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flat:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_inst_port_of_flat_port&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?ichain:bool&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?cpt:int&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;inst:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flat:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_uri_ichain&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;option<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ichain_op_name&nbsp;:&nbsp;ichain:<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uri_ichain_op&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;inst:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;flat:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_iri_ichain&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.ichain_name&nbsp;option<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ichain_op_name&nbsp;:&nbsp;ichain:<span class="constructor">Rdf_iri</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iri_ichain_op&nbsp;:&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri<br>
 <span class="keyword">end</span></code></body></html>

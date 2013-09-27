@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.remove_ref_inst</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;remove_ref_inst&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;~inst&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;inst)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input));<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;inst)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;(<span class="constructor">Fname</span>.rel_string&nbsp;input));<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_refinstfor&nbsp;~obj:&nbsp;chain</code></body></html>

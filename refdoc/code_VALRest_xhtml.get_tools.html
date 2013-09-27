@@ -74,32 +74,30 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.get_tools</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;get_tools&nbsp;ctx&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wld&nbsp;=&nbsp;ctx.ctx_rdf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_tool&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_versions&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_versions&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_versions&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_tool&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_versions&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_versions&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_versions&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_branches&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;(<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">false</span>&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_branches&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_branches&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_branches&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;(<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">false</span>&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_branches&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_branches&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_intfs&nbsp;=&nbsp;<span class="constructor">Uriset</span>.cardinal&nbsp;(<span class="constructor">Grdf_intf</span>.intfs_of_tool&nbsp;wld&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_intfs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_intfs&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;n_intfs&nbsp;=&nbsp;<span class="constructor">Iriset</span>.cardinal&nbsp;(<span class="constructor">Grdf_intf</span>.intfs_of_tool&nbsp;wld&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href_intfs&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_intfs&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a&nbsp;~href:&nbsp;uri&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Grdf_tool</span>.name&nbsp;wld&nbsp;uri)]&nbsp;]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;href_versions&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_versions)]&nbsp;]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;href_branches&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_branches)]&nbsp;]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;href_intfs&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_intfs)]&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a&nbsp;~href:&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;iri)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Grdf_tool</span>.name&nbsp;wld&nbsp;iri)]&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;href_versions)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_versions)]&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;href_branches)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_branches)]&nbsp;]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;a&nbsp;~href:&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;href_intfs)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(string_of_int&nbsp;n_intfs)]&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[&nbsp;<span class="string">"Name"</span>&nbsp;;&nbsp;<span class="string">"Versions"</span>&nbsp;;&nbsp;<span class="string">"Branches"</span>&nbsp;;&nbsp;<span class="string">"Interfaces"</span>&nbsp;]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">List</span>.sort&nbsp;<span class="constructor">Rdf_uri</span>.compare&nbsp;tools&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">List</span>.sort&nbsp;<span class="constructor">Rdf_iri</span>.compare&nbsp;tools&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f_tool&nbsp;tools&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;[table&nbsp;~heads&nbsp;rows]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;<span class="string">"Tools"</span>&nbsp;contents)</code></body></html>

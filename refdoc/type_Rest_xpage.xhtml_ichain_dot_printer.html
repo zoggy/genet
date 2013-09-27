@@ -74,22 +74,23 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.xhtml_ichain_dot_printer</title>
 </head>
 <body>
 <code class="code"><span class="keyword">object</span><br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_of_port_dir&nbsp;:&nbsp;<span class="constructor">Grdf_port</span>.dir&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iri_id&nbsp;:&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;option&nbsp;*&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_op&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port_edges&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri_id&nbsp;:&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rest_xpage</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 <span class="keyword">end</span></code></body></html>

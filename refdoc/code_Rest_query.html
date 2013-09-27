@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query</title>
 </head>
 <body>
@@ -106,14 +104,14 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_term</span>;;<br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Rest_types</span>;;<br>
 <br>
 <span class="keyword">exception</span>&nbsp;<span class="constructor">Not_implemented</span>&nbsp;<span class="keyword">of</span>&nbsp;string;;<br>
 <span class="keyword">let</span>&nbsp;not_implemented&nbsp;msg&nbsp;=&nbsp;raise&nbsp;(<span class="constructor">Not_implemented</span>&nbsp;msg);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;rest_api_path&nbsp;config&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Neturl</span>.join_path&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;config.<span class="constructor">Config</span>.rest_api)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Neturl</span>.join_path&nbsp;(<span class="constructor">Rdf_iri</span>.path&nbsp;config.<span class="constructor">Config</span>.rest_api)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;len&nbsp;&lt;=&nbsp;0&nbsp;<span class="keywordsign">||</span>&nbsp;path.[len-1]&nbsp;&lt;&gt;&nbsp;<span class="string">'/'</span>&nbsp;<span class="keyword">then</span><br>
@@ -127,7 +125,7 @@
 <span class="keyword">let</span>&nbsp;allowed_files&nbsp;config&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.map<br>
 &nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(f,&nbsp;t)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.concat&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;f,&nbsp;(f,&nbsp;t)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;f),&nbsp;(f,&nbsp;t)))<br>
 &nbsp;&nbsp;[&nbsp;<span class="string">"style.css"</span>,&nbsp;<span class="string">"text/css"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"genet-logo.svg"</span>,&nbsp;<span class="string">"image/svg+xml"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"star.svg"</span>,&nbsp;<span class="string">"image/svg+xml"</span>&nbsp;;<br>
@@ -150,14 +148,16 @@
 &nbsp;&nbsp;}<br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_of_query_path&nbsp;ctx&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.neturl&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;<span class="constructor">Neturl</span>.modify_url&nbsp;~path:&nbsp;[]&nbsp;url&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Neturl</span>.string_of_url&nbsp;url&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;s&nbsp;^&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"uri_of_query_path:&nbsp;path=%s&nbsp;=&gt;&nbsp;uri=%s"&nbsp;path&nbsp;uri);*)</span><br>
-&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;uri<br>
+<span class="comment">(*<br>
+let&nbsp;uri_of_query_path&nbsp;ctx&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;Rdf_uri.neturl&nbsp;ctx.ctx_cfg.Config.rest_api&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;url&nbsp;=&nbsp;Neturl.modify_url&nbsp;~path:&nbsp;[]&nbsp;url&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;s&nbsp;=&nbsp;Neturl.string_of_url&nbsp;url&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;uri&nbsp;=&nbsp;s&nbsp;^&nbsp;path&nbsp;in<br>
+&nbsp;&nbsp;(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"uri_of_query_path:&nbsp;path=%s&nbsp;=&gt;&nbsp;uri=%s"&nbsp;path&nbsp;uri);*)<br>
+&nbsp;&nbsp;Rdf_uri.uri&nbsp;uri<br>
 ;;<br>
+*)</span><br>
 <br>
 <span class="comment">(*<br>
 let&nbsp;try_is_uri_of&nbsp;ctx&nbsp;uri&nbsp;=<br>
@@ -260,44 +260,46 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 </code><table><tr><td></td><td><span class="comment">(** Return the path relative to the application, i.e. the path to
   analyse to know what to do and return. *)</span></td></tr></table><code class="code"><br>
 <span class="keyword">let</span>&nbsp;application_path&nbsp;ctx&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix_path&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.path&nbsp;prefix)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Neturl</span>.split_path&nbsp;(<span class="constructor">Misc</span>.path_under&nbsp;~parent:&nbsp;prefix_path&nbsp;path)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;uri_append&nbsp;uri&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;len&nbsp;=&nbsp;<span class="constructor">String</span>.length&nbsp;s_uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_uri&nbsp;=&nbsp;<span class="keyword">if</span>&nbsp;s_uri.[len-1]&nbsp;=&nbsp;<span class="string">'/'</span>&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">String</span>.sub&nbsp;s_uri&nbsp;0&nbsp;(len-1)&nbsp;<span class="keyword">else</span>&nbsp;s_uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_uri&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s/%s"</span>&nbsp;s_uri&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"uri_append&nbsp;=&gt;&nbsp;%s"</span>&nbsp;s_uri);<br>
-&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri<br>
+<span class="comment">(*<br>
+let&nbsp;uri_append&nbsp;uri&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;let&nbsp;s_uri&nbsp;=&nbsp;Rdf_uri.string&nbsp;uri&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;len&nbsp;=&nbsp;String.length&nbsp;s_uri&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;s_uri&nbsp;=&nbsp;if&nbsp;s_uri.[len-1]&nbsp;=&nbsp;'/'&nbsp;then&nbsp;String.sub&nbsp;s_uri&nbsp;0&nbsp;(len-1)&nbsp;else&nbsp;s_uri&nbsp;in<br>
+&nbsp;&nbsp;let&nbsp;s_uri&nbsp;=&nbsp;Printf.sprintf&nbsp;"%s/%s"&nbsp;s_uri&nbsp;s&nbsp;in<br>
+&nbsp;&nbsp;prerr_endline&nbsp;(Printf.sprintf&nbsp;"uri_append&nbsp;=&gt;&nbsp;%s"&nbsp;s_uri);<br>
+&nbsp;&nbsp;Rdf_uri.uri&nbsp;s_uri<br>
 ;;<br>
+*)</span><br>
 <br>
-<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_branch&nbsp;uri_parent&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_branch&nbsp;iri_parent&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;uri_append&nbsp;uri_parent&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;iri_parent&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branch</span>&nbsp;uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;uri&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branch</span>&nbsp;iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;iri&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_branches&nbsp;uri_parent&nbsp;cur_uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branches</span>&nbsp;uri_parent<br>
-<span class="keywordsign">|</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;cur_uri&nbsp;q<br>
+<span class="keyword">let</span>&nbsp;read_path_branches&nbsp;iri_parent&nbsp;cur_iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branches</span>&nbsp;iri_parent<br>
+<span class="keywordsign">|</span>&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;cur_iri&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_intfs&nbsp;uri&nbsp;cur_uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;uri<br>
-<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Intf</span>&nbsp;(uri_append&nbsp;cur_uri&nbsp;s)<br>
-<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Other</span>&nbsp;uri<br>
+<span class="keyword">let</span>&nbsp;read_path_intfs&nbsp;iri&nbsp;cur_iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Intfs</span>&nbsp;iri<br>
+<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Intf</span>&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;cur_iri&nbsp;s)<br>
+<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Other</span>&nbsp;iri<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_versions&nbsp;uri&nbsp;cur_uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Versions</span>&nbsp;uri<br>
-<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Version</span>&nbsp;(uri_append&nbsp;cur_uri&nbsp;s)<br>
-<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;uri<br>
+<span class="keyword">let</span>&nbsp;read_path_versions&nbsp;iri&nbsp;cur_iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Versions</span>&nbsp;iri<br>
+<span class="keywordsign">|</span>&nbsp;[s]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Version</span>&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;cur_iri&nbsp;s)<br>
+<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;iri<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;read_path_tools&nbsp;=<br>
@@ -308,39 +310,39 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.suffix_versions,&nbsp;read_path_versions&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tools</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[tool]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;(uri_append&nbsp;uri&nbsp;tool)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[tool]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;iri&nbsp;tool)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;tool&nbsp;::&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_tool&nbsp;=&nbsp;uri_append&nbsp;uri&nbsp;tool&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">List</span>.assoc&nbsp;s&nbsp;next)&nbsp;uri_tool&nbsp;(uri_append&nbsp;uri_tool&nbsp;s)&nbsp;q<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_tool&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;iri&nbsp;tool&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">List</span>.assoc&nbsp;s&nbsp;next)&nbsp;iri_tool&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;iri_tool&nbsp;s)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tool</span>&nbsp;iri<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_chain&nbsp;uri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_chain&nbsp;iri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain_module</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.chain_modname_of_string&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;modpath)))<br>
 <span class="keywordsign">|</span>&nbsp;m&nbsp;::&nbsp;q&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">String</span>.capitalize&nbsp;m&nbsp;=&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;uri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;iri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
 <span class="keywordsign">|</span>&nbsp;basename&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;(basename&nbsp;::&nbsp;modpath))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;chain_name<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_chains&nbsp;_&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_chains&nbsp;_&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chains</span><br>
 <span class="keywordsign">|</span>&nbsp;modname&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;uri&nbsp;[modname]&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_chain&nbsp;iri&nbsp;[modname]&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_fchain&nbsp;ctx&nbsp;uri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_fchain&nbsp;ctx&nbsp;iri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain_module</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.chain_modname_of_string&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;modpath)))<br>
 <span class="keywordsign">|</span>&nbsp;m&nbsp;::&nbsp;q&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">String</span>.capitalize&nbsp;m&nbsp;=&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;uri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;iri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
 <span class="keywordsign">|</span>&nbsp;basename&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;(basename&nbsp;::&nbsp;modpath))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
@@ -350,22 +352,22 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain_list</span>&nbsp;fchain_name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;id&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_fchain_name&nbsp;chain_name&nbsp;id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_fchain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;fchain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_fchain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;fchain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain</span>&nbsp;iri<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_fchains&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_fchains&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Flat_chains</span><br>
 <span class="keywordsign">|</span>&nbsp;modname&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;uri&nbsp;[modname]&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;iri&nbsp;[modname]&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_ichain&nbsp;ctx&nbsp;uri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_ichain&nbsp;ctx&nbsp;iri&nbsp;modpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="comment">(*&nbsp;TODO:&nbsp;define&nbsp;and&nbsp;handle&nbsp;Inst_chain_module&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain_module</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.chain_modname_of_string&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;modpath)))<br>
 <span class="keywordsign">|</span>&nbsp;m&nbsp;::&nbsp;q&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">String</span>.capitalize&nbsp;m&nbsp;=&nbsp;m&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_ichain&nbsp;ctx&nbsp;uri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_ichain&nbsp;ctx&nbsp;iri&nbsp;(m&nbsp;::&nbsp;modpath)&nbsp;q<br>
 <span class="keywordsign">|</span>&nbsp;basename&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"."</span>&nbsp;(<span class="constructor">List</span>.rev&nbsp;(basename&nbsp;::&nbsp;modpath))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;name&nbsp;<span class="keyword">in</span><br>
@@ -375,24 +377,24 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Flat_chain_list</span>&nbsp;fchain_name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;id&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ichain_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_ichain_name&nbsp;chain_name&nbsp;id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;ichain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;ichain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Inst_chain</span>&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_op&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_ichain_op&nbsp;uri&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;uri_op<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_op&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_ichain_op&nbsp;iri&nbsp;path&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Inst_chain_op</span>&nbsp;iri_op<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_ichains&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_ichains&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Inst_chains</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;path&nbsp;<span class="keyword">when</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.suffix_producers_of&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Inst_producers_of</span>&nbsp;path<br>
 <span class="keywordsign">|</span>&nbsp;modname&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_ichain&nbsp;ctx&nbsp;uri&nbsp;[modname]&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_ichain&nbsp;ctx&nbsp;iri&nbsp;[modname]&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_filetypes&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_filetypes&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetypes</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;(uri_append&nbsp;uri&nbsp;s)<br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;iri&nbsp;s)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_out_path&nbsp;?(raw=<span class="keyword">false</span>)&nbsp;outpath&nbsp;=&nbsp;<span class="keyword">function</span><br>
@@ -400,7 +402,7 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_out_path&nbsp;~raw&nbsp;(s&nbsp;::&nbsp;outpath)&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_out&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_out&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="comment">(*&nbsp;TODO:&nbsp;define&nbsp;and&nbsp;handle&nbsp;Outfiles&nbsp;*)</span>&nbsp;<span class="constructor">Inst_chains</span><br>
 <span class="keywordsign">|</span>&nbsp;<span class="string">"raw"</span>&nbsp;::&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_out_path&nbsp;~raw:&nbsp;<span class="keyword">true</span>&nbsp;[s]&nbsp;q<br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_out_path&nbsp;[s]&nbsp;q<br>
@@ -423,13 +425,13 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read_path_in_path&nbsp;ctx&nbsp;raw&nbsp;(s&nbsp;::&nbsp;inpath)&nbsp;q<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_in&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_in&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Inputs</span><br>
 <span class="keywordsign">|</span>&nbsp;<span class="string">"raw"</span>&nbsp;::&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_in_path&nbsp;ctx&nbsp;<span class="keyword">true</span>&nbsp;[]&nbsp;path<br>
 <span class="keywordsign">|</span>&nbsp;path&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_in_path&nbsp;ctx&nbsp;<span class="keyword">false</span>&nbsp;[]&nbsp;path<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;read_path_diff&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<span class="keyword">let</span>&nbsp;read_path_diff&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 <span class="keywordsign">|</span>&nbsp;h&nbsp;::&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;h&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.suffix_ichains&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Diff_inst_chains</span><br>
 <span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Diff_inst_chains</span>&nbsp;<span class="comment">(*&nbsp;FIXME:&nbsp;show&nbsp;a&nbsp;menu&nbsp;for&nbsp;diffs&nbsp;?&nbsp;*)</span><br>
@@ -447,28 +449,31 @@ let&nbsp;rec&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.suffix_diff,&nbsp;read_path_diff&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;ctx&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;ctx&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Tools</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">List</span>.assoc&nbsp;s&nbsp;next)&nbsp;ctx&nbsp;(uri_append&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;s)&nbsp;q<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">List</span>.assoc&nbsp;s&nbsp;next)&nbsp;ctx&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;s)&nbsp;q<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Rdf_iri</span>.concat<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(s&nbsp;::&nbsp;q)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;static_files&nbsp;=&nbsp;allowed_files&nbsp;ctx.ctx_cfg&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(f,&nbsp;t)&nbsp;=&nbsp;<span class="constructor">List</span>.assoc&nbsp;uri&nbsp;static_files&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(f,&nbsp;t)&nbsp;=&nbsp;<span class="constructor">List</span>.assoc&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;static_files&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.root_dir<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="string">"in"</span>&nbsp;;&nbsp;<span class="string">"web"</span>&nbsp;;&nbsp;f]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Static_file</span>&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;f,&nbsp;t)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Other</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Other</span>&nbsp;iri<br>
 ;;<br>
 <br>
 <br>
 <span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;we&nbsp;must&nbsp;change&nbsp;the&nbsp;path&nbsp;to&nbsp;an&nbsp;uri&nbsp;according&nbsp;to&nbsp;rest_api&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;uri_of_query_path&nbsp;ctx&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;app_path&nbsp;=&nbsp;application_path&nbsp;ctx&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;read_path&nbsp;ctx&nbsp;uri&nbsp;app_path<br>
+&nbsp;&nbsp;read_path&nbsp;ctx&nbsp;app_path<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;handler_by_method&nbsp;h&nbsp;ctx&nbsp;=&nbsp;<span class="keyword">function</span><br>

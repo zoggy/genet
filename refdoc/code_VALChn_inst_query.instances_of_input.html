@@ -74,28 +74,26 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst_query.instances_of_input</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;instances_of_input&nbsp;ctx&nbsp;?acc&nbsp;?id&nbsp;input_path&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input_name&nbsp;=&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;input_path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_useinput<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;input_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;input_name)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;id&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list_by_id&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list_by_id&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_useinputcommitid<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;id)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;by_id&nbsp;=&nbsp;<span class="constructor">List</span>.fold_right<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.add&nbsp;list_by_id&nbsp;<span class="constructor">Uriset</span>.empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.add&nbsp;list_by_id&nbsp;<span class="constructor">Iriset</span>.empty<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.mem&nbsp;uri&nbsp;by_id)&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.filter&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Iriset</span>.mem&nbsp;iri&nbsp;by_id)&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;uriset_of_list&nbsp;?acc&nbsp;list</code></body></html>
+&nbsp;&nbsp;iriset_of_list&nbsp;?acc&nbsp;list</code></body></html>

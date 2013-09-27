@@ -74,13 +74,9 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query.thing_of_path</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;thing_of_path&nbsp;ctx&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;we&nbsp;must&nbsp;change&nbsp;the&nbsp;path&nbsp;to&nbsp;an&nbsp;uri&nbsp;according&nbsp;to&nbsp;rest_api&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;uri_of_query_path&nbsp;ctx&nbsp;path&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;app_path&nbsp;=&nbsp;application_path&nbsp;ctx&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;read_path&nbsp;ctx&nbsp;uri&nbsp;app_path</code></body></html>
+&nbsp;&nbsp;read_path&nbsp;ctx&nbsp;app_path</code></body></html>

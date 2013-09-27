@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.fchain_dot_printer</title>
 </head>
 <body>
@@ -86,25 +84,29 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;maxdepth:int&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;depth:int&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;cluster:(<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cluster:(<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_fchain&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?debug:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_port_type_uri&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="constructor">Grdf_types</span>.port_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?debug:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;get_port_type_iri&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="constructor">Grdf_types</span>.port_type&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;option<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_consumers&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iri_id&nbsp;:&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_consumers&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option&nbsp;*&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_producers&nbsp;:&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;option&nbsp;*&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_producers&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_op&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?maxdepth:int&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;depth:int&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;cluster:(<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cluster:(<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.t<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?all:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?all:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port_edges&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri_id&nbsp;:&nbsp;<span class="constructor">Uriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_types</span>.context&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_flat</span>.<span class="constructor">Iriset</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 <span class="keyword">end</span></code></body></html>

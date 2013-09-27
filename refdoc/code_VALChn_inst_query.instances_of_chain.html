@@ -74,22 +74,20 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst_query.instances_of_chain</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;instances_of_chain&nbsp;ctx&nbsp;?(acc=<span class="constructor">Uriset</span>.empty)&nbsp;uri&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;instances_of_chain&nbsp;ctx&nbsp;?(acc=<span class="constructor">Iriset</span>.empty)&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_chain&nbsp;prefix&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_chain&nbsp;prefix&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_fchain&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_fchain&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;instances_of_fchain&nbsp;ctx&nbsp;~acc&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;instances_of_fchain&nbsp;ctx&nbsp;~acc&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;chain_name&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;return&nbsp;instanciated&nbsp;chains&nbsp;for&nbsp;all&nbsp;chains&nbsp;flattened&nbsp;from&nbsp;chain_name&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;uri_fchain&nbsp;=&nbsp;instances_of_fchain&nbsp;ctx&nbsp;~acc&nbsp;uri_fchain&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;iri_fchain&nbsp;=&nbsp;instances_of_fchain&nbsp;ctx&nbsp;~acc&nbsp;iri_fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchains&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains_of_chain&nbsp;ctx&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;acc&nbsp;fchains</code></body></html>

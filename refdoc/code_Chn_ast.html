@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_ast</title>
 </head>
 <body>
@@ -215,8 +213,8 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_intf_of_interface_spec&nbsp;~prefix:&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix:&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;{&nbsp;d&nbsp;<span class="keyword">with</span>&nbsp;dep_intfs&nbsp;=&nbsp;<span class="constructor">Sset</span>.add&nbsp;s&nbsp;d.dep_intfs&nbsp;}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;<span class="constructor">Not_found</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
@@ -266,7 +264,7 @@
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_op_origin&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;port_ref)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"foreach(%s,&nbsp;%s)"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>string_of_op_origin&nbsp;origin)&nbsp;(self<span class="keywordsign">#</span>string_of_port_ref&nbsp;port_ref)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Special</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
@@ -329,15 +327,15 @@
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_op_origin&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;port_ref)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"foreach(%s,&nbsp;%s)"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>string_of_op_origin&nbsp;origin)&nbsp;(self<span class="keywordsign">#</span>string_of_port_ref&nbsp;~label:&nbsp;<span class="keyword">true</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;port_ref)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Special</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri_of_op_origin&nbsp;prefix&nbsp;=&nbsp;<span class="keyword">function</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;prefix&nbsp;s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.uri_intf_of_interface_spec&nbsp;~prefix&nbsp;uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;self<span class="keywordsign">#</span>uri_of_op_origin&nbsp;prefix&nbsp;origin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iri_of_op_origin&nbsp;prefix&nbsp;=&nbsp;<span class="keyword">function</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.iri_chain&nbsp;prefix&nbsp;s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix&nbsp;iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;self<span class="keywordsign">#</span>iri_of_op_origin&nbsp;prefix&nbsp;origin<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Special</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_of_op_origin&nbsp;=&nbsp;<span class="keyword">function</span><br>
@@ -373,7 +371,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"&lt;TD&nbsp;ALIGN=\"CENTER\"&nbsp;HREF=\"%s\"&nbsp;CELLPADDING=\"4\"&gt;%s&lt;/TD&gt;"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;prefix&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;prefix&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(self<span class="keywordsign">#</span>uri_of_op_origin&nbsp;prefix&nbsp;op.op_from)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;prefix&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;(self<span class="keywordsign">#</span>iri_of_op_origin&nbsp;prefix&nbsp;op.op_from)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>string_of_op_origin&nbsp;op.op_from);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s"</span>&nbsp;(string_of_ports&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;self<span class="keywordsign">#</span>color_out&nbsp;outputs);<br>
@@ -427,16 +425,16 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;self<span class="keywordsign">#</span>chain_id&nbsp;fullname&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;[label=\"%s\"&nbsp;shape=\"box\"&nbsp;href=\"%s\"&nbsp;style=\"filled\"&nbsp;fillcolor=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;label&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Chn_types</span>.uri_chain&nbsp;prefix&nbsp;fullname))&nbsp;chain_dot<span class="keywordsign">#</span>color_chain;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;label&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;(<span class="constructor">Chn_types</span>.iri_chain&nbsp;prefix&nbsp;fullname))&nbsp;chain_dot<span class="keywordsign">#</span>color_chain;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cset</span>.iter&nbsp;(self<span class="keywordsign">#</span>print_dep_chn&nbsp;b&nbsp;id)&nbsp;dep.dep_chains&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Sset</span>.fold&nbsp;(self<span class="keywordsign">#</span>print_dep_intf&nbsp;b&nbsp;id)&nbsp;dep.dep_intfs&nbsp;intfs&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;intfs<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_intf&nbsp;b&nbsp;~prefix&nbsp;intf&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_intf_of_interface_spec&nbsp;~prefix&nbsp;intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix&nbsp;intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"%s&nbsp;[label=\"%s\"&nbsp;shape=\"box\"&nbsp;href=\"%s\"&nbsp;style=\"filled\"&nbsp;fillcolor=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>intf_id&nbsp;intf)&nbsp;intf&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;chain_dot<span class="keywordsign">#</span>color_interface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>intf_id&nbsp;intf)&nbsp;intf&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;chain_dot<span class="keywordsign">#</span>color_interface<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_deps&nbsp;prefix&nbsp;?(fullnames=<span class="keyword">true</span>)&nbsp;deps&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>

@@ -74,12 +74,10 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.xhtml_dir_contents</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;xhtml_dir_contents&nbsp;f_uri&nbsp;dir&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;xhtml_dir_contents&nbsp;f_iri&nbsp;dir&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">Find</span>.find_list&nbsp;<span class="constructor">Find</span>.<span class="constructor">Ignore</span>&nbsp;[dir]&nbsp;[<span class="constructor">Find</span>.<span class="constructor">Maxdepth</span>&nbsp;1]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;sort&nbsp;in&nbsp;reverse&nbsp;order&nbsp;because&nbsp;of&nbsp;the&nbsp;fold_left&nbsp;below&nbsp;*)</span><br>
@@ -92,7 +90,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;base&nbsp;=&nbsp;<span class="constructor">Filename</span>.basename&nbsp;file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;f_uri&nbsp;base&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(f_iri&nbsp;base)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a&nbsp;~href&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;base]&nbsp;]&nbsp;]&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>

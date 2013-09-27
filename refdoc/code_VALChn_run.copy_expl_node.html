@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.copy_expl_node</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;copy_expl_node&nbsp;ctx&nbsp;~inst&nbsp;cpt&nbsp;orig_pred_node&nbsp;pred_node&nbsp;pred_out_port&nbsp;state&nbsp;expl_node&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(new_expl_node,&nbsp;_,&nbsp;_,&nbsp;state)&nbsp;=&nbsp;copy_node&nbsp;ctx&nbsp;~inst&nbsp;~cpt&nbsp;expl_node&nbsp;state&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_pred&nbsp;cpt&nbsp;g&nbsp;(pred,(p1,p2))&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;compare_g_uri&nbsp;pred&nbsp;orig_pred_node&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;compare_g_iri&nbsp;pred&nbsp;orig_pred_node&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.rem&nbsp;g&nbsp;(pred,new_expl_node)&nbsp;(rem_pred&nbsp;(p1,p2))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Graph</span>.add&nbsp;g&nbsp;(pred_node,&nbsp;new_expl_node,&nbsp;(pred_out_port,&nbsp;p2))<br>
@@ -93,6 +91,6 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;preds&nbsp;=&nbsp;<span class="constructor">Graph</span>.pred&nbsp;state.g&nbsp;new_expl_node&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_pred&nbsp;cpt)&nbsp;state.g&nbsp;preds&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
-&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S:&nbsp;%d&nbsp;in&nbsp;ports"</span>&nbsp;(g_uri_string&nbsp;new_expl_node)<br>
+&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S:&nbsp;%d&nbsp;in&nbsp;ports"</span>&nbsp;(g_iri_string&nbsp;new_expl_node)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;(in_ports&nbsp;state&nbsp;new_expl_node)));<br>
 &nbsp;&nbsp;(new_expl_node,&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;})</code></body></html>

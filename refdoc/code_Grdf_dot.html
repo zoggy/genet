@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_dot</title>
 </head>
 <body>
@@ -108,7 +106,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;md5&nbsp;s&nbsp;=&nbsp;<span class="constructor">Digest</span>.to_hex&nbsp;(<span class="constructor">Digest</span>.string&nbsp;s);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;dot_id&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"N%s"</span>&nbsp;(md5&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));;<br>
+<span class="keyword">let</span>&nbsp;dot_id&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"N%s"</span>&nbsp;(md5&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));;<br>
 <br>
 <span class="keyword">let</span>&nbsp;tool_bgcolor2&nbsp;=&nbsp;<span class="string">"#d7d7d9"</span>;;<br>
 <span class="keyword">let</span>&nbsp;tool_bgcolor&nbsp;=&nbsp;<span class="string">"#e7e7e9"</span>;;<br>
@@ -127,89 +125,89 @@
 <span class="keyword">let</span>&nbsp;ftype_fgcolor&nbsp;=&nbsp;<span class="string">"#white"</span>;;<br>
 <br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_tool&nbsp;b&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.name&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_tool&nbsp;b&nbsp;wld&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.name&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;[&nbsp;label=\"%s\",&nbsp;style=\"filled\",&nbsp;fillcolor=\"%s\",&nbsp;fontcolor=\"%s\",&nbsp;shape=\"box\",&nbsp;href=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;tool_bgcolor&nbsp;tool_fgcolor&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;tool_bgcolor&nbsp;tool_fgcolor&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_version&nbsp;b&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_version&nbsp;b&nbsp;wld&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;<span class="constructor">Misc</span>.chop_n_char&nbsp;8&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b<br>
 &nbsp;&nbsp;<span class="string">"%s&nbsp;[&nbsp;label=\"%s\",&nbsp;style=\"filled\",&nbsp;fillcolor=\"%s\",&nbsp;fontcolor=\"%s\",&nbsp;shape=\"box3d\",&nbsp;tooltip=\"%s\"&nbsp;href=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;label)&nbsp;version_bgcolor&nbsp;version_fgcolor&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;label)&nbsp;version_bgcolor&nbsp;version_fgcolor&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_branch&nbsp;b&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_branch&nbsp;b&nbsp;wld&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b<br>
 &nbsp;&nbsp;<span class="string">"%s&nbsp;[&nbsp;label=\"%s\",&nbsp;style=\"filled\",&nbsp;fillcolor=\"%s\",&nbsp;fontcolor=\"%s\",&nbsp;shape=\"ellipse\",&nbsp;href=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;branch_bgcolor&nbsp;branch_fgcolor&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;branch_bgcolor&nbsp;branch_fgcolor&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_intf&nbsp;b&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.name&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_intf&nbsp;b&nbsp;wld&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.name&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intf&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;:&nbsp;%s"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;name<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;~with_uri:&nbsp;<span class="keyword">false</span>&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;~with_iri:&nbsp;<span class="keyword">false</span>&nbsp;iri)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b<br>
 &nbsp;&nbsp;<span class="string">"%s&nbsp;[&nbsp;label=\"%s\",&nbsp;style=\"filled\",&nbsp;fillcolor=\"%s\",&nbsp;fontcolor=\"%s\",&nbsp;shape=\"octagon\",&nbsp;tooltip=\"%s\",&nbsp;href=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;intf_bgcolor&nbsp;intf_fgcolor&nbsp;(<span class="constructor">String</span>.escaped&nbsp;intf)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(<span class="constructor">String</span>.escaped&nbsp;name)&nbsp;intf_bgcolor&nbsp;intf_fgcolor&nbsp;(<span class="constructor">String</span>.escaped&nbsp;intf)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_hasbranch&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_hasbranch&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;l&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.filter&nbsp;f&nbsp;l&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
-&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[%s];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(dot_id&nbsp;uri2)<br>
+&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[%s];\n"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(dot_id&nbsp;iri2)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;label&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"label=\"hasBranch\""</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span>)<br>
 &nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_hasversion&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_hasversion&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;l&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.filter&nbsp;f&nbsp;l&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[%s];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(dot_id&nbsp;uri2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[%s];\n"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(dot_id&nbsp;iri2)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;label&nbsp;<span class="keyword">then</span>&nbsp;<span class="string">"label=\"hasVersion\""</span>&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span>)<br>
 &nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;gen_hasintf&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.explicit_intfs_of&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.filter&nbsp;f&nbsp;set&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;gen_hasintf&nbsp;b&nbsp;wld&nbsp;?(label=<span class="keyword">true</span>)&nbsp;?pred&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.explicit_intfs_of&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.filter&nbsp;f&nbsp;set&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_no&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.explicit_no_intfs_of&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_no&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_no&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.filter&nbsp;f&nbsp;set_no&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_no&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.explicit_no_intfs_of&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_no&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;pred&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_no&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;f&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.filter&nbsp;f&nbsp;set_no&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;edgelabel&nbsp;color&nbsp;uri2&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;edgelabel&nbsp;color&nbsp;iri2&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[color=%S%s];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;uri)&nbsp;(dot_id&nbsp;uri2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(dot_id&nbsp;iri)&nbsp;(dot_id&nbsp;iri2)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">if</span>&nbsp;label&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">",&nbsp;label=%S"</span>&nbsp;edgelabel&nbsp;<span class="keyword">else</span>&nbsp;<span class="string">""</span>)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(f&nbsp;<span class="string">"hasintf"</span>&nbsp;<span class="string">"black"</span>)&nbsp;set&nbsp;;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(f&nbsp;<span class="string">"nointf"</span>&nbsp;<span class="string">"red"</span>)&nbsp;set_no&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(f&nbsp;<span class="string">"hasintf"</span>&nbsp;<span class="string">"black"</span>)&nbsp;set&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(f&nbsp;<span class="string">"nointf"</span>&nbsp;<span class="string">"red"</span>)&nbsp;set_no&nbsp;;<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;dot&nbsp;?(edge_labels=<span class="keyword">true</span>)&nbsp;wld&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.tools&nbsp;wld&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions&nbsp;wld&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Grdf_branch</span>.bch_uri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;t.<span class="constructor">Grdf_branch</span>.bch_iri)&nbsp;(<span class="constructor">Grdf_branch</span>.branches&nbsp;wld)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"digraph&nbsp;g&nbsp;{colorscheme=\"brewer\";\nrankdir=TB;\n"</span>;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_tool&nbsp;b&nbsp;wld)&nbsp;tools;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_version&nbsp;b&nbsp;wld)&nbsp;versions;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_branch&nbsp;b&nbsp;wld)&nbsp;branches;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;edge_labels&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasbranch&nbsp;b&nbsp;~label&nbsp;wld)&nbsp;(tools&nbsp;@&nbsp;branches);<br>
@@ -229,44 +227,44 @@
 &nbsp;&nbsp;gen_tool&nbsp;b&nbsp;wld&nbsp;tool;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_version&nbsp;b&nbsp;wld)&nbsp;versions;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_branch&nbsp;b&nbsp;wld)&nbsp;branches;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;tool&nbsp;::&nbsp;branches&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasbranch&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;versions&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasversion&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasintf&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"}\n"</span>;<br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.contents&nbsp;b<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;dot_of_branch&nbsp;wld&nbsp;uri&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;dot_of_branch&nbsp;wld&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"digraph&nbsp;g&nbsp;{\nrankdir=TB;\nfontsize=10;\n"</span>;<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;~recur:<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.intfs_of_tool&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"dot_of_branch:&nbsp;branch&nbsp;has&nbsp;%d&nbsp;interfaces"</span>&nbsp;(<span class="constructor">Uriset</span>.cardinal&nbsp;intfs));<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;wld&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;branches&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.subs&nbsp;wld&nbsp;~recur:<span class="keyword">true</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intfs&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.intfs_of_tool&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"dot_of_branch:&nbsp;branch&nbsp;has&nbsp;%d&nbsp;interfaces"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.cardinal&nbsp;intfs));<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_version&nbsp;b&nbsp;wld)&nbsp;versions;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_branch&nbsp;b&nbsp;wld)&nbsp;branches;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;branches&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;branches&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasbranch&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;branches;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;branches&nbsp;@&nbsp;versions&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasversion&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasintf&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"}\n"</span>;<br>

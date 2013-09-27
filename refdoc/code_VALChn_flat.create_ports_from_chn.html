@@ -74,16 +74,14 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.create_ports_from_chn</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;create_ports_from_chn&nbsp;ctx&nbsp;uri&nbsp;chn&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;create_ports_from_chn&nbsp;ctx&nbsp;iri&nbsp;chn&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"create_port_from_chn"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"uri=%s&nbsp;chn=%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_basename&nbsp;chn.chn_name));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"iri=%s&nbsp;chn=%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_basename&nbsp;chn.chn_name));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mk_port&nbsp;dir&nbsp;(rank,&nbsp;map,&nbsp;ports)&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"mk_port&nbsp;rank=%d&nbsp;p=%s"</span>&nbsp;rank&nbsp;p.p_name);<br>
@@ -93,7 +91,7 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set_ports&nbsp;dir&nbsp;t&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(n,&nbsp;map,&nbsp;ports)&nbsp;=&nbsp;<span class="constructor">Array</span>.fold_left&nbsp;(mk_port&nbsp;dir)&nbsp;(1,&nbsp;<span class="constructor">Smap</span>.empty,&nbsp;[])&nbsp;t&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.set_ports&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;dir&nbsp;ports;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.set_ports&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;dir&nbsp;ports;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;map<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_in&nbsp;=&nbsp;set_ports&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;chn.chn_inputs&nbsp;<span class="keyword">in</span><br>

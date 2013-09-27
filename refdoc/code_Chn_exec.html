@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_exec</title>
 </head>
 <body>
@@ -115,30 +113,30 @@
 <span class="keyword">let</span>&nbsp;last_flat_chain&nbsp;ctx&nbsp;chain_name&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flats&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains_of_chain&nbsp;ctx&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flats&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(uri,&nbsp;<span class="constructor">Misc</span>.map_opt&nbsp;<span class="constructor">Netdate</span>.since_epoch&nbsp;(<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(iri,&nbsp;<span class="constructor">Misc</span>.map_opt&nbsp;<span class="constructor">Netdate</span>.since_epoch&nbsp;(<span class="constructor">Grdfs</span>.creation_date_iri&nbsp;ctx.ctx_rdf&nbsp;iri)))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;flats<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;flats&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;h&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(last_uri,&nbsp;last_date)&nbsp;(uri,&nbsp;date)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;(last_iri,&nbsp;last_date)&nbsp;(iri,&nbsp;date)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;last_date,&nbsp;date&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(uri,&nbsp;date)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(last_uri,&nbsp;last_date)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(iri,&nbsp;date)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_,&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(last_iri,&nbsp;last_date)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d1,&nbsp;<span class="constructor">Some</span>&nbsp;d2&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;d1&nbsp;&lt;&nbsp;d2&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(uri,&nbsp;date)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(iri,&nbsp;date)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(last_uri,&nbsp;last_date)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(last_iri,&nbsp;last_date)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(uri,&nbsp;d)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;h&nbsp;q&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;d&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(iri,&nbsp;d)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;h&nbsp;q&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;d&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;iri_fchain&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;uri_fchain&nbsp;spec&nbsp;comb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;iri_fchain&nbsp;spec&nbsp;comb<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span><br>
@@ -166,8 +164,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;fchain&nbsp;comb&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;fchain&nbsp;comb&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iri&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Error</span>&nbsp;msg&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;msg;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>incr_errors;<br>
@@ -184,8 +182,8 @@
 <span class="keyword">let</span>&nbsp;exec&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;acc&nbsp;s&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uris&nbsp;=&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uris&nbsp;::&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iris&nbsp;=&nbsp;exec_chain_str&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iris&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Failure</span>&nbsp;s<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Error</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>error&nbsp;s;<br>

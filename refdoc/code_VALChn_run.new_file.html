@@ -74,21 +74,19 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.new_file</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;new_file&nbsp;ctx&nbsp;tmp_dir&nbsp;?path&nbsp;state&nbsp;inst_port&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">Gurimap</span>.find&nbsp;inst_port&nbsp;state.port_to_file,&nbsp;state)<br>
+&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;(<span class="constructor">Girimap</span>.find&nbsp;inst_port&nbsp;state.port_to_file,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"New&nbsp;file&nbsp;for&nbsp;port&nbsp;%S"</span>&nbsp;(g_uri_string&nbsp;inst_port));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"New&nbsp;file&nbsp;for&nbsp;port&nbsp;%S"</span>&nbsp;(g_iri_string&nbsp;inst_port));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(ext,&nbsp;is_dir)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;typ&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;(uri_of_g_uri&nbsp;inst_port)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;typ&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;(iri_of_g_iri&nbsp;inst_port)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;typ&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.<span class="constructor">T</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_filetype&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;s&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdf_ftype</span>.extension&nbsp;ctx.ctx_rdf&nbsp;uri),&nbsp;<span class="keyword">false</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_filetype&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdf_ftype</span>.extension&nbsp;ctx.ctx_rdf&nbsp;iri),&nbsp;<span class="keyword">false</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Var</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span>,&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Set</span>&nbsp;_&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Tuple</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">None</span>,&nbsp;<span class="keyword">true</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -99,5 +97,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Fname</span>.concat&nbsp;p&nbsp;file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;is_dir&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Misc</span>.mkdir&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;file);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Gurimap</span>.add&nbsp;inst_port&nbsp;file&nbsp;state.port_to_file&nbsp;}&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Girimap</span>.add&nbsp;inst_port&nbsp;file&nbsp;state.port_to_file&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(file,&nbsp;state)</code></body></html>

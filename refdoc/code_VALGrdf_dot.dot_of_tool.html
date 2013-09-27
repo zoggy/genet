@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_dot.dot_of_tool</title>
 </head>
 <body>
@@ -88,18 +86,18 @@
 &nbsp;&nbsp;gen_tool&nbsp;b&nbsp;wld&nbsp;tool;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_version&nbsp;b&nbsp;wld)&nbsp;versions;<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_branch&nbsp;b&nbsp;wld)&nbsp;branches;<br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
+&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.iter&nbsp;(gen_intf&nbsp;b&nbsp;wld)&nbsp;intfs;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;tool&nbsp;::&nbsp;branches&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasbranch&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;versions&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasversion&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Uriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;uri&nbsp;all&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;all&nbsp;=&nbsp;all&nbsp;@&nbsp;(<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span>.elements&nbsp;intfs)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">List</span>.mem&nbsp;iri&nbsp;all&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(gen_hasintf&nbsp;b&nbsp;wld&nbsp;~label:&nbsp;<span class="keyword">false</span>&nbsp;~pred)&nbsp;all;<br>
 <br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"}\n"</span>;<br>

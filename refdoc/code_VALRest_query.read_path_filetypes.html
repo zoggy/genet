@@ -74,11 +74,9 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query.read_path_filetypes</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;read_path_filetypes&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;read_path_filetypes&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetypes</span><br>
-<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;(uri_append&nbsp;uri&nbsp;s)</code></body></html>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Filetype</span>&nbsp;(<span class="constructor">Rdf_iri</span>.concat&nbsp;iri&nbsp;s)</code></body></html>

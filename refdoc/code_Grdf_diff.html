@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_diff</title>
 </head>
 <body>
@@ -106,7 +104,7 @@
 <br>
 </code><table><tr><td></td><td><span class="comment">(** *)</span></td></tr></table><code class="code"><br>
 <br>
-<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_node</span>;;<br>
+<span class="keyword">open</span>&nbsp;<span class="constructor">Rdf_term</span>;;<br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Grdf_types</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;<span class="constructor">Misc</span>.create_log_fun<br>
@@ -116,54 +114,54 @@
 <br>
 <span class="keyword">let</span>&nbsp;diffcommands&nbsp;wld&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.diff_commands"</span>);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_uris&nbsp;wld&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.uriset_of_list&nbsp;l<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.subject_iris&nbsp;wld&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.rdf_type&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.iriset_of_list&nbsp;l<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;name&nbsp;wld&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.name&nbsp;wld&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);;<br>
+<span class="keyword">let</span>&nbsp;name&nbsp;wld&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.name&nbsp;wld&nbsp;(<span class="constructor">Iri</span>&nbsp;iri);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;command_path&nbsp;wld&nbsp;uri&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;command_path&nbsp;wld&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.genet_haspath&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.object_literal&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.object_literal&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;iri)&nbsp;~pred<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;set_command_path&nbsp;wld&nbsp;uri&nbsp;path&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_haspath&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;path)<br>
+<span class="keyword">let</span>&nbsp;set_command_path&nbsp;wld&nbsp;iri&nbsp;path&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.genet_haspath&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri)&nbsp;~pred<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;path)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.diffcommand_exists&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdfs</span>.is_a_diffcommand&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(name&nbsp;wld&nbsp;uri)<br>
+<span class="keyword">let</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.diffcommand_exists&nbsp;iri="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdfs</span>.is_a_diffcommand&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;(name&nbsp;wld&nbsp;iri)<br>
 &nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span><br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.do_add&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)^<span class="string">"&nbsp;name="</span>^name);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand);<br>
+<span class="keyword">let</span>&nbsp;do_add&nbsp;wld&nbsp;iri&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.do_add&nbsp;iri="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)^<span class="string">"&nbsp;name="</span>^name);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand);<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add&nbsp;prefix&nbsp;wld&nbsp;?(force=<span class="keyword">false</span>)&nbsp;~name&nbsp;~path&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.add&nbsp;name="</span>^name);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_diffcommand&nbsp;~prefix&nbsp;~name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_diffcommand&nbsp;~prefix&nbsp;~name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;diffcommand_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;force&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Diff&nbsp;command&nbsp;already&nbsp;exists:&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_command_path&nbsp;wld&nbsp;uri&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="string">"Diff&nbsp;command&nbsp;already&nbsp;exists:&nbsp;"</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set_command_path&nbsp;wld&nbsp;iri&nbsp;path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_command_path&nbsp;wld&nbsp;uri&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do_add&nbsp;wld&nbsp;iri&nbsp;name;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_command_path&nbsp;wld&nbsp;iri&nbsp;path<br>
 &nbsp;&nbsp;<span class="keyword">end</span>;<br>
-&nbsp;&nbsp;uri<br>
+&nbsp;&nbsp;iri<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;parse_diffcommand_ident&nbsp;str&nbsp;=<br>

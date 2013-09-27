@@ -2,8 +2,8 @@
 <html>
 <head>
 <title>Genet : Genet command line tool</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/genet/style.css"/>
-<rssfeed/>
+<link rel="stylesheet" type="text/css" href="file:///home/guesdon/devel/genet-gh-pages/style.css"/>
+<rssfeed></rssfeed>
 </head><body>
 <div id="page">
 <div class="navbar navbar-fixed-top">
@@ -12,12 +12,12 @@
 
   <div class="nav-collapse">
   <ul class="nav">
-    <li class="&lt;navbar-home/&gt;"><a href="http://zoggy.github.io/genet">Genet</a></li>
-    <li class="&lt;navbar-shots/&gt;"><a href="http://zoggy.github.io/genet/screenshots.html">Screenshots</a></li>
-    <li class="&lt;navbar-download/&gt;"><a href="http://zoggy.github.io/genet/download.html">Download</a></li>
-    <li class="active"><a href="http://zoggy.github.io/genet/doc.html">Documentation</a></li>
-    <li class="&lt;navbar-blog/&gt;"><a href="http://zoggy.github.io/genet/blog.html">Blog</a></li>
-    <li class="&lt;navbar-about/&gt;"><a href="http://zoggy.github.io/genet/about.html">?</a></li>
+    <li class="&lt;navbar-home/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages">Genet</a></li>
+    <li class="&lt;navbar-shots/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/screenshots.html">Screenshots</a></li>
+    <li class="&lt;navbar-download/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/download.html">Download</a></li>
+    <li class="active"><a href="file:///home/guesdon/devel/genet-gh-pages/doc.html">Documentation</a></li>
+    <li class="&lt;navbar-blog/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/blog.html">Blog</a></li>
+    <li class="&lt;navbar-about/&gt;"><a href="file:///home/guesdon/devel/genet-gh-pages/about.html">?</a></li>
   </ul>
   </div>
   <div class="nav pull-right">
@@ -31,7 +31,7 @@
 
 <div class="page-title">Genet command line tool</div>
 </div>
-<span/>
+<span></span>
 
 
 
@@ -46,23 +46,23 @@
 <div class="section"><div class="section-title" id="synopsis">Synopsis tree</div>
 <ul class="synopsis-tree">
 <li><code>add</code> <span class="command-desc">add elements to RDF model  </span><ul class="synopsis-tree">
-<li><code>genet add branch &lt;parent uri&gt; &lt;branch name&gt;</code><div class="command-desc">add new branch  </div></li><li><code>genet add diff-command &lt;name&gt; &lt;command&gt;</code><div class="command-desc">add a predefined diff command  <span class="label label-info command-options-button" data-target="#genetadddiff-commandoptions" data-toggle="collapse">+</span><div class="collapse" id="genetadddiff-commandoptions"><table class="table table-stripped table-bordered table-condensed">
+<li><code>genet add branch &lt;parent iri&gt; &lt;branch name&gt;</code><div class="command-desc">add new branch  </div></li><li><code>genet add diff-command &lt;name&gt; &lt;command&gt;</code><div class="command-desc">add a predefined diff command  <span class="label label-info command-options-button" data-target="#genetadddiff-commandoptions" data-toggle="collapse">+</span><div class="collapse" id="genetadddiff-commandoptions"><table class="table table-stripped table-bordered table-condensed">
 <tr><td><strong>--force</strong></td><td> if a diff command with same name exists, replace the associated command</td></tr>
 </table>
-</div></div></li><li><code>genet add filetype &lt;name&gt; &lt;extension&gt; &lt;description&gt;</code><div class="command-desc">add new filetype  </div></li><li><code>genet add input &lt;name&gt;</code><div class="command-desc">add new input  </div></li><li><code>genet add interface &lt;tool|branch uri&gt; &lt;name&gt;</code><div class="command-desc">add new interface  <span class="label label-info command-options-button" data-target="#genetaddinterfaceoptions" data-toggle="collapse">+</span><div class="collapse" id="genetaddinterfaceoptions"><table class="table table-stripped table-bordered table-condensed">
+</div></div></li><li><code>genet add filetype &lt;name&gt; &lt;extension&gt; &lt;description&gt;</code><div class="command-desc">add new filetype  </div></li><li><code>genet add input &lt;name&gt;</code><div class="command-desc">add new input  </div></li><li><code>genet add interface &lt;tool|branch iri&gt; &lt;name&gt;</code><div class="command-desc">add new interface  <span class="label label-info command-options-button" data-target="#genetaddinterfaceoptions" data-toggle="collapse">+</span><div class="collapse" id="genetaddinterfaceoptions"><table class="table table-stripped table-bordered table-condensed">
 <tr><td><strong>-p &lt;path&gt;</strong></td><td>path to command (when used, %v will be replaced by version)</td></tr>
 <tr><td><strong>-t &lt;toolname&gt;</strong></td><td>make interface depend on tool
 	 (when used, %{version-name&gt;} will be replaced by version of tool)</td></tr>
 </table>
-</div></div></li><li><code>genet add no-interface &lt;branch|version uri&gt; &lt;interface uri&gt;</code><div class="command-desc">indicate a branch or version does not implement a given interface  </div></li><li><code>genet add port &lt;interface uri&gt; &lt;in|out&gt; &lt;filetype-name&gt; [port name]</code><div class="command-desc">add new port  <span class="label label-info command-options-button" data-target="#genetaddportoptions" data-toggle="collapse">+</span><div class="collapse" id="genetaddportoptions"><table class="table table-stripped table-bordered table-condensed">
+</div></div></li><li><code>genet add no-interface &lt;branch|version iri&gt; &lt;interface iri&gt;</code><div class="command-desc">indicate a branch or version does not implement a given interface  </div></li><li><code>genet add port &lt;interface iri&gt; &lt;in|out&gt; &lt;filetype-name&gt; [port name]</code><div class="command-desc">add new port  <span class="label label-info command-options-button" data-target="#genetaddportoptions" data-toggle="collapse">+</span><div class="collapse" id="genetaddportoptions"><table class="table table-stripped table-bordered table-condensed">
 <tr><td><strong>-p &lt;n&gt;</strong></td><td>1-based position to insert port at; default is to append</td></tr>
 </table>
-</div></div></li><li><code>genet add refinst &lt;input name&gt; &lt;chain fullname&gt; &lt;inst chain url&gt;</code><div class="command-desc">set an instanciated chain as reference  </div></li><li><code>genet add tool &lt;name&gt;</code><div class="command-desc">add new tool  </div></li><li><code>genet add version &lt;(tool|branch) uri&gt; &lt;name&gt;</code><div class="command-desc">add new version  </div></li></ul>
+</div></div></li><li><code>genet add refinst &lt;input name&gt; &lt;chain fullname&gt; &lt;inst chain url&gt;</code><div class="command-desc">set an instanciated chain as reference  </div></li><li><code>genet add tool &lt;name&gt;</code><div class="command-desc">add new tool  </div></li><li><code>genet add version &lt;(tool|branch) iri&gt; &lt;name&gt;</code><div class="command-desc">add new version  </div></li></ul>
 </li><li><code>chain</code> <span class="command-desc">operations on chains  </span><ul class="synopsis-tree">
 <li><code>genet chain test &lt;chain file(s)&gt;</code><div class="command-desc">test the given chain files  <span class="label label-info command-options-button" data-target="#genetchaintestoptions" data-toggle="collapse">+</span><div class="collapse" id="genetchaintestoptions"><table class="table table-stripped table-bordered table-condensed">
 <tr><td><strong>--dot &lt;prefix&gt;</strong></td><td>generate dot file(s) using &lt;prefix&gt;</td></tr>
 </table>
-</div></div></li><li><code>genet chain tool-combs &lt;flat chain uri&gt;</code><div class="command-desc">show tool combinations usable to instanciate a flat chain  </div></li></ul>
+</div></div></li><li><code>genet chain tool-combs &lt;flat chain iri&gt;</code><div class="command-desc">show tool combinations usable to instanciate a flat chain  </div></li></ul>
 </li><li><code>genet diff &lt;instanciation1&gt; [&lt;instanciation2&gt;]</code><div class="command-desc">compute differences between executions  <span class="label label-info command-options-button" data-target="#genetdiffoptions" data-toggle="collapse">+</span><div class="collapse" id="genetdiffoptions"><table class="table table-stripped table-bordered table-condensed">
 <tr><td><strong>--diff &lt;name|com&gt;</strong></td><td>use &lt;com&gt; or command associated to &lt;name&gt; ; default is diff -r -u</td></tr>
 <tr><td><strong>--html</strong></td><td> output HTML instead of raw diff output</td></tr>
@@ -80,9 +80,9 @@
 <tr><td><strong>--git &lt;repo&gt;</strong></td><td>will create the 'in' directory by cloning the repository</td></tr>
 </table>
 </div></div></li><li><code>query</code> <span class="command-desc">query information  </span><ul class="synopsis-tree">
-<li><code>genet query branches [anscestor uris]</code><div class="command-desc">list branches  </div></li><li><code>genet query chains </code><div class="command-desc">list chains  </div></li><li><code>genet query diff-commands </code><div class="command-desc">list predefined diff commands  </div></li><li><code>genet query dot </code><div class="command-desc">output graph in graphviz format  </div></li><li><code>genet query fchains </code><div class="command-desc">list flat chains  </div></li><li><code>genet query filename &lt;uri&gt;</code><div class="command-desc">print the filename corresponding to the given file uri  </div></li><li><code>genet query filetypes </code><div class="command-desc">list filetypes  </div></li><li><code>genet query ichains </code><div class="command-desc">list inst chains  </div></li><li><code>genet query inputs </code><div class="command-desc">list inputs  </div></li><li><code>genet query interfaces [&lt;uri1&gt;] [&lt;uri2&gt; ...]</code><div class="command-desc">list interfaces  </div></li><li><code>genet query ref-inst &lt;input name&gt; &lt;chain name&gt;</code><div class="command-desc">print reference inst chain, if any, from given input name and chain fullname  </div></li><li><code>genet query ref-inst-of-inst &lt;uri&gt;</code><div class="command-desc">print reference inst chain, if any, from given inst chain  </div></li><li><code>genet query tools </code><div class="command-desc">print tools  </div></li><li><code>genet query versions [&lt;uri1&gt;] [&lt;uri2&gt; ...]</code><div class="command-desc">list versions  </div></li></ul>
+<li><code>genet query branches [anscestor iris]</code><div class="command-desc">list branches  </div></li><li><code>genet query chains </code><div class="command-desc">list chains  </div></li><li><code>genet query diff-commands </code><div class="command-desc">list predefined diff commands  </div></li><li><code>genet query dot </code><div class="command-desc">output graph in graphviz format  </div></li><li><code>genet query fchains </code><div class="command-desc">list flat chains  </div></li><li><code>genet query filename &lt;iri&gt;</code><div class="command-desc">print the filename corresponding to the given file iri  </div></li><li><code>genet query filetypes </code><div class="command-desc">list filetypes  </div></li><li><code>genet query ichains </code><div class="command-desc">list inst chains  </div></li><li><code>genet query inputs </code><div class="command-desc">list inputs  </div></li><li><code>genet query interfaces [&lt;iri1&gt;] [&lt;iri2&gt; ...]</code><div class="command-desc">list interfaces  </div></li><li><code>genet query ref-inst &lt;input name&gt; &lt;chain name&gt;</code><div class="command-desc">print reference inst chain, if any, from given input name and chain fullname  </div></li><li><code>genet query ref-inst-of-inst &lt;iri&gt;</code><div class="command-desc">print reference inst chain, if any, from given inst chain  </div></li><li><code>genet query tools </code><div class="command-desc">print tools  </div></li><li><code>genet query versions [&lt;iri1&gt;] [&lt;iri2&gt; ...]</code><div class="command-desc">list versions  </div></li></ul>
 </li><li><code>remove</code> <span class="command-desc">remove elements from rdf model  </span><ul class="synopsis-tree">
-<li><code>genet remove port &lt;port uris&gt;</code><div class="command-desc">remove port  </div></li></ul>
+<li><code>genet remove port &lt;port iris&gt;</code><div class="command-desc">remove port  </div></li></ul>
 </li><li><code>set</code> <span class="command-desc">set flags  </span><ul class="synopsis-tree">
 <li><code>genet set active &lt;url of tool version&gt; [true|false]</code><div class="command-desc">set a tool version as active or not  </div></li></ul>
 </li></ul>
@@ -97,8 +97,8 @@
 
 <footer id="bottombar">
 </footer>
-<script type="text/javascript" src="http://zoggy.github.io/genet/jquery.js">_</script>
-<script type="text/javascript" src="http://zoggy.github.io/genet/bootstrap-collapse.js">_</script>
+<script type="text/javascript" src="file:///home/guesdon/devel/genet-gh-pages/jquery.js">_</script>
+<script type="text/javascript" src="file:///home/guesdon/devel/genet-gh-pages/bootstrap-collapse.js">_</script>
 
 </body>
 </html>

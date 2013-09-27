@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_edit</title>
 </head>
 <body>
@@ -113,8 +111,8 @@
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[name]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.add_tool&nbsp;wld&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.add_tool&nbsp;wld&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;one&nbsp;and&nbsp;only&nbsp;one&nbsp;tool&nbsp;name"</span><br>
 ;;<br>
@@ -128,12 +126,12 @@
 <span class="keyword">let</span>&nbsp;add_branch&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[parent&nbsp;;&nbsp;name]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.add&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;parent)&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;parent&nbsp;uri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;branch"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_branch</span>.add&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;parent)&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;parent&nbsp;iri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;branch"</span><br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_add_branch&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;parent&nbsp;uri&gt;&nbsp;&lt;branch&nbsp;name&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;parent&nbsp;iri&gt;&nbsp;&lt;branch&nbsp;name&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_branch&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -142,13 +140,13 @@
 <span class="keyword">let</span>&nbsp;add_version&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[parent&nbsp;;&nbsp;name]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.add&nbsp;wld&nbsp;~parent&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;tool&nbsp;or&nbsp;branch&nbsp;uri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;version"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.add&nbsp;wld&nbsp;~parent&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;tool&nbsp;or&nbsp;branch&nbsp;iri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;version"</span><br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_add_version&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;(tool|branch)&nbsp;uri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;(tool|branch)&nbsp;iri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;;<br>
@@ -163,22 +161,22 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;!intf_tools&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[parent&nbsp;;&nbsp;name]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.add&nbsp;wld&nbsp;~parent&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.add&nbsp;wld&nbsp;~parent&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;!intf_path&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_intf</span>.set_command_path&nbsp;wld&nbsp;uri&nbsp;p<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;p&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_intf</span>.set_command_path&nbsp;wld&nbsp;iri&nbsp;p<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_tool&nbsp;tool&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_tool&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;tool&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_tool</span>.tool_exists&nbsp;wld&nbsp;uri_tool&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_tool&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_tool&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;tool&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_tool</span>.tool_exists&nbsp;wld&nbsp;iri_tool&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;tool&nbsp;%S"</span>&nbsp;tool)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;wld<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_usetool&nbsp;~obj:&nbsp;uri_tool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;wld<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_usetool&nbsp;~obj:&nbsp;iri_tool<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f_tool&nbsp;tools;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;tool&nbsp;or&nbsp;branch&nbsp;uri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;interface"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;tool&nbsp;or&nbsp;branch&nbsp;iri&nbsp;and&nbsp;name&nbsp;of&nbsp;the&nbsp;new&nbsp;interface"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;com_add_intf&nbsp;=&nbsp;{<br>
@@ -189,7 +187,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-t"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">String</span>&nbsp;(<span class="constructor">Some</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_name,&nbsp;<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intf_tools&nbsp;:=&nbsp;!intf_tools&nbsp;@&nbsp;[s]),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&lt;toolname&gt;&nbsp;make&nbsp;interface&nbsp;depend&nbsp;on&nbsp;tool\n\t&nbsp;(when&nbsp;used,&nbsp;%{version-name&gt;}&nbsp;will&nbsp;be&nbsp;replaced&nbsp;by&nbsp;version&nbsp;of&nbsp;tool)"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;];<br>
-&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;tool|branch&nbsp;uri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;tool|branch&nbsp;iri&gt;&nbsp;&lt;name&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_tool_or_branch&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;add_intf&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -198,15 +196,15 @@
 <span class="keyword">let</span>&nbsp;add_no_intf&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;[parent;&nbsp;intf]&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;intf&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.add_no_intf&nbsp;wld&nbsp;~parent&nbsp;intf<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;(branch|version)&nbsp;uri&nbsp;and&nbsp;interface&nbsp;uri"</span><br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;(branch|version)&nbsp;iri&nbsp;and&nbsp;interface&nbsp;iri"</span><br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;com_add_no_intf&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;com_options&nbsp;=&nbsp;[];<br>
-&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;branch|version&nbsp;uri&gt;&nbsp;&lt;interface&nbsp;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;branch|version&nbsp;iri&gt;&nbsp;&lt;interface&nbsp;iri&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_branch_or_version&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf&nbsp;;<br>
@@ -223,10 +221,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_diff</span>.parse_diffcommand_ident&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;diff&nbsp;command&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_diff</span>.add&nbsp;config.<span class="constructor">Config</span>.rest_api<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_diff</span>.add&nbsp;config.<span class="constructor">Config</span>.rest_api<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wld&nbsp;~force:&nbsp;!force_add_diffcommand&nbsp;~name&nbsp;~path<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;a&nbsp;name&nbsp;and&nbsp;a&nbsp;command"</span><br>
 ;;<br>
 <br>
@@ -259,8 +257,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">String</span>.sub&nbsp;extension&nbsp;1&nbsp;(len_ext&nbsp;-&nbsp;1)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;extension<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdf_ftype</span>.add&nbsp;wld&nbsp;~name&nbsp;~desc&nbsp;~extension&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdf_ftype</span>.add&nbsp;wld&nbsp;~name&nbsp;~desc&nbsp;~extension&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;the&nbsp;name,&nbsp;file&nbsp;extension&nbsp;and&nbsp;description&nbsp;of&nbsp;the&nbsp;new&nbsp;filetype"</span><br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_add_filetype&nbsp;=&nbsp;{<br>
@@ -276,7 +274,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pos&nbsp;=&nbsp;!port_position&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;s_intf&nbsp;::&nbsp;s_dir&nbsp;::&nbsp;ptype&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;s_intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_intf&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;s_intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.dir_of_string&nbsp;s_dir&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Grdf_port</span>.parse_port_type&nbsp;ptype<br>
@@ -293,29 +291,29 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Grdf_ftype</span>.parse_filetype_ident&nbsp;name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Invalid&nbsp;port&nbsp;name&nbsp;%S"</span>&nbsp;name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;uri_intf&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;interface&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_intf));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;wld&nbsp;iri_intf&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;interface&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_intf));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_uri&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;ptype&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_iri&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;ptype&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri_ftype&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_ftype</span>.filetype_exists&nbsp;wld&nbsp;uri_ftype&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;filetype&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_ftype))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri_ftype&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Grdf_ftype</span>.filetype_exists&nbsp;wld&nbsp;iri_ftype&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;filetype&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_ftype))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.add_port&nbsp;wld&nbsp;uri_intf&nbsp;dir&nbsp;?pos&nbsp;?name&nbsp;ptype;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_port&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.get_port&nbsp;wld&nbsp;uri_intf&nbsp;?pos&nbsp;dir&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.add_port&nbsp;wld&nbsp;iri_intf&nbsp;dir&nbsp;?pos&nbsp;?name&nbsp;ptype;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_port&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.get_port&nbsp;wld&nbsp;iri_intf&nbsp;?pos&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print_endline&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_port)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;the&nbsp;interface&nbsp;uri,&nbsp;the&nbsp;direction&nbsp;(in|out)&nbsp;and&nbsp;the&nbsp;filetype&nbsp;name"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;the&nbsp;interface&nbsp;iri,&nbsp;the&nbsp;direction&nbsp;(in|out)&nbsp;and&nbsp;the&nbsp;filetype&nbsp;name"</span><br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_add_port&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_options&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"-p"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Int</span>&nbsp;(<span class="constructor">None</span>,&nbsp;<span class="keyword">fun</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;port_position&nbsp;:=&nbsp;<span class="constructor">Some</span>&nbsp;n),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"&lt;n&gt;&nbsp;1-based&nbsp;position&nbsp;to&nbsp;insert&nbsp;port&nbsp;at;&nbsp;default&nbsp;is&nbsp;to&nbsp;append"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;];<br>
-&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;interface&nbsp;uri&gt;&nbsp;&lt;in|out&gt;&nbsp;&lt;filetype-name&gt;&nbsp;[port&nbsp;name]"</span>&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;interface&nbsp;iri&gt;&nbsp;&lt;in|out&gt;&nbsp;&lt;filetype-name&gt;&nbsp;[port&nbsp;name]"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_in_out&nbsp;;<br>
@@ -326,12 +324,12 @@
 <br>
 <span class="keyword">let</span>&nbsp;rem_port&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;one&nbsp;port&nbsp;uri"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Please&nbsp;give&nbsp;at&nbsp;least&nbsp;one&nbsp;port&nbsp;iri"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;ports&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_port</span>.delete_port&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s))&nbsp;ports<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_port</span>.delete_port&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s))&nbsp;ports<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_rem_port&nbsp;=&nbsp;{<br>
-&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;port&nbsp;uris&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;port&nbsp;iris&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Complist</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_port&nbsp;]&nbsp;;<br>
 &nbsp;&nbsp;com_kind&nbsp;=&nbsp;<span class="constructor">Main_cmd</span>.mk_final_fun&nbsp;rem_port&nbsp;;<br>
 &nbsp;&nbsp;}<br>
@@ -361,12 +359,12 @@
 <br>
 <span class="keyword">let</span>&nbsp;add_ref_inst&nbsp;config&nbsp;wld&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.args&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[input&nbsp;;&nbsp;chainname&nbsp;;&nbsp;inst_uri]&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;[input&nbsp;;&nbsp;chainname&nbsp;;&nbsp;inst_iri]&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=&nbsp;<span class="constructor">Fname</span>.relative&nbsp;input&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.chain_name_of_string&nbsp;chainname&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;chain&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;inst_uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_chain&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;chain&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;inst_iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ctx&nbsp;=&nbsp;&nbsp;{&nbsp;<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;=&nbsp;wld&nbsp;;&nbsp;ctx_cfg&nbsp;=&nbsp;config&nbsp;;&nbsp;ctx_user&nbsp;=&nbsp;<span class="constructor">None</span>&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.add_reference_inst&nbsp;ctx&nbsp;~input&nbsp;~chain&nbsp;~inst<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -393,10 +391,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Usage:&nbsp;%s&nbsp;set&nbsp;active&nbsp;&lt;url&nbsp;of&nbsp;version&gt;&nbsp;[true|false]"</span>&nbsp;<span class="constructor">Sys</span>.argv.(0)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;url&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_version</span>.version_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;version&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.set_is_active_uri&nbsp;wld&nbsp;uri&nbsp;active<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;url&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_version</span>.version_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Unknown&nbsp;version&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
+&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.set_is_active_iri&nbsp;wld&nbsp;iri&nbsp;active<br>
 ;;<br>
 <span class="keyword">let</span>&nbsp;com_set_active&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;com_options&nbsp;=&nbsp;[]&nbsp;;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;url&nbsp;of&nbsp;tool&nbsp;version&gt;&nbsp;[true|false]"</span>&nbsp;;<br>

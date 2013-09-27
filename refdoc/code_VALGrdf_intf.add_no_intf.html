@@ -74,28 +74,26 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_intf.add_no_intf</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;add_no_intf&nbsp;wld&nbsp;~parent&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_intf.add_no_intf&nbsp;parent="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;parent)^<span class="string">"&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;intf_exists&nbsp;wld&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;such&nbsp;interface:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+<code class="code"><span class="keyword">let</span>&nbsp;add_no_intf&nbsp;wld&nbsp;~parent&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_intf.add_no_intf&nbsp;parent="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;parent)^<span class="string">"&nbsp;iri="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;intf_exists&nbsp;wld&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;such&nbsp;interface:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_branch&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_branch&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent_is_version&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.is_a_version&nbsp;wld&nbsp;parent&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(parent_is_branch&nbsp;<span class="keywordsign">||</span>&nbsp;parent_is_version)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Not_branch_or_version</span>&nbsp;parent);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_parent&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;parent&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node_parent&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;parent&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;eventually&nbsp;remove&nbsp;information&nbsp;about&nbsp;implementing&nbsp;this&nbsp;interface&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasintf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Iri</span>&nbsp;iri);<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;node_parent<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_nointf)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Uri</span>&nbsp;uri)</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_nointf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;&nbsp;(<span class="constructor">Iri</span>&nbsp;iri)</code></body></html>

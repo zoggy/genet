@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage</title>
 </head>
 <body>
@@ -105,6 +103,8 @@
 </code><table><tr><td></td><td><span class="comment">(*********************************************************************************)</span></td></tr></table><code class="code"><br>
 <br>
 </code><table><tr><td></td><td><span class="comment">(** Building xhtml pages. *)</span></td></tr></table><code class="code"><br>
+<br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Iriset</span>&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span><br>
 <br>
 <span class="keyword">let</span>&nbsp;star&nbsp;?label&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;label&nbsp;<span class="keyword">with</span><br>
@@ -256,7 +256,7 @@
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[_]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_site_url&nbsp;config&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;config.<span class="constructor">Config</span>.rest_api)&nbsp;];;<br>
+<span class="keyword">let</span>&nbsp;fun_site_url&nbsp;config&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;config.<span class="constructor">Config</span>.rest_api))&nbsp;];;<br>
 <span class="keyword">let</span>&nbsp;fun_site_title&nbsp;config&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;config.<span class="constructor">Config</span>.project_name&nbsp;];;<br>
 <br>
 <span class="keyword">let</span>&nbsp;tmpl_dir&nbsp;config&nbsp;=<br>
@@ -314,7 +314,7 @@
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_port&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;ftype&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_filetype&nbsp;~prefix&nbsp;ftype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Grdfs</span>.iri_filetype&nbsp;~prefix&nbsp;ftype)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;href],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;ftype]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -325,7 +325,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;fullname&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Chn_types</span>.uri_chain&nbsp;prefix&nbsp;fullname)],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_chain&nbsp;prefix&nbsp;fullname))],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;port_ref)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"foreach(%s,&nbsp;%s)"</span><br>
@@ -334,7 +334,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Interface</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.string<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.uri_intf_of_interface_spec&nbsp;~prefix&nbsp;s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix&nbsp;s))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span><br>
@@ -389,15 +389,15 @@
 &nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_dot_printer&nbsp;<span class="keyword">as</span>&nbsp;super<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;get_port_type_uri&nbsp;t&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_uri&nbsp;prefix&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;get_port_type_iri&nbsp;t&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.port_file_type_iri&nbsp;prefix&nbsp;t<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;b&nbsp;color&nbsp;p&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;self<span class="keywordsign">#</span>get_port_type_uri&nbsp;p.p_ftype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;self<span class="keywordsign">#</span>get_port_type_iri&nbsp;p.p_ftype&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ft&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;p.p_ftype&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;[color=\"black\"&nbsp;fillcolor=\"%s\"&nbsp;style=\"filled\"&nbsp;shape=\"box\"&nbsp;href=\"%s\"&nbsp;label=\"%s:%s\"];\n"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.p_name&nbsp;color<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;link&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;link&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p.p_name&nbsp;ft<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">end</span>;;<br>
@@ -426,7 +426,7 @@
 &nbsp;&nbsp;<span class="keyword">end</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;dot_of_fchain&nbsp;ctx&nbsp;fchain_name&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_fchain<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_fchain<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;fchain_name<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;o&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;xhtml_fchain_dot_printer&nbsp;<span class="keyword">in</span><br>
@@ -436,78 +436,78 @@
 <br>
 <span class="keyword">class</span>&nbsp;xhtml_ichain_dot_printer&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dotp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_dot_printer&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_origin&nbsp;ctx&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_uri&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_origin&nbsp;ctx&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_iri&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"get_origin&nbsp;%S&nbsp;=&gt;&nbsp;None"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri2&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"get_origin&nbsp;%S&nbsp;=&gt;&nbsp;None"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri2&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"get_origin&nbsp;%S&nbsp;=&gt;&nbsp;%S"<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rdf_uri.string&nbsp;uri)&nbsp;(Rdf_uri.string&nbsp;uri2));*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri2<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iri2<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;id&nbsp;s&nbsp;=&nbsp;<span class="string">"n"</span>^(<span class="constructor">Digest</span>.to_hex&nbsp;(<span class="constructor">Digest</span>.string&nbsp;s))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri_id&nbsp;uri&nbsp;=&nbsp;self<span class="keywordsign">#</span>id&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iri_id&nbsp;iri&nbsp;=&nbsp;self<span class="keywordsign">#</span>id&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_of_port_dir&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dotp<span class="keywordsign">#</span>color_in<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dotp<span class="keywordsign">#</span>color_out<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;ctx&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;(get_origin&nbsp;ctx&nbsp;uri)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;port_link_and_name&nbsp;ctx&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;(get_origin&nbsp;ctx&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;ptype&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_uri&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;<span class="constructor">Chn_inst</span>.instport_file_iri&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(link,&nbsp;name)<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port_edges&nbsp;ctx&nbsp;b&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Printing&nbsp;edges&nbsp;of&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.port_consumers&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src&nbsp;=&nbsp;self<span class="keywordsign">#</span>uri_id&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port_edges&nbsp;ctx&nbsp;b&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Printing&nbsp;edges&nbsp;of&nbsp;%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.port_consumers&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src&nbsp;=&nbsp;self<span class="keywordsign">#</span>iri_id&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;p&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;;\n"</span>&nbsp;src&nbsp;(self<span class="keywordsign">#</span>uri_id&nbsp;p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;;\n"</span>&nbsp;src&nbsp;(self<span class="keywordsign">#</span>iri_id&nbsp;p)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;ports<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;ctx&nbsp;b&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_dir&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;self<span class="keywordsign">#</span>uri_id&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(link,&nbsp;name)&nbsp;=&nbsp;self<span class="keywordsign">#</span>port_link_and_name&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;ctx&nbsp;b&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_dir&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;self<span class="keywordsign">#</span>iri_id&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(link,&nbsp;name)&nbsp;=&nbsp;self<span class="keywordsign">#</span>port_link_and_name&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_name&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_int&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_port</span>.port_name&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string_of_int&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;s<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;[color=\"black\"&nbsp;fillcolor=\"%s\"&nbsp;style=\"filled\"&nbsp;shape=\"box\"&nbsp;href=\"%s\"&nbsp;label=\"%s:%s\"&nbsp;rank=%S];\n"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;(self<span class="keywordsign">#</span>color_of_port_dir&nbsp;dir)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;link&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;link&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;label&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;dir&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"min"</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"max"</span>)<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_op&nbsp;ctx&nbsp;ichain&nbsp;b&nbsp;acc_ports&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_op&nbsp;ctx&nbsp;ichain&nbsp;b&nbsp;acc_ports&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(color,&nbsp;label)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_from&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.get_op_origin&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;uri_from&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dotp<span class="keywordsign">#</span>color_chain,&nbsp;<span class="constructor">Chn_flat</span>.get_op_name&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_from&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.get_op_origin&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;iri_from&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;dotp<span class="keywordsign">#</span>color_chain,&nbsp;<span class="constructor">Chn_flat</span>.get_op_name&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.tool_of_intf&nbsp;uri_from&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tool&nbsp;=&nbsp;<span class="constructor">Grdf_intf</span>.tool_of_intf&nbsp;iri_from&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;/&nbsp;%s"</span>&nbsp;(<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;tool)&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dotp<span class="keywordsign">#</span>color_interface,&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;color&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Chn_run</span>.return_code&nbsp;ctx&nbsp;uri&nbsp;&lt;&gt;&nbsp;0&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Chn_run</span>.return_code&nbsp;ctx&nbsp;iri&nbsp;&lt;&gt;&nbsp;0&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"red"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;color<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_uri</span>.equal&nbsp;ichain&nbsp;uri)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_iri</span>.equal&nbsp;ichain&nbsp;iri)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"subgraph&nbsp;cluster_%s&nbsp;{\nlabel=%S;\n&nbsp;color=\"black\"&nbsp;fillcolor=%S;\nstyle=\"filled\";&nbsp;href=%S;\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>uri_id&nbsp;uri)&nbsp;label&nbsp;color<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;uri&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;uri&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>iri_id&nbsp;iri)&nbsp;label&nbsp;color<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;iri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;in_ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;iri&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;out_ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf&nbsp;iri&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(self<span class="keywordsign">#</span>print_port&nbsp;ctx&nbsp;b)&nbsp;in_ports;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;(self<span class="keywordsign">#</span>print_port&nbsp;ctx&nbsp;b)&nbsp;out_ports;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;align&nbsp;in&nbsp;ports&nbsp;and&nbsp;out&nbsp;ports&nbsp;on&nbsp;two&nbsp;column,&nbsp;using&nbsp;invisible&nbsp;edges&nbsp;*)</span><br>
@@ -518,25 +518,25 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;out_p&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s&nbsp;-&gt;&nbsp;%s&nbsp;[style=\"invis\"];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>uri_id&nbsp;in_p)&nbsp;(self<span class="keywordsign">#</span>uri_id&nbsp;out_p)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>iri_id&nbsp;in_p)&nbsp;(self<span class="keywordsign">#</span>iri_id&nbsp;out_p)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_uri</span>.equal&nbsp;ichain&nbsp;uri)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_iri</span>.equal&nbsp;ichain&nbsp;iri)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"}\n"</span>;&nbsp;out_ports&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Uriset</span>.add&nbsp;ports&nbsp;acc_ports<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Iriset</span>.add&nbsp;ports&nbsp;acc_ports<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;ctx&nbsp;uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;ctx&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"digraph&nbsp;g&nbsp;{\nrankdir=LR;\nfontsize=10;\n"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>print_op&nbsp;ctx&nbsp;uri&nbsp;b)&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;(uri&nbsp;::&nbsp;(<span class="constructor">Chn_flat</span>.get_ops&nbsp;ctx&nbsp;uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>print_op&nbsp;ctx&nbsp;iri&nbsp;b)&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;(iri&nbsp;::&nbsp;(<span class="constructor">Chn_flat</span>.get_ops&nbsp;ctx&nbsp;iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(self<span class="keywordsign">#</span>print_port_edges&nbsp;ctx&nbsp;b)&nbsp;ports;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.iter&nbsp;(self<span class="keywordsign">#</span>print_port_edges&nbsp;ctx&nbsp;b)&nbsp;ports;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.add_string&nbsp;b&nbsp;<span class="string">"}\n"</span>;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.contents&nbsp;b<br>
 &nbsp;&nbsp;<span class="keyword">end</span><br>
@@ -549,11 +549,11 @@
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;dot_of_ichain&nbsp;ctx&nbsp;ichain_name&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_ichain<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_ichain<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;ichain_name<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;o&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;xhtml_ichain_dot_printer&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;o<span class="keywordsign">#</span>dot_of_chain&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;o<span class="keywordsign">#</span>dot_of_chain&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Misc</span>.file_of_string&nbsp;~file:&nbsp;<span class="string">"/tmp/instgraph.dot"</span>&nbsp;dot;<br>
 &nbsp;&nbsp;dot<br>
 ;;<br>

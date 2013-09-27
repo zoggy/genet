@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.add_containsop</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;add_containsop&nbsp;ctx&nbsp;~src&nbsp;~dst&nbsp;=<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;src&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_containsop&nbsp;~obj:&nbsp;dst;<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;-containsop-&gt;&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;src)(<span class="constructor">Rdf_uri</span>.string&nbsp;dst));</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;src)(<span class="constructor">Rdf_iri</span>.string&nbsp;dst));</code></body></html>

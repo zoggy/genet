@@ -74,22 +74,20 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.create_data_edge</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;create_data_edge&nbsp;ctx&nbsp;uri&nbsp;map&nbsp;edge&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_src&nbsp;=&nbsp;find_port&nbsp;map&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;edge.edge_src&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_dst&nbsp;=&nbsp;find_port&nbsp;map&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;edge.edge_dst&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;type_src&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;uri_src&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;type_dst&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;uri_dst&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;create_data_edge&nbsp;ctx&nbsp;iri&nbsp;map&nbsp;edge&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_src&nbsp;=&nbsp;find_port&nbsp;map&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;edge.edge_src&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_dst&nbsp;=&nbsp;find_port&nbsp;map&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;edge.edge_dst&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;type_src&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;iri_src&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;type_dst&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;iri_dst&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;compat&nbsp;=&nbsp;types_are_compatible&nbsp;type_src&nbsp;type_dst&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
 &nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"uri_src=%s&nbsp;type=%s\nuri_dst=%s&nbsp;type=%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_src)&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_src)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_dst)&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_dst)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"iri_src=%s&nbsp;type=%s\niri_dst=%s&nbsp;type=%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_src)&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_src)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_dst)&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_dst)<br>
 &nbsp;&nbsp;);<br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;compat&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Loc</span>.raise_problem&nbsp;edge.edge_src.ep_loc<br>
@@ -97,5 +95,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_src)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;(<span class="keyword">fun</span>&nbsp;x&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;x)&nbsp;type_dst));<br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;TODO:&nbsp;check&nbsp;that&nbsp;two&nbsp;edges&nbsp;don't&nbsp;have&nbsp;the&nbsp;same&nbsp;destination&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri_src&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;uri_dst</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_src&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_produces&nbsp;~obj:&nbsp;iri_dst</code></body></html>

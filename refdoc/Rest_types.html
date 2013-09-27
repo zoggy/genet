@@ -79,8 +79,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_types</title>
 </head>
 <body>
@@ -95,7 +93,7 @@ Types for REST API.<br>
 <hr width="100%">
 <pre><span id="TYPEarg"><span class="keyword">type</span> <code class="type"></code>arg</span> = <code class="type">string * string</code> </pre>
 
-<pre><span id="VALget_arg"><span class="keyword">val</span> <a href="code_VALRest_types.get_arg.html">get_arg</a></span> : <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list -> string -> string</code></pre><pre><span id="TYPEuri"><span class="keyword">type</span> <code class="type"></code>uri</span> = <code class="type"><a href="Grdf_types.html#TYPEuri">Grdf_types.uri</a></code> </pre>
+<pre><span id="VALget_arg"><span class="keyword">val</span> <a href="code_VALRest_types.get_arg.html">get_arg</a></span> : <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list -> string -> string</code></pre><pre><span id="TYPEiri"><span class="keyword">type</span> <code class="type"></code>iri</span> = <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code> </pre>
 
 <pre><span id="TYPEpath"><span class="keyword">type</span> <code class="type"></code>path</span> = <code class="type">string</code> </pre>
 
@@ -154,14 +152,14 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinst_chain_query.iq_chain">iq_chain</span>&nbsp;:<code class="type">Rdf_uri.uri option</code>;</code></td>
+<code><span id="TYPEELTinst_chain_query.iq_chain">iq_chain</span>&nbsp;:<code class="type">Rdf_iri.iri option</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinst_chain_query.iq_tools">iq_tools</span>&nbsp;:<code class="type">Rdf_uri.uri Urimap.t</code>;</code></td>
+<code><span id="TYPEELTinst_chain_query.iq_tools">iq_tools</span>&nbsp;:<code class="type">Rdf_iri.iri Rdf_iri.Irimap.t</code>;</code></td>
 
 </tr>
 <tr>
@@ -179,35 +177,35 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Tool"><span class="constructor">Tool</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTthing.Tool"><span class="constructor">Tool</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Branch"><span class="constructor">Branch</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTthing.Branch"><span class="constructor">Branch</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Version"><span class="constructor">Version</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTthing.Version"><span class="constructor">Version</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Intf"><span class="constructor">Intf</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTthing.Intf"><span class="constructor">Intf</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Filetype"><span class="constructor">Filetype</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTthing.Filetype"><span class="constructor">Filetype</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
@@ -221,22 +219,22 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Branches"><span class="constructor">Branches</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
-<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+<code><span id="TYPEELTthing.Branches"><span class="constructor">Branches</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >iri of tool</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Versions"><span class="constructor">Versions</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
-<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+<code><span id="TYPEELTthing.Versions"><span class="constructor">Versions</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >iri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Intfs"><span class="constructor">Intfs</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEuri">uri</a></code></code></td>
-<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >uri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+<code><span id="TYPEELTthing.Intfs"><span class="constructor">Intfs</span></span> <span class="keyword">of</span> <code class="type"><a href="Rest_types.html#TYPEiri">iri</a></code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >iri of tool or branch</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
@@ -256,7 +254,7 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Other"><span class="constructor">Other</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+<code><span id="TYPEELTthing.Other"><span class="constructor">Other</span></span> <span class="keyword">of</span> <code class="type">Rdf_iri.iri</code></code></td>
 
 </tr>
 <tr>
@@ -298,7 +296,7 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Flat_chain"><span class="constructor">Flat_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+<code><span id="TYPEELTthing.Flat_chain"><span class="constructor">Flat_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_iri.iri</code></code></td>
 
 </tr>
 <tr>
@@ -312,7 +310,7 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Inst_chain"><span class="constructor">Inst_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+<code><span id="TYPEELTthing.Inst_chain"><span class="constructor">Inst_chain</span></span> <span class="keyword">of</span> <code class="type">Rdf_iri.iri</code></code></td>
 
 </tr>
 <tr>
@@ -368,7 +366,7 @@ Types for REST API.<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTthing.Inst_chain_op"><span class="constructor">Inst_chain_op</span></span> <span class="keyword">of</span> <code class="type">Rdf_uri.uri</code></code></td>
+<code><span id="TYPEELTthing.Inst_chain_op"><span class="constructor">Inst_chain_op</span></span> <span class="keyword">of</span> <code class="type">Rdf_iri.iri</code></code></td>
 
 </tr>
 <tr>

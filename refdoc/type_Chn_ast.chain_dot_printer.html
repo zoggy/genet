@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_ast.chain_dot_printer</title>
 </head>
 <body>
@@ -85,10 +83,12 @@
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_interface&nbsp;:&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_of_op_origin&nbsp;:&nbsp;<span class="constructor">Chn_ast</span>.op_origin&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;color_out&nbsp;:&nbsp;string<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;:&nbsp;?prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;dot_of_chain&nbsp;:&nbsp;?prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;iri_of_op_origin&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.op_origin&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_edge&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.edge&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_operation&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?prefix:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?prefix:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.chain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.operation&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;print_port&nbsp;:&nbsp;<span class="constructor">Buffer</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.port&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_edge_part&nbsp;:<br>
@@ -98,6 +98,4 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.dir&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.port_ref&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_port_ref&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.dir&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?label:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.port_ref&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.port_name<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;uri_of_op_origin&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_ast</span>.op_origin&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri<br>
 <span class="keyword">end</span></code></body></html>

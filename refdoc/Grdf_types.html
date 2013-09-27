@@ -79,8 +79,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_types</title>
 </head>
 <body>
@@ -93,7 +91,7 @@
 Types<br>
 </div>
 <hr width="100%">
-<pre><span id="TYPEuri"><span class="keyword">type</span> <code class="type"></code>uri</span> = <code class="type">Rdf_uri.uri</code> </pre>
+<pre><span id="TYPEiri"><span class="keyword">type</span> <code class="type"></code>iri</span> = <code class="type">Rdf_iri.iri</code> </pre>
 
 <pre><code><span id="TYPEworld"><span class="keyword">type</span> <code class="type"></code>world</span> = {</code></pre><table class="typetable">
 <tr>
@@ -107,7 +105,7 @@ Types<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTworld.wld_prefix">wld_prefix</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEuri">uri</a></code>;</code></td>
+<code><span id="TYPEELTworld.wld_prefix">wld_prefix</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code>;</code></td>
 
 </tr></table>
 }
@@ -153,35 +151,35 @@ Types<br>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTerror.Not_tool_or_branch"><span class="constructor">Not_tool_or_branch</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTerror.Not_tool_or_branch"><span class="constructor">Not_tool_or_branch</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTerror.Not_branch_or_version"><span class="constructor">Not_branch_or_version</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTerror.Not_branch_or_version"><span class="constructor">Not_branch_or_version</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTerror.Not_a_tool"><span class="constructor">Not_a_tool</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTerror.Not_a_tool"><span class="constructor">Not_a_tool</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTerror.Not_a_version"><span class="constructor">Not_a_version</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTerror.Not_a_version"><span class="constructor">Not_a_version</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTerror.Tool_of_branch_differs"><span class="constructor">Tool_of_branch_differs</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEuri">uri</a> * <a href="Grdf_types.html#TYPEuri">uri</a> * <a href="Grdf_types.html#TYPEuri">uri</a></code></code></td>
+<code><span id="TYPEELTerror.Tool_of_branch_differs"><span class="constructor">Tool_of_branch_differs</span></span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a> * <a href="Grdf_types.html#TYPEiri">iri</a> * <a href="Grdf_types.html#TYPEiri">iri</a></code></code></td>
 
 </tr></table>
 

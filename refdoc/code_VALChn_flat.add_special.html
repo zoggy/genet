@@ -74,32 +74,30 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.add_special</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;add_special&nbsp;ctx&nbsp;uri_op&nbsp;loc&nbsp;spec&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;add_special&nbsp;ctx&nbsp;iri_op&nbsp;loc&nbsp;spec&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"add_special"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"uri_op=%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_op));<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"iri_op=%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_op));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(typ,&nbsp;in_ports,&nbsp;out_ports)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;spec&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Implode</span>&nbsp;(op_name,&nbsp;_,&nbsp;_)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(in_ports,&nbsp;out_ports)&nbsp;=&nbsp;build_implode_ports&nbsp;ctx&nbsp;uri_op&nbsp;op_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(in_ports,&nbsp;out_ports)&nbsp;=&nbsp;build_implode_ports&nbsp;ctx&nbsp;iri_op&nbsp;op_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_implode,&nbsp;in_ports,&nbsp;out_ports)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Explode</span>&nbsp;(op_name,&nbsp;_,&nbsp;port_ref)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_implode&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;uri_op&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;parent&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s-implode"</span>&nbsp;op_name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_implode&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;parent&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_parent&nbsp;iri_op&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;parent&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s-implode"</span>&nbsp;op_name)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasimplode&nbsp;~obj:&nbsp;uri_implode;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(in_ports,&nbsp;out_ports)&nbsp;=&nbsp;build_explode_ports&nbsp;ctx&nbsp;uri_op&nbsp;op_name&nbsp;port_ref&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasimplode&nbsp;~obj:&nbsp;iri_implode;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(in_ports,&nbsp;out_ports)&nbsp;=&nbsp;build_explode_ports&nbsp;ctx&nbsp;iri_op&nbsp;op_name&nbsp;port_ref&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_explode,&nbsp;in_ports,&nbsp;out_ports)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri_op)&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;typ);<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;iri_op)&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;typ);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.set_ports&nbsp;ctx.ctx_rdf&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;f&nbsp;uri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;in_ports;<br>
-&nbsp;&nbsp;f&nbsp;uri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;out_ports&nbsp;;<br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;~sub:&nbsp;uri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;typ</code></body></html>
+&nbsp;&nbsp;f&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;in_ports;<br>
+&nbsp;&nbsp;f&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;out_ports&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;~sub:&nbsp;iri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;typ</code></body></html>

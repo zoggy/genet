@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.run_explode</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;run_explode&nbsp;ctx&nbsp;reporter&nbsp;inst&nbsp;tmp_dir&nbsp;~orig_node&nbsp;state&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_explode&nbsp;orig_node=%S"</span>&nbsp;(g_uri_string&nbsp;orig_node));<br>
+&nbsp;&nbsp;dbg&nbsp;~level:1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_explode&nbsp;orig_node=%S"</span>&nbsp;(g_iri_string&nbsp;orig_node));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;orig_in_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;in_ports&nbsp;state&nbsp;orig_node&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[p]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;p<br>
@@ -94,7 +92,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(inst_node,&nbsp;_,&nbsp;_,&nbsp;state)&nbsp;=&nbsp;copy_node&nbsp;ctx&nbsp;~inst&nbsp;orig_node&nbsp;~outports:&nbsp;[]&nbsp;state&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;dbg&nbsp;~level:1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_explode&nbsp;inst_node=%S"</span>&nbsp;(g_uri_string&nbsp;inst_node));<br>
+&nbsp;&nbsp;dbg&nbsp;~level:1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_explode&nbsp;inst_node=%S"</span>&nbsp;(g_iri_string&nbsp;inst_node));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_in_port&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;in_ports&nbsp;state&nbsp;inst_node&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[p]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;p&nbsp;<span class="keywordsign">|</span>&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -105,12 +103,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;entries&nbsp;=&nbsp;<span class="constructor">List</span>.filter&nbsp;((&lt;&gt;)&nbsp;root_s)&nbsp;entries&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;entries<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_implode&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_uri&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;(uri_of_g_uri&nbsp;orig_node))&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasimplode<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_implode&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_iri&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;(iri_of_g_iri&nbsp;orig_node))&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_hasimplode<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"No&nbsp;implode&nbsp;node&nbsp;associated&nbsp;to&nbsp;explode!"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;exploded_nodes&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;remove&nbsp;main&nbsp;node&nbsp;to&nbsp;prevent&nbsp;cycling&nbsp;and&nbsp;getting&nbsp;all&nbsp;nodes&nbsp;*)</span><br>
@@ -118,22 +116,22 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;FIXME:&nbsp;maybe&nbsp;a&nbsp;problem&nbsp;here&nbsp;in&nbsp;case&nbsp;of&nbsp;nested&nbsp;explodes:&nbsp;how&nbsp;to&nbsp;find&nbsp;the&nbsp;correct<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;implode,&nbsp;which&nbsp;may&nbsp;be&nbsp;a&nbsp;Inst&nbsp;node&nbsp;now&nbsp;?&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;after_implode&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Graph</span>.recursive_succs&nbsp;g&nbsp;(<span class="constructor">Flat</span>&nbsp;uri_implode)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Guriset</span>.add&nbsp;(<span class="constructor">Flat</span>&nbsp;uri_implode&nbsp;::&nbsp;l)&nbsp;<span class="constructor">Guriset</span>.empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Graph</span>.recursive_succs&nbsp;g&nbsp;(<span class="constructor">Flat</span>&nbsp;iri_implode)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Giriset</span>.add&nbsp;(<span class="constructor">Flat</span>&nbsp;iri_implode&nbsp;::&nbsp;l)&nbsp;<span class="constructor">Giriset</span>.empty<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;after_explode&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">Graph</span>.recursive_succs&nbsp;g&nbsp;orig_node&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Guriset</span>.add&nbsp;l&nbsp;<span class="constructor">Guriset</span>.empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_right&nbsp;<span class="constructor">Giriset</span>.add&nbsp;l&nbsp;<span class="constructor">Giriset</span>.empty<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"after_implode=\n%s\nafter_explode=\n%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_guriset&nbsp;after_implode)&nbsp;(string_of_guriset&nbsp;after_explode));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Guriset</span>.diff&nbsp;after_explode&nbsp;after_implode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(string_of_giriset&nbsp;after_implode)&nbsp;(string_of_giriset&nbsp;after_explode));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Giriset</span>.diff&nbsp;after_explode&nbsp;after_implode<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;(<span class="constructor">Guriset</span>.cardinal&nbsp;exploded_nodes&nbsp;&gt;&nbsp;0);<br>
+&nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;(<span class="constructor">Giriset</span>.cardinal&nbsp;exploded_nodes&nbsp;&gt;&nbsp;0);<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_pred&nbsp;g&nbsp;(pred,(p1,p2))&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;compare_g_uri&nbsp;p2&nbsp;inst_in_port&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;compare_g_iri&nbsp;p2&nbsp;inst_in_port&nbsp;=&nbsp;0&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Graph</span>.add&nbsp;g&nbsp;(pred,inst_node,&nbsp;(p1,inst_in_port))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Graph</span>.add&nbsp;g&nbsp;(pred,inst_node,&nbsp;(p1,p2))<br>
@@ -142,7 +140,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;}&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;FIXME:&nbsp;handle&nbsp;nested&nbsp;foreach:&nbsp;implode&nbsp;may&nbsp;already&nbsp;be&nbsp;an&nbsp;inst&nbsp;node&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;orig_implode&nbsp;=&nbsp;<span class="constructor">Flat</span>&nbsp;uri_implode&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;orig_implode&nbsp;=&nbsp;<span class="constructor">Flat</span>&nbsp;iri_implode&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(inst_implode,&nbsp;map_imp_in,&nbsp;map_imp_out,&nbsp;state)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;copy_node&nbsp;ctx&nbsp;~inst&nbsp;orig_implode&nbsp;~inports:&nbsp;[]&nbsp;state<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -157,17 +155,17 @@
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;new_out_port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">fun</span>&nbsp;cpt&nbsp;state&nbsp;in_file&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_intf_out_port&nbsp;(uri_of_g_uri&nbsp;inst_node)&nbsp;cpt&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;(uri_of_g_uri&nbsp;orig_out_port);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_intf_out_port&nbsp;(iri_of_g_iri&nbsp;inst_node)&nbsp;cpt&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;(iri_of_g_iri&nbsp;orig_out_port);<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.pred_of_dir&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(uri_of_g_uri&nbsp;inst_node)&nbsp;~pred&nbsp;~obj:&nbsp;uri;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(iri_of_g_iri&nbsp;inst_node)&nbsp;~pred&nbsp;~obj:&nbsp;iri;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;in_file&nbsp;(<span class="constructor">Inst</span>&nbsp;uri);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;<span class="constructor">Inst</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;record_file&nbsp;ctx&nbsp;reporter&nbsp;in_file&nbsp;(<span class="constructor">Inst</span>&nbsp;iri);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;<span class="constructor">Inst</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(port,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Gurimap</span>.add&nbsp;port&nbsp;in_file&nbsp;state.port_to_file&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;port_to_file&nbsp;=&nbsp;<span class="constructor">Girimap</span>.add&nbsp;port&nbsp;in_file&nbsp;state.port_to_file&nbsp;}<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 <br>
@@ -179,7 +177,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(new_expl_node&nbsp;::&nbsp;expl_nodes,&nbsp;state)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;insert_graph&nbsp;(state,&nbsp;cpt)&nbsp;in_file&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(expl_nodes,&nbsp;state)&nbsp;=&nbsp;<span class="constructor">Giriset</span>.fold&nbsp;(f_node&nbsp;cpt&nbsp;in_file)&nbsp;exploded_nodes&nbsp;([],&nbsp;state)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;add_implode_ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx&nbsp;inst_implode&nbsp;orig_impl_in_port<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp_dir&nbsp;impl_out_file&nbsp;cpt&nbsp;state&nbsp;expl_nodes<br>
@@ -187,7 +185,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(state,&nbsp;cpt+1)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(state,_)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;insert_graph&nbsp;(state,1)&nbsp;in_files&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Guriset</span>.fold&nbsp;(<span class="keyword">fun</span>&nbsp;node&nbsp;g&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;g&nbsp;node)&nbsp;exploded_nodes&nbsp;state.g&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Giriset</span>.fold&nbsp;(<span class="keyword">fun</span>&nbsp;node&nbsp;g&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;g&nbsp;node)&nbsp;exploded_nodes&nbsp;state.g&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;set_node_as_run&nbsp;state&nbsp;inst_node&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;g&nbsp;orig_node&nbsp;<span class="keyword">in</span><br>

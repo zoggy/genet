@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_query.list_versions</title>
 </head>
 <body>
@@ -84,12 +82,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_version</span>.versions&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Uriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add&nbsp;set&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Iriset</span>.add&nbsp;elt&nbsp;set&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;add&nbsp;set<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_version</span>.versions_of&nbsp;~recur:&nbsp;<span class="keyword">true</span>&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s_iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.elements&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.elements&nbsp;set<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;pruri_endline&nbsp;versions</code></body></html>
+&nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;priri_endline&nbsp;versions</code></body></html>

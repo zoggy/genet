@@ -74,12 +74,10 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query.read_path_fchains</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;read_path_fchains&nbsp;ctx&nbsp;uri&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;read_path_fchains&nbsp;ctx&nbsp;iri&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Flat_chains</span><br>
 <span class="keywordsign">|</span>&nbsp;modname&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;uri&nbsp;[modname]&nbsp;q</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;read_path_fchain&nbsp;ctx&nbsp;iri&nbsp;[modname]&nbsp;q</code></body></html>

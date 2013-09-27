@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Instgui.inst_list</title>
 </head>
 <body>
@@ -86,29 +84,29 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;<span class="keyword">mutable</span>&nbsp;view&nbsp;:&nbsp;<span class="constructor">GTree</span>.view<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;box&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;coerce&nbsp;:&nbsp;<span class="constructor">GObj</span>.widget<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;compare&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;compare&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;connect_events&nbsp;:&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;content&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;copy_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.uri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;cut_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.uri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;content&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;copy_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.iri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;cut_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.iri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;delete_selected&nbsp;:&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;down_selected&nbsp;:&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;edit_first_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;edit_first_selected&nbsp;:&nbsp;(<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;init_cols_display&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;cols:<span class="constructor">GTree</span>.view_column&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;datacol:<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="constructor">GTree</span>.column&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;datacol:<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="constructor">GTree</span>.column&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;renderer:<span class="constructor">GTree</span>.cell_renderer_text&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">GTree</span>.list_store&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert&nbsp;:&nbsp;?row:<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;insert&nbsp;:&nbsp;?row:<span class="constructor">Gtk</span>.tree_iter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;menu&nbsp;:&nbsp;<span class="constructor">GToolbox</span>.menu_entry&nbsp;list<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_deselect&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_double_click&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_deselect&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_double_click&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_enter&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_select&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;paste_where_selected&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;on_select&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;paste_where_selected&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;selection&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;set_titles&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;sort&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;sort&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;up_selected&nbsp;:&nbsp;unit<br>
-&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;update_data&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.uri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;update_data&nbsp;:&nbsp;<span class="constructor">Grdf_types</span>.iri&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">method</span>&nbsp;view&nbsp;:&nbsp;<span class="constructor">GTree</span>.view<br>
 <span class="keyword">end</span></code></body></html>

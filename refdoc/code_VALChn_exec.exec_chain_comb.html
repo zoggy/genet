@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_exec.exec_chain_comb</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;uri_fchain&nbsp;comb&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;exec_chain_comb&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;spec&nbsp;iri_fchain&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;uri_fchain&nbsp;spec&nbsp;comb<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_inst</span>.instanciate&nbsp;ctx&nbsp;reporter&nbsp;?force&nbsp;iri_fchain&nbsp;spec&nbsp;comb<br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keyword">as</span>&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;raise&nbsp;e<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;exc&nbsp;<span class="keywordsign">-&gt;</span><br>

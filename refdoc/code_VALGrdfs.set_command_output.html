@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdfs.set_command_output</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;set_command_output&nbsp;wld&nbsp;uri&nbsp;s&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;remove_command_output&nbsp;wld&nbsp;uri;<br>
-&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;genet_commandoutput&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_node</span>.node_of_literal_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;set_command_output&nbsp;wld&nbsp;iri&nbsp;s&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;remove_command_output&nbsp;wld&nbsp;iri;<br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;genet_commandoutput&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Rdf_term</span>.term_of_literal_string&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj</code></body></html>

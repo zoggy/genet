@@ -74,45 +74,43 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.import_flat_op</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;import_flat_op&nbsp;ctx&nbsp;uri_src&nbsp;uri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;import_flat_op&nbsp;ctx&nbsp;iri_src&nbsp;iri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">assert</span>&nbsp;(path&nbsp;&lt;&gt;&nbsp;[]);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"import_flat_op"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_op&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_fchain_op&nbsp;uri_dst&nbsp;path&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_parent&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.parent&nbsp;uri_op&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_op&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_fchain_op&nbsp;iri_dst&nbsp;path&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_parent&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.iri_parent&nbsp;iri_op&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;add_containsop&nbsp;ctx&nbsp;~src:&nbsp;uri_parent&nbsp;~dst:&nbsp;uri_op;<br>
+&nbsp;&nbsp;add_containsop&nbsp;ctx&nbsp;~src:&nbsp;iri_parent&nbsp;~dst:&nbsp;iri_op;<br>
 <br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;uri_src;<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;iri_src;<br>
 <br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;-opfrom-&gt;&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_op)(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_src));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_op)(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_src));<br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;copy&nbsp;ports&nbsp;of&nbsp;the&nbsp;src&nbsp;flat&nbsp;chain&nbsp;to&nbsp;our&nbsp;target&nbsp;operation&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(map_in2,&nbsp;map_out2)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.copy_ports&nbsp;ctx.ctx_rdf&nbsp;~src:&nbsp;uri_src&nbsp;~dst:&nbsp;uri_op<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_port</span>.copy_ports&nbsp;ctx.ctx_rdf&nbsp;~src:&nbsp;iri_src&nbsp;~dst:&nbsp;iri_op<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_in&nbsp;=&nbsp;merge_port_maps&nbsp;map_in&nbsp;map_in2&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map_out&nbsp;=&nbsp;merge_port_maps&nbsp;map_out&nbsp;map_out2&nbsp;<span class="keyword">in</span><br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;copy&nbsp;sub&nbsp;operations&nbsp;*)</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub_ops&nbsp;=&nbsp;get_ops&nbsp;ctx&nbsp;uri_src&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(import_flat_sub_op&nbsp;ctx&nbsp;uri_dst&nbsp;path)<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub_ops&nbsp;=&nbsp;get_ops&nbsp;ctx&nbsp;iri_src&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(import_flat_sub_op&nbsp;ctx&nbsp;iri_dst&nbsp;path)<br>
 &nbsp;&nbsp;(map_in,&nbsp;map_out)&nbsp;sub_ops<br>
 <br>
-<span class="keyword">and</span>&nbsp;import_flat_sub_op&nbsp;ctx&nbsp;uri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)&nbsp;uri_sub_op&nbsp;=<br>
+<span class="keyword">and</span>&nbsp;import_flat_sub_op&nbsp;ctx&nbsp;iri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)&nbsp;iri_sub_op&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"import_flat_sub_op"</span>&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"*&nbsp;uri_dst&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;path&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;uri_sub_op&nbsp;=&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_dst)&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_sub_op)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"*&nbsp;iri_dst&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;path&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;iri_sub_op&nbsp;=&nbsp;%s"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_dst)&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_sub_op)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;get_op_name&nbsp;uri_sub_op&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;get_op_name&nbsp;iri_sub_op&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;path&nbsp;@&nbsp;[name]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;import_flat_op&nbsp;ctx&nbsp;uri_sub_op&nbsp;uri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)</code></body></html>
+&nbsp;&nbsp;import_flat_op&nbsp;ctx&nbsp;iri_sub_op&nbsp;iri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)</code></body></html>

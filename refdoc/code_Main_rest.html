@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_rest</title>
 </head>
 <body>
@@ -263,7 +261,7 @@
 <span class="keyword">let</span>&nbsp;main&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;opts&nbsp;=&nbsp;<span class="constructor">Options</span>.parse&nbsp;options&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;config&nbsp;=&nbsp;<span class="constructor">Config</span>.read_config&nbsp;opts.<span class="constructor">Options</span>.config_file&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.neturl&nbsp;config.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;url&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.neturl&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;config.<span class="constructor">Config</span>.rest_api)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;host&nbsp;=&nbsp;<span class="constructor">Neturl</span>.url_host&nbsp;url&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port&nbsp;=&nbsp;<span class="constructor">Neturl</span>.url_port&nbsp;url&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;<span class="constructor">Neturl</span>.join_path&nbsp;(<span class="constructor">Neturl</span>.url_path&nbsp;url)&nbsp;<span class="keyword">in</span><br>

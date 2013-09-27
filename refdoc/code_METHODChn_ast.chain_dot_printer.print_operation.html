@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_ast.chain_dot_printer.print_operation</title>
 </head>
 <body>
@@ -102,7 +100,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"&lt;TD&nbsp;ALIGN=\"CENTER\"&nbsp;HREF=\"%s\"&nbsp;CELLPADDING=\"4\"&gt;%s&lt;/TD&gt;"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;prefix&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;prefix&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(self<span class="keywordsign">#</span>uri_of_op_origin&nbsp;prefix&nbsp;op.op_from)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;prefix&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;(self<span class="keywordsign">#</span>iri_of_op_origin&nbsp;prefix&nbsp;op.op_from)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>string_of_op_origin&nbsp;op.op_from);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"%s"</span>&nbsp;(string_of_ports&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;self<span class="keywordsign">#</span>color_out&nbsp;outputs);<br>

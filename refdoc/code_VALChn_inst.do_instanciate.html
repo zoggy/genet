@@ -74,43 +74,41 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.do_instanciate</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;do_instanciate&nbsp;ctx&nbsp;reporter&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;do_instanciate&nbsp;ctx&nbsp;reporter&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;prefix&nbsp;=&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>push_context&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Running&nbsp;chain&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_fchain));<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_fchain&nbsp;ctx&nbsp;uri_fchain&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>push_context&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Running&nbsp;chain&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_fchain));<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_fchain&nbsp;ctx&nbsp;iri_fchain&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;fchain_name&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=&nbsp;<span class="constructor">Misc</span>.unique_id&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_ichain_name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_types</span>.fchain_chainname&nbsp;fchain_name)&nbsp;id<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_inst&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_ichain&nbsp;prefix&nbsp;inst_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_inst&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_ichain&nbsp;prefix&nbsp;inst_name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;uri_inst)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_instchain);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri_inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_instanciate&nbsp;~obj:&nbsp;uri_fchain;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri_inst)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_instchain);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_instanciate&nbsp;~obj:&nbsp;iri_fchain;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;associate&nbsp;tool&nbsp;versions&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Urimap</span>.iter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Irimap</span>.iter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;version&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;uri_inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_useversion&nbsp;~obj:&nbsp;version<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_inst&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_useversion&nbsp;~obj:&nbsp;version<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;comb;<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;associate&nbsp;input&nbsp;files&nbsp;*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_input_info&nbsp;ctx&nbsp;uri_inst&nbsp;input;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri_inst&nbsp;();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set_input_info&nbsp;ctx&nbsp;iri_inst&nbsp;input;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.set_creation_date_iri&nbsp;ctx.ctx_rdf&nbsp;iri_inst&nbsp;();<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;create_flat_graph&nbsp;ctx&nbsp;uri_fchain&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;create_flat_graph&nbsp;ctx&nbsp;iri_fchain&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Chn_run</span>.dot_of_graph&nbsp;ctx&nbsp;g&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Misc</span>.file_of_string&nbsp;~file:&nbsp;<span class="string">"/tmp/inst.dot"</span>&nbsp;dot;<br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_run</span>.run&nbsp;ctx&nbsp;reporter&nbsp;~inst:&nbsp;uri_inst&nbsp;~fchain:&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;g&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_run</span>.run&nbsp;ctx&nbsp;reporter&nbsp;~inst:&nbsp;iri_inst&nbsp;~fchain:&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;g&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>pop_context;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri_inst</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iri_inst</code></body></html>

@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Config.string_of_config</title>
 </head>
 <body>
@@ -83,10 +81,11 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;b&nbsp;=&nbsp;<span class="constructor">Buffer</span>.create&nbsp;256&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"project_name=%s\n"</span>&nbsp;c.project_name&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"project_id=%s\n"</span>&nbsp;c.project_id&nbsp;;<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_storage=%s\n"</span>&nbsp;c.db_storage&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_engine=%s\n"</span>&nbsp;c.db_engine&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_name=%s\n"</span>&nbsp;c.db_name&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_user=%s\n"</span>&nbsp;c.db_user&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_host=%s\n"</span>&nbsp;c.db_host&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"db_passwd=%s\n"</span>&nbsp;c.db_passwd&nbsp;;<br>
-&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"rest_api=%s\n"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;c.rest_api);<br>
+&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b&nbsp;<span class="string">"rest_api=%s\n"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;c.rest_api);<br>
 &nbsp;&nbsp;<span class="constructor">Buffer</span>.contents&nbsp;b</code></body></html>

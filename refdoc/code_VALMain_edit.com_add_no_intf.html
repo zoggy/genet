@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_edit.com_add_no_intf</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;com_add_no_intf&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;com_options&nbsp;=&nbsp;[];<br>
-&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;branch|version&nbsp;uri&gt;&nbsp;&lt;interface&nbsp;uri&gt;"</span>&nbsp;;<br>
+&nbsp;&nbsp;com_usage&nbsp;=&nbsp;<span class="string">"&lt;branch|version&nbsp;iri&gt;&nbsp;&lt;interface&nbsp;iri&gt;"</span>&nbsp;;<br>
 &nbsp;&nbsp;com_compl&nbsp;=&nbsp;[<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_branch_or_version&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Compfun</span>&nbsp;<span class="constructor">Main_cmd</span>.compl_intf&nbsp;;<br>

@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Grdf_diff.do_add</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;do_add&nbsp;wld&nbsp;uri&nbsp;name&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.do_add&nbsp;uri="</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)^<span class="string">"&nbsp;name="</span>^name);<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Uri</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj:&nbsp;(<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand);<br>
+<code class="code"><span class="keyword">let</span>&nbsp;do_add&nbsp;wld&nbsp;iri&nbsp;name&nbsp;=<br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_diff.do_add&nbsp;iri="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)^<span class="string">"&nbsp;name="</span>^name);<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_diffcommand);<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name</code></body></html>

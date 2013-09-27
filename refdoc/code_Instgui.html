@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Instgui</title>
 </head>
 <body>
@@ -84,12 +82,15 @@
 <span class="keyword">open</span>&nbsp;<span class="constructor">Chn_types</span>&nbsp;;;<br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Chn_ast</span>&nbsp;;;<br>
 <br>
-<span class="keyword">class</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;uri&nbsp;on_change&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;ctx.ctx_rdf&nbsp;~recur:<span class="keyword">true</span>&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Irimap</span>&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Irimap</span><br>
+<span class="keyword">module</span>&nbsp;<span class="constructor">Iriset</span>&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.<span class="constructor">Iriset</span><br>
+<br>
+<span class="keyword">class</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;iri&nbsp;on_change&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;versions&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.versions_of&nbsp;ctx.ctx_rdf&nbsp;~recur:<span class="keyword">true</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;map&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Smap</span>.add&nbsp;name&nbsp;uri&nbsp;acc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_version</span>.name&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Smap</span>.add&nbsp;name&nbsp;iri&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Smap</span>.empty&nbsp;versions<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -109,7 +110,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Smap</span>.find&nbsp;s&nbsp;map)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;tool&nbsp;=&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;tool&nbsp;=&nbsp;iri<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;choices&nbsp;=&nbsp;<span class="constructor">Smap</span>.fold&nbsp;(<span class="keyword">fun</span>&nbsp;name&nbsp;_&nbsp;acc&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;name&nbsp;::&nbsp;acc)&nbsp;map&nbsp;[]&nbsp;<span class="keyword">in</span><br>
@@ -136,11 +137,11 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tool_versions<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_tool&nbsp;i&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;add_tool&nbsp;i&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Grdf_tool</span>.name&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;label&nbsp;=&nbsp;<span class="constructor">GMisc</span>.label&nbsp;~xpad:&nbsp;3&nbsp;~xalign:&nbsp;1.&nbsp;~text:&nbsp;name&nbsp;()&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;0&nbsp;~top:&nbsp;i&nbsp;label<span class="keywordsign">#</span>coerce;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;uri&nbsp;on_change&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;version_sel&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;tool_version_selection&nbsp;ctx&nbsp;iri&nbsp;on_change&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wtable<span class="keywordsign">#</span>attach&nbsp;~left:&nbsp;1&nbsp;~top:&nbsp;i&nbsp;~expand:&nbsp;<span class="keywordsign">`</span><span class="constructor">X</span>&nbsp;version_sel<span class="keywordsign">#</span>coerce;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;version_sel<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -191,22 +192,22 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">Not_found</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">initializer</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_fchain&nbsp;acc&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_fchain&nbsp;ctx&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_fchain&nbsp;acc&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_fchain&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.fchain_id&nbsp;name&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;id&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="string">"&nbsp;"</span>^id&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s&nbsp;uri&nbsp;map;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s&nbsp;iri&nbsp;map;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;::&nbsp;acc<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_chain&nbsp;modname&nbsp;acc&nbsp;chn&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.mk_chain_name&nbsp;modname&nbsp;chn.<span class="constructor">Chn_ast</span>.chn_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_chain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s_name&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s_name&nbsp;uri&nbsp;map&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map&nbsp;&lt;-&nbsp;<span class="constructor">Smap</span>.add&nbsp;s_name&nbsp;iri&nbsp;map&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;acc&nbsp;=&nbsp;s_name&nbsp;::&nbsp;acc&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;flats&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.flat_chains_of_chain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f_fchain&nbsp;acc&nbsp;flats<br>
@@ -233,21 +234,21 @@
 &nbsp;&nbsp;<span class="keyword">end</span><br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;inst_chain_date&nbsp;ctx&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;inst_chain_date&nbsp;ctx&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.creation_date_iri&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"??"</span><br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;d&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Netdate</span>.mk_mail_date&nbsp;(<span class="constructor">Netdate</span>.since_epoch&nbsp;d)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;inst_chain_name&nbsp;ctx&nbsp;uri&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;inst.&nbsp;chain"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)<br>
+<span class="keyword">let</span>&nbsp;inst_chain_name&nbsp;ctx&nbsp;iri&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S&nbsp;is&nbsp;not&nbsp;an&nbsp;inst.&nbsp;chain"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;icname&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Chn_types</span>.string_of_ichain_name&nbsp;icname<br>
 ;;<br>
 <br>
 <span class="keyword">class</span>&nbsp;inst_list&nbsp;ctx&nbsp;on_sel_change&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">object</span>(self)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;[<span class="constructor">Rdf_uri</span>.uri]&nbsp;<span class="constructor">Gmylist</span>.plist&nbsp;<span class="keywordsign">`</span><span class="constructor">SINGLE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">inherit</span>&nbsp;[<span class="constructor">Rdf_iri</span>.iri]&nbsp;<span class="constructor">Gmylist</span>.plist&nbsp;<span class="keywordsign">`</span><span class="constructor">SINGLE</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;(inst_chain_name&nbsp;ctx);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>,&nbsp;<span class="constructor">Gmylist</span>.<span class="constructor">String</span>&nbsp;(inst_chain_date&nbsp;ctx)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
@@ -286,10 +287,10 @@
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;display_inst&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;graph&nbsp;&lt;-&nbsp;empty_dot_graph&nbsp;;&nbsp;self<span class="keywordsign">#</span>refresh&nbsp;()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ichain_name&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Not&nbsp;an&nbsp;instanciated&nbsp;chain&nbsp;uri:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;iri&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Not&nbsp;an&nbsp;instanciated&nbsp;chain&nbsp;iri:&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;n<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dot&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.dot_of_ichain&nbsp;ctx&nbsp;ichain_name&nbsp;<span class="keyword">in</span><br>
@@ -299,8 +300,8 @@
 <br>
 <span class="keyword">type</span>&nbsp;inst_filter&nbsp;=<br>
 &nbsp;&nbsp;{&nbsp;filt_input&nbsp;:&nbsp;string&nbsp;option&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;filt_fchain&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;option&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;filt_tools&nbsp;:&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;*&nbsp;<span class="constructor">Rdf_uri</span>.uri)&nbsp;list&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filt_fchain&nbsp;:&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;option&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;filt_tools&nbsp;:&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;*&nbsp;<span class="constructor">Rdf_iri</span>.iri)&nbsp;list&nbsp;;<br>
 &nbsp;&nbsp;}<br>
 <br>
 <span class="keyword">class</span>&nbsp;inst_chain_box&nbsp;ctx&nbsp;on_sel_change&nbsp;=<br>
@@ -359,8 +360,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Misc</span>.split_filename&nbsp;s,&nbsp;<span class="constructor">None</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tools&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;map&nbsp;(tool,&nbsp;version)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Urimap</span>.add&nbsp;tool&nbsp;version&nbsp;map)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Urimap</span>.empty&nbsp;filter.filt_tools<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;map&nbsp;(tool,&nbsp;version)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Irimap</span>.add&nbsp;tool&nbsp;version&nbsp;map)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Irimap</span>.empty&nbsp;filter.filt_tools<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">Chn_inst_query</span>.query_instances&nbsp;ctx<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?input:&nbsp;input<br>

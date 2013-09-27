@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Main_query.list_interfaces</title>
 </head>
 <body>
@@ -84,12 +82,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;options.<span class="constructor">Options</span>.args&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_intf</span>.intfs&nbsp;wld<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;l&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_uri&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;set&nbsp;s_iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(explicit,&nbsp;explicit_no,&nbsp;inherited)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_uri</span>.uri&nbsp;s_uri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdf_intf</span>.compute_intfs_of&nbsp;wld&nbsp;(<span class="constructor">Rdf_iri</span>.iri&nbsp;s_iri)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.diff&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;set&nbsp;(<span class="constructor">Uriset</span>.union&nbsp;explicit&nbsp;inherited))&nbsp;explicit_no<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.diff&nbsp;(<span class="constructor">Iriset</span>.union&nbsp;set&nbsp;(<span class="constructor">Iriset</span>.union&nbsp;explicit&nbsp;inherited))&nbsp;explicit_no<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Uriset</span>.empty&nbsp;l<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;f&nbsp;<span class="constructor">Iriset</span>.empty&nbsp;l<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Uriset</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;uri))&nbsp;intfs</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Iriset</span>.iter&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;print_endline&nbsp;(<span class="constructor">Grdf_intf</span>.string_of_intf&nbsp;wld&nbsp;iri))&nbsp;intfs</code></body></html>

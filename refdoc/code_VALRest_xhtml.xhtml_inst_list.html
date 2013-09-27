@@ -74,23 +74,21 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xhtml.xhtml_inst_list</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;xhtml_inst_list&nbsp;ctx&nbsp;list&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[&nbsp;<span class="string">""</span>&nbsp;;&nbsp;<span class="string">""</span>&nbsp;;&nbsp;<span class="string">"Execution"</span>&nbsp;;&nbsp;<span class="string">"Date"</span>&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(uri,&nbsp;<span class="constructor">Grdfs</span>.creation_date_uri&nbsp;ctx.ctx_rdf&nbsp;uri))&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(iri,&nbsp;<span class="constructor">Grdfs</span>.creation_date_iri&nbsp;ctx.ctx_rdf&nbsp;iri))&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;list&nbsp;=&nbsp;<span class="constructor">List</span>.sort<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(_,d1)&nbsp;(_,d2)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Pervasives</span>.compare&nbsp;d2&nbsp;d1)&nbsp;list<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(uri_inst,&nbsp;date)&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_uri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"bad&nbsp;ichain&nbsp;"</span>^(<span class="constructor">Rdf_uri</span>.string&nbsp;uri_inst))]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;(iri_inst,&nbsp;date)&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_types</span>.is_iri_ichain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;iri_inst&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"bad&nbsp;ichain&nbsp;"</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_inst))]&nbsp;;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">""</span>]&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;date&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;date&nbsp;<span class="keyword">with</span><br>
@@ -99,7 +97,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;a_ichain&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;=&nbsp;a_ichain&nbsp;ctx&nbsp;name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.inst_is_reference&nbsp;ctx&nbsp;uri_inst&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Chn_inst</span>.inst_is_reference&nbsp;ctx&nbsp;iri_inst&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;&nbsp;[link]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[link&nbsp;;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"&nbsp;"</span>&nbsp;;&nbsp;<span class="constructor">Rest_xpage</span>.star&nbsp;~label:&nbsp;<span class="string">"Reference&nbsp;instanciation&nbsp;chain"</span>&nbsp;()]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -107,7 +105,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"input"</span>),<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;(<span class="string">""</span>,<span class="string">"type"</span>),<span class="string">"radio"</span>&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"name"</span>),&nbsp;<span class="string">"inst"</span>^(string_of_int&nbsp;n)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"value"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri_inst],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"value"</span>),&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;iri_inst],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
@@ -119,9 +117,9 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;table&nbsp;=&nbsp;table&nbsp;~heads&nbsp;rows&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;action&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="constructor">Grdfs</span>.suffix_diff&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.concat&nbsp;uri&nbsp;<span class="constructor">Grdfs</span>.suffix_ichains&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;<span class="constructor">Grdfs</span>.suffix_diff&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;iri&nbsp;<span class="constructor">Grdfs</span>.suffix_ichains&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Rdf_iri</span>.string&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"form"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"action"</span>),&nbsp;action],<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;table&nbsp;;<br>

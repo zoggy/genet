@@ -74,12 +74,10 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_flat.flat_chains_of_chain</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;flat_chains_of_chain&nbsp;ctx&nbsp;chain_name&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_chain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.object_uris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Uri</span>&nbsp;uri_chain)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_flattenedto</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_chain&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_chain&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;chain_name&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.object_iris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;iri_chain)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_flattenedto</code></body></html>

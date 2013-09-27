@@ -74,25 +74,23 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_run.new_inst_node</title>
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;new_inst_node&nbsp;ctx&nbsp;~inst&nbsp;?cpt&nbsp;node&nbsp;=<br>
-&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"new_inst_node&nbsp;node=%S"</span>&nbsp;(g_uri_string&nbsp;node));<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node&nbsp;=&nbsp;uri_of_g_uri&nbsp;node&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"new_inst_node&nbsp;node=%S"</span>&nbsp;(g_iri_string&nbsp;node));<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;node&nbsp;=&nbsp;iri_of_g_iri&nbsp;node&nbsp;<span class="keyword">in</span><br>
 <br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_node&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_inst_opn_of_flat_opn&nbsp;~ichain:&nbsp;<span class="keyword">true</span>&nbsp;?cpt<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_node&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_inst_opn_of_flat_opn&nbsp;~ichain:&nbsp;<span class="keyword">true</span>&nbsp;?cpt<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~prefix:&nbsp;ctx.ctx_cfg.<span class="constructor">Config</span>.rest_api&nbsp;~inst&nbsp;~flat:&nbsp;node<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_uris&nbsp;ctx.ctx_rdf<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
 &nbsp;&nbsp;~sub:&nbsp;inst_node&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;node;<br>
 <br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_uri</span>.equal&nbsp;inst&nbsp;inst_node)&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;not&nbsp;(<span class="constructor">Rdf_iri</span>.equal&nbsp;inst&nbsp;inst_node)&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chn_flat</span>.add_containsop&nbsp;ctx&nbsp;~src:&nbsp;inst&nbsp;~dst:&nbsp;inst_node;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;inst_node)&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_node</span>.<span class="constructor">Uri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_instopn)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;inst_node)&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_instopn)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;);<br>
 &nbsp;&nbsp;<span class="constructor">Inst</span>&nbsp;inst_node</code></body></html>

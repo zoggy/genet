@@ -74,29 +74,27 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.instanciate</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;instanciate&nbsp;ctx&nbsp;(reporter:&nbsp;&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;?(force=<span class="keyword">false</span>)&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;instanciate&nbsp;ctx&nbsp;(reporter:&nbsp;&nbsp;<span class="constructor">Reporter</span>.reporter)&nbsp;?(force=<span class="keyword">false</span>)&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">match</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keyword">when</span>&nbsp;not&nbsp;force&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>push_context&nbsp;(<span class="string">"Removing&nbsp;previous&nbsp;inst&nbsp;chain&nbsp;"</span>&nbsp;^&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_chain&nbsp;ctx&nbsp;reporter&nbsp;uri;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;inst_chain_exists&nbsp;ctx&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keyword">when</span>&nbsp;not&nbsp;force&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>push_context&nbsp;(<span class="string">"Removing&nbsp;previous&nbsp;inst&nbsp;chain&nbsp;"</span>&nbsp;^&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove_inst_chain&nbsp;ctx&nbsp;reporter&nbsp;iri;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reporter<span class="keywordsign">#</span>pop_context;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">None</span><br>
 &nbsp;&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;uri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iri<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx.ctx_rdf.wld_graph.transaction_start&nbsp;();<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;do_instanciate&nbsp;ctx&nbsp;reporter&nbsp;uri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;do_instanciate&nbsp;ctx&nbsp;reporter&nbsp;iri_fchain&nbsp;input&nbsp;comb&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx.ctx_rdf.wld_graph.transaction_commit();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;&nbsp;e&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ctx.ctx_rdf.wld_graph.transaction_rollback&nbsp;();<br>

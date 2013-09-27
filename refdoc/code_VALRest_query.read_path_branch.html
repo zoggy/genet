@@ -74,15 +74,13 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_query.read_path_branch</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_branch&nbsp;uri_parent&nbsp;=&nbsp;<span class="keyword">function</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;read_path_branch&nbsp;iri_parent&nbsp;=&nbsp;<span class="keyword">function</span><br>
 &nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">assert</span>&nbsp;<span class="keyword">false</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;::&nbsp;q&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;uri_append&nbsp;uri_parent&nbsp;s&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.concat&nbsp;iri_parent&nbsp;s&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;q&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branch</span>&nbsp;uri<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;uri&nbsp;q</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">|</span>&nbsp;[<span class="string">""</span>]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Branch</span>&nbsp;iri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;read_path_branch&nbsp;iri&nbsp;q</code></body></html>

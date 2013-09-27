@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Config</title>
 </head>
 <body>
@@ -83,12 +81,13 @@
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t&nbsp;=&nbsp;{<br>
 &nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;:&nbsp;string;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;db_storage&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_engine&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_name&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_user&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;:&nbsp;string;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;:&nbsp;string;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;:&nbsp;<span class="constructor">Rdf_uri</span>.uri;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;:&nbsp;<span class="constructor">Rdf_iri</span>.iri;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;:&nbsp;[&nbsp;<span class="keywordsign">`</span><span class="constructor">Absolute</span>&nbsp;]&nbsp;<span class="constructor">Fname</span>.filename;<br>
 &nbsp;&nbsp;}<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_config&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Config</span>.t<br>

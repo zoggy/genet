@@ -74,19 +74,17 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_inst.create_flat_graph</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;create_flat_graph&nbsp;ctx&nbsp;uri_fchain&nbsp;=<br>
+<code class="code"><span class="keyword">let</span>&nbsp;create_flat_graph&nbsp;ctx&nbsp;iri_fchain&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.create&nbsp;()&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_consumer&nbsp;uri_src&nbsp;p_src&nbsp;(g,&nbsp;set)&nbsp;p_dst&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_dst&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.port_container&nbsp;p_dst&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;uri_dst&nbsp;uri_fchain&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_consumer&nbsp;iri_src&nbsp;p_src&nbsp;(g,&nbsp;set)&nbsp;p_dst&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_dst&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.port_container&nbsp;p_dst&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;iri_dst&nbsp;iri_fchain&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.add&nbsp;g<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;uri_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;uri_dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;iri_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;iri_dst,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;p_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;p_dst)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;set)<br>
@@ -94,28 +92,28 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">begin</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.add&nbsp;g<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;uri_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;uri_dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;iri_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;iri_dst,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;p_src,&nbsp;<span class="constructor">Chn_run</span>.<span class="constructor">Flat</span>&nbsp;p_dst)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;set&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri_from&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.get_op_origin&nbsp;ctx&nbsp;uri_dst&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;uri_from&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;uri_from&nbsp;<span class="constructor">Grdfs</span>.genet_explode&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.add&nbsp;uri_dst&nbsp;set<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;uri_from&nbsp;<span class="constructor">Grdfs</span>.genet_implode&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.add&nbsp;uri_dst&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri_from&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.get_op_origin&nbsp;ctx&nbsp;iri_dst&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;iri_from&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;iri_from&nbsp;<span class="constructor">Grdfs</span>.genet_explode&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.add&nbsp;iri_dst&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;iri_from&nbsp;<span class="constructor">Grdfs</span>.genet_implode&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.add&nbsp;iri_dst&nbsp;set<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;ctx.ctx_rdf&nbsp;uri_from&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdf_intf</span>.intf_exists&nbsp;ctx.ctx_rdf&nbsp;iri_from&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;set<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Uriset</span>.add&nbsp;uri_dst&nbsp;set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Iriset</span>.add&nbsp;iri_dst&nbsp;set<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;set)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_producer&nbsp;uri&nbsp;(g,&nbsp;port_set,&nbsp;set)&nbsp;p&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Uriset</span>.mem&nbsp;p&nbsp;port_set&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f_producer&nbsp;iri&nbsp;(g,&nbsp;port_set,&nbsp;set)&nbsp;p&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Iriset</span>.mem&nbsp;p&nbsp;port_set&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"port&nbsp;%s&nbsp;already&nbsp;seen,&nbsp;stop"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;p));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"port&nbsp;%s&nbsp;already&nbsp;seen,&nbsp;stop"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;p));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;port&nbsp;already&nbsp;handled;&nbsp;do&nbsp;nothing&nbsp;more&nbsp;*)</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;port_set,&nbsp;set)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
@@ -124,27 +122,27 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;consumers&nbsp;=&nbsp;<span class="constructor">Chn_flat</span>.port_consumers&nbsp;ctx&nbsp;p&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%d&nbsp;consumers&nbsp;for&nbsp;port&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;consumers)&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;p));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port_set&nbsp;=&nbsp;<span class="constructor">Uriset</span>.add&nbsp;p&nbsp;port_set&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;consumers)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;p));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;port_set&nbsp;=&nbsp;<span class="constructor">Iriset</span>.add&nbsp;p&nbsp;port_set&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(g,&nbsp;set)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(f_consumer&nbsp;uri&nbsp;p)&nbsp;(g,&nbsp;set)&nbsp;consumers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(f_consumer&nbsp;iri&nbsp;p)&nbsp;(g,&nbsp;set)&nbsp;consumers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;port_set,&nbsp;set)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;fill&nbsp;uri&nbsp;(g,&nbsp;port_set)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"fill&nbsp;uri=%s"</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri));<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;<span class="keyword">rec</span>&nbsp;fill&nbsp;iri&nbsp;(g,&nbsp;port_set)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"fill&nbsp;iri=%s"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri));<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Rdf_uri</span>.equal&nbsp;uri&nbsp;uri_fchain<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;iri&nbsp;iri_fchain<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">then</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;uri&nbsp;dir&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.ports&nbsp;ctx.ctx_rdf&nbsp;iri&nbsp;dir&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%d&nbsp;%s&nbsp;port(s)"</span>&nbsp;(<span class="constructor">List</span>.length&nbsp;ports)&nbsp;(<span class="constructor">Grdf_port</span>.string_of_dir&nbsp;dir));<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(g,&nbsp;port_set,&nbsp;set)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_producer&nbsp;uri)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;port_set,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;ports<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(g,&nbsp;port_set,&nbsp;set)&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_producer&nbsp;iri)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(g,&nbsp;port_set,&nbsp;<span class="constructor">Iriset</span>.empty)&nbsp;ports<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Uriset</span>.fold&nbsp;fill&nbsp;set&nbsp;(g,&nbsp;port_set)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Iriset</span>.fold&nbsp;fill&nbsp;set&nbsp;(g,&nbsp;port_set)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(g,&nbsp;_)&nbsp;=&nbsp;fill&nbsp;uri_fchain&nbsp;(g,&nbsp;<span class="constructor">Uriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(g,&nbsp;_)&nbsp;=&nbsp;fill&nbsp;iri_fchain&nbsp;(g,&nbsp;<span class="constructor">Iriset</span>.empty)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;g</code></body></html>

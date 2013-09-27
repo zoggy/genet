@@ -74,13 +74,11 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Chn_ast.chain_dot_deps.print_intf</title>
 </head>
 <body>
 <code class="code"><span class="keyword">method</span>&nbsp;print_intf&nbsp;b&nbsp;~prefix&nbsp;intf&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;uri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.uri_intf_of_interface_spec&nbsp;~prefix&nbsp;intf&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;iri&nbsp;=&nbsp;<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix&nbsp;intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.bprintf&nbsp;b<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"%s&nbsp;[label=\"%s\"&nbsp;shape=\"box\"&nbsp;href=\"%s\"&nbsp;style=\"filled\"&nbsp;fillcolor=\"%s\"];\n"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>intf_id&nbsp;intf)&nbsp;intf&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;uri)&nbsp;chain_dot<span class="keywordsign">#</span>color_interface</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>intf_id&nbsp;intf)&nbsp;intf&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;chain_dot<span class="keywordsign">#</span>color_interface</code></body></html>

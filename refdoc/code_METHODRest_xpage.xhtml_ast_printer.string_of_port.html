@@ -74,14 +74,12 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.xhtml_ast_printer.string_of_port</title>
 </head>
 <body>
 <code class="code"><span class="keyword">method</span>&nbsp;string_of_port&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;ftype&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.uri_filetype&nbsp;~prefix&nbsp;ftype&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Grdfs</span>.iri_filetype&nbsp;~prefix&nbsp;ftype)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;href],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;ftype]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>

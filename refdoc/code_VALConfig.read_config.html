@@ -74,8 +74,6 @@
 <link title="Sset" rel="Chapter" href="Sset.html">
 <link title="Tokens" rel="Chapter" href="Tokens.html">
 <link title="Toolgui" rel="Chapter" href="Toolgui.html">
-<link title="Urimap" rel="Chapter" href="Urimap.html">
-<link title="Uriset" rel="Chapter" href="Uriset.html">
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Config.read_config</title>
 </head>
 <body>
@@ -83,7 +81,8 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;group&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.group&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pname_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"project_name"</span>]&nbsp;<span class="string">"Foo"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pid_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"project_id"</span>]&nbsp;<span class="string">"foo"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbengine_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"engine"</span>]&nbsp;<span class="string">"mysql"</span>&nbsp;<span class="string">"postgresql&nbsp;or&nbsp;mysql"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbstorage_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"storage"</span>]&nbsp;<span class="string">"mysql"</span>&nbsp;<span class="string">"postgresql&nbsp;or&nbsp;mysql[2]"</span>&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbengine_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"engine"</span>]&nbsp;<span class="string">""</span>&nbsp;<span class="string">"DB&nbsp;engine&nbsp;(for&nbsp;example&nbsp;MyISAM)"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbname_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"name"</span>]&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbuser_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"user"</span>]&nbsp;<span class="string">"genet"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbhost_cp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">CF</span>.string_cp&nbsp;~group&nbsp;[<span class="string">"db"</span>;&nbsp;<span class="string">"host"</span>]&nbsp;<span class="string">"localhost"</span>&nbsp;<span class="string">""</span>&nbsp;<span class="keyword">in</span><br>
@@ -103,11 +102,12 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;{&nbsp;project_name&nbsp;=&nbsp;pname_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;=&nbsp;pid_cp<span class="keywordsign">#</span>get&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;db_storage&nbsp;=&nbsp;dbstorage_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_engine&nbsp;=&nbsp;dbengine_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_name&nbsp;=&nbsp;dbname_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_user&nbsp;=&nbsp;dbuser_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_host&nbsp;=&nbsp;dbhost_cp<span class="keywordsign">#</span>get&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;db_passwd&nbsp;=&nbsp;dbpasswd_cp<span class="keywordsign">#</span>get&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;=&nbsp;<span class="constructor">Rdf_uri</span>.uri&nbsp;rest_api&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rest_api&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.iri&nbsp;rest_api&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;root_dir&nbsp;=&nbsp;<span class="constructor">Fname</span>.absolute&nbsp;(<span class="constructor">Filename</span>.dirname&nbsp;(<span class="constructor">Misc</span>.normalized_path&nbsp;file))&nbsp;;<br>
 &nbsp;&nbsp;}</code></body></html>
