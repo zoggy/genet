@@ -121,6 +121,9 @@ dummy:
 
 install: dummy #installimages
 	cd src && $(MAKE) install
+
+install-libs: dummy
+	cd src && $(MAKE) install-libs
 #	$(MAKE) installspecsfiles
 #	$(MAKE) installdoc
 
