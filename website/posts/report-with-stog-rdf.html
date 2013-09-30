@@ -1,13 +1,13 @@
 <post title="Generating reports with Stog-RDF"
-date="2013/09/27"
+date="2013/09/30"
 topics="code"
 keywords="report,rdf,sparql,stog-rdf"
 >
 <p>
-Genet used information stored in RDF graphs: tools, branches,
+Genet stores information in RDF graphs: tools, branches,
 versions, interfaces, flatten chains, instanciations, ...
 Genet allows to build (part of) continuous integration performs.
-Wanting to generate reports is natural. Let's how to do this
+Wanting to generate reports is natural. Let's see how to do this
 using <ext-a href="http://zoggy.github.io/stog/plugins/rdf.html">Stog-RDF</ext-a>.
 </p>
 <sep_/>
@@ -22,9 +22,44 @@ to extract data while generating the XML documents.
 (chains that were instanciated) of the day, indicating whether each one
 succeeded or failed.
 </p>
+<section id="setup" title="Setup">
+<p>
+We need to define the Genet database as source of a RDF graph,
+which can be used from rules introduced by Stog-RDF.
+</p>
+<p>To do so, we define the genet RDF graph as a source in the
+<icode>.stog/config-rdf</icode> file in our web site source directory:
+</p>
+<ocaml defer_="1"><include file="../example/report/.stog/config-rdf" raw="true"/></ocaml>
+<p>
+When Stog is launched with the stog-rdf plugin, this plugin reads this config file
+and creates the graphs described in <icode>sources</icode>.
+</p>
+<p>
+Here, the Genet graph is named with IRI <icode>http://localhost:8082/"</icode>.
+Note that we also defined a <icode>genet:</icode> namespace to shorten
+the IRIs used in the Sparql query.
+</p>
+<p>
+Then we create a simple <icode>index.html</icode> file:
+</p>
+<hxml><![CDATA[
+<page title="Genet report"
+main="true"
+stog:site-url="file:///tmp/"
+>
+<table class="table">
+...
+</table>
+</page>]]></hxml>
+<p>The "..." will be replaced by some code to query the Genet graph.</p>
+<p>We also create a template file for "page" elements, in <icode>.stog/templates/page.tmpl</icode>:</p>
+<hxml defer_="1"><include raw="true" file="../example/report/.stog/templates/page.tmpl"/></hxml>
+</section>
+
 <section id="query" title="The Sparql query">
 <p>
-The Sparql query to get these instanciations can be written as:
+The Sparql query to get the instanciations can be written as:
 </p>
 <hcode lang="sql"><![CDATA[
 PREFIX genet: <https://raw.github.com/zoggy/genet/master/doc/genet.ttl#>
@@ -46,18 +81,71 @@ corresponding to the command which failed.
 We filter the result to keep only the instanciations which ended on the current day.
 </p>
 <p class="alert alert-warning">
-The structure of the RDF graph is not documented yet.
+The structure of the RDF graph used by Genet is not documented yet.
 </p>
 <p>
-The <icode>FROM</icode> clause refer to the graph in our Genet database.
-It is created at startup, by defining it in the <icode>.stog/config-rdf</icode>
-file in our web site source directory:
+The <icode>FROM</icode> clause refers to the graph in our Genet database.
+Now let's use this query.
 </p>
-<ocaml defer_="1"><include file="../example/report/.stog/config-rdf" raw="true"/></ocaml>
+</section>
+
+<section id="using" title="Using the query">
 <p>
-When Stog is launched with the stog-rdf plugin, this plugin loads this config file
-and creates the graphs described in <icode>sources</icode>.
+To evaluate this query and insert the result in our <icode>index.html</icode> page,
+we use the <ixml>&lt;rdf-select&gt;</ixml> rule of Stog-RDF. We replace the "..." by the
+following code:
 </p>
-<p>Now let's use this query.</p>
+<hxml><![CDATA[
+<rdf-select tmpl="instchain.tmpl"><![CDATA[
+  SELECT ?ichain ?date ?instnode
+  FROM <http://localhost:8082/>
+  WHERE { ?ichain a genet:Instchain .
+          ?ichain genet:stoppedOn ?date .
+          OPTIONAL { ?ichain genet:failedCommand ?instnode } .
+          FILTER (YEAR(?date)=YEAR(NOW()) && MONTH(?date)=MONTH(NOW()) && DAY(?date)=DAY(NOW()))
+        }]]]]><![CDATA[>
+</rdf-select>]]>
+</hxml>
+<p>
+In the query, we do not need to use the <icode>PREFIX</icode> statements, as they are automatically
+added by Stog-RDF: <icode>rdf:</icode> is always added, and <icode>genet:</icode> is added
+from its definition in <icode>.stog/config-rdf</icode>.
+</p>
+<p>
+The query is evaluated when the <ixml>&lt;rdf-select&gt;</ixml> is handled. For each solution
+of the SELECT query, the template file indicated by the <icode>tmpl</icode> attribute is used
+to create XML code. (See <ext-a href="http://zoggy.github.io/stog/plugins/rdf.html#querying">details here</ext-a>).
+</p>
+<p>
+Here, the content of <icode>.stog/templates/instchain.tmpl</icode> is the following:
+</p>
+<hxml defer_="1"><include raw="true" file="../example/report/.stog/templates/instchain.tmpl"/></hxml>
+<p>
+For each solution, a row (<ixml>&lt;tr&gt;</ixml>) is created and inserted, with some
+information from the solution: the instanciation chain with <ixml>&lt;ichain/&gt;</ixml>,
+the date with <ixml>&lt;date/&gt;</ixml>. The style and the content of the second column
+(success or error) depends whether
+<ixml>&lt;instnode/&gt;</ixml> is empty or not, as it was an optional field of each solution.
+</p>
+<p>
+Stog is launched the following way, in the web site source directory. The first command
+creates a Stog executable embedding the Stog-rdf plugin and the MySQL backend of
+OCaml-RDF. The second command launches this executable to generate the web page in <icode>/tmp</icode>:
+</p>
+<command-line><![CDATA[> mk-stog -package stog-rdf,rdf.mysql -o ./stog
+> ./stog -d /tmp .]]></command-line>
+<p>
+The result is shown on the figure below:
+</p>
+<a href="report_example.png"><image src="report_example.png" width="240" alt="Report example" title="Click to enlarge"/></a>
+</section>
+<section id="further" title="Going further">
+<p>
+This is a simple example using Stog-RDF. More complex queries can be used.
+</p>
+<p>
+Since Genet installation includes Genet libraries, one can also develop a program to generate
+report, or develog a Stog plugin providing new rules to generate reports.
+</p>
 </section>
 </post>
