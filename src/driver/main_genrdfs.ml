@@ -60,7 +60,7 @@ let add_vocabulary g =
     )
     [
       Grdfs.genet_name, "Name", Grdfs.genet_element, lit ;
-      Grdfs.genet_desc, "Description", Grdfs.genet_element, lit ;
+      (*Grdfs.genet_desc, "Description", Grdfs.genet_element, lit ;*)
       Grdfs.genet_file_ext, "Filename extension", Grdfs.genet_filetype, lit ;
       Grdfs.genet_hasbranch, "Has branch", Grdfs.genet_branch, Grdfs.genet_branch ;
       Grdfs.genet_nointf, "Does not implement interface", Grdfs.genet_branch, Grdfs.genet_intf ;
@@ -85,7 +85,7 @@ let add_vocabulary g =
       Grdfs.genet_useinputcommitid, "Use input commit id", Grdfs.genet_instchain, lit ;
       Grdfs.genet_useversion, "Use version", Grdfs.genet_flatchain, lit ;
       Grdfs.genet_usetoolversion, "Use tool version", Grdfs.genet_instchain, Grdfs.genet_version ;
-      Grdfs.genet_filemd5, "File md5checksum", Grdfs.genet_element, lit ;
+      Grdfs.genet_filemd5, "File md5checksum", Grdfs.genet_port, lit ;
       Grdfs.genet_hasimplode, "Corresponding implode operation", Grdfs.genet_explode, Grdfs.genet_implode ;
       Grdfs.genet_returncode, "Return code", Grdfs.genet_instopn, lit ;
       Grdfs.genet_commandoutput, "Command output", Grdfs.genet_instopn, lit ;
