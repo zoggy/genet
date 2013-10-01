@@ -56,7 +56,7 @@ let add_tool wld name =
     Some name2 -> Grdf_types.error (Grdf_types.Tool_exists name2)
   | None ->
       let sub = Iri iri in
-      Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_tool);
+      Grdfs.add_type wld ~sub: iri ~obj: Grdfs.genet_tool;
       Grdfs.add_name wld sub name;
       iri
 ;;

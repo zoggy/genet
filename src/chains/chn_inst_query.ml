@@ -94,7 +94,7 @@ let instances_of_tools ctx ?base tools =
               [] -> assert false
             | v :: q ->
                 let list = Grdfs.subject_iris ctx.ctx_rdf
-                  ~pred: Grdfs.genet_useversion
+                  ~pred: Grdfs.genet_usetoolversion
                   ~obj: (Rdf_term.Iri v)
                 in
                 (iriset_of_list list, q)
@@ -105,7 +105,7 @@ let instances_of_tools ctx ?base tools =
           true -> set
         | false ->
             let list = Grdfs.subject_iris ctx.ctx_rdf
-              ~pred: Grdfs.genet_useversion
+              ~pred: Grdfs.genet_usetoolversion
               ~obj: (Rdf_term.Iri version)
             in
             let set2 = iriset_of_list list in

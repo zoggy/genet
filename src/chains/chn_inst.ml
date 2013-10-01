@@ -54,8 +54,8 @@ let instport_file_iri ctx iri =
       | p :: _ ->
           match
             Grdfs.object_literal ctx.Chn_types.ctx_rdf
-            ~sub: (Rdf_term.Iri p) ~pred: Grdfs.genet_filemd5
-                with
+              ~sub: (Rdf_term.Iri p) ~pred: Grdfs.genet_filemd5
+          with
           | Some md5 ->
               Some (Grdfs.iri_outfile_path ctx.Chn_types.ctx_cfg.Config.rest_api [md5])
           | None -> None
@@ -73,7 +73,7 @@ let version_combinations ctx fchain =
        let set = Iriset.add intf set in
        Irimap.add tool set acc
     )
-    intfs Irimap.empty
+      intfs Irimap.empty
   in
   Chn_flat.check_tool_intfs ctx fchain;
   let intf_tools = Irimap.fold (fun tool intfs acc -> (tool, intfs) :: acc)
@@ -84,11 +84,11 @@ let version_combinations ctx fchain =
   | (tool, required_intfs) :: q ->
       dbg ~level: 2 (fun () ->
          Printf.sprintf "required intfs for tool %s:\n%s"
-          (Rdf_iri.string tool)
-          (String.concat "\n"
+           (Rdf_iri.string tool)
+           (String.concat "\n"
             (Iriset.fold (fun iri acc -> (Rdf_iri.string iri)::acc) required_intfs []))
       );
-       let active_versions = Grdf_version.active_versions_of
+      let active_versions = Grdf_version.active_versions_of
         ctx.ctx_rdf ~recur: true tool
       in
       dbg ~level: 2 (fun () -> Printf.sprintf "active_versions_of %s: %d"
@@ -102,12 +102,12 @@ let version_combinations ctx fchain =
         in
         dbg ~level:2
           (fun () -> Printf.sprintf "Implemented:\n%s"
-            (String.concat "\n"
+             (String.concat "\n"
               (Iriset.fold (fun iri acc -> (Rdf_iri.string iri) :: acc) implemented []))
-        );
+          );
         if Iriset.for_all
           (fun intf -> Iriset.exists (Rdf_iri.equal intf) implemented)
-          required_intfs
+            required_intfs
         then
           match combs with
             [] ->
@@ -138,20 +138,20 @@ let equal_tool_versions = Irimap.equal Rdf_iri.equal;;
 
 let inst_versions ctx iri_inst =
   let versions = Grdfs.object_iris ctx.ctx_rdf
-    ~sub: (Rdf_term.Iri iri_inst) ~pred: Grdfs.genet_useversion
+    ~sub: (Rdf_term.Iri iri_inst) ~pred: Grdfs.genet_usetoolversion
   in
   List.fold_left
-  (fun acc v -> Irimap.add
-     (Grdf_version.tool_of_version v)
-     v
-     acc)
+    (fun acc v -> Irimap.add
+       (Grdf_version.tool_of_version v)
+         v
+         acc)
     Irimap.empty
-  versions
+    versions
 ;;
 
 let instances ctx iri_fchain =
   let insts = Grdfs.subject_iris ctx.ctx_rdf
-     ~pred: Grdfs.genet_instanciate ~obj: (Rdf_term.Iri iri_fchain)
+    ~pred: Grdfs.genet_instanciate ~obj: (Rdf_term.Iri iri_fchain)
   in
   let f acc iri_i =
     let versions = inst_versions ctx iri_i in
@@ -177,7 +177,7 @@ let set_input_info ctx iri_inst input =
 ;;
 
 (** @todo[3] This could be rewritten when OCaml-RDF offers a
-    Sparql implementation. *)
+   Sparql implementation. *)
 let inst_chain_exists ctx iri_fchain input comb =
   let insts = instances ctx iri_fchain in
   let input =
@@ -186,7 +186,7 @@ let inst_chain_exists ctx iri_fchain input comb =
   in
   let pred (_, versions, input_info) =
     equal_tool_versions comb versions &&
-    (match input_info with None -> false | Some i -> i = input)
+      (match input_info with None -> false | Some i -> i = input)
   in
   try
     let (iri_i, _, _) = List.find pred insts in
@@ -203,28 +203,28 @@ let create_flat_graph ctx iri_fchain =
     if Rdf_iri.equal iri_dst iri_fchain then
       begin
         let g = Graph.add g
-         (Chn_run.Flat iri_src, Chn_run.Flat iri_dst,
-          (Chn_run.Flat p_src, Chn_run.Flat p_dst)
-         ) in
+          (Chn_run.Flat iri_src, Chn_run.Flat iri_dst,
+           (Chn_run.Flat p_src, Chn_run.Flat p_dst)
+          ) in
         (g, set)
       end
     else
       begin
         let g = Graph.add g
-           (Chn_run.Flat iri_src, Chn_run.Flat iri_dst,
-            (Chn_run.Flat p_src, Chn_run.Flat p_dst)
-           ) in
+          (Chn_run.Flat iri_src, Chn_run.Flat iri_dst,
+           (Chn_run.Flat p_src, Chn_run.Flat p_dst)
+          ) in
         let set =
           let iri_from = Chn_flat.get_op_origin ctx iri_dst in
           match iri_from with
-           | _ when Rdf_iri.equal iri_from Grdfs.genet_explode ->
-             Iriset.add iri_dst set
-           | _ when Rdf_iri.equal iri_from Grdfs.genet_implode ->
-             Iriset.add iri_dst set
-           | _ ->
-             match Grdf_intf.intf_exists ctx.ctx_rdf iri_from with
-               None -> set
-             | Some _ -> Iriset.add iri_dst set
+          | _ when Rdf_iri.equal iri_from Grdfs.genet_explode ->
+              Iriset.add iri_dst set
+          | _ when Rdf_iri.equal iri_from Grdfs.genet_implode ->
+              Iriset.add iri_dst set
+          | _ ->
+              match Grdf_intf.intf_exists ctx.ctx_rdf iri_from with
+                None -> set
+              | Some _ -> Iriset.add iri_dst set
         in
         (g, set)
       end
@@ -237,17 +237,17 @@ let create_flat_graph ctx iri_fchain =
        (g, port_set, set)
       )
     else
-       (
-        let consumers = Chn_flat.port_consumers ctx p in
-        dbg ~level: 1
+      (
+       let consumers = Chn_flat.port_consumers ctx p in
+       dbg ~level: 1
          (fun () -> Printf.sprintf "%d consumers for port %s"
             (List.length consumers) (Rdf_iri.string p));
-        let port_set = Iriset.add p port_set in
-        let (g, set) = List.fold_left
-          (f_consumer iri p) (g, set) consumers
-        in
-        (g, port_set, set)
-       )
+       let port_set = Iriset.add p port_set in
+       let (g, set) = List.fold_left
+         (f_consumer iri p) (g, set) consumers
+       in
+       (g, port_set, set)
+      )
   in
   let rec fill iri (g, port_set) =
     dbg ~level: 1 (fun () -> Printf.sprintf "fill iri=%s" (Rdf_iri.string iri));
@@ -270,8 +270,8 @@ let create_flat_graph ctx iri_fchain =
 
 
 let do_instanciate ctx reporter iri_fchain input comb =
-   let prefix = ctx.ctx_cfg.Config.rest_api in
-   reporter#push_context (Printf.sprintf "Running chain %S" (Rdf_iri.string iri_fchain));
+  let prefix = ctx.ctx_cfg.Config.rest_api in
+  reporter#push_context (Printf.sprintf "Running chain %S" (Rdf_iri.string iri_fchain));
   match Chn_types.is_iri_fchain ctx iri_fchain with
     None -> assert false
   | Some fchain_name ->
@@ -281,15 +281,15 @@ let do_instanciate ctx reporter iri_fchain input comb =
       in
       let iri_inst = Chn_types.iri_ichain prefix inst_name in
       Grdfs.add_type ctx.ctx_rdf
-        ~sub: (Rdf_term.Iri iri_inst)
-        ~obj: (Rdf_term.Iri Grdfs.genet_instchain);
+        ~sub: iri_inst
+        ~obj: Grdfs.genet_instchain;
       Grdfs.add_triple_iris ctx.ctx_rdf
         ~sub: iri_inst ~pred: Grdfs.genet_instanciate ~obj: iri_fchain;
       (* associate tool versions *)
       Irimap.iter
         (fun _ version ->
-          Grdfs.add_triple_iris ctx.ctx_rdf
-            ~sub: iri_inst ~pred: Grdfs.genet_useversion ~obj: version
+           Grdfs.add_triple_iris ctx.ctx_rdf
+             ~sub: iri_inst ~pred: Grdfs.genet_usetoolversion ~obj: version
         )
         comb;
 
@@ -363,7 +363,7 @@ let remove_inst_chain ctx (reporter : Reporter.reporter) iri =
     begin
       match pred with
       | _ when p Grdfs.rdf_type -> ()
-      | _ when p Grdfs.genet_useversion -> ()
+      | _ when p Grdfs.genet_usetoolversion -> ()
       | _ when p Grdfs.genet_useinputcommitid -> ()
       | _ when p Grdfs.genet_useinput -> ()
       | _ when p Grdfs.genet_startedon -> ()
@@ -379,9 +379,9 @@ let remove_inst_chain ctx (reporter : Reporter.reporter) iri =
           remove_inst_port ctx reporter iri
       | _ when p Grdfs.genet_containsop ->
           begin
-          match obj with
+            match obj with
             | Rdf_term.Iri opn ->
-               remove_inst_opn ctx reporter opn
+                remove_inst_opn ctx reporter opn
             | _ ->  ()
           end
       | _ ->
@@ -426,7 +426,7 @@ let reference_insts ctx ~input ~chain =
   in
   let set_input = List.fold_left
     (fun set iri -> Iriset.add iri set)
-    Iriset.empty input_refs
+      Iriset.empty input_refs
   in
   List.filter (fun iri -> Iriset.mem iri set_input) chain_refs
 ;;
@@ -461,7 +461,7 @@ let add_reference_inst ctx ~input ~chain ~inst =
       match instance_source ctx inst with
         None ->
           failwith
-          (Printf.sprintf "No source flat chaint for inst chain %S" (Rdf_iri.string inst))
+            (Printf.sprintf "No source flat chaint for inst chain %S" (Rdf_iri.string inst))
       | Some iri -> iri
     in
     let fchain_name =
@@ -476,10 +476,10 @@ let add_reference_inst ctx ~input ~chain ~inst =
     (
      let msg = Printf.sprintf
        "Inst chain %S instanciates %S and cannot be used as reference for %S"
-       (Rdf_iri.string inst) (Rdf_iri.string iri_chain) (Rdf_iri.string chain)
+         (Rdf_iri.string inst) (Rdf_iri.string iri_chain) (Rdf_iri.string chain)
      in
      failwith msg
-     );
+    );
 
   (* test the inst chain uses the given input *)
   begin

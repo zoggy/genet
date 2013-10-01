@@ -77,6 +77,7 @@ let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
 let genet_chain = genet_ "Chain";;
 let genet_flatchain = genet_ "Flatchain";;
+let genet_flatopn = genet_ "Flatopn";;
 let genet_port = genet_ "Port";;
 let genet_instchain = genet_ "Instchain";;
 let genet_instopn = genet_ "InstOperation";;
@@ -95,6 +96,7 @@ let string_of_class = function
 | s when Rdf_iri.equal s genet_flatchain -> "flatchain"
 | s when Rdf_iri.equal s genet_instchain -> "instchain"
 | s when Rdf_iri.equal s genet_instopn -> "instopn"
+| s when Rdf_iri.equal s genet_flatopn -> "flatopn"
 | s when Rdf_iri.equal s genet_diffcommand -> "diffcommand"
 | _ -> ""
 ;;
@@ -115,16 +117,18 @@ let genet_hastype = genet_"hasFiletype";;
 (*let genet_versionid = genet_"versionId";;*)
 let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
+let genet_portfrom = genet_"portFrom";;
 let genet_containsop = genet_"containsOperation";;
 let genet_createdon = genet_"createdOn";;
 let genet_startedon = genet_"startedOn";;
 let genet_stoppedon = genet_"stoppedOn";;
 let genet_isactive = genet_"isActive";;
 let genet_instanciate = genet_"instanciate";;
-let genet_hascommitid = genet_"hasCommitId";;
+(*let genet_hascommitid = genet_"hasCommitId";;*)
 let genet_useinput = genet_"useInput";;
 let genet_useinputcommitid = genet_"useInputCommitId";;
 let genet_useversion = genet_"useVersion";;
+let genet_usetoolversion = genet_"useToolVersion";;
 let genet_filemd5 = genet_"fileMd5";;
 let genet_hasimplode = genet_"hasImplode";;
 let genet_returncode = genet_"returnCode";;
@@ -142,7 +146,7 @@ let rem_triple wld ~sub ~pred ~obj =
 
 let add_type wld ~sub ~obj =
   let pred = rdf_type in
-  add_triple wld ~sub ~pred ~obj
+  add_triple wld ~sub: (Rdf_term.Iri sub) ~pred ~obj: (Rdf_term.Iri obj)
 ;;
 
 let add_triple_iris wld ~sub ~pred ~obj =

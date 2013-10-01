@@ -63,7 +63,7 @@ let diffcommand_exists wld iri =
 let do_add wld iri name =
   dbg ~level: 1 (fun () -> "Grdf_diff.do_add iri="^(Rdf_iri.string iri)^" name="^name);
   let sub = Iri iri in
-  Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_diffcommand);
+  Grdfs.add_type wld ~sub: iri ~obj: Grdfs.genet_diffcommand;
   Grdfs.add_name wld sub name
 ;;
 

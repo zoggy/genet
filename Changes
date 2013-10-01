@@ -1,3 +1,7 @@
+Next release:
+- In RDF graph: genet_useversion replaced by usetoolversion, to link
+  instchain to tool version.
+
 0.5:
 - Upgrade to OCaml-RDF 0.7.0 .
 - Configuration field formerly called "engine" is now called "storage"

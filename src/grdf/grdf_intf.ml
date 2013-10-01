@@ -61,7 +61,7 @@ let intf_exists wld iri =
 let do_add wld iri name =
   dbg ~level: 1 (fun () -> "Grdf_intf.do_add iri="^(Rdf_iri.string iri)^" name="^name);
   let sub = Iri iri in
-  Grdfs.add_type wld ~sub ~obj: (Iri Grdfs.genet_intf);
+  Grdfs.add_type wld ~sub: iri ~obj: Grdfs.genet_intf;
   Grdfs.add_name wld sub name
 ;;
 

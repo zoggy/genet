@@ -70,8 +70,8 @@ let filetype_exists wld iri =
 let do_add wld iri ~name ~desc ~extension =
   dbg ~level: 1 (fun () -> "Grdf_ftype.do_add iri="^(Rdf_iri.string iri)^" name="^name);
   let sub = Iri iri in
-  let obj = Iri Grdfs.genet_filetype in
-  Grdfs.add_type wld ~sub ~obj;
+  let obj = Grdfs.genet_filetype in
+  Grdfs.add_type wld ~sub: iri ~obj;
   Grdfs.add_name wld sub name;
   Grdfs.add_desc wld sub desc;
   let pred = Grdfs.genet_file_ext in

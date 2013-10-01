@@ -58,8 +58,8 @@ let version_exists wld iri =
 let do_add wld iri name =
   dbg ~level: 1 (fun () -> "Grdf_version.do_add iri="^(Rdf_iri.string iri)^" name="^name);
   let sub = Iri iri in
-  let obj = Iri Grdfs.genet_version in
-  Grdfs.add_type wld ~sub ~obj;
+  let obj = Grdfs.genet_version in
+  Grdfs.add_type wld ~sub: iri ~obj;
   Grdfs.add_name wld sub name
 ;;
 

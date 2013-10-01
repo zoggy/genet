@@ -360,7 +360,7 @@ class xhtml_ichain_dot_printer =
   let dotp = new Chn_ast.chain_dot_printer in
   let get_origin ctx iri =
     match Grdfs.object_iri ctx.Chn_types.ctx_rdf
-      ~sub: (Rdf_term.Iri iri) ~pred: Grdfs.genet_opfrom
+      ~sub: (Rdf_term.Iri iri) ~pred: Grdfs.genet_portfrom
     with
       None ->
         failwith

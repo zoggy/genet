@@ -56,13 +56,13 @@ let merge_port_maps =
 
 module Chain_versions =
   Set.Make
-  (struct
-     type t = Chn_types.chain_modname * string (* git id *)
-     let compare (n1,id1) (n2, id2) =
-       match Chn_types.compare_chain_modname n1 n2 with
-         0 -> Pervasives.compare id1 id2
-       | n -> n
-   end)
+    (struct
+       type t = Chn_types.chain_modname * string (* git id *)
+       let compare (n1,id1) (n2, id2) =
+         match Chn_types.compare_chain_modname n1 n2 with
+           0 -> Pervasives.compare id1 id2
+         | n -> n
+     end)
 ;;
 
 let fchain_chain_versions ctx iri_fchain =
@@ -82,7 +82,7 @@ let remove_chain_version ctx iri_fchain (modname, id) =
     (Printf.sprintf "%s/%s" (Chn_types.string_of_chain_modname modname) id)
   in
   Grdfs.rem_triple ctx.ctx_rdf ~sub: (Iri iri_fchain)
-  ~pred: Grdfs.genet_useversion ~obj
+    ~pred: Grdfs.genet_useversion ~obj
 ;;
 
 let add_chain_version ctx iri_fchain (modname, id) =
@@ -90,7 +90,7 @@ let add_chain_version ctx iri_fchain (modname, id) =
     (Printf.sprintf "%s/%s" (Chn_types.string_of_chain_modname modname) id)
   in
   Grdfs.add_triple ctx.ctx_rdf ~sub: (Iri iri_fchain)
-  ~pred: Grdfs.genet_useversion ~obj
+    ~pred: Grdfs.genet_useversion ~obj
 ;;
 
 let flat_chains wld =
@@ -121,8 +121,8 @@ let fchain_exists ctx orig_fullname chain_versions =
 let get_ops ctx iri =
   let l = Grdfs.object_iris ctx.ctx_rdf ~sub: (Iri iri) ~pred: Grdfs.genet_containsop in
   dbg ~level: 3
-  (fun() -> Printf.sprintf
-     "length(get_ops(%s)) =%n" (Rdf_iri.string iri) (List.length l));
+    (fun() -> Printf.sprintf
+       "length(get_ops(%s)) =%n" (Rdf_iri.string iri) (List.length l));
   l
 ;;
 
@@ -154,14 +154,14 @@ let check_tool_intfs ctx fchain =
   let intfs = intfs_of_flat_chain ctx fchain in
   let (tools, required_tools) =
     Iriset.fold
-    (fun intf (tools, req) ->
-       let l = Grdf_intf.additional_tools_used ctx.ctx_rdf intf in
-       let req = List.fold_right Iriset.add l req in
-       let tools = Iriset.add (Grdf_intf.tool_of_intf intf) tools in
-       (tools, req)
-    )
-    intfs
-    (Iriset.empty, Iriset.empty)
+      (fun intf (tools, req) ->
+         let l = Grdf_intf.additional_tools_used ctx.ctx_rdf intf in
+         let req = List.fold_right Iriset.add l req in
+         let tools = Iriset.add (Grdf_intf.tool_of_intf intf) tools in
+         (tools, req)
+      )
+      intfs
+      (Iriset.empty, Iriset.empty)
   in
   begin
     let f tool =
@@ -171,9 +171,9 @@ let check_tool_intfs ctx fchain =
           let msg = Printf.sprintf
             "Tool %S is required by one interface in the chain %S,\
             but no interface of this tool is used in this chain."
-            (Rdf_iri.string tool) (Rdf_iri.string fchain)
+              (Rdf_iri.string tool) (Rdf_iri.string fchain)
           in
-        failwith msg
+          failwith msg
     in
     Iriset.iter f required_tools
   end;
@@ -185,7 +185,7 @@ let add_containsop ctx ~src ~dst =
     ~sub: src ~pred: Grdfs.genet_containsop ~obj: dst;
   dbg ~level: 3
     (fun() -> Printf.sprintf "%s -containsop-> %s"
-      (Rdf_iri.string src)(Rdf_iri.string dst));
+       (Rdf_iri.string src)(Rdf_iri.string dst));
 ;;
 
 let get_op_name iri =
@@ -219,7 +219,7 @@ let rec import_flat_op ctx iri_src iri_dst path (map_in, map_out) =
 
   dbg ~level: 3
     (fun() -> Printf.sprintf "%s -opfrom-> %s"
-      (Rdf_iri.string iri_op)(Rdf_iri.string iri_src));
+       (Rdf_iri.string iri_op)(Rdf_iri.string iri_src));
 
   (* copy ports of the src flat chain to our target operation *)
   let (map_in2, map_out2) =
@@ -231,7 +231,7 @@ let rec import_flat_op ctx iri_src iri_dst path (map_in, map_out) =
   (* copy sub operations *)
   let sub_ops = get_ops ctx iri_src in
   List.fold_left (import_flat_sub_op ctx iri_dst path)
-  (map_in, map_out) sub_ops
+    (map_in, map_out) sub_ops
 
 and import_flat_sub_op ctx iri_dst path (map_in, map_out) iri_sub_op =
   dbg ~loc: "import_flat_sub_op" ~level: 3
@@ -239,9 +239,9 @@ and import_flat_sub_op ctx iri_dst path (map_in, map_out) iri_sub_op =
        Printf.sprintf "* iri_dst = %s\n \
                        * path = %s\n \
                        * iri_sub_op = %s"
-     (Rdf_iri.string iri_dst) (String.concat "/" path)
-     (Rdf_iri.string iri_sub_op)
-     );
+         (Rdf_iri.string iri_dst) (String.concat "/" path)
+         (Rdf_iri.string iri_sub_op)
+    );
   let name = get_op_name iri_sub_op in
   let path = path @ [name] in
   import_flat_op ctx iri_sub_op iri_dst path (map_in, map_out)
@@ -251,7 +251,7 @@ let add_intf ctx iri_op loc intf_spec =
   let dbg = dbg ~loc: "add_intf" in
   dbg ~level: 2
     (fun () ->
-      Printf.sprintf "iri_op=%s intf_spec=%s" (Rdf_iri.string iri_op) intf_spec
+       Printf.sprintf "iri_op=%s intf_spec=%s" (Rdf_iri.string iri_op) intf_spec
     );
   let iri_intf = Chn_types.iri_intf_of_interface_spec
     ~prefix: ctx.ctx_cfg.Config.rest_api intf_spec
@@ -336,19 +336,19 @@ let add_special ctx iri_op loc spec =
         let (in_ports, out_ports) = build_explode_ports ctx iri_op op_name port_ref in
         (Grdfs.genet_explode, in_ports, out_ports)
   in
-  Grdfs.add_type ctx.ctx_rdf ~sub: (Iri iri_op) ~obj: (Iri typ);
+  Grdfs.add_type ctx.ctx_rdf ~sub: iri_op ~obj: typ;
   let f = Grdf_port.set_ports ctx.ctx_rdf in
   f iri_op Grdf_port.In in_ports;
   f iri_op Grdf_port.Out out_ports ;
   Grdfs.add_triple_iris ctx.ctx_rdf
-  ~sub: iri_op ~pred: Grdfs.genet_opfrom ~obj: typ
+    ~sub: iri_op ~pred: Grdfs.genet_opfrom ~obj: typ
 ;;
 
 let create_ports_from_chn ctx iri chn =
   let dbg = dbg ~loc: "create_port_from_chn" in
   dbg ~level: 2
     (fun () -> Printf.sprintf "iri=%s chn=%s"
-      (Rdf_iri.string iri) (Chn_types.string_of_chain_basename chn.chn_name));
+       (Rdf_iri.string iri) (Chn_types.string_of_chain_basename chn.chn_name));
   let mk_port dir (rank, map, ports) p =
     dbg ~level: 3
       (fun () -> Printf.sprintf "mk_port rank=%d p=%s" rank p.p_name);
@@ -370,12 +370,12 @@ let mk_port_map ctx iri dir =
   let wld = ctx.ctx_rdf in
   let ports = Grdf_port.ports wld iri dir in
   List.fold_left
-  (fun map iri ->
-     let rank = Grdf_port.port_rank iri in
-     let name = Grdf_port.port_name wld iri in
-     Smap.add name rank map
-  )
-  Smap.empty ports
+    (fun map iri ->
+       let rank = Grdf_port.port_rank iri in
+       let name = Grdf_port.port_name wld iri in
+       Smap.add name rank map
+    )
+    Smap.empty ports
 ;;
 
 let find_port map dir edge_part =
@@ -389,7 +389,7 @@ let find_port map dir edge_part =
     try Smap.find op_name map
     with Not_found ->
         Loc.raise_problem edge_part.ep_loc
-        (Printf.sprintf "No operation %S" op_name)
+          (Printf.sprintf "No operation %S" op_name)
   in
   let rank =
     match edge_part.ep_port with
@@ -439,16 +439,16 @@ let create_data_edge ctx iri map edge =
   let type_dst = Grdf_port.port_type ctx.ctx_rdf iri_dst in
   let compat = types_are_compatible type_src type_dst in
   dbg ~level: 2
-  (fun () ->
-     Printf.sprintf "iri_src=%s type=%s\niri_dst=%s type=%s"
-     (Rdf_iri.string iri_src) (Grdf_port.string_of_port_type (fun x -> x) type_src)
-     (Rdf_iri.string iri_dst) (Grdf_port.string_of_port_type (fun x -> x) type_dst)
-  );
+    (fun () ->
+       Printf.sprintf "iri_src=%s type=%s\niri_dst=%s type=%s"
+         (Rdf_iri.string iri_src) (Grdf_port.string_of_port_type (fun x -> x) type_src)
+         (Rdf_iri.string iri_dst) (Grdf_port.string_of_port_type (fun x -> x) type_dst)
+    );
   if not compat then
     Loc.raise_problem edge.edge_src.ep_loc
       (Printf.sprintf "Incompatible types: %s <--> %s"
-        (Grdf_port.string_of_port_type (fun x -> x) type_src)
-        (Grdf_port.string_of_port_type (fun x -> x) type_dst));
+       (Grdf_port.string_of_port_type (fun x -> x) type_src)
+         (Grdf_port.string_of_port_type (fun x -> x) type_dst));
   (* TODO: check that two edges don't have the same destination *)
   Grdfs.add_triple_iris ctx.ctx_rdf
     ~sub: iri_src ~pred: Grdfs.genet_produces ~obj: iri_dst
@@ -503,11 +503,11 @@ let remove_useless_ports ctx iri_fchain =
     | [producer], _ ->
         let f_succ p_succ =
           Grdfs.rem_triple_iris ctx.ctx_rdf
-          ~sub: p ~pred: Grdfs.genet_produces ~obj: p_succ;
+            ~sub: p ~pred: Grdfs.genet_produces ~obj: p_succ;
           Grdfs.rem_triple_iris ctx.ctx_rdf
-          ~sub: producer ~pred: Grdfs.genet_produces ~obj: p;
+            ~sub: producer ~pred: Grdfs.genet_produces ~obj: p;
           Grdfs.add_triple_iris ctx.ctx_rdf
-          ~sub: producer ~pred: Grdfs.genet_produces ~obj: p_succ
+            ~sub: producer ~pred: Grdfs.genet_produces ~obj: p_succ
         in
         List.iter f_succ consumers
   in
@@ -526,7 +526,7 @@ let rec do_flatten ctx deps fullname =
   let dbg = dbg ~loc: "do_flatten" in
   dbg ~level: 2
     (fun () -> Printf.sprintf "fullname=%s"
-      (Chn_types.string_of_chain_name fullname));
+       (Chn_types.string_of_chain_name fullname));
 
   let modname = Chn_types.chain_modname fullname in
   let name = Chn_types.chain_basename fullname in
@@ -538,9 +538,9 @@ let rec do_flatten ctx deps fullname =
           failwith (Printf.sprintf "Unknown chain %S" (Chn_types.string_of_chain_name fullname))
     in
     (* if at least on module has no git id, we will use an empty set
-      as constraints against original files; this means we are in
-      test mode, this empty set will not be kept, but we can use
-      it until the rollback not to flatten the same flat chain twice *)
+       as constraints against original files; this means we are in
+       test mode, this empty set will not be kept, but we can use
+       it until the rollback not to flatten the same flat chain twice *)
     let f (file, st) set =
       match st with
         Misc.Git_id id ->
@@ -557,8 +557,8 @@ let rec do_flatten ctx deps fullname =
   match fchain_exists ctx fullname chain_versions with
     Some iri ->
       dbg ~level:3
-      (fun () -> Printf.sprintf "fchain with iri=%s already exists for chain versions"
-         (Rdf_iri.string iri));
+        (fun () -> Printf.sprintf "fchain with iri=%s already exists for chain versions"
+           (Rdf_iri.string iri));
       iri
   | None ->
       begin
@@ -581,56 +581,57 @@ let rec do_flatten ctx deps fullname =
         let sub = Chn_types.iri_chain ctx.ctx_cfg.Config.rest_api fullname in
         remove_useless_ports ctx iri_fchain;
         Grdfs.add_triple_iris ctx.ctx_rdf
-        ~sub ~pred: Grdfs.genet_flattenedto ~obj: iri_fchain;
+          ~sub ~pred: Grdfs.genet_flattenedto ~obj: iri_fchain;
         set_fchain_chain_versions ctx iri_fchain chain_versions;
         Grdfs.set_creation_date_iri ctx.ctx_rdf iri_fchain ();
         Grdfs.add_type ctx.ctx_rdf
-        ~sub: (Iri iri_fchain)
-        ~obj:(Iri Grdfs.genet_flatchain);
+          ~sub: iri_fchain
+          ~obj: Grdfs.genet_flatchain;
         iri_fchain
       end
 
 and add_op ctx deps iri_fchain map op =
-  let dbg = dbg ~loc: "add_op" in
-  dbg ~level: 2
-  (fun () ->
-    Printf.sprintf "iri_fchain=%s op=%s"
-      (Rdf_iri.string iri_fchain) op.op_name
-  );
-  let path = [op.op_name] in
-  let iri_op = Grdfs.iri_fchain_op iri_fchain path in
-  dbg ~level: 3
-     (fun () -> Printf.sprintf "iri_op=%s" (Rdf_iri.string iri_op));
-  let add = Grdfs.add_triple_iris ctx.ctx_rdf in
-  add_containsop ctx ~src: iri_fchain ~dst: iri_op;
-  let (map_in, map_out) =
-    match op.op_from with
-      Interface s ->
-        dbg ~level: 2
-          (fun () -> Printf.sprintf "add_op: Interface %s" s);
-        add_intf ctx iri_op op.op_from_loc s;
-        (mk_port_map ctx iri_op Grdf_port.In,
-         mk_port_map ctx iri_op Grdf_port.Out)
-    | Special sp ->
-        add_special ctx iri_op op.op_from_loc sp;
-        (mk_port_map ctx iri_op Grdf_port.In,
-         mk_port_map ctx iri_op Grdf_port.Out)
-    | Chain fullname ->
-        dbg ~level: 2
-          (fun () -> Printf.sprintf "add_op: Chain %s"
-             (Chn_types.string_of_chain_name fullname)
-          );
-        let src = do_flatten ctx deps fullname in
-        add ~sub: iri_op ~pred: Grdfs.genet_opfrom ~obj: src;
-        let (map_in, map_out) =
-          import_flat_op ctx src iri_fchain path (Irimap.empty, Irimap.empty)
-        in
-        add_edges_from_maps ctx map_in map_out;
-        (Smap.empty, Smap.empty)
-    | Foreach _ ->
-        assert false
-  in
-  Smap.add op.op_name (iri_op, map_in, map_out) map
+      let dbg = dbg ~loc: "add_op" in
+      dbg ~level: 2
+        (fun () ->
+           Printf.sprintf "iri_fchain=%s op=%s"
+             (Rdf_iri.string iri_fchain) op.op_name
+        );
+      let path = [op.op_name] in
+      let iri_op = Grdfs.iri_fchain_op iri_fchain path in
+      dbg ~level: 3
+        (fun () -> Printf.sprintf "iri_op=%s" (Rdf_iri.string iri_op));
+      let add = Grdfs.add_triple_iris ctx.ctx_rdf in
+      Grdfs.add_type ctx.ctx_rdf ~sub: iri_op ~obj: Grdfs.genet_flatopn ;
+      add_containsop ctx ~src: iri_fchain ~dst: iri_op;
+      let (map_in, map_out) =
+        match op.op_from with
+          Interface s ->
+            dbg ~level: 2
+              (fun () -> Printf.sprintf "add_op: Interface %s" s);
+            add_intf ctx iri_op op.op_from_loc s;
+            (mk_port_map ctx iri_op Grdf_port.In,
+             mk_port_map ctx iri_op Grdf_port.Out)
+        | Special sp ->
+            add_special ctx iri_op op.op_from_loc sp;
+            (mk_port_map ctx iri_op Grdf_port.In,
+             mk_port_map ctx iri_op Grdf_port.Out)
+        | Chain fullname ->
+            dbg ~level: 2
+              (fun () -> Printf.sprintf "add_op: Chain %s"
+                 (Chn_types.string_of_chain_name fullname)
+              );
+            let src = do_flatten ctx deps fullname in
+            add ~sub: iri_op ~pred: Grdfs.genet_opfrom ~obj: src;
+            let (map_in, map_out) =
+              import_flat_op ctx src iri_fchain path (Irimap.empty, Irimap.empty)
+            in
+            add_edges_from_maps ctx map_in map_out;
+            (Smap.empty, Smap.empty)
+        | Foreach _ ->
+            assert false
+      in
+      Smap.add op.op_name (iri_op, map_in, map_out) map
 ;;
 
 let flatten ctx fullname =
@@ -651,7 +652,7 @@ let flatten ctx fullname =
     | files ->
         let msg = Printf.sprintf
           "The following files are not commited:\n%s\n=> The flattened chains will no be kept (test mode)"
-          (String.concat "\n" (List.map Fname.abs_string files))
+            (String.concat "\n" (List.map Fname.abs_string files))
         in
         Checks.print_warning msg;
         true
@@ -717,10 +718,10 @@ class fchain_dot_printer =
           Printf.bprintf b "%s [color=\"black\" fillcolor=\"%s\" \
                             style=\"filled\" shape=\"box\" \
                             href=\"%s\" label=\"%s:%s\" rank=%S];\n"
-          id (self#color_of_port_dir dir)
+            id (self#color_of_port_dir dir)
             (match link with None -> "" | Some iri -> Rdf_iri.string iri)
-             label name
-          (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max");
+            label name
+            (match dir with Grdf_port.In -> "min" | Grdf_port.Out -> "max");
           true
 
     method do_print_op ctx b ~maxdepth ~depth ~cluster acc iri =
@@ -734,20 +735,20 @@ class fchain_dot_printer =
             match Grdf_intf.intf_exists ctx.ctx_rdf iri_from with
               None -> dotp#color_chain, get_op_name iri, iri
             | Some name ->
-              let tool = Grdf_intf.tool_of_intf iri_from in
-              let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.ctx_rdf tool) name in
-              dotp#color_interface, name, iri_from
+                let tool = Grdf_intf.tool_of_intf iri_from in
+                let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.ctx_rdf tool) name in
+                dotp#color_interface, name, iri_from
           in
           Printf.bprintf b "subgraph cluster_%s {\n\
              label=%S;\n color=\"black\" fillcolor=%S;\n\
              style=\"filled\"; href=%S;\n"
-          (self#iri_id iri) label color
-          (Rdf_iri.string href)
+            (self#iri_id iri) label color
+            (Rdf_iri.string href)
         end;
       let f (acc, node) dir =
         if root then
           Printf.bprintf b "subgraph cluster_%s {\n"
-          (Grdf_port.string_of_dir dir);
+            (Grdf_port.string_of_dir dir);
         let ports = Grdf_port.ports ctx.ctx_rdf iri dir in
         dbg ~level: 3 (fun () -> Printf.sprintf "#do_print_op ports=%d" (List.length ports));
         let printed_ports = List.filter
@@ -759,11 +760,11 @@ class fchain_dot_printer =
             None -> ()
           | Some in_p ->
               List.iter
-              (fun out_p ->
-                 Printf.bprintf b "%s -> %s [style=\"invis\"];\n"
-                 (self#iri_id in_p) (self#iri_id out_p)
-              )
-              printed_ports
+                (fun out_p ->
+                   Printf.bprintf b "%s -> %s [style=\"invis\"];\n"
+                     (self#iri_id in_p) (self#iri_id out_p)
+                )
+                printed_ports
         end;
         let node = match ports with [] -> None | h :: _ -> Some h in
         if root then Buffer.add_string b "}\n";
@@ -772,7 +773,7 @@ class fchain_dot_printer =
       let (acc, _) = List.fold_left f (acc, None) [ Grdf_port.In ; Grdf_port.Out ] in
       let acc = List.fold_left
         (self#print_op ctx b ~maxdepth ~depth: (depth+1) ~cluster)
-        acc (get_ops ctx iri)
+          acc (get_ops ctx iri)
       in
       if (not root) && clustering then Buffer.add_string b "}\n";
       acc
@@ -793,13 +794,13 @@ class fchain_dot_printer =
             None ->
               let cluster iri =
                 List.exists
-                (fun dir ->
-                   List.exists
-                   (fun p -> (self#port_consumers ctx p <> []) ||
-                      (self#port_producers ctx p <> []))
-                    (Grdf_port.ports ctx.ctx_rdf iri dir)
-                )
-                [ Grdf_port.In ; Grdf_port.Out ]
+                  (fun dir ->
+                     List.exists
+                       (fun p -> (self#port_consumers ctx p <> []) ||
+                          (self#port_producers ctx p <> []))
+                       (Grdf_port.ports ctx.ctx_rdf iri dir)
+                  )
+                  [ Grdf_port.In ; Grdf_port.Out ]
               in
               (None, cluster)
           | Some _ -> debug, (fun _ -> true)

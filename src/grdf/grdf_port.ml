@@ -151,7 +151,7 @@ let insert_port wld intf dir (n, typ, name) =
   let sub = Iri intf in
   let obj = Iri iri in
   Grdfs.add_triple wld ~sub ~pred ~obj;
-  Grdfs.add_type wld ~sub: (Iri iri) ~obj: Grdfs.genet_port ;
+  Grdfs.add_type wld ~sub: iri ~obj: Grdfs.genet_port ;
   set_port_type wld iri typ;
   match name with None -> () | Some name -> Grdfs.add_name wld sub name
 ;;
