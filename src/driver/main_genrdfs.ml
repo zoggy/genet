@@ -154,6 +154,58 @@ let add_vocabulary wld =
   props
 ;;
 
+let add_vocabulary g =
+  let cl = Rdf_rdfs.class_ in
+  let prop = Rdf_rdfs.property in
+  let lit = Rdf_rdfs.rdfs_Literal in
+
+  cl g ~label: "Element" Grdfs.genet_element ;
+
+  List.iter
+    (fun (label, iri) ->
+       cl g ~label ~subof: Rdfs.genet_element iri)
+    [
+      "Interface", Grdfs.genet_intf ;
+      "Interface port", Grdfs.genet_port ;
+      "Version", Grdfs.genet_version ;
+      "Filetype", Grdfs.genet_filetype ;
+      "Chain", Grdfs.genet_chain ;
+      "Flat chain", Grdfs.genet_flatchain ;
+      "Instanciated chain", Grdfs.genet_instchain ;
+      "Instanciated operation", Grdfs.genet_instopn ;
+      "Diff command", Grdfs.genet_diffcommand ;
+    ] ;
+
+  cl g ~label: "Branch" ~subof: Grdfs.genet_version Grdfs.genet_branch ;
+  cl g ~label: "Tool" ~subof: Grdfs.genet_branch Grdfs.genet_tool ;
+  cl g ~label: "Explode operation" ~subof: Grdfs.genet_instopn Grdfs.genet_explode ;
+  cl g ~label: "Implode operation" ~subof: Grdfs.genet_instopn Grdfs.genet_implode ;
+
+  List.iter
+    (fun (iri, label, domain, range) ->
+       prop ~label ~domains: [domain] ~ranges: [range] iri
+    )
+    [
+      Grdfs.genet_name, "Name", Grdfs.genet_element, lit ;
+      Grdfs.genet_desc, "Description", Grdfs.genet_element, lit ;
+      Grdfs.genet_file_ext, "Filename extension", Grdfs.genet_filetype, lit ;
+      Grdfs.genet_has_branch, "Has branch", Grdfs.genet_branch, Grdfs.genet_branch ;
+      Grdfs.genet_nointf, "Does not implement interface", Grdfs.genet_branch, Grdfs.genet_intf ;
+      Grdfs.genet_has_path, "Has command path", Grdfs.genet_intf, lit ;
+      Grdfs.genet_usetool, "Depend on additional tool", Grdfs.genet_intf, Grdfs.genet_tool ;
+      Grdfs.genet_hasversion, "Has version", Grdfs.genet_branch, Grdfs.genet_version ;
+      Grdfs.genet_consumes, "Use input port", Grdfs.genet_intf, Grdfs.genet_port ;
+      Grdfs.genet_produces, "Output on port", Grdfs.genet_intf, Grdfs.genet_port ;
+      Grdfs.genet_hasdiffcom, "Has diff command", Grdfs.genet_filetype, lit ;
+      Grdfs.genet_hasintf, "Implement interface", Grdfs.genet_version, Grdfs.genet_intf ;
+      Grdfs.genet_hastype, "Has type", Grdfs.genet_port, lit ;
+      Grdfs.genet_flattenedto, "Flattened to", Grdfs.genet_chain, Grdfs.genet_flatchain ;
+
+
+    ]
+
+;;
+
 let output_format = ref "rdfxml";;
 
 let options =

@@ -151,6 +151,7 @@ let insert_port wld intf dir (n, typ, name) =
   let sub = Iri intf in
   let obj = Iri iri in
   Grdfs.add_triple wld ~sub ~pred ~obj;
+  Grdfs.add_type wld ~sub: (Iri iri) ~obj: Grdfs.genet_port ;
   set_port_type wld iri typ;
   match name with None -> () | Some name -> Grdfs.add_name wld sub name
 ;;
@@ -161,12 +162,20 @@ let delete_ports wld iri dir =
   let pred = Grdfs.genet_hastype in
   let ports = Grdfs.object_iris wld ~sub ~pred: dir_pred in
   List.iter
-  (fun obj -> Grdfs.rem_triple wld ~sub ~pred: dir_pred ~obj: (Iri obj))
-  ports;
+    (fun port ->
+       Grdfs.rem_triple wld ~sub ~pred: dir_pred ~obj: (Iri port);
+       Grdfs.rem_triple wld ~sub: (Iri port)
+         ~pred: Rdf_rdf.rdf_type
+         ~obj: (Rdf_term.Iri Grdfs.genet_port)
+    )
+    ports;
   let f port =
     List.iter
-    (fun obj -> Grdfs.rem_triple wld ~sub: (Iri port) ~pred ~obj)
-    (Grdfs.objects wld ~sub: (Iri port) ~pred: pred)
+      (fun obj ->
+         let sub = Iri port in
+         Grdfs.rem_triple wld ~sub ~pred ~obj;
+      )
+      (Grdfs.objects wld ~sub: (Iri port) ~pred: pred)
   in
   List.iter f ports
 ;;

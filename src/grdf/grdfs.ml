@@ -69,6 +69,7 @@ let iri_parent iri =
 
 let rdf_type = rdf_"type";;
 
+let genet_element = genet_"Element";;
 let genet_tool = genet_ "Tool";;
 let genet_branch = genet_ "Branch";;
 let genet_intf = genet_ "Interface";;
@@ -76,11 +77,12 @@ let genet_version = genet_ "Version";;
 let genet_filetype = genet_ "Filetype";;
 let genet_chain = genet_ "Chain";;
 let genet_flatchain = genet_ "Flatchain";;
+let genet_port = genet_ "Port";;
 let genet_instchain = genet_ "Instchain";;
 let genet_instopn = genet_ "InstOperation";;
 let genet_implode = genet_"Implode";;
 let genet_explode = genet_"Explode";;
-let genet_subgraph = genet_"Subgraph";;
+(*let genet_subgraph = genet_"Subgraph";;*)
 let genet_diffcommand = genet_"DiffCommand";;
 
 let string_of_class = function
@@ -110,7 +112,7 @@ let genet_produces = genet_"produces";;
 let genet_hasdiffcom = genet_"hasDiffCommand";;
 let genet_hasintf = genet_"hasInterface";;
 let genet_hastype = genet_"hasFiletype";;
-let genet_versionid = genet_"versionId";;
+(*let genet_versionid = genet_"versionId";;*)
 let genet_flattenedto = genet_"flattenedTo";;
 let genet_opfrom = genet_"operationFrom";;
 let genet_containsop = genet_"containsOperation";;
