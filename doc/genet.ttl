@@ -1,94 +1,173 @@
+@prefix genet: <https://raw.github.com/zoggy/genet/master/doc/genet.ttl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Branch>
-    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "Branch" .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Filetype>
-    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "Filetype" .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface>
-    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "Interface" .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Tool>
-    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "Tool" .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Version>
-    a <http://www.w3.org/2000/01/rdf-schema#Class> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "Version" .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#consumes>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Filetypes consumed, ordered" ;
-    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "consumes" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> rdf:Seq .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasBranch>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Has a branch" ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has branch" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Branch> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasDiffCommand>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "The path of the command to compute diffs" ;
-    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Filetype> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has diff command" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasInterface>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Implement the interface" ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has interface" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasPath>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "The path of the command" ;
-    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has path" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#hasVersion>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Has version" ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has version" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Version> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#name>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Name" ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has name" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://www.w3.org/2000/01/rdf-schema#Literal> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#noInterface>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Does not implement the interface" ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "has no interface" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> .
-
-<http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#produces>
-    a <http://www.w3.org/2000/01/rdf-schema#Property> ;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Filetypes produced, ordered" ;
-    <http://www.w3.org/2000/01/rdf-schema#domain> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf#Interface> ;
-    <http://www.w3.org/2000/01/rdf-schema#isDefinedBy> <http://gitorious.org/genet/genet/blobs/raw/master/doc/genet.rdf> ;
-    <http://www.w3.org/2000/01/rdf-schema#label> "produces" ;
-    <http://www.w3.org/2000/01/rdf-schema#range> rdf:Seq .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+genet:useVersion rdfs:range rdfs:Literal .
+genet:useVersion rdfs:label "Use version" .
+genet:useVersion rdfs:domain genet:Flatchain .
+genet:useVersion rdf:type rdf:Property .
+genet:useToolVersion rdfs:range genet:Version .
+genet:useToolVersion rdfs:label "Use tool version" .
+genet:useToolVersion rdfs:domain genet:Instchain .
+genet:useToolVersion rdf:type rdf:Property .
+genet:useTool rdfs:range genet:Tool .
+genet:useTool rdfs:label "Depend on additional tool" .
+genet:useTool rdfs:domain genet:Interface .
+genet:useTool rdf:type rdf:Property .
+genet:useInputCommitId rdfs:range rdfs:Literal .
+genet:useInputCommitId rdfs:label "Use input commit id" .
+genet:useInputCommitId rdfs:domain genet:Instchain .
+genet:useInputCommitId rdf:type rdf:Property .
+genet:useInput rdfs:range rdfs:Literal .
+genet:useInput rdfs:label "Use input" .
+genet:useInput rdfs:domain genet:Instchain .
+genet:useInput rdf:type rdf:Property .
+genet:stoppedOn rdfs:range rdfs:Literal .
+genet:stoppedOn rdfs:label "Stopped on" .
+genet:stoppedOn rdfs:domain genet:Element .
+genet:stoppedOn rdf:type rdf:Property .
+genet:startedOn rdfs:range rdfs:Literal .
+genet:startedOn rdfs:label "Started on" .
+genet:startedOn rdfs:domain genet:Element .
+genet:startedOn rdf:type rdf:Property .
+genet:returnCode rdfs:range rdfs:Literal .
+genet:returnCode rdfs:label "Return code" .
+genet:returnCode rdfs:domain genet:InstOperation .
+genet:returnCode rdf:type rdf:Property .
+genet:referenceInstFor rdfs:range rdfs:Resource .
+genet:referenceInstFor rdfs:label "Reference instanciation for" .
+genet:referenceInstFor rdfs:domain genet:Instchain .
+genet:referenceInstFor rdf:type rdf:Property .
+genet:produces rdfs:range genet:Port .
+genet:produces rdfs:label "Output on port" .
+genet:produces rdfs:domain genet:Interface .
+genet:produces rdf:type rdf:Property .
+genet:portFrom rdfs:range genet:Port .
+genet:portFrom rdfs:label "Port comes from" .
+genet:portFrom rdfs:domain genet:Port .
+genet:portFrom rdf:type rdf:Property .
+genet:operationFrom rdfs:range genet:Flatopn .
+genet:operationFrom rdfs:label "Operation comes from" .
+genet:operationFrom rdfs:domain genet:InstOperation .
+genet:operationFrom rdf:type rdf:Property .
+genet:noInterface rdfs:range genet:Interface .
+genet:noInterface rdfs:label "Does not implement interface" .
+genet:noInterface rdfs:domain genet:Branch .
+genet:noInterface rdf:type rdf:Property .
+genet:name rdfs:range rdfs:Literal .
+genet:name rdfs:label "Name" .
+genet:name rdfs:domain genet:Element .
+genet:name rdf:type rdf:Property .
+genet:isActive rdfs:range rdfs:Literal .
+genet:isActive rdfs:label "Is active" .
+genet:isActive rdfs:domain genet:Version .
+genet:isActive rdf:type rdf:Property .
+genet:instanciate rdfs:range genet:Flatchain .
+genet:instanciate rdfs:label "Instanciate" .
+genet:instanciate rdfs:domain genet:Instchain .
+genet:instanciate rdf:type rdf:Property .
+genet:hasVersion rdfs:range genet:Version .
+genet:hasVersion rdfs:label "Has version" .
+genet:hasVersion rdfs:domain genet:Branch .
+genet:hasVersion rdf:type rdf:Property .
+genet:hasPath rdfs:range rdfs:Literal .
+genet:hasPath rdfs:label "Has command path" .
+genet:hasPath rdfs:domain genet:Interface .
+genet:hasPath rdf:type rdf:Property .
+genet:hasInterface rdfs:range genet:Interface .
+genet:hasInterface rdfs:label "Implement interface" .
+genet:hasInterface rdfs:domain genet:Version .
+genet:hasInterface rdf:type rdf:Property .
+genet:hasImplode rdfs:range genet:Implode .
+genet:hasImplode rdfs:label "Corresponding implode operation" .
+genet:hasImplode rdfs:domain genet:Explode .
+genet:hasImplode rdf:type rdf:Property .
+genet:hasFiletype rdfs:range rdfs:Literal .
+genet:hasFiletype rdfs:label "Has type" .
+genet:hasFiletype rdfs:domain genet:Port .
+genet:hasFiletype rdf:type rdf:Property .
+genet:hasDiffCommand rdfs:range rdfs:Literal .
+genet:hasDiffCommand rdfs:label "Has diff command" .
+genet:hasDiffCommand rdfs:domain genet:Filetype .
+genet:hasDiffCommand rdf:type rdf:Property .
+genet:hasBranch rdfs:range genet:Branch .
+genet:hasBranch rdfs:label "Has branch" .
+genet:hasBranch rdfs:domain genet:Branch .
+genet:hasBranch rdf:type rdf:Property .
+genet:flattenedTo rdfs:range genet:Flatchain .
+genet:flattenedTo rdfs:label "Flattened to" .
+genet:flattenedTo rdfs:domain genet:Chain .
+genet:flattenedTo rdf:type rdf:Property .
+genet:fileMd5 rdfs:range rdfs:Literal .
+genet:fileMd5 rdfs:label "File md5checksum" .
+genet:fileMd5 rdfs:domain genet:Port .
+genet:fileMd5 rdf:type rdf:Property .
+genet:file\-extension rdfs:range rdfs:Literal .
+genet:file\-extension rdfs:label "Filename extension" .
+genet:file\-extension rdfs:domain genet:Filetype .
+genet:file\-extension rdf:type rdf:Property .
+genet:failedCommand rdfs:range genet:InstOperation .
+genet:failedCommand rdfs:label "Failed command" .
+genet:failedCommand rdfs:domain genet:Instchain .
+genet:failedCommand rdf:type rdf:Property .
+genet:createdOn rdfs:range rdfs:Literal .
+genet:createdOn rdfs:label "Created on" .
+genet:createdOn rdfs:domain genet:Element .
+genet:createdOn rdf:type rdf:Property .
+genet:containsOperation rdfs:range genet:Flatopn .
+genet:containsOperation rdfs:label "Contains operation" .
+genet:containsOperation rdfs:domain genet:Flatchain .
+genet:containsOperation rdf:type rdf:Property .
+genet:consumes rdfs:range genet:Port .
+genet:consumes rdfs:label "Use input port" .
+genet:consumes rdfs:domain genet:Interface .
+genet:consumes rdf:type rdf:Property .
+genet:commandOutput rdfs:range rdfs:Literal .
+genet:commandOutput rdfs:label "Command output" .
+genet:commandOutput rdfs:domain genet:InstOperation .
+genet:commandOutput rdf:type rdf:Property .
+genet:Version rdfs:subClassOf genet:Element .
+genet:Version rdfs:label "Version" .
+genet:Version rdf:type rdfs:Class .
+genet:Tool rdfs:subClassOf genet:Branch .
+genet:Tool rdfs:label "Tool" .
+genet:Tool rdf:type rdfs:Class .
+genet:Port rdfs:subClassOf genet:Element .
+genet:Port rdfs:label "Port" .
+genet:Port rdf:type rdfs:Class .
+genet:Interface rdfs:subClassOf genet:Element .
+genet:Interface rdfs:label "Interface" .
+genet:Interface rdf:type rdfs:Class .
+genet:Instchain rdfs:subClassOf genet:Element .
+genet:Instchain rdfs:label "Instanciated chain" .
+genet:Instchain rdf:type rdfs:Class .
+genet:InstOperation rdfs:subClassOf genet:Element .
+genet:InstOperation rdfs:label "Instanciated operation" .
+genet:InstOperation rdf:type rdfs:Class .
+genet:Implode rdfs:subClassOf genet:Flatopn .
+genet:Implode rdfs:label "Implode operation" .
+genet:Implode rdf:type rdfs:Class .
+genet:Flatopn rdfs:subClassOf genet:Element .
+genet:Flatopn rdfs:label "Flattened operation" .
+genet:Flatopn rdf:type rdfs:Class .
+genet:Flatchain rdfs:subClassOf genet:Element .
+genet:Flatchain rdfs:label "Flat chain" .
+genet:Flatchain rdf:type rdfs:Class .
+genet:Filetype rdfs:subClassOf genet:Element .
+genet:Filetype rdfs:label "Filetype" .
+genet:Filetype rdf:type rdfs:Class .
+genet:Explode rdfs:subClassOf genet:Flatopn .
+genet:Explode rdfs:label "Explode operation" .
+genet:Explode rdf:type rdfs:Class .
+genet:Element rdfs:label "Element" .
+genet:Element rdf:type rdfs:Class .
+genet:DiffCommand rdfs:subClassOf genet:Element .
+genet:DiffCommand rdfs:label "Diff command" .
+genet:DiffCommand rdf:type rdfs:Class .
+genet:Chain rdfs:subClassOf genet:Element .
+genet:Chain rdfs:label "Chain" .
+genet:Chain rdf:type rdfs:Class .
+genet:Branch rdfs:subClassOf genet:Version .
+genet:Branch rdfs:label "Branch" .
+genet:Branch rdf:type rdfs:Class .
 
