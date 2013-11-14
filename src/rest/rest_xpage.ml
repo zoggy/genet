@@ -34,12 +34,12 @@ let star ?label () =
   in
   Xtmpl.E (("","star"), args, []);;
 
-let fun_star _ args _ =
+let fun_star acc _ args _ =
   let args = (("","width"), "16") :: (("", "src"), "<site-url/>star.svg") :: args in
-  [Xtmpl.E (("","img"), args, [])]
+  (acc, [Xtmpl.E (("","img"), args, [])])
 ;;
 
-let fun_include tmpl_dir _env args subs =
+let fun_include tmpl_dir acc _env args subs =
   match Xtmpl.get_arg args ("", "file") with
     None -> failwith "Missing 'file' argument for include command";
   | Some file ->
@@ -54,9 +54,9 @@ let fun_include tmpl_dir _env args subs =
         (("", "include-contents"), String.concat "" (List.map Xtmpl.string_of_xml subs)) ::
         args
       in
-      [Xtmpl.E (("", Xtmpl.tag_env), args, xml)]
+      (acc, [Xtmpl.E (("", Xtmpl.tag_env), args, xml)])
 ;;
-let fun_image _env args legend =
+let fun_image acc _env args legend =
   let width = Xtmpl.opt_arg args ("", "width") in
   let src = Xtmpl.opt_arg args ("", "src") in
   let cls = Printf.sprintf "img%s"
@@ -67,15 +67,18 @@ let fun_image _env args legend =
      | None -> ""
     )
   in
-  [
-    Xtmpl.E (("", "div"), [ ("", "class"), cls ],
-     (Xtmpl.E (("", "img"), [ ("", "class"), "img" ; ("", "src"), src; ("", "width"), width ], [])) ::
-     (match legend with
-        [] -> []
-      | xml -> [ Xtmpl.E (("", "div"), [("", "class"), "legend"], xml) ]
+  let xmls =
+    [
+      Xtmpl.E (("", "div"), [ ("", "class"), cls ],
+       (Xtmpl.E (("", "img"), [ ("", "class"), "img" ; ("", "src"), src; ("", "width"), width ], [])) ::
+         (match legend with
+            [] -> []
+          | xml -> [ Xtmpl.E (("", "div"), [("", "class"), "legend"], xml) ]
      )
-    )
-  ]
+      )
+    ]
+  in
+  (acc, xmls)
 ;;
 
 let highlight ~opts code =
@@ -96,7 +99,7 @@ let highlight ~opts code =
       failwith (Printf.sprintf "command failed: %s" com)
 ;;
 
-let fun_hcode ?(inline=false) ?lang _env args code =
+let fun_hcode ?(inline=false) ?lang acc _env args code =
   let language, language_options =
     match lang with
       None ->
@@ -126,19 +129,22 @@ let fun_hcode ?(inline=false) ?lang _env args code =
         let code = highlight ~opts code in
         Xtmpl.xml_of_string code
   in
-  if inline then
-    [ Xtmpl.E (("", "span"), [("", "class"),"icode"], [xml_code]) ]
-  else
-    [ Xtmpl.E (("", "pre"),
-       [("", "class"), Printf.sprintf "code-%s" language], [xml_code])
-    ]
+  let xmls =
+    if inline then
+      [ Xtmpl.E (("", "span"), [("", "class"),"icode"], [xml_code]) ]
+    else
+      [ Xtmpl.E (("", "pre"),
+         [("", "class"), Printf.sprintf "code-%s" language], [xml_code])
+      ]
+  in
+  (acc, xmls)
 ;;
 
 let fun_ocaml = fun_hcode ~lang: "ocaml";;
 let fun_command_line = fun_hcode ~lang: "sh";;
 let fun_icode = fun_hcode ~inline: true ;;
 
-let fun_section cls _env args body =
+let fun_section cls acc _env args body =
   let id =
     match Xtmpl.get_arg args ("", "name") with
       None -> []
@@ -150,16 +156,17 @@ let fun_section cls _env args body =
     | Some t ->
         [Xtmpl.E (("", "div"), [("", "class"), cls^"-title"] @ id, [Xtmpl.xml_of_string t])]
   in
-  [ Xtmpl.E (("", "div"), [("", "class"), cls], title @ body) ]
+  (acc, [ Xtmpl.E (("", "div"), [("", "class"), cls], title @ body) ])
 ;;
 
 let fun_subsection = fun_section "subsection";;
 let fun_section = fun_section "section";;
 
-let fun_if env args subs =
+let fun_if acc env args subs =
   prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));
   let pred ((_,att), v) =
-    let s = Xtmpl.string_of_xmls (Xtmpl.apply_to_string env (Printf.sprintf "<%s/>" att)) in
+    let (_, xmls) = Xtmpl.apply_to_string () env (Printf.sprintf "<%s/>" att) in
+    let s = Xtmpl.string_of_xmls xmls in
     (*prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);*)
     s = v
   in
@@ -169,16 +176,20 @@ let fun_if env args subs =
     subs
   in
   (*prerr_endline (Printf.sprintf "if: length(subs)=%d" (List.length subs));*)
-  match cond, subs with
-  | true, [] -> failwith "<if>: missing children"
-  | true, h :: _
-  | false, _ :: h :: _ -> [h]
-  | false, []
-  | false, [_] -> []
+  let xmls =
+    match cond, subs with
+    | true, [] -> failwith "<if>: missing children"
+    | true, h :: _
+    | false, _ :: h :: _ -> [h]
+    | false, []
+    | false, [_] -> []
+  in
+  (acc, xmls)
 ;;
 
-let fun_site_url config _ _ _ = [ Xtmpl.D (Rdf_uri.string (Rdf_iri.to_uri config.Config.rest_api)) ];;
-let fun_site_title config _ _ _ = [ Xtmpl.D config.Config.project_name ];;
+let fun_site_url config acc _ _ _ =
+  (acc, [ Xtmpl.D (Rdf_uri.string (Rdf_iri.to_uri config.Config.rest_api)) ]);;
+let fun_site_title config acc _ _ _ = (acc, [ Xtmpl.D config.Config.project_name ]);;
 
 let tmpl_dir config =
   List.fold_left Fname.concat_s config.Config.root_dir
@@ -214,17 +225,17 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath=[]) ?(error=""
     [ Xtmpl.E (("", "script"), [("", "type"), "text/javascript"], [Xtmpl.D code]) ]
   in
   let env = Xtmpl.env_of_list ?env
-    ((("", "page-title"), (fun _ _ _ -> [Xtmpl.xml_of_string title])) ::
-     (("", "window-title"), (fun _ _ _ -> [Xtmpl.D wtitle])) ::
-     (("", "navpath"), (fun _ _ _ -> navpath)) ::
-     (("", "error"), (fun _ _  _ -> [Xtmpl.xml_of_string error])) ::
-     (("", "morehead"), (fun _ _ _ -> morehead)) ::
+    ((("", "page-title"), (fun acc _ _ _ -> (acc, [Xtmpl.xml_of_string title]))) ::
+     (("", "window-title"), (fun acc _ _ _ -> (acc, [Xtmpl.D wtitle]))) ::
+     (("", "navpath"), (fun acc _ _ _ -> (acc, navpath))) ::
+     (("", "error"), (fun acc _ _ _ -> (acc, [Xtmpl.xml_of_string error]))) ::
+     (("", "morehead"), (fun acc _ _ _ -> (acc, morehead))) ::
      (default_commands config))
   in
-  let f env args body = contents in
+  let f () env args body = ((), contents) in
   let env = Xtmpl.env_of_list ~env [("", "contents"), f] in
   let tmpl_file = tmpl_file config "page.tmpl" in
-  Xtmpl .apply_to_file env (Fname.abs_string tmpl_file)
+  snd (Xtmpl.apply_to_file () env (Fname.abs_string tmpl_file))
 ;;
 
 open Chn_ast;;

@@ -1,4 +1,5 @@
 Next release:
+- Upgrade to new stog and xtmpl
 - Modify vocabulary:
   + Grdfs.genet_useversion replaced by Grdfsusetoolversion, to link
     instchain to tool version.

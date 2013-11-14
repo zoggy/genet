@@ -55,14 +55,14 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
 
 let ctype ?(t="text/html; charset=\"utf-8\"") () = ("Content-Type", t);;
 
-let page ?(env=Xtmpl.env_empty) ctx ~title ?javascript ?wtitle ?navpath ?error contents =
+let page ?(env=Xtmpl.env_empty ()) ctx ~title ?javascript ?wtitle ?navpath ?error contents =
   let xmls = Rest_xpage.page ctx.ctx_cfg ~env
     ~title ?javascript ?wtitle ?navpath ?error contents
   in
   Printf.sprintf "<!DOCTYPE html>\n%s\n" (Xtmpl.string_of_xmls xmls)
 ;;
 
-let page_active v ?(env=Xtmpl.env_empty) =
+let page_active v ?(env=Xtmpl.env_empty ()) =
   let env = Xtmpl.env_add_att ("navbar-"^v) "active" env in
   page ~env
 ;;
@@ -532,16 +532,19 @@ let xhtml_of_intfs_of ctx iri =
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intfs.tmpl" in
   let env = Xtmpl.env_of_list
     [
-      ("", "has_intfs"), (fun _ _ _ -> [if Iriset.is_empty explicit then Xtmpl.D "" else Xtmpl.D "true"])  ;
-      ("", "intfs"), (fun _ _ _ -> intfs) ;
-      ("", "has_intfs_no"), (fun _ _ _ -> [if Iriset.is_empty explicit_no then Xtmpl.D "" else Xtmpl.D "true"])  ;
-      ("", "intfs_no"), (fun _ _ _ -> intfs_no) ;
-      ("", "has_inherited_intfs"), (fun _ _ _ -> [if Iriset.is_empty inherited then Xtmpl.D "" else Xtmpl.D "true"]) ;
-      ("", "inherited_intfs"), (fun _ _ _ -> inherited_intfs) ;
+      ("", "has_intfs"), (fun acc _ _ _ -> 
+         (acc, [if Iriset.is_empty explicit then Xtmpl.D "" else Xtmpl.D "true"]))  ;
+      ("", "intfs"), (fun acc _ _ _ -> (acc, intfs)) ;
+      ("", "has_intfs_no"), (fun acc _ _ _ -> 
+         (acc, [if Iriset.is_empty explicit_no then Xtmpl.D "" else Xtmpl.D "true"]))  ;
+      ("", "intfs_no"), (fun acc _ _ _ -> (acc, intfs_no)) ;
+      ("", "has_inherited_intfs"), (fun acc _ _ _ -> 
+         (acc, [if Iriset.is_empty inherited then Xtmpl.D "" else Xtmpl.D "true"])) ;
+      ("", "inherited_intfs"), (fun acc _ _ _ -> (acc, inherited_intfs)) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  Xtmpl.apply_to_file env (Fname.abs_string tmpl)
+  snd (Xtmpl.apply_to_file () env (Fname.abs_string tmpl))
 ;;
 
 let xhtml_of_branches_of ctx iri =
@@ -582,13 +585,13 @@ let get_tool ctx iri =
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "tool.tmpl" in
   let env = Xtmpl.env_of_list
     [
-      ("", "graph"), (fun _ _ _ -> svg) ;
-      ("", "branches"), (fun _ _ _ -> branches) ;
-      ("", "interfaces"), (fun _ _ _ -> intfs) ;
+      ("", "graph"), (fun acc _ _ _ -> (acc, svg)) ;
+      ("", "branches"), (fun acc _ _ _ -> (acc, branches)) ;
+      ("", "interfaces"), (fun acc _ _ _ -> (acc, intfs)) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
+  let (_, contents) = Xtmpl.apply_to_file () env (Fname.abs_string tmpl) in
   let navpath = xhtml_navpath ctx (`Tool iri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -653,16 +656,16 @@ let get_intf ctx iri =
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "intf.tmpl" in
   let env = Xtmpl.env_of_list
     [
-      ("", "type"), (fun _ _ _ -> typ) ;
-      ("", "path"), (fun _ _ _ -> [Xtmpl.D path]) ;
-      ("", "tool"), (fun _ _ _ -> [tool]) ;
-      ("", "branches_yes"), (fun _ _ _ -> branches_yes) ;
-      ("", "branches_no"), (fun _ _ _ -> branches_no) ;
+      ("", "type"), (fun acc _ _ _ -> (acc, typ)) ;
+      ("", "path"), (fun acc _ _ _ -> (acc, [Xtmpl.D path])) ;
+      ("", "tool"), (fun acc _ _ _ -> (acc, [tool])) ;
+      ("", "branches_yes"), (fun acc _ _ _ -> (acc, branches_yes)) ;
+      ("", "branches_no"), (fun acc _ _ _ -> (acc, branches_no)) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
   let navpath = xhtml_navpath ctx (`Intf iri) in
-  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
+  let (_, contents) = Xtmpl.apply_to_file () env (Fname.abs_string tmpl) in
   ([ctype ()], tool_page ctx ~title: name ~wtitle ~navpath contents)
 ;;
 
@@ -732,14 +735,14 @@ let get_branch ctx iri =
   let tmpl = Rest_xpage.tmpl_file ctx.ctx_cfg "branch.tmpl" in
   let env = Xtmpl.env_of_list
     [
-      ("", "graph"), (fun _ _ _ -> svg) ;
-      ("", "branches"), (fun  _ _ _ -> branches) ;
-      ("", "interfaces"), (fun _ _ _ -> intfs) ;
-      ("", "versions"), (fun _ _ _ -> versions) ;
+      ("", "graph"), (fun acc _ _ _ -> (acc, svg)) ;
+      ("", "branches"), (fun acc _ _ _ -> (acc, branches)) ;
+      ("", "interfaces"), (fun acc _ _ _ -> (acc, intfs)) ;
+      ("", "versions"), (fun acc _ _ _ -> (acc, versions)) ;
     ]
   in
   let env = Xtmpl.env_of_list ~env (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let contents = Xtmpl.apply_to_file env (Fname.abs_string tmpl) in
+  let (_, contents) = Xtmpl.apply_to_file () env (Fname.abs_string tmpl) in
   let navpath = xhtml_navpath ctx (`Branch iri) in
   ([ctype ()], tool_page ctx ~title: name ~navpath contents)
 ;;
@@ -1521,7 +1524,7 @@ let inst_chain_query ctx iq =
         xhtml_inst_list ctx inst_list
   in
   let env = Xtmpl.env_of_list (Rest_xpage.default_commands ctx.ctx_cfg) in
-  let xml = Xtmpl.apply_to_xmls env [contents] in
+  let (_, xml) = Xtmpl.apply_to_xmls () env [contents] in
   ([ctype ()], Xtmpl.string_of_xmls xml)
 ;;
 
@@ -1540,7 +1543,7 @@ let get_inst_chains ctx args =
         List.iter add_js [ "inst_chain_query.js" ];
 
         let iq = inst_chain_query_of_args args in
-        let input_options _ _ _ =
+        let input_options acc _ _ _ =
           let inputs = Ind_io.list_inputs ctx.ctx_cfg in
           let inputs = List.sort Pervasives.compare inputs in
           let selected =
@@ -1548,15 +1551,18 @@ let get_inst_chains ctx args =
               None -> ""
             | Some (i, _) -> String.concat "/" i
           in
-          List.map
-            (fun i ->
-              let atts =
-                (("", "value"), Fname.rel_string i) :: (if (Fname.rel_string i) = selected then [("", "selected"),"true"] else [])
-              in
-              Xtmpl.E (("", "option"), atts, [Xtmpl.D (Fname.rel_string i)]))
-            inputs
+          let l = 
+            List.map
+              (fun i ->
+                 let atts =
+                   (("", "value"), Fname.rel_string i) :: (if (Fname.rel_string i) = selected then [("", "selected"),"true"] else [])
+                 in
+                 Xtmpl.E (("", "option"), atts, [Xtmpl.D (Fname.rel_string i)]))
+              inputs
+          in
+          (acc, l)
         in
-        let chain_options _ _ _ =
+        let chain_options acc _ _ _ =
           let prefix = ctx.ctx_cfg.Config.rest_api in
           let selected =
             match iq.Rest_types.iq_chain with
@@ -1608,7 +1614,7 @@ let get_inst_chains ctx args =
           let chain_files = Chn_io.chain_files ctx.ctx_cfg in
           let modules = List.map Chn_io.modname_of_file chain_files in
           let modules = List.sort Chn_types.compare_chain_modname modules in
-          List.rev (List.fold_left f_mod [] modules)
+          (acc, List.rev (List.fold_left f_mod [] modules))
         in
         Buffer.add_string javascript
           "function onPageLoad() {\n  initInputAndChain();\n";
@@ -1646,7 +1652,7 @@ let get_inst_chains ctx args =
             let tools = List.sort Rdf_iri.compare tools in
             List.map f tools
           in
-          fun _ _ _ -> result
+          fun acc _ _ _ -> (acc, result)
         in
         Buffer.add_string javascript "filter();\n}\n";
         let env =
@@ -1678,14 +1684,14 @@ let ichain_digest ctx iri =
   let input = xhtml_input_of_ichain ctx iri in
   let env = Xtmpl.env_of_list
     [
-     ("","ichain"), (fun _ _ _ -> [Xtmpl.D (Rdf_iri.string iri)]) ;
-     ("","date"), (fun _ _ _ -> [Xtmpl.D date ]) ;
-     ("","fchain"), (fun _ _ _ -> fchain) ;
-     ("","input"), (fun _ _ _ -> input) ;
-     ("","tools"), (fun _ _ _ -> tools) ;
+     ("","ichain"), (fun acc _ _ _ -> (acc, [Xtmpl.D (Rdf_iri.string iri)])) ;
+     ("","date"), (fun acc _ _ _ -> (acc, [Xtmpl.D date])) ;
+     ("","fchain"), (fun acc _ _ _ -> (acc, fchain)) ;
+     ("","input"), (fun acc _ _ _ -> (acc, input)) ;
+     ("","tools"), (fun acc _ _ _ -> (acc, tools)) ;
     ]
   in
-  Xtmpl.apply_to_file env (Fname.abs_string tmpl)
+  snd (Xtmpl.apply_to_file () env (Fname.abs_string tmpl))
 ;;
 
 let get_diff_ichains ctx args =
@@ -1757,15 +1763,16 @@ let get_diff_ichains ctx args =
   in
   let env = Xtmpl.env_of_list
     [
-     (("", "show-form"), (fun _ _ _ -> [Xtmpl.D show_form])) ;
-     (("", "inst1"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst1)])) ;
-     (("", "inst2"), (fun _ _ _ -> [Xtmpl.D (Misc.string_of_opt inst2)])) ;
-     (("", "diffcmd-choices"), (fun _ _ _ -> diffcmd_choices)) ;
-     (("", "diffcmd"), (fun _ _ _ -> (match diffcmd  with None -> [] | Some s -> [Xtmpl.D s])));
-     (("", "diff"), (fun _ _ _ -> [Xtmpl.xml_of_string diff])) ;
-     (("", "action"), (fun _ _ _ -> [Xtmpl.D action])) ;
-     (("", "digest1"), (fun _ _ _ -> digest1)) ;
-     (("", "digest2"), (fun _ _ _ -> digest2))
+     (("", "show-form"), (fun acc _ _ _ -> (acc, [Xtmpl.D show_form]))) ;
+     (("", "inst1"), (fun acc _ _ _ -> (acc, [Xtmpl.D (Misc.string_of_opt inst1)]))) ;
+     (("", "inst2"), (fun acc _ _ _ -> (acc, [Xtmpl.D (Misc.string_of_opt inst2)]))) ;
+     (("", "diffcmd-choices"), (fun acc _ _ _ -> (acc, diffcmd_choices))) ;
+     (("", "diffcmd"), (fun acc _ _ _ -> 
+          (acc, (match diffcmd  with None -> [] | Some s -> [Xtmpl.D s]))));
+     (("", "diff"), (fun acc _ _ _ -> (acc, [Xtmpl.xml_of_string diff]))) ;
+     (("", "action"), (fun acc _ _ _ -> (acc, [Xtmpl.D action]))) ;
+     (("", "digest1"), (fun acc _ _ _ -> (acc, digest1))) ;
+     (("", "digest2"), (fun acc _ _ _ -> (acc, digest2)))
     ]
   in
   let contents =
