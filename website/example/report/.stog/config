@@ -7,3 +7,4 @@ elements = [".*\\.xml$"; ".*\\.html$"]
 "not-elements" = []
 (* follow symlinks when bulding source file and directory tree *)
 "follow-symlinks" = false
+"levels" = [ ("html", [ ("base", [ 0 ; 61 ; 230 ]) ]) ]
