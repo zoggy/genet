@@ -77,8 +77,8 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.fun_include</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;fun_include&nbsp;tmpl_dir&nbsp;_env&nbsp;args&nbsp;subs&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"file"</span>)&nbsp;<span class="keyword">with</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;fun_include&nbsp;tmpl_dir&nbsp;acc&nbsp;_env&nbsp;args&nbsp;subs&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"file"</span>)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Missing&nbsp;'file'&nbsp;argument&nbsp;for&nbsp;include&nbsp;command"</span>;<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=<br>
@@ -88,8 +88,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xml&nbsp;=&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;file)]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"include-contents"</span>),&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">""</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;subs))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;~atts:&nbsp;args<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"include-contents"</span>)&nbsp;subs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="constructor">Xtmpl</span>.tag_env),&nbsp;args,&nbsp;xml)]</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="constructor">Xtmpl</span>.tag_env),&nbsp;args,&nbsp;xml)])</code></body></html>

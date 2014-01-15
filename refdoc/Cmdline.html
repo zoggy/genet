@@ -87,37 +87,43 @@
 &nbsp;<a class="post" href="Config.html" title="Config">Next</a>
 </div>
 <h1>Module <a href="type_Cmdline.html">Cmdline</a> (<a href="code_Cmdline.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Cmdline: <code class="code">sig</code> <a href="Cmdline.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Cmdline: <code class="code">sig</code> <a href="Cmdline.html">..</a> <code class="code">end</code></pre><div class="info module top">
 </div>
 <hr width="100%">
+
 <pre><code><span id="TYPEcompletion_choices"><span class="keyword">type</span> <code class="type"></code>completion_choices</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcompletion_choices.compl_words">compl_words</span>&nbsp;:<code class="type">string list</code>;</code></td>
+<code><span id="TYPEELTcompletion_choices.compl_words">compl_words</span>&nbsp;: <code class="type">string list</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcompletion_choices.compl_files">compl_files</span>&nbsp;:<code class="type">bool</code>;</code></td>
+<code><span id="TYPEELTcompletion_choices.compl_files">compl_files</span>&nbsp;: <code class="type">bool</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcompletion_choices.compl_xfiles">compl_xfiles</span>&nbsp;:<code class="type">string option</code>;</code></td>
+<code><span id="TYPEELTcompletion_choices.compl_xfiles">compl_xfiles</span>&nbsp;: <code class="type">string option</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALcompl_choices"><span class="keyword">val</span> <a href="code_VALCmdline.compl_choices.html">compl_choices</a></span> : <code class="type">?words:string list -><br>       ?files:bool -> ?xfiles:string -> unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre><pre><span id="TYPEcompletion_fun"><span class="keyword">type</span> <code class="type"></code>completion_fun</span> = <code class="type">unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code> </pre>
+
+<pre><span id="VALcompl_choices"><span class="keyword">val</span> <a href="code_VALCmdline.compl_choices.html">compl_choices</a></span> : <code class="type">?words:string list -><br>       ?files:bool -> ?xfiles:string -> unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre>
+<pre><span id="TYPEcompletion_fun"><span class="keyword">type</span> <code class="type"></code>completion_fun</span> = <code class="type">unit -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code> </pre>
+
 
 <pre><span id="TYPEcompletion_opt"><span class="keyword">type</span> <code class="type"></code>completion_opt</span> = <code class="type"><a href="Cmdline.html#TYPEcompletion_fun">completion_fun</a> option</code> </pre>
+
 
 <pre><code><span id="TYPEspec"><span class="keyword">type</span> <code class="type"></code>spec</span> = </code></pre><table class="typetable">
 <tr>
@@ -213,7 +219,11 @@
 </tr></table>
 
 
-<pre><span id="VALspec_to_arg_spec"><span class="keyword">val</span> <a href="code_VALCmdline.spec_to_arg_spec.html">spec_to_arg_spec</a></span> : <code class="type"><a href="Cmdline.html#TYPEspec">spec</a> -> Arg.spec</code></pre><pre><span id="VALspecs_to_arg_specs"><span class="keyword">val</span> <a href="code_VALCmdline.specs_to_arg_specs.html">specs_to_arg_specs</a></span> : <code class="type">(Arg.key * <a href="Cmdline.html#TYPEspec">spec</a> * Arg.doc) list -><br>       (Arg.key * Arg.spec * Arg.doc) list</code></pre><pre><span id="TYPEoption_spec"><span class="keyword">type</span> <code class="type"></code>option_spec</span> = <code class="type">string * <a href="Cmdline.html#TYPEspec">spec</a> * string</code> </pre>
+
+<pre><span id="VALspec_to_arg_spec"><span class="keyword">val</span> <a href="code_VALCmdline.spec_to_arg_spec.html">spec_to_arg_spec</a></span> : <code class="type"><a href="Cmdline.html#TYPEspec">spec</a> -> Arg.spec</code></pre>
+<pre><span id="VALspecs_to_arg_specs"><span class="keyword">val</span> <a href="code_VALCmdline.specs_to_arg_specs.html">specs_to_arg_specs</a></span> : <code class="type">(Arg.key * <a href="Cmdline.html#TYPEspec">spec</a> * Arg.doc) list -><br>       (Arg.key * Arg.spec * Arg.doc) list</code></pre>
+<pre><span id="TYPEoption_spec"><span class="keyword">type</span> <code class="type"></code>option_spec</span> = <code class="type">string * <a href="Cmdline.html#TYPEspec">spec</a> * string</code> </pre>
+
 
 <pre><code><span id="TYPEcompletion_spec"><span class="keyword">type</span> <code class="type"></code>completion_spec</span> = </code></pre><table class="typetable">
 <tr>
@@ -230,6 +240,7 @@
 <code><span id="TYPEELTcompletion_spec.Compfun"><span class="constructor">Compfun</span></span> <span class="keyword">of</span> <code class="type"><a href="Cmdline.html#TYPEcompletion_fun">completion_fun</a></code></code></td>
 
 </tr></table>
+
 
 
 <pre><code><span id="TYPEcommand_kind"><span class="keyword">type</span> <code class="type"></code>command_kind</span> = </code></pre><table class="typetable">
@@ -249,40 +260,50 @@
 </tr></table>
 
 
+
 <pre><code><span id="TYPEcommand"><span class="keyword">type</span> <code class="type"></code>command</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcommand.com_options">com_options</span>&nbsp;:<code class="type"><a href="Cmdline.html#TYPEoption_spec">option_spec</a> list</code>;</code></td>
+<code><span id="TYPEELTcommand.com_options">com_options</span>&nbsp;: <code class="type"><a href="Cmdline.html#TYPEoption_spec">option_spec</a> list</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcommand.com_usage">com_usage</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTcommand.com_usage">com_usage</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcommand.com_compl">com_compl</span>&nbsp;:<code class="type"><a href="Cmdline.html#TYPEcompletion_spec">completion_spec</a> list</code>;</code></td>
+<code><span id="TYPEELTcommand.com_compl">com_compl</span>&nbsp;: <code class="type"><a href="Cmdline.html#TYPEcompletion_spec">completion_spec</a> list</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcommand.com_kind">com_kind</span>&nbsp;:<code class="type"><a href="Cmdline.html#TYPEcommand_kind">command_kind</a></code>;</code></td>
+<code><span id="TYPEELTcommand.com_kind">com_kind</span>&nbsp;: <code class="type"><a href="Cmdline.html#TYPEcommand_kind">command_kind</a></code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALmerge_options"><span class="keyword">val</span> <a href="code_VALCmdline.merge_options.html">merge_options</a></span> : <code class="type">options:('a * 'b * 'c) list -><br>       more:('a * 'b * 'c) list -> ('a * 'b * 'c) list</code></pre><pre><span id="EXCEPTIONNo_such_command"><span class="keyword">exception</span> No_such_command</span> <span class="keyword">of</span> <code class="type">string list</code></pre>
-<pre><span id="VALalign_commands"><span class="keyword">val</span> <a href="code_VALCmdline.align_commands.html">align_commands</a></span> : <code class="type">(string * 'a * 'b) list -> (string * 'a * 'b) list</code></pre><pre><span id="VALmake_help_msg"><span class="keyword">val</span> <a href="code_VALCmdline.make_help_msg.html">make_help_msg</a></span> : <code class="type">string list -><br>       (Arg.key * Arg.spec * Arg.doc) list -><br>       string -> <a href="Cmdline.html#TYPEcommand_kind">command_kind</a> -> string</code></pre><pre><span id="EXCEPTIONMy_help"><span class="keyword">exception</span> My_help</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+
+<pre><span id="VALmerge_options"><span class="keyword">val</span> <a href="code_VALCmdline.merge_options.html">merge_options</a></span> : <code class="type">options:('a * 'b * 'c) list -><br>       more:('a * 'b * 'c) list -> ('a * 'b * 'c) list</code></pre>
+<pre><span id="EXCEPTIONNo_such_command"><span class="keyword">exception</span> No_such_command</span> <span class="keyword">of</span> <code class="type">string list</code></pre>
+
+<pre><span id="VALalign_commands"><span class="keyword">val</span> <a href="code_VALCmdline.align_commands.html">align_commands</a></span> : <code class="type">(string * 'a * 'b) list -> (string * 'a * 'b) list</code></pre>
+<pre><span id="VALmake_help_msg"><span class="keyword">val</span> <a href="code_VALCmdline.make_help_msg.html">make_help_msg</a></span> : <code class="type">string list -><br>       (Arg.key * Arg.spec * Arg.doc) list -><br>       string -> <a href="Cmdline.html#TYPEcommand_kind">command_kind</a> -> string</code></pre>
+<pre><span id="EXCEPTIONMy_help"><span class="keyword">exception</span> My_help</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+
 <pre><span id="EXCEPTIONMissing_command"><span class="keyword">exception</span> Missing_command</span> <span class="keyword">of</span> <code class="type">string list</code></pre>
+
 <pre><span id="EXCEPTIONStop_parse"><span class="keyword">exception</span> Stop_parse</span> <span class="keyword">of</span> <code class="type">(unit -> unit)</code></pre>
-<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALCmdline.parse.html">parse</a></span> : <code class="type">?args:string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> string list</code></pre><pre><span id="VALcompletion"><span class="keyword">val</span> <a href="code_VALCmdline.completion.html">completion</a></span> : <code class="type">int -> string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre></body></html>
+
+<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALCmdline.parse.html">parse</a></span> : <code class="type">?args:string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> string list</code></pre>
+<pre><span id="VALcompletion"><span class="keyword">val</span> <a href="code_VALCmdline.completion.html">completion</a></span> : <code class="type">int -> string array -> <a href="Cmdline.html#TYPEcommand">command</a> -> <a href="Cmdline.html#TYPEcompletion_choices">completion_choices</a></code></pre></body></html>

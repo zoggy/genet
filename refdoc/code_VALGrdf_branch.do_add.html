@@ -80,6 +80,6 @@
 <code class="code"><span class="keyword">let</span>&nbsp;do_add&nbsp;wld&nbsp;iri&nbsp;name&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;1&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"Grdf_branch.do_add&nbsp;iri="</span>^(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)^<span class="string">"&nbsp;name="</span>^name);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj;<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.genet_branch&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub:&nbsp;iri&nbsp;~obj;<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name</code></body></html>

@@ -81,7 +81,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dbg&nbsp;=&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"create_port_from_chn"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"iri=%s&nbsp;chn=%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_basename&nbsp;chn.chn_name));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_basename&nbsp;chn.chn_name));<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;mk_port&nbsp;dir&nbsp;(rank,&nbsp;map,&nbsp;ports)&nbsp;p&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;dbg&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"mk_port&nbsp;rank=%d&nbsp;p=%s"</span>&nbsp;rank&nbsp;p.p_name);<br>

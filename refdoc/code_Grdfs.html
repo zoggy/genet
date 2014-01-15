@@ -148,6 +148,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;rdf_type&nbsp;=&nbsp;rdf_<span class="string">"type"</span>;;<br>
 <br>
+<span class="keyword">let</span>&nbsp;genet_element&nbsp;=&nbsp;genet_<span class="string">"Element"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_tool&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Tool"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_branch&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Branch"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_intf&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Interface"</span>;;<br>
@@ -155,11 +156,13 @@
 <span class="keyword">let</span>&nbsp;genet_filetype&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Filetype"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_chain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Chain"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_flatchain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Flatchain"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_flatopn&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Flatopn"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_port&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Port"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_instchain&nbsp;=&nbsp;genet_&nbsp;<span class="string">"Instchain"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_instopn&nbsp;=&nbsp;genet_&nbsp;<span class="string">"InstOperation"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_implode&nbsp;=&nbsp;genet_<span class="string">"Implode"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_explode&nbsp;=&nbsp;genet_<span class="string">"Explode"</span>;;<br>
-<span class="keyword">let</span>&nbsp;genet_subgraph&nbsp;=&nbsp;genet_<span class="string">"Subgraph"</span>;;<br>
+<span class="comment">(*let&nbsp;genet_subgraph&nbsp;=&nbsp;genet_"Subgraph";;*)</span><br>
 <span class="keyword">let</span>&nbsp;genet_diffcommand&nbsp;=&nbsp;genet_<span class="string">"DiffCommand"</span>;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;string_of_class&nbsp;=&nbsp;<span class="keyword">function</span><br>
@@ -172,6 +175,7 @@
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_flatchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatchain"</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_instchain&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instchain"</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_instopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"instopn"</span><br>
+<span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_flatopn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"flatopn"</span><br>
 <span class="keywordsign">|</span>&nbsp;s&nbsp;<span class="keyword">when</span>&nbsp;<span class="constructor">Rdf_iri</span>.equal&nbsp;s&nbsp;genet_diffcommand&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"diffcommand"</span><br>
 <span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
 ;;<br>
@@ -189,19 +193,21 @@
 <span class="keyword">let</span>&nbsp;genet_hasdiffcom&nbsp;=&nbsp;genet_<span class="string">"hasDiffCommand"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_hasintf&nbsp;=&nbsp;genet_<span class="string">"hasInterface"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_hastype&nbsp;=&nbsp;genet_<span class="string">"hasFiletype"</span>;;<br>
-<span class="keyword">let</span>&nbsp;genet_versionid&nbsp;=&nbsp;genet_<span class="string">"versionId"</span>;;<br>
+<span class="comment">(*let&nbsp;genet_versionid&nbsp;=&nbsp;genet_"versionId";;*)</span><br>
 <span class="keyword">let</span>&nbsp;genet_flattenedto&nbsp;=&nbsp;genet_<span class="string">"flattenedTo"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_opfrom&nbsp;=&nbsp;genet_<span class="string">"operationFrom"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_portfrom&nbsp;=&nbsp;genet_<span class="string">"portFrom"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_containsop&nbsp;=&nbsp;genet_<span class="string">"containsOperation"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_createdon&nbsp;=&nbsp;genet_<span class="string">"createdOn"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_startedon&nbsp;=&nbsp;genet_<span class="string">"startedOn"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_stoppedon&nbsp;=&nbsp;genet_<span class="string">"stoppedOn"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_isactive&nbsp;=&nbsp;genet_<span class="string">"isActive"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_instanciate&nbsp;=&nbsp;genet_<span class="string">"instanciate"</span>;;<br>
-<span class="keyword">let</span>&nbsp;genet_hascommitid&nbsp;=&nbsp;genet_<span class="string">"hasCommitId"</span>;;<br>
+<span class="comment">(*let&nbsp;genet_hascommitid&nbsp;=&nbsp;genet_"hasCommitId";;*)</span><br>
 <span class="keyword">let</span>&nbsp;genet_useinput&nbsp;=&nbsp;genet_<span class="string">"useInput"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_useinputcommitid&nbsp;=&nbsp;genet_<span class="string">"useInputCommitId"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_useversion&nbsp;=&nbsp;genet_<span class="string">"useVersion"</span>;;<br>
+<span class="keyword">let</span>&nbsp;genet_usetoolversion&nbsp;=&nbsp;genet_<span class="string">"useToolVersion"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_filemd5&nbsp;=&nbsp;genet_<span class="string">"fileMd5"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_hasimplode&nbsp;=&nbsp;genet_<span class="string">"hasImplode"</span>;;<br>
 <span class="keyword">let</span>&nbsp;genet_returncode&nbsp;=&nbsp;genet_<span class="string">"returnCode"</span>;;<br>
@@ -219,7 +225,7 @@
 <br>
 <span class="keyword">let</span>&nbsp;add_type&nbsp;wld&nbsp;~sub&nbsp;~obj&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;rdf_type&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj<br>
+&nbsp;&nbsp;add_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;sub)&nbsp;~pred&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;obj)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;add_triple_iris&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj&nbsp;=<br>

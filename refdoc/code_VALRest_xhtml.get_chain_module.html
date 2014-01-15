@@ -111,8 +111,8 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[],&nbsp;[table&nbsp;~heads&nbsp;rows])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Dependencies"</span>],&nbsp;deps)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;[table&nbsp;~heads&nbsp;rows])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,<span class="string">"title"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"Dependencies"</span>],&nbsp;deps)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=<br>

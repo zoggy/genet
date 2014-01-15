@@ -87,29 +87,38 @@
 &nbsp;<a class="post" href="Main.html" title="Main">Next</a>
 </div>
 <h1>Module <a href="type_Loc.html">Loc</a> (<a href="code_Loc.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Loc: <code class="code">sig</code> <a href="Loc.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Loc: <code class="code">sig</code> <a href="Loc.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Lexing locations.<br>
 </div>
 <hr width="100%">
+
 <pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.loc_start">loc_start</span>&nbsp;:<code class="type">Lexing.position</code>;</code></td>
+<code><span id="TYPEELTt.loc_start">loc_start</span>&nbsp;: <code class="type">Lexing.position</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.loc_end">loc_end</span>&nbsp;:<code class="type">Lexing.position</code>;</code></td>
+<code><span id="TYPEELTt.loc_end">loc_end</span>&nbsp;: <code class="type">Lexing.position</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALdummy"><span class="keyword">val</span> <a href="code_VALLoc.dummy.html">dummy</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a></code></pre><pre><span id="TYPEproblem"><span class="keyword">type</span> <code class="type"></code>problem</span> = <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a></code> </pre>
+
+<pre><span id="VALdummy"><span class="keyword">val</span> <a href="code_VALLoc.dummy.html">dummy</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a></code></pre>
+<pre><span id="TYPEproblem"><span class="keyword">type</span> <code class="type"></code>problem</span> = <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a></code> </pre>
+
 
 <pre><span id="EXCEPTIONProblem"><span class="keyword">exception</span> Problem</span> <span class="keyword">of</span> <code class="type"><a href="Loc.html#TYPEproblem">problem</a></code></pre>
-<pre><span id="VALraise_problem"><span class="keyword">val</span> <a href="code_VALLoc.raise_problem.html">raise_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> -> string -> 'a</code></pre><pre><span id="VALstring_of_problem"><span class="keyword">val</span> <a href="code_VALLoc.string_of_problem.html">string_of_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a> -> string</code></pre><pre><span id="VALstring_of_loc"><span class="keyword">val</span> <a href="code_VALLoc.string_of_loc.html">string_of_loc</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> -> string</code></pre><pre><span id="VALstring_of_problem"><span class="keyword">val</span> <a href="code_VALLoc.string_of_problem.html">string_of_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a> -> string</code></pre></body></html>
+
+<pre><span id="VALraise_problem"><span class="keyword">val</span> <a href="code_VALLoc.raise_problem.html">raise_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> -> string -> 'a</code></pre>
+<pre><span id="VALstring_of_problem"><span class="keyword">val</span> <a href="code_VALLoc.string_of_problem.html">string_of_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a> -> string</code></pre>
+<pre><span id="VALstring_of_loc"><span class="keyword">val</span> <a href="code_VALLoc.string_of_loc.html">string_of_loc</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALstring_of_problem"><span class="keyword">val</span> <a href="code_VALLoc.string_of_problem.html">string_of_problem</a></span> : <code class="type"><a href="Loc.html#TYPEt">t</a> <a href="Checks.html#TYPEproblem">Checks.problem</a> -> string</code></pre></body></html>

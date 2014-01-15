@@ -84,14 +84,14 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;target_base&nbsp;=&nbsp;<span class="constructor">Filename</span>.quote&nbsp;(<span class="constructor">Filename</span>.basename&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;target))&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;com&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"mkdir&nbsp;-p&nbsp;%s/.tmp;&nbsp;(cd&nbsp;%s&nbsp;;&nbsp;git&nbsp;archive&nbsp;--format&nbsp;tar&nbsp;%s&nbsp;%s|&nbsp;(cd&nbsp;%s/.tmp&nbsp;;&nbsp;tar&nbsp;xvf&nbsp;-))&nbsp;;&nbsp;mv&nbsp;%s/.tmp/%s&nbsp;%s/%s&nbsp;;&nbsp;rm&nbsp;-fr&nbsp;%s/.tmp/"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir<br>
-&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
-&nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Fname</span>.quote&nbsp;data_dir)&nbsp;id&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_dir&nbsp;(<span class="constructor">Fname</span>.rel_quote&nbsp;base_dir)&nbsp;target_dir&nbsp;target_base<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target_dir<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:3&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"extract_git_file:&nbsp;%s"</span>&nbsp;com);<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Sys</span>.command&nbsp;com&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;n&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed&nbsp;[%d]:&nbsp;%s"</span>&nbsp;n&nbsp;com&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Command&nbsp;failed&nbsp;[%d]:&nbsp;%s"</span>&nbsp;n&nbsp;com&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg</code></body></html>

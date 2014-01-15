@@ -84,18 +84,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;heads&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.map<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;h&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"th"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;h]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;h&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"th"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;h]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;heads<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"thead"</span>),&nbsp;[],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"tr"</span>),&nbsp;[],&nbsp;l)&nbsp;])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"thead"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"tr"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;l)&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;td&nbsp;c&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"td"</span>),&nbsp;[],&nbsp;c)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tr&nbsp;l&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"tr"</span>),&nbsp;[],&nbsp;<span class="constructor">List</span>.map&nbsp;td&nbsp;l)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;td&nbsp;c&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"td"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;c)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tr&nbsp;l&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"tr"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;<span class="constructor">List</span>.map&nbsp;td&nbsp;l)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;tr&nbsp;rows&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span><br>
-&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"table"</span>),&nbsp;[(<span class="string">""</span>,<span class="string">"class"</span>),&nbsp;<span class="string">"table&nbsp;table-bordered&nbsp;table-striped"</span>],<br>
-&nbsp;&nbsp;&nbsp;(heads&nbsp;@&nbsp;rows)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"table"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span><span class="string">"table&nbsp;table-bordered&nbsp;table-striped"</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(heads&nbsp;@&nbsp;rows)<br>
 &nbsp;&nbsp;)</code></body></html>

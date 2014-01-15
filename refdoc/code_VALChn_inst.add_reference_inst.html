@@ -84,7 +84,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;instance_source&nbsp;ctx&nbsp;inst&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;source&nbsp;flat&nbsp;chaint&nbsp;for&nbsp;inst&nbsp;chain&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;inst))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"No&nbsp;source&nbsp;flat&nbsp;chaint&nbsp;for&nbsp;inst&nbsp;chain&nbsp;%S"</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;inst))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;iri&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;iri<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;fchain_name&nbsp;=<br>
@@ -99,10 +99,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;(<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;msg&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Inst&nbsp;chain&nbsp;%S&nbsp;instanciates&nbsp;%S&nbsp;and&nbsp;cannot&nbsp;be&nbsp;used&nbsp;as&nbsp;reference&nbsp;for&nbsp;%S"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;inst)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_chain)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;chain)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;inst)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_chain)&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;chain)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;msg<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;test&nbsp;the&nbsp;inst&nbsp;chain&nbsp;uses&nbsp;the&nbsp;given&nbsp;input&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">begin</span><br>

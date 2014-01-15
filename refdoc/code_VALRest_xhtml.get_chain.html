@@ -98,9 +98,9 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Chain</span>&nbsp;fullname)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;[],&nbsp;svg)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;svg)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"section"</span>),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;<span class="string">"Source&nbsp;from&nbsp;"</span>^(<span class="constructor">Fname</span>.quote&nbsp;file)],&nbsp;code)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,<span class="string">"title"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"Source&nbsp;from&nbsp;"</span>^(<span class="constructor">Fname</span>.quote&nbsp;file))],&nbsp;code)&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;chain_page&nbsp;ctx&nbsp;~title&nbsp;~navpath&nbsp;contents)</code></body></html>

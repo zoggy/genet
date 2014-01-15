@@ -85,7 +85,7 @@
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;(_,&nbsp;versions,&nbsp;input_info)&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;equal_tool_versions&nbsp;comb&nbsp;versions&nbsp;<span class="keywordsign">&amp;&amp;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;input_info&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;=&nbsp;input)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;input_info&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;i&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;i&nbsp;=&nbsp;input)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">try</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(iri_i,&nbsp;_,&nbsp;_)&nbsp;=&nbsp;<span class="constructor">List</span>.find&nbsp;pred&nbsp;insts&nbsp;<span class="keyword">in</span><br>

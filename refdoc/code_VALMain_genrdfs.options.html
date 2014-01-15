@@ -79,6 +79,5 @@
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;options&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">Options</span>.option_version&nbsp;<span class="string">"Genet-genrdfs"</span>::<br>
-&nbsp;&nbsp;(<span class="string">"--ntriples"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;output_format&nbsp;:=&nbsp;<span class="string">"ntriples"</span>),&nbsp;<span class="string">"&nbsp;output&nbsp;in&nbsp;ntriples&nbsp;format"</span>)&nbsp;::<br>
-&nbsp;&nbsp;(<span class="string">"--turtle"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;output_format&nbsp;:=&nbsp;<span class="string">"turtle"</span>),&nbsp;<span class="string">"&nbsp;output&nbsp;in&nbsp;turtle&nbsp;format"</span>)&nbsp;::<br>
-&nbsp;&nbsp;[]</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"--turtle"</span>,&nbsp;<span class="constructor">Cmdline</span>.<span class="constructor">Unit</span>&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;to_string&nbsp;:=&nbsp;<span class="constructor">Rdf_ttl</span>.to_string),&nbsp;<span class="string">"&nbsp;output&nbsp;in&nbsp;turtle&nbsp;format"</span>)&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[]</code></body></html>

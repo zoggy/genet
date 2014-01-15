@@ -87,25 +87,37 @@
 &nbsp;<a class="post" href="Grdf_constant.html" title="Grdf_constant">Next</a>
 </div>
 <h1>Module <a href="type_Grdf_branch.html">Grdf_branch</a> (<a href="code_Grdf_branch.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Grdf_branch: <code class="code">sig</code> <a href="Grdf_branch.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Grdf_branch: <code class="code">sig</code> <a href="Grdf_branch.html">..</a> <code class="code">end</code></pre><div class="info module top">
 </div>
 <hr width="100%">
-<pre><span id="VALdbg"><span class="keyword">val</span> <a href="code_VALGrdf_branch.dbg.html">dbg</a></span> : <code class="type">?loc:string -> ?level:int -> (unit -> string) -> unit</code></pre><pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
+
+<pre><span id="VALdbg"><span class="keyword">val</span> <a href="code_VALGrdf_branch.dbg.html">dbg</a></span> : <code class="type">?loc:string -> ?level:int -> (unit -> string) -> unit</code></pre>
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.bch_name">bch_name</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.bch_name">bch_name</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.bch_iri">bch_iri</span>&nbsp;:<code class="type">Rdf_iri.iri</code>;</code></td>
+<code><span id="TYPEELTt.bch_iri">bch_iri</span>&nbsp;: <code class="type">Rdf_iri.iri</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALbranches"><span class="keyword">val</span> <a href="code_VALGrdf_branch.branches.html">branches</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> <a href="Grdf_branch.html#TYPEt">t</a> list</code></pre><pre><span id="VALname"><span class="keyword">val</span> <a href="code_VALGrdf_branch.name.html">name</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string</code></pre><pre><span id="VALparent"><span class="keyword">val</span> <a href="code_VALGrdf_branch.parent.html">parent</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> (Rdf_iri.iri * bool) option</code></pre><pre><span id="VALsubs_aux"><span class="keyword">val</span> <a href="code_VALGrdf_branch.subs_aux.html">subs_aux</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> Rdf_iri.iri list</code></pre><pre><span id="VALsubs"><span class="keyword">val</span> <a href="code_VALGrdf_branch.subs.html">subs</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> ?recur:bool -> Rdf_iri.iri -> Rdf_iri.Iriset.elt list</code></pre><pre><span id="VALbranch_exists"><span class="keyword">val</span> <a href="code_VALGrdf_branch.branch_exists.html">branch_exists</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string option</code></pre><pre><span id="VALdo_add"><span class="keyword">val</span> <a href="code_VALGrdf_branch.do_add.html">do_add</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string -> unit</code></pre><pre><span id="VALadd"><span class="keyword">val</span> <a href="code_VALGrdf_branch.add.html">add</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> parent:<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> string -> Rdf_iri.iri</code></pre><pre><span id="VALtool"><span class="keyword">val</span> <a href="code_VALGrdf_branch.tool.html">tool</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> Rdf_iri.iri</code></pre></body></html>
+
+<pre><span id="VALbranches"><span class="keyword">val</span> <a href="code_VALGrdf_branch.branches.html">branches</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> <a href="Grdf_branch.html#TYPEt">t</a> list</code></pre>
+<pre><span id="VALname"><span class="keyword">val</span> <a href="code_VALGrdf_branch.name.html">name</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string</code></pre>
+<pre><span id="VALparent"><span class="keyword">val</span> <a href="code_VALGrdf_branch.parent.html">parent</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> (Rdf_iri.iri * bool) option</code></pre>
+<pre><span id="VALsubs_aux"><span class="keyword">val</span> <a href="code_VALGrdf_branch.subs_aux.html">subs_aux</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> Rdf_iri.iri list</code></pre>
+<pre><span id="VALsubs"><span class="keyword">val</span> <a href="code_VALGrdf_branch.subs.html">subs</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> ?recur:bool -> Rdf_iri.iri -> Rdf_iri.Iriset.elt list</code></pre>
+<pre><span id="VALbranch_exists"><span class="keyword">val</span> <a href="code_VALGrdf_branch.branch_exists.html">branch_exists</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string option</code></pre>
+<pre><span id="VALdo_add"><span class="keyword">val</span> <a href="code_VALGrdf_branch.do_add.html">do_add</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> string -> unit</code></pre>
+<pre><span id="VALadd"><span class="keyword">val</span> <a href="code_VALGrdf_branch.add.html">add</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> parent:<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> string -> Rdf_iri.iri</code></pre>
+<pre><span id="VALtool"><span class="keyword">val</span> <a href="code_VALGrdf_branch.tool.html">tool</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -> Rdf_iri.iri -> Rdf_iri.iri</code></pre></body></html>

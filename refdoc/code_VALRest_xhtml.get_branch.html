@@ -93,13 +93,13 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.tmpl_file&nbsp;ctx.ctx_cfg&nbsp;<span class="string">"branch.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"graph"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;svg)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;branches)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"interfaces"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;intfs)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"versions"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;versions)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"graph"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;svg))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;branches))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"interfaces"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;intfs))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"versions"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;versions))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,&nbsp;contents)&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Branch</span>&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~navpath&nbsp;contents)</code></body></html>

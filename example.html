@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Genet : A step-by-step example: basics</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/genet/style.css"/>
+<title>Genet : A step-by-step example: basics</title><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<link href="http://zoggy.github.io/genet/style.css" rel="stylesheet" type="text/css"/>
 <rssfeed></rssfeed>
 </head><body>
 <div id="page">
@@ -40,7 +40,7 @@ All required tools and files are available in the Genet distribution,
 in directory <span class="icode">website/example</span>.
 </p>
 
-<ul class="toc"><li class="toc-section"><a href="#intro">Introduction</a></li><li class="toc-section"><a href="#init">Initialisation</a></li><li class="toc-section"><a href="#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="#tools">Adding tools</a></li><li class="toc-section"><a href="#chains">Defining a chain</a></li><li class="toc-section"><a href="#input">Defining an input</a></li><li class="toc-section"><a href="#flattening">Flattening chains</a></li><li class="toc-section"><a href="#inst">Executing chains</a></li><li class="toc-section"><a href="#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="#diffs">Comparing executions</a></li><li class="toc-section"><a href="#newaverage">A new version of the average tool</a></li><li class="toc-section"><a href="#activeversion">Active versions</a></li><li class="toc-section"><a href="#scripts">Using scripts</a></li></ul>
+<ul class="toc"><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#intro">Introduction</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#init">Initialisation</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#filetypes">Defining filetypes</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#tools">Adding tools</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#chains">Defining a chain</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#input">Defining an input</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#flattening">Flattening chains</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#inst">Executing chains</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#newwords">A new version of the words tool</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#diffs">Comparing executions</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#newaverage">A new version of the average tool</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#activeversion">Active versions</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/example.html#scripts">Using scripts</a></li></ul>
 <div class="section"><div class="section-title" id="intro">Introduction</div>
 <p>The example project, called &quot;genet-example&quot;, defines three tools:
 </p>
@@ -54,7 +54,7 @@ These tools can be used together to compute the average length of words
 in texts (do not forget this is for an example project, for a pedagogical
 purpose):
 </p>
-<img src="example-flow.svg" title="Data flow for our example" alt="Data flow for our example" width="700"/>
+<img alt="Data flow for our example" src="example-flow.svg" title="Data flow for our example" width="700"/>
 <p>
 We will show how to use Genet to set up a continuous integration environment
 for our project.
@@ -184,7 +184,7 @@ For our example project, we'll act like if our three tools are developped separa
 and so their version numbers are independent. Each of our tools is composed of only
 one executable.
 </p>
-<div id="makeinstalltools" class="alert alert-info">
+<div class="alert alert-info" id="makeinstalltools">
 <p>To install the tools, go to the <span class="icode">website/example</span> directory
 of the Genet distribution and type
 </p>
@@ -532,8 +532,8 @@ nightly actions. See the reference documentation.
 
 <footer id="bottombar">
 </footer>
-<script type="text/javascript" src="http://zoggy.github.io/genet/jquery.js">_</script>
-<script type="text/javascript" src="http://zoggy.github.io/genet/bootstrap-collapse.js">_</script>
+<script src="http://zoggy.github.io/genet/jquery.js" type="text/javascript">_</script>
+<script src="http://zoggy.github.io/genet/bootstrap-collapse.js" type="text/javascript">_</script>
 
 </body>
 </html>

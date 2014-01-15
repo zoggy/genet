@@ -78,5 +78,5 @@
 </head>
 <body>
 <code class="code"><span class="keyword">let</span>&nbsp;ul&nbsp;l&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"li"</span>),&nbsp;[],&nbsp;c))&nbsp;l&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"ul"</span>),&nbsp;[],&nbsp;l)</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;l&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;(<span class="keyword">fun</span>&nbsp;c&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"li"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;c))&nbsp;l&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"ul"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;l)</code></body></html>

@@ -79,4 +79,7 @@
 <body>
 <code class="code"><span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;kwd&nbsp;?(cls=<span class="string">"kwa"</span>)s&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cls&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"hl&nbsp;%s"</span>&nbsp;cls&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;cls],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]))</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;cls],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</code></body></html>

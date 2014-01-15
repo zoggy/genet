@@ -87,10 +87,12 @@
 &nbsp;<a class="post" href="Rest_query.html" title="Rest_query">Next</a>
 </div>
 <h1>Module <a href="type_Reporter.html">Reporter</a> (<a href="code_Reporter.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Reporter: <code class="code">sig</code> <a href="Reporter.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Reporter: <code class="code">sig</code> <a href="Reporter.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Reporter. Reporting error and messages in multiple treatments.<br>
 </div>
 <hr width="100%">
+
 <pre><code><span id="TYPEmsg"><span class="keyword">type</span> <code class="type"></code>msg</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -115,4 +117,8 @@ Reporter. Reporting error and messages in multiple treatments.<br>
 </tr></table>
 
 
-<pre><span name="TYPEreporter"><span class="keyword">class</span> <a href="Reporter.reporter-c.html">reporter</a></span> : <code class="type">?context:string -> int -> </code><code class="code">object</code> <a href="Reporter.reporter-c.html">..</a> <code class="code">end</code></pre><pre><span id="VALprefix_lines"><span class="keyword">val</span> <a href="code_VALReporter.prefix_lines.html">prefix_lines</a></span> : <code class="type">string -> string -> string</code></pre><pre><span id="VALstring_of_msg"><span class="keyword">val</span> <a href="code_VALReporter.string_of_msg.html">string_of_msg</a></span> : <code class="type">string -> string -> <a href="Reporter.html#TYPEmsg">msg</a> -> string</code></pre><pre><span id="VALstring_of_msg_list"><span class="keyword">val</span> <a href="code_VALReporter.string_of_msg_list.html">string_of_msg_list</a></span> : <code class="type">?pad:string -> ?label:string -> <a href="Reporter.html#TYPEmsg">msg</a> list -> string</code></pre></body></html>
+
+<pre><span name="TYPEreporter"><span class="keyword">class</span> <a href="Reporter.reporter-c.html">reporter</a></span> : <code class="type">?context:string -> int -> </code><code class="code">object</code> <a href="Reporter.reporter-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALprefix_lines"><span class="keyword">val</span> <a href="code_VALReporter.prefix_lines.html">prefix_lines</a></span> : <code class="type">string -> string -> string</code></pre>
+<pre><span id="VALstring_of_msg"><span class="keyword">val</span> <a href="code_VALReporter.string_of_msg.html">string_of_msg</a></span> : <code class="type">string -> string -> <a href="Reporter.html#TYPEmsg">msg</a> -> string</code></pre>
+<pre><span id="VALstring_of_msg_list"><span class="keyword">val</span> <a href="code_VALReporter.string_of_msg_list.html">string_of_msg_list</a></span> : <code class="type">?pad:string -> ?label:string -> <a href="Reporter.html#TYPEmsg">msg</a> list -> string</code></pre></body></html>

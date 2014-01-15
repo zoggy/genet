@@ -80,7 +80,7 @@
 <code class="code"><span class="keyword">let</span>&nbsp;sort_ports&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;comp&nbsp;p1&nbsp;p2&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Pervasives</span>.compare<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p1))<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p2))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdf_port</span>.port_rank&nbsp;(iri_of_g_iri&nbsp;p2))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.sort&nbsp;comp</code></body></html>

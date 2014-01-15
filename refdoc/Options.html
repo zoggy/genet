@@ -87,53 +87,63 @@
 &nbsp;<a class="post" href="Reporter.html" title="Reporter">Next</a>
 </div>
 <h1>Module <a href="type_Options.html">Options</a> (<a href="code_Options.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Options: <code class="code">sig</code> <a href="Options.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Options: <code class="code">sig</code> <a href="Options.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Common options for drivers.<br>
 </div>
 <hr width="100%">
+
 <pre><span id="TYPEoption_spec"><span class="keyword">type</span> <code class="type"></code>option_spec</span> = <code class="type">string * <a href="Cmdline.html#TYPEspec">Cmdline.spec</a> * string</code> </pre>
 
-<pre><span id="VALoption_version"><span class="keyword">val</span> <a href="code_VALOptions.option_version.html">option_version</a></span> : <code class="type">string -> <a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><div class="info">
+
+<pre><span id="VALoption_version"><span class="keyword">val</span> <a href="code_VALOptions.option_version.html">option_version</a></span> : <code class="type">string -> <a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><div class="info ">
 <code class="code">option_version prefix</code> returns an option spec to print
    the given prefix followed by " version ...".<br>
 </div>
-<pre><span id="VALoption_config"><span class="keyword">val</span> <a href="code_VALOptions.option_config.html">option_config</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><pre><span id="VALoption_verbose"><span class="keyword">val</span> <a href="code_VALOptions.option_verbose.html">option_verbose</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><pre><span id="VALoption_rdfxml"><span class="keyword">val</span> <a href="code_VALOptions.option_rdfxml.html">option_rdfxml</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><pre><span id="VALoption_ntriples"><span class="keyword">val</span> <a href="code_VALOptions.option_ntriples.html">option_ntriples</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre><pre><code><span id="TYPEoption_values"><span class="keyword">type</span> <code class="type"></code>option_values</span> = {</code></pre><table class="typetable">
+
+<pre><span id="VALoption_config"><span class="keyword">val</span> <a href="code_VALOptions.option_config.html">option_config</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre>
+<pre><span id="VALoption_verbose"><span class="keyword">val</span> <a href="code_VALOptions.option_verbose.html">option_verbose</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre>
+<pre><span id="VALoption_rdfxml"><span class="keyword">val</span> <a href="code_VALOptions.option_rdfxml.html">option_rdfxml</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre>
+<pre><span id="VALoption_ntriples"><span class="keyword">val</span> <a href="code_VALOptions.option_ntriples.html">option_ntriples</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a></code></pre>
+<pre><code><span id="TYPEoption_values"><span class="keyword">type</span> <code class="type"></code>option_values</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToption_values.config_file">config_file</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELToption_values.config_file">config_file</span>&nbsp;: <code class="type">string</code>;</code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >config filename</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToption_values.args">args</span>&nbsp;:<code class="type">string list</code>;</code></td>
+<code><span id="TYPEELToption_values.args">args</span>&nbsp;: <code class="type">string list</code>;</code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >arguments</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToption_values.verb_level">verb_level</span>&nbsp;:<code class="type">int</code>;</code></td>
+<code><span id="TYPEELToption_values.verb_level">verb_level</span>&nbsp;: <code class="type">int</code>;</code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >verbosity level</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToption_values.rdf_output_format">rdf_output_format</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELToption_values.rdf_output_format">rdf_output_format</span>&nbsp;: <code class="type">string</code>;</code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >format to use when output rdf</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr></table>
 }
 
 
-<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALOptions.parse.html">parse</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a> list -> <a href="Options.html#TYPEoption_values">option_values</a></code></pre><div class="info">
+
+<pre><span id="VALparse"><span class="keyword">val</span> <a href="code_VALOptions.parse.html">parse</a></span> : <code class="type"><a href="Options.html#TYPEoption_spec">option_spec</a> list -> <a href="Options.html#TYPEoption_values">option_values</a></code></pre><div class="info ">
 <code class="code">parse options</code> parses the command line using the given option specifications.<br>
 <b>Returns</b> the values of common options.<br>
 </div>
-<pre><span id="VALparse_command"><span class="keyword">val</span> <a href="code_VALOptions.parse_command.html">parse_command</a></span> : <code class="type"><a href="Cmdline.html#TYPEcommand">Cmdline.command</a> -> <a href="Options.html#TYPEoption_values">option_values</a></code></pre><div class="info">
+
+<pre><span id="VALparse_command"><span class="keyword">val</span> <a href="code_VALOptions.parse_command.html">parse_command</a></span> : <code class="type"><a href="Cmdline.html#TYPEcommand">Cmdline.command</a> -> <a href="Options.html#TYPEoption_values">option_values</a></code></pre><div class="info ">
 <code class="code">parse_command command</code> parses the command line according to the given
   specification or type <a href="Cmdline.html#TYPEcommand"><code class="code">Cmdline.command</code></a> .<br>
 <b>Returns</b> the values of common options.<br>

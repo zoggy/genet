@@ -90,7 +90,7 @@
 <br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;-opfrom-&gt;&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_op)(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_src));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_op)(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_src));<br>
 <br>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;copy&nbsp;ports&nbsp;of&nbsp;the&nbsp;src&nbsp;flat&nbsp;chain&nbsp;to&nbsp;our&nbsp;target&nbsp;operation&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(map_in2,&nbsp;map_out2)&nbsp;=<br>
@@ -102,15 +102,15 @@
 &nbsp;&nbsp;<span class="comment">(*&nbsp;copy&nbsp;sub&nbsp;operations&nbsp;*)</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub_ops&nbsp;=&nbsp;get_ops&nbsp;ctx&nbsp;iri_src&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(import_flat_sub_op&nbsp;ctx&nbsp;iri_dst&nbsp;path)<br>
-&nbsp;&nbsp;(map_in,&nbsp;map_out)&nbsp;sub_ops<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(map_in,&nbsp;map_out)&nbsp;sub_ops<br>
 <br>
 <span class="keyword">and</span>&nbsp;import_flat_sub_op&nbsp;ctx&nbsp;iri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)&nbsp;iri_sub_op&nbsp;=<br>
 &nbsp;&nbsp;dbg&nbsp;~loc:&nbsp;<span class="string">"import_flat_sub_op"</span>&nbsp;~level:&nbsp;3<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"*&nbsp;iri_dst&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;path&nbsp;=&nbsp;%s\n&nbsp;*&nbsp;iri_sub_op&nbsp;=&nbsp;%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_dst)&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_sub_op)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_dst)&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"/"</span>&nbsp;path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri_sub_op)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;name&nbsp;=&nbsp;get_op_name&nbsp;iri_sub_op&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;path&nbsp;=&nbsp;path&nbsp;@&nbsp;[name]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;import_flat_op&nbsp;ctx&nbsp;iri_sub_op&nbsp;iri_dst&nbsp;path&nbsp;(map_in,&nbsp;map_out)</code></body></html>

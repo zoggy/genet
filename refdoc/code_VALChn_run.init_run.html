@@ -92,15 +92,15 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;inst_in_ports&nbsp;=&nbsp;out_ports&nbsp;state&nbsp;inst_node&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"run_init:&nbsp;in_ports&nbsp;=\n%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"\n"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;g_iri_string&nbsp;inst_in_ports))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">String</span>.concat&nbsp;<span class="string">"\n"</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;g_iri_string&nbsp;inst_in_ports))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;);<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;nb_in_files&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;in_files&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;nb_in_ports&nbsp;=&nbsp;<span class="constructor">List</span>.length&nbsp;inst_in_ports&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">if</span>&nbsp;nb_in_files&nbsp;&lt;&gt;&nbsp;nb_in_ports&nbsp;<span class="keyword">then</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;failwith<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Numbers&nbsp;of&nbsp;input&nbsp;files&nbsp;(%d)&nbsp;and&nbsp;ports&nbsp;(%d)&nbsp;differ."</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nb_in_files&nbsp;nb_in_ports);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"Numbers&nbsp;of&nbsp;input&nbsp;files&nbsp;(%d)&nbsp;and&nbsp;ports&nbsp;(%d)&nbsp;differ."</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nb_in_files&nbsp;nb_in_ports);<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;state&nbsp;=&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">Graph</span>.remove_node&nbsp;state.g&nbsp;(<span class="constructor">Flat</span>&nbsp;fchain)&nbsp;}&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;state&nbsp;(in_file,&nbsp;id)&nbsp;inst_port&nbsp;=<br>

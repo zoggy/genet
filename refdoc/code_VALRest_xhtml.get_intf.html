@@ -84,9 +84,9 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;wtitle&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;/&nbsp;%s"</span>&nbsp;tool_name&nbsp;name&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;typ&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;of_dir&nbsp;label&nbsp;dir&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"p"</span>),&nbsp;[],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"strong"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;label])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"code"</span>),&nbsp;[],&nbsp;&nbsp;(xhtml_of_ports&nbsp;ctx&nbsp;dir&nbsp;iri)&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"p"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"strong"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;label])&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"code"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;&nbsp;(xhtml_of_ports&nbsp;ctx&nbsp;dir&nbsp;iri)&nbsp;);<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;])<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
@@ -111,14 +111,14 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl&nbsp;=&nbsp;<span class="constructor">Rest_xpage</span>.tmpl_file&nbsp;ctx.ctx_cfg&nbsp;<span class="string">"intf.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"type"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;typ)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"path"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;path])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"tool"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[tool])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches_yes"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;branches_yes)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches_no"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;branches_no)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"type"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;typ))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"path"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;path]))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"tool"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[tool]))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches_yes"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;branches_yes))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"branches_no"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;branches_no))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;navpath&nbsp;=&nbsp;xhtml_navpath&nbsp;ctx&nbsp;(<span class="keywordsign">`</span><span class="constructor">Intf</span>&nbsp;iri)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;contents&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,&nbsp;contents)&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;tool_page&nbsp;ctx&nbsp;~title:&nbsp;name&nbsp;~wtitle&nbsp;~navpath&nbsp;contents)</code></body></html>

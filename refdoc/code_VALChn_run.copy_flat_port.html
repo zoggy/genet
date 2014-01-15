@@ -86,7 +86,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ptype&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_type&nbsp;ctx.ctx_rdf&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Grdf_port</span>.set_port_type&nbsp;ctx.ctx_rdf&nbsp;inst_port&nbsp;ptype;<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst_port&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;flat_port;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;inst_port&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_portfrom&nbsp;~obj:&nbsp;flat_port;<br>
 <br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dir&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.port_dir&nbsp;flat_port&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.pred_of_dir&nbsp;dir&nbsp;<span class="keyword">in</span><br>

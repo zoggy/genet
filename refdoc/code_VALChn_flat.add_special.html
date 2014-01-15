@@ -95,9 +95,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(in_ports,&nbsp;out_ports)&nbsp;=&nbsp;build_explode_ports&nbsp;ctx&nbsp;iri_op&nbsp;op_name&nbsp;port_ref&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.genet_explode,&nbsp;in_ports,&nbsp;out_ports)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;iri_op)&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;typ);<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;ctx.ctx_rdf&nbsp;~sub:&nbsp;iri_op&nbsp;~obj:&nbsp;typ;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.set_ports&nbsp;ctx.ctx_rdf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;f&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">In</span>&nbsp;in_ports;<br>
 &nbsp;&nbsp;f&nbsp;iri_op&nbsp;<span class="constructor">Grdf_port</span>.<span class="constructor">Out</span>&nbsp;out_ports&nbsp;;<br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple_iris&nbsp;ctx.ctx_rdf<br>
-&nbsp;&nbsp;~sub:&nbsp;iri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;typ</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;iri_op&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom&nbsp;~obj:&nbsp;typ</code></body></html>

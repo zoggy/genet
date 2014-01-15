@@ -83,11 +83,19 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.genet_hastype&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ports&nbsp;=&nbsp;<span class="constructor">Grdfs</span>.object_iris&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;dir_pred&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
-&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;dir_pred&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;obj))<br>
-&nbsp;&nbsp;ports;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;port&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred:&nbsp;dir_pred&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;port);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~pred:&nbsp;<span class="constructor">Rdf_rdf</span>.rdf_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~obj:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_port)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ports;<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;port&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">List</span>.iter<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;port)&nbsp;~pred&nbsp;~obj)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.objects&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;port)&nbsp;~pred:&nbsp;pred)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;obj&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;port&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.rem_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Grdfs</span>.objects&nbsp;wld&nbsp;~sub:&nbsp;(<span class="constructor">Iri</span>&nbsp;port)&nbsp;~pred:&nbsp;pred)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">List</span>.iter&nbsp;f&nbsp;ports</code></body></html>

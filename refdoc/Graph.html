@@ -87,18 +87,23 @@
 &nbsp;<a class="post" href="Grdf_branch.html" title="Grdf_branch">Next</a>
 </div>
 <h1>Module <a href="type_Graph.html">Graph</a> (<a href="code_Graph.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Graph: <code class="code">sig</code> <a href="Graph.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Graph: <code class="code">sig</code> <a href="Graph.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Annotated sparse graphs.
 <p>
 Structure de graphe creux.<br>
 </div>
 <hr width="100%">
-<pre><span class="keyword">module type</span> <a href="Graph.GMap.html">GMap</a> = <code class="code">sig</code> <a href="Graph.GMap.html">..</a> <code class="code">end</code></pre><pre><span class="keyword">module type</span> <a href="Graph.S.html">S</a> = <code class="code">sig</code> <a href="Graph.S.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module type</span> <a href="Graph.GMap.html">GMap</a> = <code class="code">sig</code> <a href="Graph.GMap.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module type</span> <a href="Graph.S.html">S</a> = <code class="code">sig</code> <a href="Graph.S.html">..</a> <code class="code">end</code></pre><div class="info">
 This is the output signature of the functor creating a graph module.
 </div>
+
 <pre><span class="keyword">module</span> <a href="Graph.Make.html">Make</a>: <div class="sig_block"><code class="code">functor (</code><code class="code">M</code><code class="code"> : </code><code class="type"><a href="Graph.GMap.html">GMap</a></code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">Edge</code><code class="code"> : </code><code class="type">Map.OrderedType</code><code class="code">) -&gt; </code><code class="type"><a href="Graph.S.html">S</a></code><code class="type">  with type key = M.key and type edge_data = Edge.t</code></div></div></pre><div class="info">
 Making a graph module.
 </div>
+
 <pre><span class="keyword">module</span> <a href="Graph.Make_with_map.html">Make_with_map</a>: <div class="sig_block"><code class="code">functor (</code><code class="code">P</code><code class="code"> : </code><code class="type">Map.OrderedType</code><code class="code">) -&gt; </code><div class="sig_block"><code class="code">functor (</code><code class="code">Edge</code><code class="code"> : </code><code class="type">Map.OrderedType</code><code class="code">) -&gt; </code><code class="type"><a href="Graph.S.html">S</a></code><code class="type">  with type key = P.t and type edge_data = Edge.t</code></div></div></pre><div class="info">
 This is a convenient functor using the <code class="code">Map</code> module of the standard library
   to build the <a href="Graph.GMap.html"><code class="code">Graph.GMap</code></a> module required by <a href="Graph.Make.html"><code class="code">Graph.Make</code></a> from the <code class="code">P</code> parameter.

@@ -87,82 +87,91 @@
 &nbsp;<a class="post" href="Find.html" title="Find">Next</a>
 </div>
 <h1>Module <a href="type_Config.html">Config</a> (<a href="code_Config.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Config: <code class="code">sig</code> <a href="Config.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Config: <code class="code">sig</code> <a href="Config.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Access to genet main configuration file.<br>
 </div>
 <hr width="100%">
+
 <pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.project_name">project_name</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.project_name">project_name</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.project_id">project_id</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.project_id">project_id</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_storage">db_storage</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_storage">db_storage</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_engine">db_engine</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_engine">db_engine</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_name">db_name</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_name">db_name</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_user">db_user</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_user">db_user</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_passwd">db_passwd</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_passwd">db_passwd</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.db_host">db_host</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTt.db_host">db_host</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.rest_api">rest_api</span>&nbsp;:<code class="type">Rdf_iri.iri</code>;</code></td>
+<code><span id="TYPEELTt.rest_api">rest_api</span>&nbsp;: <code class="type">Rdf_iri.iri</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTt.root_dir">root_dir</span>&nbsp;:<code class="type">[ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code>;</code></td>
+<code><span id="TYPEELTt.root_dir">root_dir</span>&nbsp;: <code class="type">[ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALread_config"><span class="keyword">val</span> <a href="code_VALConfig.read_config.html">read_config</a></span> : <code class="type">string -> <a href="Config.html#TYPEt">t</a></code></pre><pre><span id="VALstring_of_config"><span class="keyword">val</span> <a href="code_VALConfig.string_of_config.html">string_of_config</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> string</code></pre><pre><span id="VALin_dir"><span class="keyword">val</span> <a href="code_VALConfig.in_dir.html">in_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre><pre><span id="VALout_dir"><span class="keyword">val</span> <a href="code_VALConfig.out_dir.html">out_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre><pre><span id="VALchains_dir"><span class="keyword">val</span> <a href="code_VALConfig.chains_dir.html">chains_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre><pre><span id="VALdata_dir"><span class="keyword">val</span> <a href="code_VALConfig.data_dir.html">data_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre><pre><span id="VALweb_dir"><span class="keyword">val</span> <a href="code_VALConfig.web_dir.html">web_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre></body></html>
+
+<pre><span id="VALread_config"><span class="keyword">val</span> <a href="code_VALConfig.read_config.html">read_config</a></span> : <code class="type">string -> <a href="Config.html#TYPEt">t</a></code></pre>
+<pre><span id="VALstring_of_config"><span class="keyword">val</span> <a href="code_VALConfig.string_of_config.html">string_of_config</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> string</code></pre>
+<pre><span id="VALin_dir"><span class="keyword">val</span> <a href="code_VALConfig.in_dir.html">in_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre>
+<pre><span id="VALout_dir"><span class="keyword">val</span> <a href="code_VALConfig.out_dir.html">out_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre>
+<pre><span id="VALchains_dir"><span class="keyword">val</span> <a href="code_VALConfig.chains_dir.html">chains_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre>
+<pre><span id="VALdata_dir"><span class="keyword">val</span> <a href="code_VALConfig.data_dir.html">data_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre>
+<pre><span id="VALweb_dir"><span class="keyword">val</span> <a href="code_VALConfig.web_dir.html">web_dir</a></span> : <code class="type"><a href="Config.html#TYPEt">t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a></code></pre></body></html>

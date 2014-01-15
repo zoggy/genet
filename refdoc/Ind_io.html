@@ -87,38 +87,51 @@
 &nbsp;<a class="post" href="Ind_types.html" title="Ind_types">Next</a>
 </div>
 <h1>Module <a href="type_Ind_io.html">Ind_io</a> (<a href="code_Ind_io.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Ind_io: <code class="code">sig</code> <a href="Ind_io.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Ind_io: <code class="code">sig</code> <a href="Ind_io.html">..</a> <code class="code">end</code></pre><div class="info module top">
 </div>
 <hr width="100%">
-<pre><span class="keyword">module</span> <a href="Ind_io.CF.html">CF</a>: <code class="type">Config_file</code></pre><pre><span id="VALinput_basename"><span class="keyword">val</span> <a href="code_VALInd_io.input_basename.html">input_basename</a></span> : <code class="type">string</code></pre><pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = <code class="type">string * string</code> </pre>
-<div class="info">
+
+<pre><span class="keyword">module</span> <a href="Ind_io.CF.html">CF</a>: <code class="type">Config_file</code></pre>
+<pre><span id="VALinput_basename"><span class="keyword">val</span> <a href="code_VALInd_io.input_basename.html">input_basename</a></span> : <code class="type">string</code></pre>
+<pre><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = <code class="type">string * string</code> </pre>
+<div class="info ">
 file * msg<br>
 </div>
 
+
 <pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="Ind_io.html#TYPEerror">error</a></code></pre>
-<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALInd_io.error.html">error</a></span> : <code class="type">file:[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> string -> 'a</code></pre><pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALInd_io.string_of_error.html">string_of_error</a></span> : <code class="type">string * string -> string</code></pre><pre><code><span id="TYPEinput"><span class="keyword">type</span> <code class="type"></code>input</span> = {</code></pre><table class="typetable">
+
+<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALInd_io.error.html">error</a></span> : <code class="type">file:[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> string -> 'a</code></pre>
+<pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALInd_io.string_of_error.html">string_of_error</a></span> : <code class="type">string * string -> string</code></pre>
+<pre><code><span id="TYPEinput"><span class="keyword">type</span> <code class="type"></code>input</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinput.group">group</span>&nbsp;:<code class="type">CF.group</code>;</code></td>
+<code><span id="TYPEELTinput.group">group</span>&nbsp;: <code class="type">CF.group</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinput.in_cp">in_cp</span>&nbsp;:<code class="type">string list CF.cp</code>;</code></td>
+<code><span id="TYPEELTinput.in_cp">in_cp</span>&nbsp;: <code class="type">string list CF.cp</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinput.chains_cp">chains_cp</span>&nbsp;:<code class="type">string list CF.cp</code>;</code></td>
+<code><span id="TYPEELTinput.chains_cp">chains_cp</span>&nbsp;: <code class="type">string list CF.cp</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALmk_spec_group"><span class="keyword">val</span> <a href="code_VALInd_io.mk_spec_group.html">mk_spec_group</a></span> : <code class="type">unit -> <a href="Ind_io.html#TYPEinput">input</a></code></pre><pre><span id="VALon_type_error"><span class="keyword">val</span> <a href="code_VALInd_io.on_type_error.html">on_type_error</a></span> : <code class="type">[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -><br>       < get_name : string list; .. > -> 'a -> 'b -> 'c -> 'd</code></pre><pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALInd_io.load.html">load</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> <a href="Ind_types.html#TYPEspec">Ind_types.spec</a></code></pre><pre><span id="VALwrite"><span class="keyword">val</span> <a href="code_VALInd_io.write.html">write</a></span> : <code class="type">[< `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> unit</code></pre><pre><span id="VALlist_inputs"><span class="keyword">val</span> <a href="code_VALInd_io.list_inputs.html">list_inputs</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [< `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> list</code></pre></body></html>
+
+<pre><span id="VALmk_spec_group"><span class="keyword">val</span> <a href="code_VALInd_io.mk_spec_group.html">mk_spec_group</a></span> : <code class="type">unit -> <a href="Ind_io.html#TYPEinput">input</a></code></pre>
+<pre><span id="VALon_type_error"><span class="keyword">val</span> <a href="code_VALInd_io.on_type_error.html">on_type_error</a></span> : <code class="type">[< `Absolute | `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -><br>       < get_name : string list; .. > -> 'a -> 'b -> 'c -> 'd</code></pre>
+<pre><span id="VALload"><span class="keyword">val</span> <a href="code_VALInd_io.load.html">load</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [ `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> <a href="Ind_types.html#TYPEspec">Ind_types.spec</a></code></pre>
+<pre><span id="VALwrite"><span class="keyword">val</span> <a href="code_VALInd_io.write.html">write</a></span> : <code class="type">[< `Absolute ] <a href="Fname.html#TYPEfilename">Fname.filename</a> -> unit</code></pre>
+<pre><span id="VALlist_inputs"><span class="keyword">val</span> <a href="code_VALInd_io.list_inputs.html">list_inputs</a></span> : <code class="type"><a href="Config.html#TYPEt">Config.t</a> -> [< `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> list</code></pre></body></html>

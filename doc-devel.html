@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Genet : Development documentation</title><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<link rel="stylesheet" type="text/css" href="http://zoggy.github.io/genet/style.css"/>
+<title>Genet : Development documentation</title><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<link href="http://zoggy.github.io/genet/style.css" rel="stylesheet" type="text/css"/>
 <rssfeed></rssfeed>
 </head><body>
 <div id="page">
@@ -40,7 +40,7 @@ You will find here some information regarding source code organisation
 and the starting points of some operations.
 </p>
 
-Table of contents<ul class="toc"><li class="toc-section"><a href="#sources">Organisation of source code</a></li><li class="toc-section"><a href="#arch">Architecture</a></li><li class="toc-section"><a href="#chains">Chains</a><ul class="toc"><li class="toc-subsection"><a href="#chains:def">Definition of chains</a></li><li class="toc-subsection"><a href="#chains:flatten">Flattening chains</a></li><li class="toc-subsection"><a href="#chains:run">Running chains</a></li></ul></li></ul>
+Table of contents<ul class="toc"><li class="toc-section"><a href="http://zoggy.github.io/genet/doc-devel.html#sources">Organisation of source code</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/doc-devel.html#arch">Architecture</a></li><li class="toc-section"><a href="http://zoggy.github.io/genet/doc-devel.html#chains">Chains</a><ul class="toc"><li class="toc-subsection"><a href="http://zoggy.github.io/genet/doc-devel.html#chains%3Adef">Definition of chains</a></li><li class="toc-subsection"><a href="http://zoggy.github.io/genet/doc-devel.html#chains%3Aflatten">Flattening chains</a></li><li class="toc-subsection"><a href="http://zoggy.github.io/genet/doc-devel.html#chains%3Arun">Running chains</a></li></ul></li></ul>
 <div class="section"><div class="section-title" id="sources">Organisation of source code</div>
 <p>
 Source code is versionned with
@@ -84,219 +84,219 @@ Here is a dependency graph of libraries and tools:
 </p>
 
 
-<svg width="426pt" height="362pt" viewBox="0.00 0.00 425.74 362.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph1" class="graph" transform="scale(1 1) rotate(0) translate(4 358)">
+<svg height="362pt" viewBox="0.00 0.00 425.74 362.00" width="426pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+<g class="graph" id="graph1" transform="scale(1 1) rotate(0) translate(4 358)">
 <title>architecture</title>
-<polygon fill="white" stroke="white" points="-4,5 -4,-358 422.744,-358 422.744,5 -4,5"/>
+<polygon fill="white" points="-4,5 -4,-358 422.744,-358 422.744,5 -4,5" stroke="white"/>
 
-<g id="node1" class="node"><title>Base</title>
+<g class="node" id="node1"><title>Base</title>
 <a xlink:href="refdoc/index.html#base" xlink:title="Basic modules">
-<polygon fill="lightgrey" stroke="lightgrey" points="283.1,-42 151.1,-42 139.1,-30 139.1,-12 151.1,-2.02231e-14 283.1,-8.19857e-15 295.1,-12 295.1,-30 283.1,-42"/>
-<path fill="lightgrey" stroke="lightgrey" d="M151.1,-42C145.1,-42 139.1,-36 139.1,-30"/>
-<path fill="lightgrey" stroke="lightgrey" d="M139.1,-12C139.1,-6 145.1,-2.07697e-14 151.1,-2.02231e-14"/>
-<path fill="lightgrey" stroke="lightgrey" d="M283.1,-8.19857e-15C289.1,-7.652e-15 295.1,-6 295.1,-12"/>
-<path fill="lightgrey" stroke="lightgrey" d="M295.1,-30C295.1,-36 289.1,-42 283.1,-42"/>
-<polyline fill="none" stroke="red" points="283.1,-42 151.1,-42"/>
-<path fill="none" stroke="red" d="M151.1,-42C145.1,-42 139.1,-36 139.1,-30"/>
-<polyline fill="none" stroke="red" points="139.1,-30 139.1,-12"/>
-<path fill="none" stroke="red" d="M139.1,-12C139.1,-6 145.1,-2.07697e-14 151.1,-2.02231e-14"/>
-<polyline fill="none" stroke="red" points="151.1,-2.02231e-14 283.1,-8.19857e-15"/>
-<path fill="none" stroke="red" d="M283.1,-8.19857e-15C289.1,-7.652e-15 295.1,-6 295.1,-12"/>
-<polyline fill="none" stroke="red" points="295.1,-12 295.1,-30"/>
-<path fill="none" stroke="red" d="M295.1,-30C295.1,-36 289.1,-42 283.1,-42"/>
-<text text-anchor="middle" x="217.1" y="-25.4" font-family="Times Roman,serif" font-size="14.00">Base</text>
-<text text-anchor="middle" x="217.1" y="-8.4" font-family="Times Roman,serif" font-size="14.00">(genet_base.cm[x]a)</text>
+<polygon fill="lightgrey" points="283.1,-42 151.1,-42 139.1,-30 139.1,-12 151.1,-2.02231e-14 283.1,-8.19857e-15 295.1,-12 295.1,-30 283.1,-42" stroke="lightgrey"/>
+<path d="M151.1,-42C145.1,-42 139.1,-36 139.1,-30" fill="lightgrey" stroke="lightgrey"/>
+<path d="M139.1,-12C139.1,-6 145.1,-2.07697e-14 151.1,-2.02231e-14" fill="lightgrey" stroke="lightgrey"/>
+<path d="M283.1,-8.19857e-15C289.1,-7.652e-15 295.1,-6 295.1,-12" fill="lightgrey" stroke="lightgrey"/>
+<path d="M295.1,-30C295.1,-36 289.1,-42 283.1,-42" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="283.1,-42 151.1,-42" stroke="red"/>
+<path d="M151.1,-42C145.1,-42 139.1,-36 139.1,-30" fill="none" stroke="red"/>
+<polyline fill="none" points="139.1,-30 139.1,-12" stroke="red"/>
+<path d="M139.1,-12C139.1,-6 145.1,-2.07697e-14 151.1,-2.02231e-14" fill="none" stroke="red"/>
+<polyline fill="none" points="151.1,-2.02231e-14 283.1,-8.19857e-15" stroke="red"/>
+<path d="M283.1,-8.19857e-15C289.1,-7.652e-15 295.1,-6 295.1,-12" fill="none" stroke="red"/>
+<polyline fill="none" points="295.1,-12 295.1,-30" stroke="red"/>
+<path d="M295.1,-30C295.1,-36 289.1,-42 283.1,-42" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="217.1" y="-25.4">Base</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="217.1" y="-8.4">(genet_base.cm[x]a)</text>
 </a>
 </g>
 
-<g id="node2" class="node"><title>Chains</title>
+<g class="node" id="node2"><title>Chains</title>
 <a xlink:href="refdoc/index.html#chains" xlink:title="Handling chains">
-<polygon fill="lightgrey" stroke="lightgrey" points="289.1,-198 145.1,-198 133.1,-186 133.1,-168 145.1,-156 289.1,-156 301.1,-168 301.1,-186 289.1,-198"/>
-<path fill="lightgrey" stroke="lightgrey" d="M145.1,-198C139.1,-198 133.1,-192 133.1,-186"/>
-<path fill="lightgrey" stroke="lightgrey" d="M133.1,-168C133.1,-162 139.1,-156 145.1,-156"/>
-<path fill="lightgrey" stroke="lightgrey" d="M289.1,-156C295.1,-156 301.1,-162 301.1,-168"/>
-<path fill="lightgrey" stroke="lightgrey" d="M301.1,-186C301.1,-192 295.1,-198 289.1,-198"/>
-<polyline fill="none" stroke="red" points="289.1,-198 145.1,-198"/>
-<path fill="none" stroke="red" d="M145.1,-198C139.1,-198 133.1,-192 133.1,-186"/>
-<polyline fill="none" stroke="red" points="133.1,-186 133.1,-168"/>
-<path fill="none" stroke="red" d="M133.1,-168C133.1,-162 139.1,-156 145.1,-156"/>
-<polyline fill="none" stroke="red" points="145.1,-156 289.1,-156"/>
-<path fill="none" stroke="red" d="M289.1,-156C295.1,-156 301.1,-162 301.1,-168"/>
-<polyline fill="none" stroke="red" points="301.1,-168 301.1,-186"/>
-<path fill="none" stroke="red" d="M301.1,-186C301.1,-192 295.1,-198 289.1,-198"/>
-<text text-anchor="middle" x="217.1" y="-181.4" font-family="Times Roman,serif" font-size="14.00">Chains</text>
-<text text-anchor="middle" x="217.1" y="-164.4" font-family="Times Roman,serif" font-size="14.00">(genet_chains.cm[x]a)</text>
+<polygon fill="lightgrey" points="289.1,-198 145.1,-198 133.1,-186 133.1,-168 145.1,-156 289.1,-156 301.1,-168 301.1,-186 289.1,-198" stroke="lightgrey"/>
+<path d="M145.1,-198C139.1,-198 133.1,-192 133.1,-186" fill="lightgrey" stroke="lightgrey"/>
+<path d="M133.1,-168C133.1,-162 139.1,-156 145.1,-156" fill="lightgrey" stroke="lightgrey"/>
+<path d="M289.1,-156C295.1,-156 301.1,-162 301.1,-168" fill="lightgrey" stroke="lightgrey"/>
+<path d="M301.1,-186C301.1,-192 295.1,-198 289.1,-198" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="289.1,-198 145.1,-198" stroke="red"/>
+<path d="M145.1,-198C139.1,-198 133.1,-192 133.1,-186" fill="none" stroke="red"/>
+<polyline fill="none" points="133.1,-186 133.1,-168" stroke="red"/>
+<path d="M133.1,-168C133.1,-162 139.1,-156 145.1,-156" fill="none" stroke="red"/>
+<polyline fill="none" points="145.1,-156 289.1,-156" stroke="red"/>
+<path d="M289.1,-156C295.1,-156 301.1,-162 301.1,-168" fill="none" stroke="red"/>
+<polyline fill="none" points="301.1,-168 301.1,-186" stroke="red"/>
+<path d="M301.1,-186C301.1,-192 295.1,-198 289.1,-198" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="217.1" y="-181.4">Chains</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="217.1" y="-164.4">(genet_chains.cm[x]a)</text>
 </a>
 </g>
 
-<g id="edge6" class="edge"><title>Chains-&gt;Base</title>
-<path fill="none" stroke="black" d="M217.1,-155.961C217.1,-129.328 217.1,-83.2122 217.1,-52.4051"/>
-<polygon fill="black" stroke="black" points="220.6,-52.2037 217.1,-42.2037 213.6,-52.2038 220.6,-52.2037"/>
+<g class="edge" id="edge6"><title>Chains-&gt;Base</title>
+<path d="M217.1,-155.961C217.1,-129.328 217.1,-83.2122 217.1,-52.4051" fill="none" stroke="black"/>
+<polygon fill="black" points="220.6,-52.2037 217.1,-42.2037 213.6,-52.2038 220.6,-52.2037" stroke="black"/>
 </g>
 
-<g id="node3" class="node"><title>Grdf</title>
+<g class="node" id="node3"><title>Grdf</title>
 <a xlink:href="refdoc/index.html#grdf" xlink:title="Representation of model and executions with a semantic graph">
-<polygon fill="lightgrey" stroke="lightgrey" points="385.1,-120 257.1,-120 245.1,-108 245.1,-90 257.1,-78 385.1,-78 397.1,-90 397.1,-108 385.1,-120"/>
-<path fill="lightgrey" stroke="lightgrey" d="M257.1,-120C251.1,-120 245.1,-114 245.1,-108"/>
-<path fill="lightgrey" stroke="lightgrey" d="M245.1,-90C245.1,-84 251.1,-78 257.1,-78"/>
-<path fill="lightgrey" stroke="lightgrey" d="M385.1,-78C391.1,-78 397.1,-84 397.1,-90"/>
-<path fill="lightgrey" stroke="lightgrey" d="M397.1,-108C397.1,-114 391.1,-120 385.1,-120"/>
-<polyline fill="none" stroke="red" points="385.1,-120 257.1,-120"/>
-<path fill="none" stroke="red" d="M257.1,-120C251.1,-120 245.1,-114 245.1,-108"/>
-<polyline fill="none" stroke="red" points="245.1,-108 245.1,-90"/>
-<path fill="none" stroke="red" d="M245.1,-90C245.1,-84 251.1,-78 257.1,-78"/>
-<polyline fill="none" stroke="red" points="257.1,-78 385.1,-78"/>
-<path fill="none" stroke="red" d="M385.1,-78C391.1,-78 397.1,-84 397.1,-90"/>
-<polyline fill="none" stroke="red" points="397.1,-90 397.1,-108"/>
-<path fill="none" stroke="red" d="M397.1,-108C397.1,-114 391.1,-120 385.1,-120"/>
-<text text-anchor="middle" x="321.1" y="-103.4" font-family="Times Roman,serif" font-size="14.00">Grdf</text>
-<text text-anchor="middle" x="321.1" y="-86.4" font-family="Times Roman,serif" font-size="14.00">(genet_grdf.cm[x]a)</text>
+<polygon fill="lightgrey" points="385.1,-120 257.1,-120 245.1,-108 245.1,-90 257.1,-78 385.1,-78 397.1,-90 397.1,-108 385.1,-120" stroke="lightgrey"/>
+<path d="M257.1,-120C251.1,-120 245.1,-114 245.1,-108" fill="lightgrey" stroke="lightgrey"/>
+<path d="M245.1,-90C245.1,-84 251.1,-78 257.1,-78" fill="lightgrey" stroke="lightgrey"/>
+<path d="M385.1,-78C391.1,-78 397.1,-84 397.1,-90" fill="lightgrey" stroke="lightgrey"/>
+<path d="M397.1,-108C397.1,-114 391.1,-120 385.1,-120" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="385.1,-120 257.1,-120" stroke="red"/>
+<path d="M257.1,-120C251.1,-120 245.1,-114 245.1,-108" fill="none" stroke="red"/>
+<polyline fill="none" points="245.1,-108 245.1,-90" stroke="red"/>
+<path d="M245.1,-90C245.1,-84 251.1,-78 257.1,-78" fill="none" stroke="red"/>
+<polyline fill="none" points="257.1,-78 385.1,-78" stroke="red"/>
+<path d="M385.1,-78C391.1,-78 397.1,-84 397.1,-90" fill="none" stroke="red"/>
+<polyline fill="none" points="397.1,-90 397.1,-108" stroke="red"/>
+<path d="M397.1,-108C397.1,-114 391.1,-120 385.1,-120" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="321.1" y="-103.4">Grdf</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="321.1" y="-86.4">(genet_grdf.cm[x]a)</text>
 </a>
 </g>
 
-<g id="edge8" class="edge"><title>Chains-&gt;Grdf</title>
-<path fill="none" stroke="black" d="M245.244,-155.892C257.384,-146.788 271.737,-136.022 284.674,-126.319"/>
-<polygon fill="black" stroke="black" points="287.034,-128.925 292.934,-120.125 282.834,-123.325 287.034,-128.925"/>
+<g class="edge" id="edge8"><title>Chains-&gt;Grdf</title>
+<path d="M245.244,-155.892C257.384,-146.788 271.737,-136.022 284.674,-126.319" fill="none" stroke="black"/>
+<polygon fill="black" points="287.034,-128.925 292.934,-120.125 282.834,-123.325 287.034,-128.925" stroke="black"/>
 </g>
 
-<g id="node4" class="node"><title>Indata</title>
+<g class="node" id="node4"><title>Indata</title>
 <a xlink:href="refdoc/index.html#indata" xlink:title="Reading/Writing input data">
-<polygon fill="lightgrey" stroke="lightgrey" points="177.1,-120 33.1002,-120 21.1002,-108 21.1002,-90 33.1002,-78 177.1,-78 189.1,-90 189.1,-108 177.1,-120"/>
-<path fill="lightgrey" stroke="lightgrey" d="M33.1002,-120C27.1002,-120 21.1002,-114 21.1002,-108"/>
-<path fill="lightgrey" stroke="lightgrey" d="M21.1002,-90C21.1002,-84 27.1002,-78 33.1002,-78"/>
-<path fill="lightgrey" stroke="lightgrey" d="M177.1,-78C183.1,-78 189.1,-84 189.1,-90"/>
-<path fill="lightgrey" stroke="lightgrey" d="M189.1,-108C189.1,-114 183.1,-120 177.1,-120"/>
-<polyline fill="none" stroke="red" points="177.1,-120 33.1002,-120"/>
-<path fill="none" stroke="red" d="M33.1002,-120C27.1002,-120 21.1002,-114 21.1002,-108"/>
-<polyline fill="none" stroke="red" points="21.1002,-108 21.1002,-90"/>
-<path fill="none" stroke="red" d="M21.1002,-90C21.1002,-84 27.1002,-78 33.1002,-78"/>
-<polyline fill="none" stroke="red" points="33.1002,-78 177.1,-78"/>
-<path fill="none" stroke="red" d="M177.1,-78C183.1,-78 189.1,-84 189.1,-90"/>
-<polyline fill="none" stroke="red" points="189.1,-90 189.1,-108"/>
-<path fill="none" stroke="red" d="M189.1,-108C189.1,-114 183.1,-120 177.1,-120"/>
-<text text-anchor="middle" x="105.1" y="-103.4" font-family="Times Roman,serif" font-size="14.00">Indata</text>
-<text text-anchor="middle" x="105.1" y="-86.4" font-family="Times Roman,serif" font-size="14.00">(genet_indata.cm[x]a)</text>
+<polygon fill="lightgrey" points="177.1,-120 33.1002,-120 21.1002,-108 21.1002,-90 33.1002,-78 177.1,-78 189.1,-90 189.1,-108 177.1,-120" stroke="lightgrey"/>
+<path d="M33.1002,-120C27.1002,-120 21.1002,-114 21.1002,-108" fill="lightgrey" stroke="lightgrey"/>
+<path d="M21.1002,-90C21.1002,-84 27.1002,-78 33.1002,-78" fill="lightgrey" stroke="lightgrey"/>
+<path d="M177.1,-78C183.1,-78 189.1,-84 189.1,-90" fill="lightgrey" stroke="lightgrey"/>
+<path d="M189.1,-108C189.1,-114 183.1,-120 177.1,-120" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="177.1,-120 33.1002,-120" stroke="red"/>
+<path d="M33.1002,-120C27.1002,-120 21.1002,-114 21.1002,-108" fill="none" stroke="red"/>
+<polyline fill="none" points="21.1002,-108 21.1002,-90" stroke="red"/>
+<path d="M21.1002,-90C21.1002,-84 27.1002,-78 33.1002,-78" fill="none" stroke="red"/>
+<polyline fill="none" points="33.1002,-78 177.1,-78" stroke="red"/>
+<path d="M177.1,-78C183.1,-78 189.1,-84 189.1,-90" fill="none" stroke="red"/>
+<polyline fill="none" points="189.1,-90 189.1,-108" stroke="red"/>
+<path d="M189.1,-108C189.1,-114 183.1,-120 177.1,-120" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="105.1" y="-103.4">Indata</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="105.1" y="-86.4">(genet_indata.cm[x]a)</text>
 </a>
 </g>
 
-<g id="edge10" class="edge"><title>Chains-&gt;Indata</title>
-<path fill="none" stroke="black" d="M186.791,-155.892C173.594,-146.701 157.966,-135.817 143.93,-126.042"/>
-<polygon fill="black" stroke="black" points="145.64,-122.968 135.433,-120.125 141.639,-128.712 145.64,-122.968"/>
+<g class="edge" id="edge10"><title>Chains-&gt;Indata</title>
+<path d="M186.791,-155.892C173.594,-146.701 157.966,-135.817 143.93,-126.042" fill="none" stroke="black"/>
+<polygon fill="black" points="145.64,-122.968 135.433,-120.125 141.639,-128.712 145.64,-122.968" stroke="black"/>
 </g>
 
-<g id="edge2" class="edge"><title>Grdf-&gt;Base</title>
-<path fill="none" stroke="black" d="M292.956,-77.8921C280.817,-68.7876 266.463,-58.0221 253.526,-48.3193"/>
-<polygon fill="black" stroke="black" points="255.367,-45.3248 245.267,-42.1248 251.167,-50.9248 255.367,-45.3248"/>
+<g class="edge" id="edge2"><title>Grdf-&gt;Base</title>
+<path d="M292.956,-77.8921C280.817,-68.7876 266.463,-58.0221 253.526,-48.3193" fill="none" stroke="black"/>
+<polygon fill="black" points="255.367,-45.3248 245.267,-42.1248 251.167,-50.9248 255.367,-45.3248" stroke="black"/>
 </g>
 
-<g id="edge4" class="edge"><title>Indata-&gt;Base</title>
-<path fill="none" stroke="black" d="M135.409,-77.8921C148.607,-68.7008 164.235,-57.8169 178.27,-48.0424"/>
-<polygon fill="black" stroke="black" points="180.561,-50.7119 186.767,-42.1248 176.561,-44.9676 180.561,-50.7119"/>
+<g class="edge" id="edge4"><title>Indata-&gt;Base</title>
+<path d="M135.409,-77.8921C148.607,-68.7008 164.235,-57.8169 178.27,-48.0424" fill="none" stroke="black"/>
+<polygon fill="black" points="180.561,-50.7119 186.767,-42.1248 176.561,-44.9676 180.561,-50.7119" stroke="black"/>
 </g>
 
-<g id="node5" class="node"><title>Rest</title>
+<g class="node" id="node5"><title>Rest</title>
 <a xlink:href="refdoc/index.html#rest" xlink:title="Rest interface, including HTML">
-<polygon fill="lightgrey" stroke="lightgrey" points="176.1,-276 48.1002,-276 36.1002,-264 36.1002,-246 48.1002,-234 176.1,-234 188.1,-246 188.1,-264 176.1,-276"/>
-<path fill="lightgrey" stroke="lightgrey" d="M48.1002,-276C42.1002,-276 36.1002,-270 36.1002,-264"/>
-<path fill="lightgrey" stroke="lightgrey" d="M36.1002,-246C36.1002,-240 42.1002,-234 48.1002,-234"/>
-<path fill="lightgrey" stroke="lightgrey" d="M176.1,-234C182.1,-234 188.1,-240 188.1,-246"/>
-<path fill="lightgrey" stroke="lightgrey" d="M188.1,-264C188.1,-270 182.1,-276 176.1,-276"/>
-<polyline fill="none" stroke="red" points="176.1,-276 48.1002,-276"/>
-<path fill="none" stroke="red" d="M48.1002,-276C42.1002,-276 36.1002,-270 36.1002,-264"/>
-<polyline fill="none" stroke="red" points="36.1002,-264 36.1002,-246"/>
-<path fill="none" stroke="red" d="M36.1002,-246C36.1002,-240 42.1002,-234 48.1002,-234"/>
-<polyline fill="none" stroke="red" points="48.1002,-234 176.1,-234"/>
-<path fill="none" stroke="red" d="M176.1,-234C182.1,-234 188.1,-240 188.1,-246"/>
-<polyline fill="none" stroke="red" points="188.1,-246 188.1,-264"/>
-<path fill="none" stroke="red" d="M188.1,-264C188.1,-270 182.1,-276 176.1,-276"/>
-<text text-anchor="middle" x="112.1" y="-259.4" font-family="Times Roman,serif" font-size="14.00">Rest</text>
-<text text-anchor="middle" x="112.1" y="-242.4" font-family="Times Roman,serif" font-size="14.00">(genet_rest.cm[x]a)</text>
+<polygon fill="lightgrey" points="176.1,-276 48.1002,-276 36.1002,-264 36.1002,-246 48.1002,-234 176.1,-234 188.1,-246 188.1,-264 176.1,-276" stroke="lightgrey"/>
+<path d="M48.1002,-276C42.1002,-276 36.1002,-270 36.1002,-264" fill="lightgrey" stroke="lightgrey"/>
+<path d="M36.1002,-246C36.1002,-240 42.1002,-234 48.1002,-234" fill="lightgrey" stroke="lightgrey"/>
+<path d="M176.1,-234C182.1,-234 188.1,-240 188.1,-246" fill="lightgrey" stroke="lightgrey"/>
+<path d="M188.1,-264C188.1,-270 182.1,-276 176.1,-276" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="176.1,-276 48.1002,-276" stroke="red"/>
+<path d="M48.1002,-276C42.1002,-276 36.1002,-270 36.1002,-264" fill="none" stroke="red"/>
+<polyline fill="none" points="36.1002,-264 36.1002,-246" stroke="red"/>
+<path d="M36.1002,-246C36.1002,-240 42.1002,-234 48.1002,-234" fill="none" stroke="red"/>
+<polyline fill="none" points="48.1002,-234 176.1,-234" stroke="red"/>
+<path d="M176.1,-234C182.1,-234 188.1,-240 188.1,-246" fill="none" stroke="red"/>
+<polyline fill="none" points="188.1,-246 188.1,-264" stroke="red"/>
+<path d="M188.1,-264C188.1,-270 182.1,-276 176.1,-276" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="112.1" y="-259.4">Rest</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="112.1" y="-242.4">(genet_rest.cm[x]a)</text>
 </a>
 </g>
 
-<g id="edge12" class="edge"><title>Rest-&gt;Base</title>
-<path fill="none" stroke="black" d="M84.5129,-233.983C42.7888,-199.647 -27.5114,-130.128 12.1002,-78 26.763,-58.7041 80.2483,-44.2143 128.908,-34.6729"/>
-<polygon fill="black" stroke="black" points="129.714,-38.0823 138.882,-32.7714 128.404,-31.2061 129.714,-38.0823"/>
+<g class="edge" id="edge12"><title>Rest-&gt;Base</title>
+<path d="M84.5129,-233.983C42.7888,-199.647 -27.5114,-130.128 12.1002,-78 26.763,-58.7041 80.2483,-44.2143 128.908,-34.6729" fill="none" stroke="black"/>
+<polygon fill="black" points="129.714,-38.0823 138.882,-32.7714 128.404,-31.2061 129.714,-38.0823" stroke="black"/>
 </g>
 
-<g id="edge14" class="edge"><title>Rest-&gt;Chains</title>
-<path fill="none" stroke="black" d="M140.515,-233.892C152.771,-224.788 167.263,-214.022 180.324,-204.319"/>
-<polygon fill="black" stroke="black" points="182.723,-206.898 188.663,-198.125 178.548,-201.278 182.723,-206.898"/>
+<g class="edge" id="edge14"><title>Rest-&gt;Chains</title>
+<path d="M140.515,-233.892C152.771,-224.788 167.263,-214.022 180.324,-204.319" fill="none" stroke="black"/>
+<polygon fill="black" points="182.723,-206.898 188.663,-198.125 178.548,-201.278 182.723,-206.898" stroke="black"/>
 </g>
 
-<g id="edge16" class="edge"><title>Rest-&gt;Grdf</title>
-<path fill="none" stroke="black" d="M188.327,-242.074C237.077,-232.177 294.073,-217.005 310.1,-198 325.717,-179.481 327.536,-151.588 325.983,-130.123"/>
-<polygon fill="black" stroke="black" points="329.465,-129.777 324.994,-120.172 322.5,-130.469 329.465,-129.777"/>
+<g class="edge" id="edge16"><title>Rest-&gt;Grdf</title>
+<path d="M188.327,-242.074C237.077,-232.177 294.073,-217.005 310.1,-198 325.717,-179.481 327.536,-151.588 325.983,-130.123" fill="none" stroke="black"/>
+<polygon fill="black" points="329.465,-129.777 324.994,-120.172 322.5,-130.469 329.465,-129.777" stroke="black"/>
 </g>
 
-<g id="edge18" class="edge"><title>Rest-&gt;Indata</title>
-<path fill="none" stroke="black" d="M102.277,-233.847C97.9177,-223.319 93.2852,-210.251 91.1002,-198 87.07,-175.403 90.9387,-149.736 95.6215,-130.199"/>
-<polygon fill="black" stroke="black" points="99.0628,-130.872 98.184,-120.314 92.2867,-129.115 99.0628,-130.872"/>
+<g class="edge" id="edge18"><title>Rest-&gt;Indata</title>
+<path d="M102.277,-233.847C97.9177,-223.319 93.2852,-210.251 91.1002,-198 87.07,-175.403 90.9387,-149.736 95.6215,-130.199" fill="none" stroke="black"/>
+<polygon fill="black" points="99.0628,-130.872 98.184,-120.314 92.2867,-129.115 99.0628,-130.872" stroke="black"/>
 </g>
 
-<g id="node6" class="node"><title>Main</title>
+<g class="node" id="node6"><title>Main</title>
 <a xlink:href="refdoc/Main.html" xlink:title="Main module of the genet tool">
-<polygon fill="lightgrey" stroke="lightgrey" points="321.1,-276 263.1,-276 251.1,-264 251.1,-246 263.1,-234 321.1,-234 333.1,-246 333.1,-264 321.1,-276"/>
-<path fill="lightgrey" stroke="lightgrey" d="M263.1,-276C257.1,-276 251.1,-270 251.1,-264"/>
-<path fill="lightgrey" stroke="lightgrey" d="M251.1,-246C251.1,-240 257.1,-234 263.1,-234"/>
-<path fill="lightgrey" stroke="lightgrey" d="M321.1,-234C327.1,-234 333.1,-240 333.1,-246"/>
-<path fill="lightgrey" stroke="lightgrey" d="M333.1,-264C333.1,-270 327.1,-276 321.1,-276"/>
-<polyline fill="none" stroke="red" points="321.1,-276 263.1,-276"/>
-<path fill="none" stroke="red" d="M263.1,-276C257.1,-276 251.1,-270 251.1,-264"/>
-<polyline fill="none" stroke="red" points="251.1,-264 251.1,-246"/>
-<path fill="none" stroke="red" d="M251.1,-246C251.1,-240 257.1,-234 263.1,-234"/>
-<polyline fill="none" stroke="red" points="263.1,-234 321.1,-234"/>
-<path fill="none" stroke="red" d="M321.1,-234C327.1,-234 333.1,-240 333.1,-246"/>
-<polyline fill="none" stroke="red" points="333.1,-246 333.1,-264"/>
-<path fill="none" stroke="red" d="M333.1,-264C333.1,-270 327.1,-276 321.1,-276"/>
-<text text-anchor="middle" x="292.1" y="-259.4" font-family="Times Roman,serif" font-size="14.00">genet</text>
-<text text-anchor="middle" x="292.1" y="-242.4" font-family="Times Roman,serif" font-size="14.00">(main.ml)</text>
+<polygon fill="lightgrey" points="321.1,-276 263.1,-276 251.1,-264 251.1,-246 263.1,-234 321.1,-234 333.1,-246 333.1,-264 321.1,-276" stroke="lightgrey"/>
+<path d="M263.1,-276C257.1,-276 251.1,-270 251.1,-264" fill="lightgrey" stroke="lightgrey"/>
+<path d="M251.1,-246C251.1,-240 257.1,-234 263.1,-234" fill="lightgrey" stroke="lightgrey"/>
+<path d="M321.1,-234C327.1,-234 333.1,-240 333.1,-246" fill="lightgrey" stroke="lightgrey"/>
+<path d="M333.1,-264C333.1,-270 327.1,-276 321.1,-276" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="321.1,-276 263.1,-276" stroke="red"/>
+<path d="M263.1,-276C257.1,-276 251.1,-270 251.1,-264" fill="none" stroke="red"/>
+<polyline fill="none" points="251.1,-264 251.1,-246" stroke="red"/>
+<path d="M251.1,-246C251.1,-240 257.1,-234 263.1,-234" fill="none" stroke="red"/>
+<polyline fill="none" points="263.1,-234 321.1,-234" stroke="red"/>
+<path d="M321.1,-234C327.1,-234 333.1,-240 333.1,-246" fill="none" stroke="red"/>
+<polyline fill="none" points="333.1,-246 333.1,-264" stroke="red"/>
+<path d="M333.1,-264C333.1,-270 327.1,-276 321.1,-276" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="292.1" y="-259.4">genet</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="292.1" y="-242.4">(main.ml)</text>
 </a>
 </g>
 
-<g id="edge20" class="edge"><title>Main-&gt;Base</title>
-<path fill="none" stroke="black" d="M323.222,-233.959C369.351,-200.175 446.316,-132.134 406.1,-78 393.349,-60.8357 348.125,-46.8618 305.114,-37.0461"/>
-<polygon fill="black" stroke="black" points="305.641,-33.5779 295.12,-34.8285 304.124,-40.4116 305.641,-33.5779"/>
+<g class="edge" id="edge20"><title>Main-&gt;Base</title>
+<path d="M323.222,-233.959C369.351,-200.175 446.316,-132.134 406.1,-78 393.349,-60.8357 348.125,-46.8618 305.114,-37.0461" fill="none" stroke="black"/>
+<polygon fill="black" points="305.641,-33.5779 295.12,-34.8285 304.124,-40.4116 305.641,-33.5779" stroke="black"/>
 </g>
 
-<g id="edge22" class="edge"><title>Main-&gt;Chains</title>
-<path fill="none" stroke="black" d="M271.606,-233.686C263.187,-224.931 253.318,-214.666 244.308,-205.296"/>
-<polygon fill="black" stroke="black" points="246.764,-202.8 237.31,-198.018 241.718,-207.652 246.764,-202.8"/>
+<g class="edge" id="edge22"><title>Main-&gt;Chains</title>
+<path d="M271.606,-233.686C263.187,-224.931 253.318,-214.666 244.308,-205.296" fill="none" stroke="black"/>
+<polygon fill="black" points="246.764,-202.8 237.31,-198.018 241.718,-207.652 246.764,-202.8" stroke="black"/>
 </g>
 
-<g id="edge24" class="edge"><title>Main-&gt;Grdf</title>
-<path fill="none" stroke="black" d="M317.857,-233.842C327.738,-224.087 337.887,-211.645 343.1,-198 351.579,-175.809 345.009,-149.51 336.898,-129.597"/>
-<polygon fill="black" stroke="black" points="340.077,-128.13 332.852,-120.38 333.667,-130.944 340.077,-128.13"/>
+<g class="edge" id="edge24"><title>Main-&gt;Grdf</title>
+<path d="M317.857,-233.842C327.738,-224.087 337.887,-211.645 343.1,-198 351.579,-175.809 345.009,-149.51 336.898,-129.597" fill="none" stroke="black"/>
+<polygon fill="black" points="340.077,-128.13 332.852,-120.38 333.667,-130.944 340.077,-128.13" stroke="black"/>
 </g>
 
-<g id="edge26" class="edge"><title>Main-&gt;Indata</title>
-<path fill="none" stroke="black" d="M251.032,-246.06C206.942,-235.63 140.943,-217.333 124.1,-198 108.07,-179.599 103.866,-151.872 103.361,-130.437"/>
-<polygon fill="black" stroke="black" points="106.861,-130.195 103.382,-120.187 99.861,-130.18 106.861,-130.195"/>
+<g class="edge" id="edge26"><title>Main-&gt;Indata</title>
+<path d="M251.032,-246.06C206.942,-235.63 140.943,-217.333 124.1,-198 108.07,-179.599 103.866,-151.872 103.361,-130.437" fill="none" stroke="black"/>
+<polygon fill="black" points="106.861,-130.195 103.382,-120.187 99.861,-130.18 106.861,-130.195" stroke="black"/>
 </g>
 
-<g id="node7" class="node"><title>Main_rest</title>
+<g class="node" id="node7"><title>Main_rest</title>
 <a xlink:href="refdoc/Main_rest.html" xlink:title="Main module of the REST HTTP server">
-<polygon fill="lightgrey" stroke="lightgrey" points="158.1,-354 66.1002,-354 54.1002,-342 54.1002,-324 66.1002,-312 158.1,-312 170.1,-324 170.1,-342 158.1,-354"/>
-<path fill="lightgrey" stroke="lightgrey" d="M66.1002,-354C60.1002,-354 54.1002,-348 54.1002,-342"/>
-<path fill="lightgrey" stroke="lightgrey" d="M54.1002,-324C54.1002,-318 60.1002,-312 66.1002,-312"/>
-<path fill="lightgrey" stroke="lightgrey" d="M158.1,-312C164.1,-312 170.1,-318 170.1,-324"/>
-<path fill="lightgrey" stroke="lightgrey" d="M170.1,-342C170.1,-348 164.1,-354 158.1,-354"/>
-<polyline fill="none" stroke="red" points="158.1,-354 66.1002,-354"/>
-<path fill="none" stroke="red" d="M66.1002,-354C60.1002,-354 54.1002,-348 54.1002,-342"/>
-<polyline fill="none" stroke="red" points="54.1002,-342 54.1002,-324"/>
-<path fill="none" stroke="red" d="M54.1002,-324C54.1002,-318 60.1002,-312 66.1002,-312"/>
-<polyline fill="none" stroke="red" points="66.1002,-312 158.1,-312"/>
-<path fill="none" stroke="red" d="M158.1,-312C164.1,-312 170.1,-318 170.1,-324"/>
-<polyline fill="none" stroke="red" points="170.1,-324 170.1,-342"/>
-<path fill="none" stroke="red" d="M170.1,-342C170.1,-348 164.1,-354 158.1,-354"/>
-<text text-anchor="middle" x="112.1" y="-337.4" font-family="Times Roman,serif" font-size="14.00">genet-rest</text>
-<text text-anchor="middle" x="112.1" y="-320.4" font-family="Times Roman,serif" font-size="14.00">(main_rest.ml)</text>
+<polygon fill="lightgrey" points="158.1,-354 66.1002,-354 54.1002,-342 54.1002,-324 66.1002,-312 158.1,-312 170.1,-324 170.1,-342 158.1,-354" stroke="lightgrey"/>
+<path d="M66.1002,-354C60.1002,-354 54.1002,-348 54.1002,-342" fill="lightgrey" stroke="lightgrey"/>
+<path d="M54.1002,-324C54.1002,-318 60.1002,-312 66.1002,-312" fill="lightgrey" stroke="lightgrey"/>
+<path d="M158.1,-312C164.1,-312 170.1,-318 170.1,-324" fill="lightgrey" stroke="lightgrey"/>
+<path d="M170.1,-342C170.1,-348 164.1,-354 158.1,-354" fill="lightgrey" stroke="lightgrey"/>
+<polyline fill="none" points="158.1,-354 66.1002,-354" stroke="red"/>
+<path d="M66.1002,-354C60.1002,-354 54.1002,-348 54.1002,-342" fill="none" stroke="red"/>
+<polyline fill="none" points="54.1002,-342 54.1002,-324" stroke="red"/>
+<path d="M54.1002,-324C54.1002,-318 60.1002,-312 66.1002,-312" fill="none" stroke="red"/>
+<polyline fill="none" points="66.1002,-312 158.1,-312" stroke="red"/>
+<path d="M158.1,-312C164.1,-312 170.1,-318 170.1,-324" fill="none" stroke="red"/>
+<polyline fill="none" points="170.1,-324 170.1,-342" stroke="red"/>
+<path d="M170.1,-342C170.1,-348 164.1,-354 158.1,-354" fill="none" stroke="red"/>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="112.1" y="-337.4">genet-rest</text>
+<text font-family="Times Roman,serif" font-size="14.00" text-anchor="middle" x="112.1" y="-320.4">(main_rest.ml)</text>
 </a>
 </g>
 
-<g id="edge28" class="edge"><title>Main_rest-&gt;Rest</title>
-<path fill="none" stroke="black" d="M112.1,-311.686C112.1,-303.798 112.1,-294.684 112.1,-286.103"/>
-<polygon fill="black" stroke="black" points="115.6,-286.018 112.1,-276.018 108.6,-286.018 115.6,-286.018"/>
+<g class="edge" id="edge28"><title>Main_rest-&gt;Rest</title>
+<path d="M112.1,-311.686C112.1,-303.798 112.1,-294.684 112.1,-286.103" fill="none" stroke="black"/>
+<polygon fill="black" points="115.6,-286.018 112.1,-276.018 108.6,-286.018 115.6,-286.018" stroke="black"/>
 </g>
 </g>
 </svg>
@@ -385,8 +385,8 @@ simply not complete.
 
 <footer id="bottombar">
 </footer>
-<script type="text/javascript" src="http://zoggy.github.io/genet/jquery.js">_</script>
-<script type="text/javascript" src="http://zoggy.github.io/genet/bootstrap-collapse.js">_</script>
+<script src="http://zoggy.github.io/genet/jquery.js" type="text/javascript">_</script>
+<script src="http://zoggy.github.io/genet/bootstrap-collapse.js" type="text/javascript">_</script>
 
 </body>
 </html>

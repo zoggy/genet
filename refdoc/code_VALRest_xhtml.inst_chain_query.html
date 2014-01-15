@@ -89,5 +89,5 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xhtml_inst_list&nbsp;ctx&nbsp;inst_list<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;(<span class="constructor">Rest_xpage</span>.default_commands&nbsp;ctx.ctx_cfg)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xml&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_xmls&nbsp;env&nbsp;[contents]&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,&nbsp;xml)&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_xmls&nbsp;()&nbsp;env&nbsp;[contents]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;([ctype&nbsp;()],&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;xml)</code></body></html>

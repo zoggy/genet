@@ -87,28 +87,32 @@
 &nbsp;<a class="post" href="Grdf_version.html" title="Grdf_version">Next</a>
 </div>
 <h1>Module <a href="type_Grdf_types.html">Grdf_types</a> (<a href="code_Grdf_types.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Grdf_types: <code class="code">sig</code> <a href="Grdf_types.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Grdf_types: <code class="code">sig</code> <a href="Grdf_types.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Types<br>
 </div>
 <hr width="100%">
+
 <pre><span id="TYPEiri"><span class="keyword">type</span> <code class="type"></code>iri</span> = <code class="type">Rdf_iri.iri</code> </pre>
+
 
 <pre><code><span id="TYPEworld"><span class="keyword">type</span> <code class="type"></code>world</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTworld.wld_graph">wld_graph</span>&nbsp;:<code class="type">Rdf_graph.graph</code>;</code></td>
+<code><span id="TYPEELTworld.wld_graph">wld_graph</span>&nbsp;: <code class="type">Rdf_graph.graph</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTworld.wld_prefix">wld_prefix</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code>;</code></td>
+<code><span id="TYPEELTworld.wld_prefix">wld_prefix</span>&nbsp;: <code class="type"><a href="Grdf_types.html#TYPEiri">iri</a></code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
@@ -184,8 +188,12 @@ Types<br>
 </tr></table>
 
 
+
 <pre><span id="EXCEPTIONError"><span class="keyword">exception</span> Error</span> <span class="keyword">of</span> <code class="type"><a href="Grdf_types.html#TYPEerror">error</a></code></pre>
-<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALGrdf_types.error.html">error</a></span> : <code class="type"><a href="Grdf_types.html#TYPEerror">error</a> -> 'a</code></pre><pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALGrdf_types.string_of_error.html">string_of_error</a></span> : <code class="type"><a href="Grdf_types.html#TYPEerror">error</a> -> string</code></pre><pre><code><span id="TYPEport_type"><span class="keyword">type</span> <code class="type">'a</code> port_type</span> = </code></pre><table class="typetable">
+
+<pre><span id="VALerror"><span class="keyword">val</span> <a href="code_VALGrdf_types.error.html">error</a></span> : <code class="type"><a href="Grdf_types.html#TYPEerror">error</a> -> 'a</code></pre>
+<pre><span id="VALstring_of_error"><span class="keyword">val</span> <a href="code_VALGrdf_types.string_of_error.html">string_of_error</a></span> : <code class="type"><a href="Grdf_types.html#TYPEerror">error</a> -> string</code></pre>
+<pre><code><span id="TYPEport_type"><span class="keyword">type</span> <code class="type">'a</code> port_type</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code><span class="keyword">|</span></code></td>

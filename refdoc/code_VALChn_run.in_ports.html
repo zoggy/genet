@@ -80,6 +80,6 @@
 <code class="code"><span class="keyword">let</span>&nbsp;in_ports&nbsp;state&nbsp;node&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;preds&nbsp;=&nbsp;<span class="constructor">Graph</span>.pred&nbsp;state.g&nbsp;node&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;sort_ports<br>
-&nbsp;&nbsp;(<span class="constructor">Giriset</span>.elements<br>
-&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;(_,(_,p))&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Giriset</span>.add&nbsp;p&nbsp;set)&nbsp;<span class="constructor">Giriset</span>.empty&nbsp;preds)<br>
-&nbsp;&nbsp;)</code></body></html>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Giriset</span>.elements<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.fold_left&nbsp;(<span class="keyword">fun</span>&nbsp;set&nbsp;(_,(_,p))&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Giriset</span>.add&nbsp;p&nbsp;set)&nbsp;<span class="constructor">Giriset</span>.empty&nbsp;preds)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;)</code></body></html>

@@ -90,11 +90,11 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;input&nbsp;=&nbsp;xhtml_input_of_ichain&nbsp;ctx&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"ichain"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"date"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date&nbsp;])&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"fchain"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;fchain)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"input"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;input)&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"tools"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;tools)&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"ichain"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_iri</span>.string&nbsp;iri)]))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"date"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;date]))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"fchain"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;fchain))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"input"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;input))&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,<span class="string">"tools"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;tools))&nbsp;;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl)</code></body></html>
+&nbsp;&nbsp;snd&nbsp;(<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl))</code></body></html>

@@ -135,7 +135,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;name2&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdf_types</span>.error&nbsp;(<span class="constructor">Grdf_types</span>.<span class="constructor">Tool_exists</span>&nbsp;name2)<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub&nbsp;~obj:&nbsp;(<span class="constructor">Iri</span>&nbsp;<span class="constructor">Grdfs</span>.genet_tool);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub:&nbsp;iri&nbsp;~obj:&nbsp;<span class="constructor">Grdfs</span>.genet_tool;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iri<br>
 ;;<br>

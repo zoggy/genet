@@ -87,36 +87,41 @@
 &nbsp;<a class="post" href="Chn_diff.html" title="Chn_diff">Next</a>
 </div>
 <h1>Module <a href="type_Chn_ast.html">Chn_ast</a> (<a href="code_Chn_ast.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Chn_ast: <code class="code">sig</code> <a href="Chn_ast.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Chn_ast: <code class="code">sig</code> <a href="Chn_ast.html">..</a> <code class="code">end</code></pre><div class="info module top">
 </div>
 <hr width="100%">
+
 <pre><span id="TYPEoperation_name"><span class="keyword">type</span> <code class="type"></code>operation_name</span> = <code class="type">string</code> </pre>
 
+
 <pre><span id="TYPEport_name"><span class="keyword">type</span> <code class="type"></code>port_name</span> = <code class="type">string</code> </pre>
+
 
 <pre><code><span id="TYPEport"><span class="keyword">type</span> <code class="type"></code>port</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTport.p_name">p_name</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEport_name">port_name</a></code>;</code></td>
+<code><span id="TYPEELTport.p_name">p_name</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEport_name">port_name</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTport.p_loc">p_loc</span>&nbsp;:<code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
+<code><span id="TYPEELTport.p_loc">p_loc</span>&nbsp;: <code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTport.p_ftype">p_ftype</span>&nbsp;:<code class="type">string <a href="Grdf_types.html#TYPEport_type">Grdf_types.port_type</a></code>;</code></td>
+<code><span id="TYPEELTport.p_ftype">p_ftype</span>&nbsp;: <code class="type">string <a href="Grdf_types.html#TYPEport_type">Grdf_types.port_type</a></code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEport_ref"><span class="keyword">type</span> <code class="type"></code>port_ref</span> = </code></pre><table class="typetable">
@@ -136,29 +141,31 @@
 </tr></table>
 
 
+
 <pre><code><span id="TYPEedge_part"><span class="keyword">type</span> <code class="type"></code>edge_part</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTedge_part.ep_op">ep_op</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEoperation_name">operation_name</a> option</code>;</code></td>
+<code><span id="TYPEELTedge_part.ep_op">ep_op</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEoperation_name">operation_name</a> option</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTedge_part.ep_port">ep_port</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEport_ref">port_ref</a></code>;</code></td>
+<code><span id="TYPEELTedge_part.ep_port">ep_port</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEport_ref">port_ref</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTedge_part.ep_loc">ep_loc</span>&nbsp;:<code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
+<code><span id="TYPEELTedge_part.ep_loc">ep_loc</span>&nbsp;: <code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEedge"><span class="keyword">type</span> <code class="type"></code>edge</span> = {</code></pre><table class="typetable">
@@ -166,17 +173,18 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTedge.edge_src">edge_src</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEedge_part">edge_part</a></code>;</code></td>
+<code><span id="TYPEELTedge.edge_src">edge_src</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEedge_part">edge_part</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTedge.edge_dst">edge_dst</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEedge_part">edge_part</a></code>;</code></td>
+<code><span id="TYPEELTedge.edge_dst">edge_dst</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEedge_part">edge_part</a></code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEspecial"><span class="keyword">type</span> <code class="type"></code>special</span> = </code></pre><table class="typetable">
@@ -194,6 +202,7 @@
 <code><span id="TYPEELTspecial.Implode"><span class="constructor">Implode</span></span> <span class="keyword">of</span> <code class="type"><a href="Chn_ast.html#TYPEoperation_name">operation_name</a> * <a href="Chn_ast.html#TYPEop_origin">op_origin</a> * <a href="Chn_ast.html#TYPEport_ref">port_ref</a></code></code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >the operation name is needed in flattening</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr></table>
+
 
 
 <pre><code><span id="TYPEop_origin"><span class="keyword">type</span> <code class="type"></code>op_origin</span> = </code></pre><table class="typetable">
@@ -227,36 +236,38 @@
 </tr></table>
 
 
+
 <pre><code><span id="TYPEoperation"><span class="keyword">type</span> <code class="type"></code>operation</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToperation.op_name">op_name</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEoperation_name">operation_name</a></code>;</code></td>
+<code><span id="TYPEELToperation.op_name">op_name</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEoperation_name">operation_name</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToperation.op_loc">op_loc</span>&nbsp;:<code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
+<code><span id="TYPEELToperation.op_loc">op_loc</span>&nbsp;: <code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToperation.op_from">op_from</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEop_origin">op_origin</a></code>;</code></td>
+<code><span id="TYPEELToperation.op_from">op_from</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEop_origin">op_origin</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELToperation.op_from_loc">op_from_loc</span>&nbsp;:<code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
+<code><span id="TYPEELToperation.op_from_loc">op_from_loc</span>&nbsp;: <code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEchain"><span class="keyword">type</span> <code class="type"></code>chain</span> = {</code></pre><table class="typetable">
@@ -264,52 +275,53 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_name">chn_name</span>&nbsp;:<code class="type"><a href="Chn_types.html#TYPEchain_basename">Chn_types.chain_basename</a></code>;</code></td>
+<code><span id="TYPEELTchain.chn_name">chn_name</span>&nbsp;: <code class="type"><a href="Chn_types.html#TYPEchain_basename">Chn_types.chain_basename</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_loc">chn_loc</span>&nbsp;:<code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
+<code><span id="TYPEELTchain.chn_loc">chn_loc</span>&nbsp;: <code class="type"><a href="Loc.html#TYPEt">Loc.t</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_comment">chn_comment</span>&nbsp;:<code class="type">string</code>;</code></td>
+<code><span id="TYPEELTchain.chn_comment">chn_comment</span>&nbsp;: <code class="type">string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_inputs">chn_inputs</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEport">port</a> array</code>;</code></td>
+<code><span id="TYPEELTchain.chn_inputs">chn_inputs</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEport">port</a> array</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_outputs">chn_outputs</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEport">port</a> array</code>;</code></td>
+<code><span id="TYPEELTchain.chn_outputs">chn_outputs</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEport">port</a> array</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_ops">chn_ops</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEoperation">operation</a> list</code>;</code></td>
+<code><span id="TYPEELTchain.chn_ops">chn_ops</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEoperation">operation</a> list</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain.chn_edges">chn_edges</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEedge">edge</a> list</code>;</code></td>
+<code><span id="TYPEELTchain.chn_edges">chn_edges</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEedge">edge</a> list</code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEchn_module"><span class="keyword">type</span> <code class="type"></code>chn_module</span> = {</code></pre><table class="typetable">
@@ -317,53 +329,70 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchn_module.cmod_name">cmod_name</span>&nbsp;:<code class="type"><a href="Chn_types.html#TYPEchain_modname">Chn_types.chain_modname</a></code>;</code></td>
+<code><span id="TYPEELTchn_module.cmod_name">cmod_name</span>&nbsp;: <code class="type"><a href="Chn_types.html#TYPEchain_modname">Chn_types.chain_modname</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchn_module.cmod_chains">cmod_chains</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEchain">chain</a> list</code>;</code></td>
+<code><span id="TYPEELTchn_module.cmod_chains">cmod_chains</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEchain">chain</a> list</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALget_chain"><span class="keyword">val</span> <a href="code_VALChn_ast.get_chain.html">get_chain</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchn_module">chn_module</a> -> <a href="Chn_types.html#TYPEchain_basename">Chn_types.chain_basename</a> -> <a href="Chn_ast.html#TYPEchain">chain</a> option</code></pre><pre><span class="keyword">module</span> <a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a>: <code class="code">sig</code> <a href="Chn_ast.Chn_ord_type.html">..</a> <code class="code">end</code></pre><pre><span class="keyword">module</span> <a href="Chn_ast.Cset.html">Cset</a>: <code class="type">Set.Make</code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code></pre><pre><span class="keyword">module</span> <a href="Chn_ast.Cmap.html">Cmap</a>: <code class="type">Map.Make</code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code></pre><pre><code><span id="TYPEchain_deps"><span class="keyword">type</span> <code class="type"></code>chain_deps</span> = {</code></pre><table class="typetable">
+
+<pre><span id="VALget_chain"><span class="keyword">val</span> <a href="code_VALChn_ast.get_chain.html">get_chain</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchn_module">chn_module</a> -> <a href="Chn_types.html#TYPEchain_basename">Chn_types.chain_basename</a> -> <a href="Chn_ast.html#TYPEchain">chain</a> option</code></pre>
+<pre><span class="keyword">module</span> <a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a>: <code class="code">sig</code> <a href="Chn_ast.Chn_ord_type.html">..</a> <code class="code">end</code></pre>
+<pre><span class="keyword">module</span> <a href="Chn_ast.Cset.html">Cset</a>: <code class="type">Set.Make</code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code></pre>
+<pre><span class="keyword">module</span> <a href="Chn_ast.Cmap.html">Cmap</a>: <code class="type">Map.Make</code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code></pre>
+<pre><code><span id="TYPEchain_deps"><span class="keyword">type</span> <code class="type"></code>chain_deps</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain_deps.dep_chn">dep_chn</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEchain">chain</a></code>;</code></td>
+<code><span id="TYPEELTchain_deps.dep_chn">dep_chn</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEchain">chain</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain_deps.dep_intfs">dep_intfs</span>&nbsp;:<code class="type">Sset.t</code>;</code></td>
+<code><span id="TYPEELTchain_deps.dep_intfs">dep_intfs</span>&nbsp;: <code class="type">Sset.t</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain_deps.dep_chains">dep_chains</span>&nbsp;:<code class="type">Cset.t</code>;</code></td>
+<code><span id="TYPEELTchain_deps.dep_chains">dep_chains</span>&nbsp;: <code class="type">Cset.t</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTchain_deps.dep_unknown">dep_unknown</span>&nbsp;:<code class="type"><a href="Chn_ast.html#TYPEop_origin">op_origin</a> list</code>;</code></td>
+<code><span id="TYPEELTchain_deps.dep_unknown">dep_unknown</span>&nbsp;: <code class="type"><a href="Chn_ast.html#TYPEop_origin">op_origin</a> list</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALempty_chain_deps"><span class="keyword">val</span> <a href="code_VALChn_ast.empty_chain_deps.html">empty_chain_deps</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchain">chain</a> -> <a href="Chn_ast.html#TYPEchain_deps">chain_deps</a></code></pre><pre><span id="TYPEdeps"><span class="keyword">type</span> <code class="type"></code>deps</span> = <code class="type"><a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t</code> </pre>
 
-<pre><span id="VALcompute_deps"><span class="keyword">val</span> <a href="code_VALChn_ast.compute_deps.html">compute_deps</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -><br>       <a href="Config.html#TYPEt">Config.t</a> -> <a href="Chn_ast.html#TYPEchn_module">chn_module</a> list -> <a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t</code></pre><pre><span class="keyword">module</span> <a href="Chn_ast.Chn_graph.html">Chn_graph</a>: <code class="type"><a href="Graph.Make_with_map.html">Graph.Make_with_map</a></code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code><code class="code">(</code><code class="code">sig</code><div class="sig_block"><pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">unit</code> </pre>
+<pre><span id="VALempty_chain_deps"><span class="keyword">val</span> <a href="code_VALChn_ast.empty_chain_deps.html">empty_chain_deps</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchain">chain</a> -> <a href="Chn_ast.html#TYPEchain_deps">chain_deps</a></code></pre>
+<pre><span id="TYPEdeps"><span class="keyword">type</span> <code class="type"></code>deps</span> = <code class="type"><a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t</code> </pre>
 
-<pre><span id="VALcompare"><span class="keyword">val</span> <a href="code_VALChn_ast.Chn_graph.compare.html">compare</a></span> : <code class="type">'a -> 'a -> int</code></pre></div><code class="code">end</code><code class="code">)</code></pre><pre><span id="VALcompute_dep_graph"><span class="keyword">val</span> <a href="code_VALChn_ast.compute_dep_graph.html">compute_dep_graph</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t -> Chn_graph.t</code></pre><pre><span name="TYPEast_printer"><span class="keyword">class</span> <a href="Chn_ast.ast_printer-c.html">ast_printer</a></span> : <code class="type"></code><code class="code">object</code> <a href="Chn_ast.ast_printer-c.html">..</a> <code class="code">end</code></pre><pre><span id="VALprinter"><span class="keyword">val</span> <a href="code_VALChn_ast.printer.html">printer</a></span> : <code class="type">unit -> <a href="Chn_ast.ast_printer-c.html">ast_printer</a></code></pre><pre><span name="TYPEchain_dot_printer"><span class="keyword">class</span> <a href="Chn_ast.chain_dot_printer-c.html">chain_dot_printer</a></span> : <code class="type"></code><code class="code">object</code> <a href="Chn_ast.chain_dot_printer-c.html">..</a> <code class="code">end</code></pre><pre><span name="TYPEchain_dot_deps"><span class="keyword">class</span> <a href="Chn_ast.chain_dot_deps-c.html">chain_dot_deps</a></span> : <code class="type">?chain_dot:<a href="Chn_ast.chain_dot_printer-c.html">chain_dot_printer</a> -> unit -> </code><code class="code">object</code> <a href="Chn_ast.chain_dot_deps-c.html">..</a> <code class="code">end</code></pre><pre><span id="VALflatten_foreaches"><span class="keyword">val</span> <a href="code_VALChn_ast.flatten_foreaches.html">flatten_foreaches</a></span> : <code class="type">'a -> <a href="Chn_ast.html#TYPEchain">chain</a> -> <a href="Chn_ast.html#TYPEchain">chain</a></code></pre></body></html>
+
+<pre><span id="VALcompute_deps"><span class="keyword">val</span> <a href="code_VALChn_ast.compute_deps.html">compute_deps</a></span> : <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a> -><br>       <a href="Config.html#TYPEt">Config.t</a> -> <a href="Chn_ast.html#TYPEchn_module">chn_module</a> list -> <a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t</code></pre>
+<pre><span class="keyword">module</span> <a href="Chn_ast.Chn_graph.html">Chn_graph</a>: <code class="type"><a href="Graph.Make_with_map.html">Graph.Make_with_map</a></code><code class="code">(</code><code class="type"><a href="Chn_ast.Chn_ord_type.html">Chn_ord_type</a></code><code class="code">)</code><code class="code">(</code><code class="code">sig</code><div class="sig_block">
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">unit</code> </pre>
+
+
+<pre><span id="VALcompare"><span class="keyword">val</span> <a href="code_VALChn_ast.Chn_graph.compare.html">compare</a></span> : <code class="type">'a -> 'a -> int</code></pre></div><code class="code">end</code><code class="code">)</code></pre>
+<pre><span id="VALcompute_dep_graph"><span class="keyword">val</span> <a href="code_VALChn_ast.compute_dep_graph.html">compute_dep_graph</a></span> : <code class="type"><a href="Chn_ast.html#TYPEchain_deps">chain_deps</a> Cmap.t -> Chn_graph.t</code></pre>
+<pre><span name="TYPEast_printer"><span class="keyword">class</span> <a href="Chn_ast.ast_printer-c.html">ast_printer</a></span> : <code class="type"></code><code class="code">object</code> <a href="Chn_ast.ast_printer-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALprinter"><span class="keyword">val</span> <a href="code_VALChn_ast.printer.html">printer</a></span> : <code class="type">unit -> <a href="Chn_ast.ast_printer-c.html">ast_printer</a></code></pre>
+<pre><span name="TYPEchain_dot_printer"><span class="keyword">class</span> <a href="Chn_ast.chain_dot_printer-c.html">chain_dot_printer</a></span> : <code class="type"></code><code class="code">object</code> <a href="Chn_ast.chain_dot_printer-c.html">..</a> <code class="code">end</code></pre>
+<pre><span name="TYPEchain_dot_deps"><span class="keyword">class</span> <a href="Chn_ast.chain_dot_deps-c.html">chain_dot_deps</a></span> : <code class="type">?chain_dot:<a href="Chn_ast.chain_dot_printer-c.html">chain_dot_printer</a> -> unit -> </code><code class="code">object</code> <a href="Chn_ast.chain_dot_deps-c.html">..</a> <code class="code">end</code></pre>
+<pre><span id="VALflatten_foreaches"><span class="keyword">val</span> <a href="code_VALChn_ast.flatten_foreaches.html">flatten_foreaches</a></span> : <code class="type">'a -> <a href="Chn_ast.html#TYPEchain">chain</a> -> <a href="Chn_ast.html#TYPEchain">chain</a></code></pre></body></html>

@@ -80,6 +80,6 @@
 <code class="code"><span class="keyword">let</span>&nbsp;star&nbsp;?label&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;label&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;s]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"star"</span>),&nbsp;args,&nbsp;[])</code></body></html>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"star"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_of_list&nbsp;args,&nbsp;[])</code></body></html>

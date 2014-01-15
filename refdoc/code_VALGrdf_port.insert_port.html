@@ -83,5 +83,6 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sub&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;intf&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;obj&nbsp;=&nbsp;<span class="constructor">Iri</span>&nbsp;iri&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_triple&nbsp;wld&nbsp;~sub&nbsp;~pred&nbsp;~obj;<br>
+&nbsp;&nbsp;<span class="constructor">Grdfs</span>.add_type&nbsp;wld&nbsp;~sub:&nbsp;iri&nbsp;~obj:&nbsp;<span class="constructor">Grdfs</span>.genet_port&nbsp;;<br>
 &nbsp;&nbsp;set_port_type&nbsp;wld&nbsp;iri&nbsp;typ;<br>
 &nbsp;&nbsp;<span class="keyword">match</span>&nbsp;name&nbsp;<span class="keyword">with</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;()&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Grdfs</span>.add_name&nbsp;wld&nbsp;sub&nbsp;name</code></body></html>

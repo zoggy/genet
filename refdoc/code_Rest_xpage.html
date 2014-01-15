@@ -109,17 +109,21 @@
 <span class="keyword">let</span>&nbsp;star&nbsp;?label&nbsp;()&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="keyword">match</span>&nbsp;label&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;s]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[(<span class="string">""</span>,<span class="string">"title"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"star"</span>),&nbsp;args,&nbsp;[]);;<br>
+&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"star"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_of_list&nbsp;args,&nbsp;[]);;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_star&nbsp;_&nbsp;args&nbsp;_&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;((<span class="string">""</span>,<span class="string">"width"</span>),&nbsp;<span class="string">"16"</span>)&nbsp;::&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"src"</span>),&nbsp;<span class="string">"&lt;site-url/&gt;star.svg"</span>)&nbsp;::&nbsp;args&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"img"</span>),&nbsp;args,&nbsp;[])]<br>
+<span class="keyword">let</span>&nbsp;fun_star&nbsp;acc&nbsp;_&nbsp;args&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.atts_of_list&nbsp;~atts:&nbsp;args<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;(<span class="string">""</span>,<span class="string">"width"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"16"</span>]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"src"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"&lt;site-url/&gt;star.svg"</span>]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"img"</span>),&nbsp;args,&nbsp;[])])<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_include&nbsp;tmpl_dir&nbsp;_env&nbsp;args&nbsp;subs&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"file"</span>)&nbsp;<span class="keyword">with</span><br>
+<span class="keyword">let</span>&nbsp;fun_include&nbsp;tmpl_dir&nbsp;acc&nbsp;_env&nbsp;args&nbsp;subs&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"file"</span>)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"Missing&nbsp;'file'&nbsp;argument&nbsp;for&nbsp;include&nbsp;command"</span>;<br>
 &nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;file&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;file&nbsp;=<br>
@@ -129,32 +133,41 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xml&nbsp;=&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;(<span class="constructor">Misc</span>.string_of_file&nbsp;file)]&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"include-contents"</span>),&nbsp;<span class="constructor">String</span>.concat&nbsp;<span class="string">""</span>&nbsp;(<span class="constructor">List</span>.map&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;subs))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;args&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;~atts:&nbsp;args<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"include-contents"</span>)&nbsp;subs<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="constructor">Xtmpl</span>.tag_env),&nbsp;args,&nbsp;xml)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="constructor">Xtmpl</span>.tag_env),&nbsp;args,&nbsp;xml)])<br>
 ;;<br>
-<span class="keyword">let</span>&nbsp;fun_image&nbsp;_env&nbsp;args&nbsp;legend&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;width&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"width"</span>)&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"src"</span>)&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;fun_image&nbsp;acc&nbsp;_env&nbsp;args&nbsp;legend&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;width&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"width"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;src&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"src"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cls&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"img%s"</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"float"</span>)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"float"</span>)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Some</span>&nbsp;<span class="string">"left"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"-float-left"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;<span class="string">"right"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"-float-right"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"unhandled&nbsp;image&nbsp;position:&nbsp;%s"</span>&nbsp;s)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">""</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;)<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;[<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;[&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;cls&nbsp;],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"img"</span>),&nbsp;[&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;<span class="string">"img"</span>&nbsp;;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"src"</span>),&nbsp;src;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"width"</span>),&nbsp;width&nbsp;],&nbsp;[]))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;legend&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;xml&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;<span class="string">"legend"</span>],&nbsp;xml)&nbsp;]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;)<br>
-&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xmls&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;cls&nbsp;]&nbsp;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"img"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_of_list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"img"</span>]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"src"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;src]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"width"</span>),&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;width]&nbsp;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">match</span>&nbsp;legend&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;xml&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"legend"</span>],&nbsp;xml)&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(acc,&nbsp;xmls)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;highlight&nbsp;~opts&nbsp;code&nbsp;=<br>
@@ -175,12 +188,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"command&nbsp;failed:&nbsp;%s"</span>&nbsp;com)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_hcode&nbsp;?(inline=<span class="keyword">false</span>)&nbsp;?lang&nbsp;_env&nbsp;args&nbsp;code&nbsp;=<br>
+<span class="keyword">let</span>&nbsp;fun_hcode&nbsp;?(inline=<span class="keyword">false</span>)&nbsp;?lang&nbsp;acc&nbsp;_env&nbsp;args&nbsp;code&nbsp;=<br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;language,&nbsp;language_options&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;lang&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lang&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg&nbsp;args&nbsp;~def:&nbsp;<span class="string">"txt"</span>&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"lang"</span>)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;lang&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.opt_arg_cdata&nbsp;args&nbsp;~def:&nbsp;<span class="string">"txt"</span>&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"lang"</span>)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;lang&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"txt"</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(lang,&nbsp;<span class="constructor">None</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(lang,&nbsp;<span class="constructor">Some</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"--syntax=%s"</span>&nbsp;lang))<br>
@@ -205,59 +218,74 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;code&nbsp;=&nbsp;highlight&nbsp;~opts&nbsp;code&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;code<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;inline&nbsp;<span class="keyword">then</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),<span class="string">"icode"</span>],&nbsp;[xml_code])&nbsp;]<br>
-&nbsp;&nbsp;<span class="keyword">else</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"pre"</span>),<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"code-%s"</span>&nbsp;language],&nbsp;[xml_code])<br>
-&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xmls&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>&nbsp;inline&nbsp;<span class="keyword">then</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"icode"</span>],&nbsp;[xml_code])&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"pre"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="string">"code-%s"</span>^language)],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[xml_code])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(acc,&nbsp;xmls)<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;fun_ocaml&nbsp;=&nbsp;fun_hcode&nbsp;~lang:&nbsp;<span class="string">"ocaml"</span>;;<br>
 <span class="keyword">let</span>&nbsp;fun_command_line&nbsp;=&nbsp;fun_hcode&nbsp;~lang:&nbsp;<span class="string">"sh"</span>;;<br>
 <span class="keyword">let</span>&nbsp;fun_icode&nbsp;=&nbsp;fun_hcode&nbsp;~inline:&nbsp;<span class="keyword">true</span>&nbsp;;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_section&nbsp;cls&nbsp;_env&nbsp;args&nbsp;body&nbsp;=<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;id&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"name"</span>)&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"id"</span>),&nbsp;name]<br>
+<span class="keyword">let</span>&nbsp;fun_section&nbsp;cls&nbsp;acc&nbsp;_env&nbsp;args&nbsp;body&nbsp;=<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;atts&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg_cdata&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"name"</span>)&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.atts_empty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;name&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"id"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;name]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;title&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Xtmpl</span>.get_arg&nbsp;args&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"title"</span>)&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;t&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;cls^<span class="string">"-title"</span>]&nbsp;@&nbsp;id,&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;t])]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;~atts&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(cls^<span class="string">"-title"</span>)],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;cls],&nbsp;title&nbsp;@&nbsp;body)&nbsp;]<br>
+&nbsp;&nbsp;(acc,&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"div"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;cls],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title&nbsp;@&nbsp;body)&nbsp;])<br>
 ;;<br>
 <br>
 <span class="keyword">let</span>&nbsp;fun_subsection&nbsp;=&nbsp;fun_section&nbsp;<span class="string">"subsection"</span>;;<br>
 <span class="keyword">let</span>&nbsp;fun_section&nbsp;=&nbsp;fun_section&nbsp;<span class="string">"section"</span>;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_if&nbsp;env&nbsp;args&nbsp;subs&nbsp;=<br>
-&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"if:&nbsp;env=%s"</span>&nbsp;(<span class="constructor">Xtmpl</span>.string_of_env&nbsp;env));<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;((_,att),&nbsp;v)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;(<span class="constructor">Xtmpl</span>.apply_to_string&nbsp;env&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;%s/&gt;"</span>&nbsp;att))&nbsp;<span class="keyword">in</span><br>
+<span class="keyword">let</span>&nbsp;fun_if&nbsp;acc&nbsp;env&nbsp;args&nbsp;subs&nbsp;=<br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"if:&nbsp;env=%s"&nbsp;(Xtmpl.string_of_env&nbsp;env));*)</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;(_,att)&nbsp;v&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,&nbsp;xmls)&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_string&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;%s/&gt;"</span>&nbsp;att)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;xmls&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sv&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;v&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"fun_if:&nbsp;pred:&nbsp;att=\"%s\",&nbsp;s=\"%s\",&nbsp;v=\"%s\""&nbsp;att&nbsp;s&nbsp;v);*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;sv<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cond&nbsp;=&nbsp;<span class="constructor">List</span>.for_all&nbsp;pred&nbsp;args&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cond&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">Name_map</span>.for_all&nbsp;pred&nbsp;args&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;subs&nbsp;=&nbsp;<span class="constructor">List</span>.filter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">function</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;subs<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"if:&nbsp;length(subs)=%d"&nbsp;(List.length&nbsp;subs));*)</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;cond,&nbsp;subs&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"&lt;if&gt;:&nbsp;missing&nbsp;children"</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;h&nbsp;::&nbsp;_<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;_&nbsp;::&nbsp;h&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[h]<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[]<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[_]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xmls&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;cond,&nbsp;subs&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"&lt;if&gt;:&nbsp;missing&nbsp;children"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;h&nbsp;::&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;_&nbsp;::&nbsp;h&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[h]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[_]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(acc,&nbsp;xmls)<br>
 ;;<br>
 <br>
-<span class="keyword">let</span>&nbsp;fun_site_url&nbsp;config&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;config.<span class="constructor">Config</span>.rest_api))&nbsp;];;<br>
-<span class="keyword">let</span>&nbsp;fun_site_title&nbsp;config&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;config.<span class="constructor">Config</span>.project_name&nbsp;];;<br>
+<span class="keyword">let</span>&nbsp;fun_site_url&nbsp;config&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;=<br>
+&nbsp;&nbsp;(acc,&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;config.<span class="constructor">Config</span>.rest_api))&nbsp;]);;<br>
+<span class="keyword">let</span>&nbsp;fun_site_title&nbsp;config&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;=&nbsp;(acc,&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;config.<span class="constructor">Config</span>.project_name&nbsp;]);;<br>
 <br>
 <span class="keyword">let</span>&nbsp;tmpl_dir&nbsp;config&nbsp;=<br>
 &nbsp;&nbsp;<span class="constructor">List</span>.fold_left&nbsp;<span class="constructor">Fname</span>.concat_s&nbsp;config.<span class="constructor">Config</span>.root_dir<br>
@@ -290,20 +318,23 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="string">"function&nbsp;onPageLoad()&nbsp;{&nbsp;}"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Some</span>&nbsp;code&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;code<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"script"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"type"</span>),&nbsp;<span class="string">"text/javascript"</span>],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;code])&nbsp;]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"script"</span>),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"type"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;<span class="string">"text/javascript"</span>],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;code])&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;?env<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(((<span class="string">""</span>,&nbsp;<span class="string">"page-title"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;title]))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"window-title"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;wtitle]))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"navpath"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;navpath))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"error"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;error]))&nbsp;::<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"morehead"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;morehead))&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(((<span class="string">""</span>,&nbsp;<span class="string">"page-title"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;title])))&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"window-title"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;wtitle])))&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"navpath"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;navpath)))&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"error"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;[<span class="constructor">Xtmpl</span>.xml_of_string&nbsp;error])))&nbsp;::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"morehead"</span>),&nbsp;(<span class="keyword">fun</span>&nbsp;acc&nbsp;_&nbsp;_&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(acc,&nbsp;morehead)))&nbsp;::<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(default_commands&nbsp;config))<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;env&nbsp;args&nbsp;body&nbsp;=&nbsp;contents&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;()&nbsp;env&nbsp;args&nbsp;body&nbsp;=&nbsp;((),&nbsp;contents)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;env&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.env_of_list&nbsp;~env&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"contents"</span>),&nbsp;f]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;tmpl_file&nbsp;=&nbsp;tmpl_file&nbsp;config&nbsp;<span class="string">"page.tmpl"</span>&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="constructor">Xtmpl</span>&nbsp;.apply_to_file&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl_file)<br>
+&nbsp;&nbsp;snd&nbsp;(<span class="constructor">Xtmpl</span>.apply_to_file&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Fname</span>.abs_string&nbsp;tmpl_file))<br>
 ;;<br>
 <br>
 <span class="keyword">open</span>&nbsp;<span class="constructor">Chn_ast</span>;;<br>
@@ -316,7 +347,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;link&nbsp;ftype&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;href&nbsp;=&nbsp;<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Grdfs</span>.iri_filetype&nbsp;~prefix&nbsp;ftype)&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;href],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;ftype]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;href)],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;ftype]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;ft&nbsp;=&nbsp;<span class="constructor">Grdf_port</span>.string_of_port_type&nbsp;link&nbsp;p.p_ftype&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%s&nbsp;%s"</span>&nbsp;ft&nbsp;p.p_name<br>
@@ -325,8 +358,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Chain</span>&nbsp;fullname&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_chain&nbsp;prefix&nbsp;fullname))],<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Rdf_uri</span>.string&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_chain&nbsp;prefix&nbsp;fullname)))&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Chn_types</span>.string_of_chain_name&nbsp;fullname)]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">Foreach</span>&nbsp;(origin,&nbsp;port_ref)&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"foreach(%s,&nbsp;%s)"</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(self<span class="keywordsign">#</span>string_of_op_origin&nbsp;origin)&nbsp;(self<span class="keywordsign">#</span>string_of_port_ref&nbsp;port_ref)<br>
@@ -337,15 +372,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;(<span class="constructor">Chn_types</span>.iri_intf_of_interface_spec&nbsp;~prefix&nbsp;s))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),&nbsp;[(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>),&nbsp;href],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;s)]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"a"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"href"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;href],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S"</span>&nbsp;s)]))<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Failure</span>&nbsp;s&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"i"</span>),&nbsp;[],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"i"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]))<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;<span class="keyword">private</span>&nbsp;kwd&nbsp;?(cls=<span class="string">"kwa"</span>)s&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cls&nbsp;=&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"hl&nbsp;%s"</span>&nbsp;cls&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),[(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>),&nbsp;cls],&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s]))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.string_of_xml&nbsp;(<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,&nbsp;<span class="string">"span"</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Xtmpl</span>.atts_one&nbsp;(<span class="string">""</span>,&nbsp;<span class="string">"class"</span>)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;cls],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;s])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)<br>
 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">method</span>&nbsp;string_of_operation&nbsp;op&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&nbsp;&nbsp;%s&nbsp;%s&nbsp;:&nbsp;%s&nbsp;;\n"</span><br>
@@ -438,7 +477,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;dotp&nbsp;=&nbsp;<span class="keyword">new</span>&nbsp;<span class="constructor">Chn_ast</span>.chain_dot_printer&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;get_origin&nbsp;ctx&nbsp;iri&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;<span class="constructor">Grdfs</span>.object_iri&nbsp;ctx.<span class="constructor">Chn_types</span>.ctx_rdf<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_opfrom<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~sub:&nbsp;(<span class="constructor">Rdf_term</span>.<span class="constructor">Iri</span>&nbsp;iri)&nbsp;~pred:&nbsp;<span class="constructor">Grdfs</span>.genet_portfrom<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">with</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">None</span>&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failwith<br>

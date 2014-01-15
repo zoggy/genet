@@ -81,7 +81,7 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;heads&nbsp;=&nbsp;[&nbsp;<span class="string">"Name"</span>&nbsp;;&nbsp;<span class="string">"Type"</span>&nbsp;]&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;f&nbsp;intf&nbsp;=<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;[&nbsp;a&nbsp;~href:&nbsp;(<span class="constructor">Rdf_iri</span>.to_uri&nbsp;intf)&nbsp;[<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;(<span class="constructor">Grdf_intf</span>.name&nbsp;ctx.ctx_rdf&nbsp;intf)]&nbsp;]&nbsp;;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"code"</span>),&nbsp;[],&nbsp;xhtml_of_intf_type&nbsp;ctx&nbsp;intf)&nbsp;];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">E</span>&nbsp;((<span class="string">""</span>,<span class="string">"code"</span>),&nbsp;<span class="constructor">Xtmpl</span>.atts_empty,&nbsp;xhtml_of_intf_type&nbsp;ctx&nbsp;intf)&nbsp;];<br>
 &nbsp;&nbsp;&nbsp;&nbsp;]<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;rows&nbsp;=&nbsp;<span class="constructor">List</span>.map&nbsp;f&nbsp;intfs&nbsp;<span class="keyword">in</span><br>

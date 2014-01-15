@@ -91,6 +91,6 @@
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;preds&nbsp;=&nbsp;<span class="constructor">Graph</span>.pred&nbsp;state.g&nbsp;new_expl_node&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;g&nbsp;=&nbsp;<span class="constructor">List</span>.fold_left&nbsp;(f_pred&nbsp;cpt)&nbsp;state.g&nbsp;preds&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;dbg&nbsp;~level:&nbsp;2<br>
-&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S:&nbsp;%d&nbsp;in&nbsp;ports"</span>&nbsp;(g_iri_string&nbsp;new_expl_node)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;(in_ports&nbsp;state&nbsp;new_expl_node)));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">fun</span>&nbsp;()&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"%S:&nbsp;%d&nbsp;in&nbsp;ports"</span>&nbsp;(g_iri_string&nbsp;new_expl_node)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">List</span>.length&nbsp;(in_ports&nbsp;state&nbsp;new_expl_node)));<br>
 &nbsp;&nbsp;(new_expl_node,&nbsp;{&nbsp;state&nbsp;<span class="keyword">with</span>&nbsp;g&nbsp;})</code></body></html>

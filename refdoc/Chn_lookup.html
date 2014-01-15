@@ -87,40 +87,44 @@
 &nbsp;<a class="post" href="Chn_parser.html" title="Chn_parser">Next</a>
 </div>
 <h1>Module <a href="type_Chn_lookup.html">Chn_lookup</a> (<a href="code_Chn_lookup.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Chn_lookup: <code class="code">sig</code> <a href="Chn_lookup.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Chn_lookup: <code class="code">sig</code> <a href="Chn_lookup.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Looking up for instanciated chains.<br>
 </div>
 <hr width="100%">
-<pre><span class="keyword">module</span> <a href="Chn_lookup.Irimap.html">Irimap</a>: <code class="type">Rdf_iri.Irimap</code></pre><pre><code><span id="TYPEichain_info"><span class="keyword">type</span> <code class="type"></code>ichain_info</span> = {</code></pre><table class="typetable">
+
+<pre><span class="keyword">module</span> <a href="Chn_lookup.Irimap.html">Irimap</a>: <code class="type">Rdf_iri.Irimap</code></pre>
+<pre><code><span id="TYPEichain_info"><span class="keyword">type</span> <code class="type"></code>ichain_info</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTichain_info.ichain">ichain</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code>;</code></td>
+<code><span id="TYPEELTichain_info.ichain">ichain</span>&nbsp;: <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTichain_info.fchain">fchain</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code>;</code></td>
+<code><span id="TYPEELTichain_info.fchain">fchain</span>&nbsp;: <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTichain_info.input">input</span>&nbsp;:<code class="type">[ `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> * string</code>;</code></td>
+<code><span id="TYPEELTichain_info.input">input</span>&nbsp;: <code class="type">[ `Relative ] <a href="Fname.html#TYPEfilename">Fname.filename</a> * string</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTichain_info.tools">tools</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t</code>;</code></td>
+<code><span id="TYPEELTichain_info.tools">tools</span>&nbsp;: <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t</code>;</code></td>
 
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEdist"><span class="keyword">type</span> <code class="type"></code>dist</span> = {</code></pre><table class="typetable">
@@ -128,38 +132,44 @@ Looking up for instanciated chains.<br>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTdist.dist">dist</span>&nbsp;:<code class="type">int</code>;</code></td>
+<code><span id="TYPEELTdist.dist">dist</span>&nbsp;: <code class="type">int</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTdist.on_input">on_input</span>&nbsp;:<code class="type">bool</code>;</code></td>
+<code><span id="TYPEELTdist.on_input">on_input</span>&nbsp;: <code class="type">bool</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTdist.on_tools">on_tools</span>&nbsp;:<code class="type">(<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> option * <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> option) Irimap.t</code>;</code></td>
+<code><span id="TYPEELTdist.on_tools">on_tools</span>&nbsp;: <code class="type">(<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> option * <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> option) Irimap.t</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTdist.on_fchain">on_fchain</span>&nbsp;:<code class="type">bool</code>;</code></td>
+<code><span id="TYPEELTdist.on_fchain">on_fchain</span>&nbsp;: <code class="type">bool</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTdist.on_chain">on_chain</span>&nbsp;:<code class="type">bool</code>;</code></td>
+<code><span id="TYPEELTdist.on_chain">on_chain</span>&nbsp;: <code class="type">bool</code>;</code></td>
 
 </tr></table>
 }
 
 
-<pre><span id="VALdist_zero"><span class="keyword">val</span> <a href="code_VALChn_lookup.dist_zero.html">dist_zero</a></span> : <code class="type"><a href="Chn_lookup.html#TYPEdist">dist</a></code></pre><pre><span id="VALtool_dist"><span class="keyword">val</span> <a href="code_VALChn_lookup.tool_dist.html">tool_dist</a></span> : <code class="type">'a -><br>       <a href="Chn_lookup.html#TYPEdist">dist</a> -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t -> <a href="Chn_lookup.html#TYPEdist">dist</a></code></pre><pre><span id="VALinst_chain_dist"><span class="keyword">val</span> <a href="code_VALChn_lookup.inst_chain_dist.html">inst_chain_dist</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a> -> <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a> -> <a href="Chn_lookup.html#TYPEdist">dist</a></code></pre><pre><span id="VALichain_info"><span class="keyword">val</span> <a href="code_VALChn_lookup.ichain_info.html">ichain_info</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a></code></pre><pre><span id="VALget_dist_instances"><span class="keyword">val</span> <a href="code_VALChn_lookup.get_dist_instances.html">get_dist_instances</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> (<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> * <a href="Chn_lookup.html#TYPEdist">dist</a>) list</code></pre><pre><span id="VALmake_graph"><span class="keyword">val</span> <a href="code_VALChn_lookup.make_graph.html">make_graph</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> string</code></pre></body></html>
+
+<pre><span id="VALdist_zero"><span class="keyword">val</span> <a href="code_VALChn_lookup.dist_zero.html">dist_zero</a></span> : <code class="type"><a href="Chn_lookup.html#TYPEdist">dist</a></code></pre>
+<pre><span id="VALtool_dist"><span class="keyword">val</span> <a href="code_VALChn_lookup.tool_dist.html">tool_dist</a></span> : <code class="type">'a -><br>       <a href="Chn_lookup.html#TYPEdist">dist</a> -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> Irimap.t -> <a href="Chn_lookup.html#TYPEdist">dist</a></code></pre>
+<pre><span id="VALinst_chain_dist"><span class="keyword">val</span> <a href="code_VALChn_lookup.inst_chain_dist.html">inst_chain_dist</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a> -> <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a> -> <a href="Chn_lookup.html#TYPEdist">dist</a></code></pre>
+<pre><span id="VALichain_info"><span class="keyword">val</span> <a href="code_VALChn_lookup.ichain_info.html">ichain_info</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> <a href="Chn_lookup.html#TYPEichain_info">ichain_info</a></code></pre>
+<pre><span id="VALget_dist_instances"><span class="keyword">val</span> <a href="code_VALChn_lookup.get_dist_instances.html">get_dist_instances</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -><br>       <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> (<a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> * <a href="Chn_lookup.html#TYPEdist">dist</a>) list</code></pre>
+<pre><span id="VALmake_graph"><span class="keyword">val</span> <a href="code_VALChn_lookup.make_graph.html">make_graph</a></span> : <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a> -> <a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a> -> string</code></pre></body></html>

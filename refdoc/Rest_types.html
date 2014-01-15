@@ -87,17 +87,24 @@
 &nbsp;<a class="post" href="Rest_xhtml.html" title="Rest_xhtml">Next</a>
 </div>
 <h1>Module <a href="type_Rest_types.html">Rest_types</a> (<a href="code_Rest_types.html">.ml</a>)</h1>
-<pre><span class="keyword">module</span> Rest_types: <code class="code">sig</code> <a href="Rest_types.html">..</a> <code class="code">end</code></pre><div class="info">
+
+<pre><span class="keyword">module</span> Rest_types: <code class="code">sig</code> <a href="Rest_types.html">..</a> <code class="code">end</code></pre><div class="info module top">
 Types for REST API.<br>
 </div>
 <hr width="100%">
+
 <pre><span id="TYPEarg"><span class="keyword">type</span> <code class="type"></code>arg</span> = <code class="type">string * string</code> </pre>
 
-<pre><span id="VALget_arg"><span class="keyword">val</span> <a href="code_VALRest_types.get_arg.html">get_arg</a></span> : <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list -> string -> string</code></pre><pre><span id="TYPEiri"><span class="keyword">type</span> <code class="type"></code>iri</span> = <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code> </pre>
+
+<pre><span id="VALget_arg"><span class="keyword">val</span> <a href="code_VALRest_types.get_arg.html">get_arg</a></span> : <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list -> string -> string</code></pre>
+<pre><span id="TYPEiri"><span class="keyword">type</span> <code class="type"></code>iri</span> = <code class="type"><a href="Grdf_types.html#TYPEiri">Grdf_types.iri</a></code> </pre>
+
 
 <pre><span id="TYPEpath"><span class="keyword">type</span> <code class="type"></code>path</span> = <code class="type">string</code> </pre>
 
+
 <pre><span id="TYPEjson"><span class="keyword">type</span> <code class="type"></code>json</span> = <code class="type">string</code> </pre>
+
 
 <pre><code><span id="TYPEmet"><span class="keyword">type</span> <code class="type"></code>met</span> = </code></pre><table class="typetable">
 <tr>
@@ -130,6 +137,7 @@ Types for REST API.<br>
 </tr></table>
 
 
+
 <pre><code><span id="TYPEcontent_type"><span class="keyword">type</span> <code class="type"></code>content_type</span> = </code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -147,29 +155,31 @@ Types for REST API.<br>
 </tr></table>
 
 
+
 <pre><code><span id="TYPEinst_chain_query"><span class="keyword">type</span> <code class="type"></code>inst_chain_query</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinst_chain_query.iq_chain">iq_chain</span>&nbsp;:<code class="type">Rdf_iri.iri option</code>;</code></td>
+<code><span id="TYPEELTinst_chain_query.iq_chain">iq_chain</span>&nbsp;: <code class="type">Rdf_iri.iri option</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinst_chain_query.iq_tools">iq_tools</span>&nbsp;:<code class="type">Rdf_iri.iri Rdf_iri.Irimap.t</code>;</code></td>
+<code><span id="TYPEELTinst_chain_query.iq_tools">iq_tools</span>&nbsp;: <code class="type">Rdf_iri.iri Rdf_iri.Irimap.t</code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTinst_chain_query.iq_input">iq_input</span>&nbsp;:<code class="type">(string list * string option) option</code>;</code></td>
+<code><span id="TYPEELTinst_chain_query.iq_input">iq_input</span>&nbsp;: <code class="type">(string list * string option) option</code>;</code></td>
 <td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >input path * git id option</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
 </tr></table>
 }
+
 
 
 <pre><code><span id="TYPEthing"><span class="keyword">type</span> <code class="type"></code>thing</span> = </code></pre><table class="typetable">
@@ -378,70 +388,78 @@ Types for REST API.<br>
 </tr></table>
 
 
+
 <pre><span id="TYPEresponse"><span class="keyword">type</span> <code class="type"></code>response</span> = <code class="type"><a href="Rest_types.html#TYPEarg">arg</a> list * string</code> </pre>
 
+
 <pre><span id="TYPEuser"><span class="keyword">type</span> <code class="type"></code>user</span> = <code class="type"><a href="Chn_types.html#TYPEuser">Chn_types.user</a></code> </pre>
+
 
 <pre><span id="TYPEcontext"><span class="keyword">type</span> <code class="type"></code>context</span> = <code class="type"><a href="Chn_types.html#TYPEcontext">Chn_types.context</a></code> = {</pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontext.ctx_rdf">ctx_rdf</span>&nbsp;:<code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a></code>;</code></td>
+<code><span id="TYPEELTcontext.ctx_rdf">ctx_rdf</span>&nbsp;: <code class="type"><a href="Grdf_types.html#TYPEworld">Grdf_types.world</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontext.ctx_cfg">ctx_cfg</span>&nbsp;:<code class="type"><a href="Config.html#TYPEt">Config.t</a></code>;</code></td>
+<code><span id="TYPEELTcontext.ctx_cfg">ctx_cfg</span>&nbsp;: <code class="type"><a href="Config.html#TYPEt">Config.t</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontext.ctx_user">ctx_user</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEuser">user</a> option</code>;</code></td>
+<code><span id="TYPEELTcontext.ctx_user">ctx_user</span>&nbsp;: <code class="type"><a href="Rest_types.html#TYPEuser">user</a> option</code>;</code></td>
 
 </tr></table>
 }
 
 
+
 <pre><span id="TYPEget_handler"><span class="keyword">type</span> <code class="type"></code>get_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEarg">arg</a> list -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
 
 <pre><span id="TYPEdelete_handler"><span class="keyword">type</span> <code class="type"></code>delete_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -> <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
 
+
 <pre><span id="TYPEpost_handler"><span class="keyword">type</span> <code class="type"></code>post_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEjson">json</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
 
+
 <pre><span id="TYPEput_handler"><span class="keyword">type</span> <code class="type"></code>put_handler</span> = <code class="type"><a href="Rest_types.html#TYPEcontext">context</a> -><br>       <a href="Rest_types.html#TYPEthing">thing</a> -> <a href="Rest_types.html#TYPEjson">json</a> -> <a href="Rest_types.html#TYPEresponse">response</a></code> </pre>
+
 
 <pre><code><span id="TYPEcontent_type_handlers"><span class="keyword">type</span> <code class="type"></code>content_type_handlers</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontent_type_handlers.h_get">h_get</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEget_handler">get_handler</a></code>;</code></td>
+<code><span id="TYPEELTcontent_type_handlers.h_get">h_get</span>&nbsp;: <code class="type"><a href="Rest_types.html#TYPEget_handler">get_handler</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontent_type_handlers.h_del">h_del</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEdelete_handler">delete_handler</a></code>;</code></td>
+<code><span id="TYPEELTcontent_type_handlers.h_del">h_del</span>&nbsp;: <code class="type"><a href="Rest_types.html#TYPEdelete_handler">delete_handler</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontent_type_handlers.h_post">h_post</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEpost_handler">post_handler</a></code>;</code></td>
+<code><span id="TYPEELTcontent_type_handlers.h_post">h_post</span>&nbsp;: <code class="type"><a href="Rest_types.html#TYPEpost_handler">post_handler</a></code>;</code></td>
 
 </tr>
 <tr>
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTcontent_type_handlers.h_put">h_put</span>&nbsp;:<code class="type"><a href="Rest_types.html#TYPEput_handler">put_handler</a></code>;</code></td>
+<code><span id="TYPEELTcontent_type_handlers.h_put">h_put</span>&nbsp;: <code class="type"><a href="Rest_types.html#TYPEput_handler">put_handler</a></code>;</code></td>
 
 </tr></table>
 }

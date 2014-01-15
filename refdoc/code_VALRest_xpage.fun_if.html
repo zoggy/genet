@@ -77,22 +77,27 @@
 <link title="Version" rel="Chapter" href="Version.html"><title>Genet library reference : Rest_xpage.fun_if</title>
 </head>
 <body>
-<code class="code"><span class="keyword">let</span>&nbsp;fun_if&nbsp;env&nbsp;args&nbsp;subs&nbsp;=<br>
-&nbsp;&nbsp;prerr_endline&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"if:&nbsp;env=%s"</span>&nbsp;(<span class="constructor">Xtmpl</span>.string_of_env&nbsp;env));<br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;((_,att),&nbsp;v)&nbsp;=<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;(<span class="constructor">Xtmpl</span>.apply_to_string&nbsp;env&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;%s/&gt;"</span>&nbsp;att))&nbsp;<span class="keyword">in</span><br>
+<code class="code"><span class="keyword">let</span>&nbsp;fun_if&nbsp;acc&nbsp;env&nbsp;args&nbsp;subs&nbsp;=<br>
+&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"if:&nbsp;env=%s"&nbsp;(Xtmpl.string_of_env&nbsp;env));*)</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;pred&nbsp;(_,att)&nbsp;v&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;(_,&nbsp;xmls)&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.apply_to_string&nbsp;()&nbsp;env&nbsp;(<span class="constructor">Printf</span>.sprintf&nbsp;<span class="string">"&lt;%s/&gt;"</span>&nbsp;att)&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;s&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;xmls&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;sv&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.string_of_xmls&nbsp;v&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"fun_if:&nbsp;pred:&nbsp;att=\"%s\",&nbsp;s=\"%s\",&nbsp;v=\"%s\""&nbsp;att&nbsp;s&nbsp;v);*)</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;v<br>
+&nbsp;&nbsp;&nbsp;&nbsp;s&nbsp;=&nbsp;sv<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
-&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cond&nbsp;=&nbsp;<span class="constructor">List</span>.for_all&nbsp;pred&nbsp;args&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;cond&nbsp;=&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">Name_map</span>.for_all&nbsp;pred&nbsp;args&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="keyword">let</span>&nbsp;subs&nbsp;=&nbsp;<span class="constructor">List</span>.filter<br>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">function</span>&nbsp;<span class="constructor">Xtmpl</span>.<span class="constructor">D</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">false</span>&nbsp;<span class="keywordsign">|</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keyword">true</span>)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;subs<br>
 &nbsp;&nbsp;<span class="keyword">in</span><br>
 &nbsp;&nbsp;<span class="comment">(*prerr_endline&nbsp;(Printf.sprintf&nbsp;"if:&nbsp;length(subs)=%d"&nbsp;(List.length&nbsp;subs));*)</span><br>
-&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;cond,&nbsp;subs&nbsp;<span class="keyword">with</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"&lt;if&gt;:&nbsp;missing&nbsp;children"</span><br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;h&nbsp;::&nbsp;_<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;_&nbsp;::&nbsp;h&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[h]<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[]<br>
-&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[_]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]</code></body></html>
+&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;xmls&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">match</span>&nbsp;cond,&nbsp;subs&nbsp;<span class="keyword">with</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;[]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;failwith&nbsp;<span class="string">"&lt;if&gt;:&nbsp;missing&nbsp;children"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">true</span>,&nbsp;h&nbsp;::&nbsp;_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;_&nbsp;::&nbsp;h&nbsp;::&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[h]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="keyword">false</span>,&nbsp;[_]&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;[]<br>
+&nbsp;&nbsp;<span class="keyword">in</span><br>
+&nbsp;&nbsp;(acc,&nbsp;xmls)</code></body></html>
