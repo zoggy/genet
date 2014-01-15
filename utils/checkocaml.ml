@@ -27,7 +27,7 @@
 
 (* $Id$ *)
 
-(*c==m=[OCaml_conf]=0.7=t==*)
+(*c==m=[OCaml_conf]=0.8=t==*)
 
 
   open Sys
@@ -421,7 +421,7 @@ let (<<) v1 v2 =
     | ([], _) -> true
     | (_,[]) -> false
     | (h1::q1, h2::q2) ->
-        (h1 < h2) or
+        (h1 < h2) ||
         (h1 = h2 && (iter (q1,q2)))
   in
   iter (v1,v2)
@@ -784,14 +784,14 @@ let check_ocamlfind_package ?min_version ?max_version ?(fail=true) ?not_found co
         begin
         function
           | `Package_not_installed pkg ->
-              let msg = Printf.sprintf "Package %s not found" pkg in
+              let msg = Printf.sprintf "Package %s not found\n" pkg in
               if fail then
                 !fatal_error msg
               else
                 !print msg
           | `Package_bad_version version ->
               let msg =
-                (Printf.sprintf "Package %s found with version %s, but wanted %s%s%s"
+                (Printf.sprintf "Package %s found with version %s, but wanted %s%s%s\n"
                  name version
                  (match min_version with
                     None -> ""
@@ -826,7 +826,7 @@ let check_ocamlfind_package ?min_version ?max_version ?(fail=true) ?not_found co
                 let version = version_of_string s in
                 let min = match min_version with None -> [] | Some v -> v in
                 let max = match max_version with None -> [max_int] | Some v -> v in
-                if version < min or version > max then
+                if version < min || version > max then
                   (
                    not_found (`Package_bad_version s);
                    false
@@ -879,7 +879,7 @@ let add_conf_variables c =
    List.iter (fun (var,v) -> add_subst var v) l
 
 
-(*/c==m=[OCaml_conf]=0.7=t==*)
+(*/c==m=[OCaml_conf]=0.8=t==*)
 
 let detect_boxes ?(modes=[`Byte;`Opt]) lablgtk2_includes conf =
   let includes =
@@ -945,7 +945,7 @@ let _ = check_ocamlfind_package conf "nethttpd";;
 let _ = check_ocamlfind_package conf "dot.gtk";;
 let _ = check_ocamlfind_package conf "pcre";;
 (*let _ = check_ocamlfind_package conf "yojson";;*)
-let _ = check_ocamlfind_package conf "xtmpl";;
+let _ = check_ocamlfind_package conf ~min_version: [0;8] "xtmpl";;
 let _ = check_ocamlfind_package conf ~min_version: [2;16] "lablgtk2";;
 let _ = check_ocamlfind_package conf "lablgtk2-extras";;
 
