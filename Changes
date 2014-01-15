@@ -1,4 +1,4 @@
-Next release:
+Release 0.6
 - Upgrade to new stog and xtmpl
 - Modify vocabulary:
   + Grdfs.genet_useversion replaced by Grdfsusetoolversion, to link

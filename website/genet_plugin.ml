@@ -43,6 +43,18 @@ let read_file stog elt file =
     (stog, map)
 ;;
 
+
+let xml_concat ?(sep=[]) l =
+  let rec iter acc = function
+    [] -> List.rev acc
+  | x :: q ->
+    match acc with
+      [] -> iter [x] q
+    | l -> iter ([x] @ sep @ l) q
+  in
+  iter [] l
+;;
+
 let format_code ?prompt code =
   match prompt with
     None -> code
@@ -50,24 +62,25 @@ let format_code ?prompt code =
       let lines = Stog_misc.split_string code ['\n'] in
       let f line =
         if String.length line > 0 && line.[0] <> ' ' then
-          p^" "^line
+          p ^ " " ^ line
         else
           line
       in
       String.concat "\n" (List.map f lines)
 ;;
 
+
 let fun_from_shell elt_id stog env args subs =
   let elt = Stog_types.elt stog elt_id in
   try
     let file =
-      match Xtmpl.get_arg args ("","file") with
+      match Xtmpl.get_arg_cdata args ("","file") with
         None -> failwith "from_shell: missing file attribute"
       | Some file -> file
     in
     let (stog, map) = read_file stog elt file in
     let id =
-      match Xtmpl.get_arg args ("","id") with
+      match Xtmpl.get_arg_cdata args ("","id") with
       | None -> failwith "from_shell: missing id"
       | Some id -> id
     in
@@ -77,7 +90,8 @@ let fun_from_shell elt_id stog env args subs =
           failwith (Printf.sprintf "from_shell: id %S not found in file %S" id file)
     in
     let prompt = Xtmpl.get_arg args ("","prompt") in
-    (stog, [ Xtmpl.E (("","command-line"), [], [ Xtmpl.D (format_code ?prompt code) ]) ])
+    let prompt = Stog_misc.map_opt Xtmpl.string_of_xmls prompt in
+    (stog, [ Xtmpl.E (("","command-line"), Xtmpl.atts_empty, [Xtmpl.D (format_code ?prompt code)]) ])
   with
   Failure msg ->
       Stog_msg.error msg;
