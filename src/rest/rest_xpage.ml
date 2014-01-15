@@ -30,17 +30,21 @@ module Iriset = Rdf_iri.Iriset
 let star ?label () =
   let args = match label with
       None -> []
-    | Some s -> [("","title"), s]
+    | Some s -> [("","title"), [Xtmpl.D s]]
   in
-  Xtmpl.E (("","star"), args, []);;
+  Xtmpl.E (("","star"), Xtmpl.atts_of_list args, []);;
 
 let fun_star acc _ args _ =
-  let args = (("","width"), "16") :: (("", "src"), "<site-url/>star.svg") :: args in
+  let args = Xtmpl.atts_of_list ~atts: args
+    [ ("","width"), [Xtmpl.D "16"] ;
+      ("", "src"), [Xtmpl.D "<site-url/>star.svg"] ;
+    ]
+  in
   (acc, [Xtmpl.E (("","img"), args, [])])
 ;;
 
 let fun_include tmpl_dir acc _env args subs =
-  match Xtmpl.get_arg args ("", "file") with
+  match Xtmpl.get_arg_cdata args ("", "file") with
     None -> failwith "Missing 'file' argument for include command";
   | Some file ->
       let file =
@@ -50,17 +54,16 @@ let fun_include tmpl_dir acc _env args subs =
           file
       in
       let xml = [Xtmpl.xml_of_string (Misc.string_of_file file)] in
-      let args =
-        (("", "include-contents"), String.concat "" (List.map Xtmpl.string_of_xml subs)) ::
-        args
+      let args = Xtmpl.atts_one ~atts: args
+        ("", "include-contents") subs
       in
       (acc, [Xtmpl.E (("", Xtmpl.tag_env), args, xml)])
 ;;
 let fun_image acc _env args legend =
-  let width = Xtmpl.opt_arg args ("", "width") in
-  let src = Xtmpl.opt_arg args ("", "src") in
+  let width = Xtmpl.opt_arg_cdata args ("", "width") in
+  let src = Xtmpl.opt_arg_cdata args ("", "src") in
   let cls = Printf.sprintf "img%s"
-    (match Xtmpl.get_arg args ("", "float") with
+    (match Xtmpl.get_arg_cdata args ("", "float") with
        Some "left" -> "-float-left"
      | Some "right" -> "-float-right"
      | Some s -> failwith (Printf.sprintf "unhandled image position: %s" s)
@@ -69,12 +72,19 @@ let fun_image acc _env args legend =
   in
   let xmls =
     [
-      Xtmpl.E (("", "div"), [ ("", "class"), cls ],
-       (Xtmpl.E (("", "img"), [ ("", "class"), "img" ; ("", "src"), src; ("", "width"), width ], [])) ::
+      Xtmpl.E (("", "div"), Xtmpl.atts_one ("", "class") [ Xtmpl.D cls ] ,
+       (Xtmpl.E (("", "img"),
+         Xtmpl.atts_of_list
+           [ ("", "class"), [Xtmpl.D "img"] ;
+             ("", "src"), [Xtmpl.D src] ;
+             ("", "width"), [Xtmpl.D width] ;
+           ],
+           [])
+       ) ::
          (match legend with
             [] -> []
-          | xml -> [ Xtmpl.E (("", "div"), [("", "class"), "legend"], xml) ]
-     )
+          | xml -> [ Xtmpl.E (("", "div"), Xtmpl.atts_one ("", "class") [Xtmpl.D "legend"], xml) ]
+         )
       )
     ]
   in
@@ -104,7 +114,7 @@ let fun_hcode ?(inline=false) ?lang acc _env args code =
     match lang with
       None ->
         (
-         let lang = Xtmpl.opt_arg args ~def: "txt" ("", "lang") in
+         let lang = Xtmpl.opt_arg_cdata args ~def: "txt" ("", "lang") in
          match lang with
            "txt" -> (lang, None)
          | _ -> (lang, Some (Printf.sprintf "--syntax=%s" lang))
@@ -131,10 +141,11 @@ let fun_hcode ?(inline=false) ?lang acc _env args code =
   in
   let xmls =
     if inline then
-      [ Xtmpl.E (("", "span"), [("", "class"),"icode"], [xml_code]) ]
+      [ Xtmpl.E (("", "span"), Xtmpl.atts_one ("", "class") [Xtmpl.D "icode"], [xml_code]) ]
     else
       [ Xtmpl.E (("", "pre"),
-         [("", "class"), Printf.sprintf "code-%s" language], [xml_code])
+         Xtmpl.atts_one ("", "class") [Xtmpl.D ("code-%s"^language)],
+         [xml_code])
       ]
   in
   (acc, xmls)
@@ -145,32 +156,38 @@ let fun_command_line = fun_hcode ~lang: "sh";;
 let fun_icode = fun_hcode ~inline: true ;;
 
 let fun_section cls acc _env args body =
-  let id =
-    match Xtmpl.get_arg args ("", "name") with
-      None -> []
-    | Some name -> [("", "id"), name]
+  let atts =
+    match Xtmpl.get_arg_cdata args ("", "name") with
+      None -> Xtmpl.atts_empty
+    | Some name -> Xtmpl.atts_one ("", "id") [Xtmpl.D name]
   in
   let title =
     match Xtmpl.get_arg args ("", "title") with
       None -> []
     | Some t ->
-        [Xtmpl.E (("", "div"), [("", "class"), cls^"-title"] @ id, [Xtmpl.xml_of_string t])]
+        [Xtmpl.E (("", "div"),
+           Xtmpl.atts_one ~atts ("", "class") [Xtmpl.D (cls^"-title")],
+           t
+          )]
   in
-  (acc, [ Xtmpl.E (("", "div"), [("", "class"), cls], title @ body) ])
+  (acc, [ Xtmpl.E (("", "div"),
+      Xtmpl.atts_one ("", "class") [Xtmpl.D cls],
+      title @ body) ])
 ;;
 
 let fun_subsection = fun_section "subsection";;
 let fun_section = fun_section "section";;
 
 let fun_if acc env args subs =
-  prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));
-  let pred ((_,att), v) =
+  (*prerr_endline (Printf.sprintf "if: env=%s" (Xtmpl.string_of_env env));*)
+  let pred (_,att) v =
     let (_, xmls) = Xtmpl.apply_to_string () env (Printf.sprintf "<%s/>" att) in
     let s = Xtmpl.string_of_xmls xmls in
+    let sv = Xtmpl.string_of_xmls v in
     (*prerr_endline (Printf.sprintf "fun_if: pred: att=\"%s\", s=\"%s\", v=\"%s\"" att s v);*)
-    s = v
+    s = sv
   in
-  let cond = List.for_all pred args in
+  let cond = Xtmpl.Name_map.for_all pred args in
   let subs = List.filter
     (function Xtmpl.D _ -> false | _ -> true)
     subs
@@ -222,7 +239,10 @@ let page config ?env ~title ?javascript ?(wtitle=title) ?(navpath=[]) ?(error=""
         None -> "function onPageLoad() { }"
       | Some code -> code
     in
-    [ Xtmpl.E (("", "script"), [("", "type"), "text/javascript"], [Xtmpl.D code]) ]
+    [ Xtmpl.E (("", "script"), 
+       Xtmpl.atts_one ("", "type") [Xtmpl.D "text/javascript"],
+       [Xtmpl.D code]) 
+    ]
   in
   let env = Xtmpl.env_of_list ?env
     ((("", "page-title"), (fun acc _ _ _ -> (acc, [Xtmpl.xml_of_string title]))) ::
@@ -248,7 +268,9 @@ class xhtml_ast_printer prefix =
       let link ftype =
         let href = Rdf_iri.to_uri (Grdfs.iri_filetype ~prefix ftype) in
         Xtmpl.string_of_xml
-        (Xtmpl.E (("", "a"), [("", "href"), Rdf_uri.string href], [Xtmpl.D ftype]))
+        (Xtmpl.E (("", "a"),
+            Xtmpl.atts_one ("", "href") [Xtmpl.D (Rdf_uri.string href)],
+            [Xtmpl.D ftype]))
       in
       let ft = Grdf_port.string_of_port_type link p.p_ftype in
       Printf.sprintf "%s %s" ft p.p_name
@@ -257,8 +279,10 @@ class xhtml_ast_printer prefix =
       Chain fullname ->
         Xtmpl.string_of_xml
         (Xtmpl.E
-         (("", "a"), [("", "href"), Rdf_uri.string (Rdf_iri.to_uri (Chn_types.iri_chain prefix fullname))],
-          [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
+         (("", "a"), 
+            Xtmpl.atts_one ("", "href")
+              [Xtmpl.D (Rdf_uri.string (Rdf_iri.to_uri (Chn_types.iri_chain prefix fullname))) ],
+            [Xtmpl.D (Chn_types.string_of_chain_name fullname)]))
     | Foreach (origin, port_ref) ->
         Printf.sprintf "foreach(%s, %s)"
         (self#string_of_op_origin origin) (self#string_of_port_ref port_ref)
@@ -269,15 +293,19 @@ class xhtml_ast_printer prefix =
             (Rdf_iri.to_uri (Chn_types.iri_intf_of_interface_spec ~prefix s))
           in
           Xtmpl.string_of_xml
-          (Xtmpl.E
-           (("", "a"), [("", "href"), href], [Xtmpl.D (Printf.sprintf "%S" s)]))
+          (Xtmpl.E (("", "a"),
+              Xtmpl.atts_one ("", "href") [Xtmpl.D href],
+              [Xtmpl.D (Printf.sprintf "%S" s)]))
         with
           Failure s ->
-            Xtmpl.string_of_xml (Xtmpl.E (("", "i"), [], [Xtmpl.D s]))
+            Xtmpl.string_of_xml (Xtmpl.E (("", "i"), Xtmpl.atts_empty, [Xtmpl.D s]))
 
     method private kwd ?(cls="kwa")s =
       let cls = Printf.sprintf "hl %s" cls in
-      Xtmpl.string_of_xml (Xtmpl.E (("", "span"),[("", "class"), cls], [Xtmpl.D s]))
+      Xtmpl.string_of_xml (Xtmpl.E (("", "span"),
+        Xtmpl.atts_one ("", "class") [Xtmpl.D cls],
+        [Xtmpl.D s])
+      )
 
     method string_of_operation op =
       Printf.sprintf "  %s %s : %s ;\n"

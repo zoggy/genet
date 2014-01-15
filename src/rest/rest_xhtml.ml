@@ -38,7 +38,7 @@ let svg_dpi = 96. ;;
 let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
   let size = String.length dot in
   if size > 50_000 then
-    [Xtmpl.E (("", "div"), [("", "class"), "alert alert-warning"],
+    [Xtmpl.E (("", "div"), Xtmpl.atts_one ("", "class") [Xtmpl.D "alert alert-warning"],
       [Xtmpl.D "Dot graph would have been too big; it was not generated"])]
   else
     begin
@@ -49,7 +49,9 @@ let dot_to_svg ?(svg_w=svg_width) ?(svg_h=svg_height) dot =
         Grdf_dot.dot_to_svg ~options ~size: (svg_w,svg_h) dot
       with
         Failure msg ->
-          [Xtmpl.E (("", "div"), [("", "class"), "alert alert-error"], [Xtmpl.D msg])]
+          [Xtmpl.E (("", "div"),
+             Xtmpl.atts_one ("", "class") [Xtmpl.D "alert alert-error"],
+             [Xtmpl.D msg])]
     end
 ;;
 
@@ -63,7 +65,7 @@ let page ?(env=Xtmpl.env_empty ()) ctx ~title ?javascript ?wtitle ?navpath ?erro
 ;;
 
 let page_active v ?(env=Xtmpl.env_empty ()) =
-  let env = Xtmpl.env_add_att ("navbar-"^v) "active" env in
+  let env = Xtmpl.env_add_att ("navbar-"^v) [Xtmpl.D "active"] env in
   page ~env
 ;;
 
@@ -78,8 +80,8 @@ let diff_page = page_active "diff";;
 let handle_page_error ?(page=home_page) ctx f x =
   try f x
   with exc ->
-      let p msg = Xtmpl.E (("", "p"), [], [Xtmpl.D msg]) in
-      let pre msg = Xtmpl.E (("", "pre"), [], [Xtmpl.D msg]) in
+      let p msg = Xtmpl.E (("", "p"), Xtmpl.atts_empty, [Xtmpl.D msg]) in
+      let pre msg = Xtmpl.E (("", "pre"), Xtmpl.atts_empty, [Xtmpl.D msg]) in
       let msg =
         match exc with
         | Sys_error s | Failure s -> p s
@@ -105,30 +107,31 @@ let table ?heads rows =
     | Some heads ->
         let l =
           List.map
-          (fun h -> Xtmpl.E (("","th"), [], [Xtmpl.D h]))
+          (fun h -> Xtmpl.E (("","th"), Xtmpl.atts_empty, [Xtmpl.D h]))
           heads
         in
         [
-          Xtmpl.E (("","thead"), [],
-           [ Xtmpl.E (("","tr"), [], l) ])
+          Xtmpl.E (("","thead"), Xtmpl.atts_empty,
+           [ Xtmpl.E (("","tr"), Xtmpl.atts_empty, l) ])
         ]
   in
-  let td c = Xtmpl.E (("","td"), [], c) in
-  let tr l = Xtmpl.E (("","tr"), [], List.map td l) in
+  let td c = Xtmpl.E (("","td"), Xtmpl.atts_empty, c) in
+  let tr l = Xtmpl.E (("","tr"), Xtmpl.atts_empty, List.map td l) in
   let rows = List.map tr rows in
   Xtmpl.E
-  (("", "table"), [("","class"), "table table-bordered table-striped"],
-   (heads @ rows)
+    (("", "table"),
+     Xtmpl.atts_one ("","class") [Xtmpl.D"table table-bordered table-striped"],
+     (heads @ rows)
   )
 ;;
 
 let ul l =
-  let l = List.map (fun c -> Xtmpl.E (("","li"), [], c)) l in
-  Xtmpl.E (("","ul"), [], l)
+  let l = List.map (fun c -> Xtmpl.E (("","li"), Xtmpl.atts_empty, c)) l in
+  Xtmpl.E (("","ul"), Xtmpl.atts_empty, l)
 ;;
 
 let a ~href contents =
-  (Xtmpl.E (("", "a"), [("", "href"), (Rdf_uri.string href)], contents))
+  (Xtmpl.E (("", "a"), Xtmpl.atts_one ("", "href") [Xtmpl.D (Rdf_uri.string href)], contents))
 ;;
 
 let a_by_class ctx iri =
@@ -513,7 +516,7 @@ let intf_list ctx intfs =
   let heads = [ "Name" ; "Type" ] in
   let f intf =
     [ [ a ~href: (Rdf_iri.to_uri intf) [Xtmpl.D (Grdf_intf.name ctx.ctx_rdf intf)] ] ;
-      [ Xtmpl.E (("","code"), [], xhtml_of_intf_type ctx intf) ];
+      [ Xtmpl.E (("","code"), Xtmpl.atts_empty, xhtml_of_intf_type ctx intf) ];
     ]
   in
   let rows = List.map f intfs in
@@ -629,9 +632,9 @@ let get_intf ctx iri =
   let wtitle = Printf.sprintf "%s / %s" tool_name name in
   let typ =
     let of_dir label dir =
-      Xtmpl.E (("", "p"), [],
-       [ Xtmpl.E (("","strong"), [], [Xtmpl.D label]) ;
-         Xtmpl.E (("","code"), [],  (xhtml_of_ports ctx dir iri) );
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D label]) ;
+         Xtmpl.E (("","code"), Xtmpl.atts_empty,  (xhtml_of_ports ctx dir iri) );
        ])
     in
     [
@@ -789,8 +792,8 @@ let get_chains ctx =
   in
   let contents =
     [
-      Xtmpl.E (("", "section"), [], [table ~heads rows]) ;
-      Xtmpl.E (("", "section"), [("","title"), "Dependencies"], deps) ;
+      Xtmpl.E (("", "section"), Xtmpl.atts_empty, [table ~heads rows]) ;
+      Xtmpl.E (("", "section"), Xtmpl.atts_one ("","title") [Xtmpl.D "Dependencies"], deps) ;
     ]
   in
   let title = "Modules" in
@@ -831,8 +834,8 @@ let get_chain_module ctx ?nav modname =
   in
   let contents =
     [
-      Xtmpl.E (("", "section"), [], [table ~heads rows]) ;
-      Xtmpl.E (("", "section"), [("","title"), "Dependencies"], deps) ;
+      Xtmpl.E (("", "section"), Xtmpl.atts_empty, [table ~heads rows]) ;
+      Xtmpl.E (("", "section"), Xtmpl.atts_one ("","title") [Xtmpl.D "Dependencies"], deps) ;
     ]
   in
   let navpath =
@@ -867,9 +870,9 @@ let get_chain ctx fullname =
   let navpath = xhtml_navpath ctx (`Chain fullname) in
   let contents =
     [
-      Xtmpl.E (("", "section"), [], svg) ;
+      Xtmpl.E (("", "section"), Xtmpl.atts_empty, svg) ;
       Xtmpl.E (("", "section"),
-       [("","title"), "Source from "^(Fname.quote file)], code) ;
+       Xtmpl.atts_one ("","title") [Xtmpl.D ("Source from "^(Fname.quote file))], code) ;
     ]
   in
   ([ctype ()], chain_page ctx ~title ~navpath contents)
@@ -950,9 +953,11 @@ let xhtml_inst_list ctx list =
            in
            let mk_option n =
              [ Xtmpl.E (("","input"),
-                [ ("","type"),"radio" ;
-                  ("","name"), "inst"^(string_of_int n) ;
-                  ("","value"), Rdf_iri.string iri_inst],
+                Xtmpl.atts_of_list
+                  [ ("","type"), [Xtmpl.D "radio"] ;
+                    ("","name"), [Xtmpl.D ("inst"^(string_of_int n))] ;
+                    ("","value"), [Xtmpl.D (Rdf_iri.string iri_inst)]
+                  ],
                 [])
              ]
            in
@@ -968,9 +973,13 @@ let xhtml_inst_list ctx list =
     let iri = Rdf_iri.concat iri Grdfs.suffix_ichains in
     Rdf_iri.string iri
   in
-  Xtmpl.E (("", "form"), [("", "action"), action],
-    [ table ;
-      Xtmpl.E (("","input"), [("","value"),"Show diffs" ; ("","type"), "submit"], []) ;
+  Xtmpl.E (("", "form"), Xtmpl.atts_one ("", "action") [Xtmpl.D action],
+   [ table ;
+     Xtmpl.E (("","input"),
+      Xtmpl.atts_of_list
+        [  ("","value"), [Xtmpl.D "Show diffs"] ;
+          ("","type"), [Xtmpl.D "submit"]
+        ], []) ;
     ])
 ;;
 
@@ -1010,22 +1019,24 @@ let get_fchain ctx iri =
       [] -> []
     | _ ->
        let l = List.map (fun (iri, _, _) -> iri) l in
-        [ Xtmpl.E (("","section"), [("","title"), "Instanciated chains"], [xhtml_inst_list ctx l]) ]
+        [ Xtmpl.E (("","section"), 
+           Xtmpl.atts_one ("","title") [Xtmpl.D "Instanciated chains"],
+           [xhtml_inst_list ctx l]) ]
   in
 (*  let iri_fchain = Chn_types.iri_fchain ctx.ctx_cfg.Config.rest_api fchain_name in*)
   let date = Misc.string_of_opt (Chn_flat.fchain_creation_date ctx iri) in
   let contents =
     [
-      Xtmpl.E (("", "p"), [],
-       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Id:" ]);
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Id:" ]);
          Xtmpl.D (Misc.string_of_opt id) ;
        ]) ;
-      Xtmpl.E (("", "p"), [],
-       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Creation date:" ]);
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Creation date:" ]);
          Xtmpl.D date ;
        ]) ;
-      Xtmpl.E (("", "p"), [],
-       (Xtmpl.E (("","strong"), [], [ Xtmpl.D "Module ids:" ])) ::
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       (Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Module ids:" ])) ::
          module_ids
        )
     ] @ svg @ ichains
@@ -1060,8 +1071,8 @@ let get_ichain_op ctx iri =
         let tool = Grdf_intf.tool_of_intf iri_from in
         let name = Printf.sprintf "%s / %s" (Grdf_tool.name ctx.Chn_types.ctx_rdf tool) name in
         [
-          Xtmpl.E (("", "p"), [],
-           [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Interface:" ]);
+          Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+           [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Interface:" ]);
              a ~href: (Rdf_iri.to_uri iri_from) [Xtmpl.D name] ;
            ]) ;
         ]
@@ -1071,8 +1082,8 @@ let get_ichain_op ctx iri =
       0 -> []
     | n ->
         [
-          Xtmpl.E (("","p"), [],
-            [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Return code:"]) ;
+          Xtmpl.E (("","p"), Xtmpl.atts_empty,
+            [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Return code:"]) ;
               a_outfile ctx [string_of_int n] ;
            ])
         ]
@@ -1084,8 +1095,8 @@ let get_ichain_op ctx iri =
       None -> []
     | Some md5 ->
         [
-          Xtmpl.E (("","p"), [],
-            [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Output:"]) ;
+          Xtmpl.E (("","p"), Xtmpl.atts_empty,
+            [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Output:"]) ;
               a_outfile ctx [md5] ;
            ])
         ]
@@ -1096,12 +1107,12 @@ let get_ichain_op ctx iri =
   in
   let contents =
     [
-      Xtmpl.E (("", "p"), [],
-       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Start date:" ]);
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Start date:" ]);
          Xtmpl.D start_date ;
        ]) ;
-      Xtmpl.E (("", "p"), [],
-       [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Stop date:" ]);
+      Xtmpl.E (("", "p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Stop date:" ]);
          Xtmpl.D stop_date ;
        ]) ;
     ] @ interface @ return_code @ output @ svg
@@ -1184,32 +1195,32 @@ let get_ichain ctx iri =
       None -> []
     | Some err_iri ->
         let s_iri = Rdf_iri.string err_iri in
-        [ Xtmpl.E (("","p"), [("","class"), "alert alert-error"],
+        [ Xtmpl.E (("","p"), Xtmpl.atts_one ("","class") [Xtmpl.D "alert alert-error"],
            [ Xtmpl.D "Failed while running " ;
-             Xtmpl.E (("","tt"), [],
+             Xtmpl.E (("","tt"), Xtmpl.atts_empty,
                [ a ~href: (Rdf_iri.to_uri err_iri) [Xtmpl.D s_iri] ])
            ]
           )
         ]
   in
   let contents =
-    [ Xtmpl.E (("","p"), [],
-       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Creation date:"]) ;
+    [ Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Creation date:"]) ;
          Xtmpl.D date ;
        ]) ;
-      Xtmpl.E (("","p"), [],
-       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Start date:"]) ;
+      Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Start date:"]) ;
          Xtmpl.D start_date ;
        ]) ;
-      Xtmpl.E (("","p"), [],
-       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Stop date:"]) ;
+      Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Stop date:"]) ;
          Xtmpl.D stop_date ;
        ]) ;
-      Xtmpl.E (("","p"), [],
-       ( (Xtmpl.E (("","strong"), [], [Xtmpl.D "Input:"])) :: input_info)
+      Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       ( (Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Input:"])) :: input_info)
       );
-      Xtmpl.E (("","p"), [],
-       ( (Xtmpl.E (("","strong"), [], [Xtmpl.D "Flat chain:"])) :: flat_iri)
+      Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       ( (Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Flat chain:"])) :: flat_iri)
       );
     ]
     @ exec_error
@@ -1307,19 +1318,21 @@ let get_outfile ctx path raw =
             xhtml_outdir_contents ctx path
         | _ ->
             let file_contents = Misc.string_of_file (Fname.abs_string filename) in
-            Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents])
+            Xtmpl.E (("", "hcode"), Xtmpl.atts_empty, [Xtmpl.D file_contents])
       in
       let contents =
-        [ Xtmpl.E (("","p"), [],
-           [ Xtmpl.E (("","strong"), [], [ Xtmpl.D "Date:" ] ) ;
+        [ Xtmpl.E (("","p"), Xtmpl.atts_empty,
+           [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [ Xtmpl.D "Date:" ] ) ;
              Xtmpl.D  (file_date (Fname.abs_string filename)) ;
            ]) ;
-          Xtmpl.E (("","p"), [],
-           [ Xtmpl.E (("","div"), [("","class"), "btn-group"],
+          Xtmpl.E (("","p"), Xtmpl.atts_empty,
+           [ Xtmpl.E (("","div"), 
+              Xtmpl.atts_one ("","class") [Xtmpl.D "btn-group"],
               [ Xtmpl.E (("","a"),
-                 [(("","class"), "btn") ;
-                   (("","href"), Rdf_iri.string (Grdfs.iri_ichains_producers_of prefix path))
-                 ],
+                 Xtmpl.atts_of_list 
+                   [ ("","class"), [Xtmpl.D "btn"] ;
+                     ("","href"), [Xtmpl.D (Rdf_iri.string (Grdfs.iri_ichains_producers_of prefix path))] ;
+                   ],
                  [ Xtmpl.D "Producers" ])
               ]);
            ]);
@@ -1425,13 +1438,13 @@ let get_input ctx path =
     table rows
   in
   let contents =
-    [ Xtmpl.E (("","p"), [],
-       [ Xtmpl.E (("","strong"), [], [Xtmpl.D "Id:"]) ;
+    [ Xtmpl.E (("","p"), Xtmpl.atts_empty,
+       [ Xtmpl.E (("","strong"), Xtmpl.atts_empty, [Xtmpl.D "Id:"]) ;
          Xtmpl.D git_id ;
        ]) ;
-      Xtmpl.E (("","h2"), [], [Xtmpl.D "Inputs"]);
+      Xtmpl.E (("","h2"), Xtmpl.atts_empty, [Xtmpl.D "Inputs"]);
       in_table ;
-      Xtmpl.E (("","h2"), [], [Xtmpl.D "Chains"]);
+      Xtmpl.E (("","h2"), Xtmpl.atts_empty, [Xtmpl.D "Chains"]);
       chains_table ;
     ]
   in
@@ -1457,7 +1470,7 @@ let get_input_file ctx ~raw ~input file_path =
             [ xhtml_inputdir_contents ctx input file_path ]
         | _ ->
             let file_contents = Misc.string_of_file (Fname.abs_string filename) in
-            [ Xtmpl.E (("", "hcode"), [], [Xtmpl.D file_contents]) ]
+            [ Xtmpl.E (("", "hcode"), Xtmpl.atts_empty, [Xtmpl.D file_contents]) ]
       in
       let raw_link =
         match kind with
@@ -1555,7 +1568,13 @@ let get_inst_chains ctx args =
             List.map
               (fun i ->
                  let atts =
-                   (("", "value"), Fname.rel_string i) :: (if (Fname.rel_string i) = selected then [("", "selected"),"true"] else [])
+                   Xtmpl.atts_of_list
+                     (
+                      (("", "value"), [Xtmpl.D (Fname.rel_string i)]) ::
+                        (if (Fname.rel_string i) = selected then
+                           [("", "selected"), [Xtmpl.D "true"]]
+                         else []
+                        ))
                  in
                  Xtmpl.E (("", "option"), atts, [Xtmpl.D (Fname.rel_string i)]))
               inputs
@@ -1578,8 +1597,9 @@ let get_inst_chains ctx args =
                 | Some id ->
                     let iri = Rdf_iri.string iri in
                     let atts =
-                      (("", "value"), iri) ::
-                      (if iri = selected then [("", "selected"), "true"] else [])
+                      Xtmpl.atts_of_list
+                        ((("", "value"), [Xtmpl.D iri]) ::
+                        (if iri = selected then [("", "selected"), [Xtmpl.D "true"]] else []))
                     in
                     (Xtmpl.E (("", "option"), atts, [Xtmpl.D ("  "^id)])) :: acc
           in
@@ -1589,8 +1609,9 @@ let get_inst_chains ctx args =
             let acc =
               let iri = Rdf_iri.string iri in
               let atts =
-                (("", "value"), iri) ::
-                (if iri = selected then [("", "selected"), "true"] else [])
+                Xtmpl.atts_of_list
+                  ((("", "value"), [Xtmpl.D iri]) ::
+                   (if iri = selected then [("", "selected"), [Xtmpl.D "true"]] else []))
               in
               (Xtmpl.E (("", "option"), atts,
                 [Xtmpl.D (Chn_types.string_of_chain_name name)])
@@ -1623,7 +1644,9 @@ let get_inst_chains ctx args =
           let result =
             let f_version version =
               let name = Grdf_version.name ctx.ctx_rdf version in
-              Xtmpl.E (("", "option"), [("", "value"), Rdf_iri.string version], [Xtmpl.D ("  "^name)])
+              Xtmpl.E (("", "option"),
+               Xtmpl.atts_one ("", "value") [Xtmpl.D (Rdf_iri.string version)],
+               [Xtmpl.D ("  "^name)])
             in
             let f tool =
               let versions = Grdf_version.versions_of ctx.ctx_rdf ~recur: true tool in
@@ -1633,15 +1656,20 @@ let get_inst_chains ctx args =
               Printf.bprintf javascript
                 "  onToolChange('%s',document.getElementById('%s'));\n"
                 tool_name id;
-              Xtmpl.E (("", "div"), [("", "class"), "control-group"],
+              Xtmpl.E (("", "div"),
+               Xtmpl.atts_one ("", "class") [Xtmpl.D "control-group"],
                [
-                 Xtmpl.E (("", "label"), [("", "for"), id], [ Xtmpl.D tool_name ]) ;
-                 Xtmpl.E (("", "div"), [("", "class"), "controls"],
+                 Xtmpl.E (("", "label"), Xtmpl.atts_one ("", "for") [Xtmpl.D id], [ Xtmpl.D tool_name ]) ;
+                 Xtmpl.E (("", "div"), Xtmpl.atts_one ("", "class") [Xtmpl.D "controls"],
                   [
                     Xtmpl.E (("", "select"),
-                     [("", "name"), id; ("", "id"), id ;
-                      ("", "onChange"), Printf.sprintf "onToolChange('%s',this, true)" tool_name],
-                     (Xtmpl.E (("", "option"), [("", "value"), ""], [])) :: options
+                     Xtmpl.atts_of_list
+                       [ ("", "name"), [Xtmpl.D id];
+                         ("", "id"), [Xtmpl.D id] ;
+                         ("", "onChange"), [Xtmpl.D (Printf.sprintf "onToolChange('%s',this, true)" tool_name)]
+                       ],
+                     (Xtmpl.E (("", "option"),
+                       Xtmpl.atts_one ("", "value") [Xtmpl.D ""], [])) :: options
                     )
                   ]
                  )
@@ -1662,7 +1690,9 @@ let get_inst_chains ctx args =
         in
         let env = Xtmpl.env_of_list env in
         let contents =
-          [ Xtmpl.E (("","include"), [("","file"), "inst_chain_filter.tmpl"], []) ]
+          [ Xtmpl.E (("","include"),
+             Xtmpl.atts_one ("","file") [Xtmpl.D "inst_chain_filter.tmpl"],
+             []) ]
         in
         ([ctype ()], out_page ctx ~env ~title ~javascript: (Buffer.contents javascript) contents)
       end
@@ -1751,15 +1781,17 @@ let get_diff_ichains ctx args =
            None -> acc
          | Some command ->
              let atts =
-               (("","value"), name) ::
-               (if diffcmd = Some name then [("","selected"),"true"] else [])
+               Xtmpl.atts_of_list
+                 ((("","value"), [Xtmpl.D name]) ::
+                  (if diffcmd = Some name then [("","selected"), [Xtmpl.D "true"]] else [])
+                 )
              in
              Xtmpl.E (("","option"), atts, [Xtmpl.D (command^" ("^name^")")]) :: acc
       )
       cmds
       []
     in
-    (Xtmpl.E (("","option"), [("","value"), ""], [Xtmpl.D ("<default>")])) :: l
+    (Xtmpl.E (("","option"), Xtmpl.atts_one ("","value") [Xtmpl.D ""], [Xtmpl.D ("<default>")])) :: l
   in
   let env = Xtmpl.env_of_list
     [
@@ -1776,7 +1808,7 @@ let get_diff_ichains ctx args =
     ]
   in
   let contents =
-    [ Xtmpl.E (("","include"), [("","file"), "inst_chain_diff.tmpl"], []) ]
+    [ Xtmpl.E (("","include"), Xtmpl.atts_one ("","file") [Xtmpl.D "inst_chain_diff.tmpl"], []) ]
   in
   let page = diff_page ctx ~env ~title: "Diffs between instanciated chains" contents in
   ([ctype ()], page)
