@@ -147,7 +147,7 @@ let rec print_com_tree b path ?(desc="") com =
     Final _ ->
       pb b "<code><![CDATA[%s %s]]></code>"
         (String.concat " " path) com.com_usage;
-      if desc <> "" or com.com_options <> [] then
+      if desc <> "" || com.com_options <> [] then
         begin
           pb b "<div class=\"command-desc\"><![CDATA[%s ]]> " desc;
           print_collapsable_options b path com;
